@@ -50,11 +50,18 @@ def test_score_walls_can_be_switched_off_for_open_plan_rooms():
 
 
 def test_own_ground_truth_files_load_and_agree_with_the_registry():
+    """The ground truth is in the repository; the captures it describes are not.
+
+    data/ is gitignored, so a fresh clone has the YAML but no images. The
+    capture folders are checked only when they are present, which keeps this
+    test meaningful for whoever has the data and passing for whoever does not.
+    """
     reg = load_registry(REPO / "benchmarks" / "captures.yaml")
     own = [c for c in reg.captures if c.ground_truth and "own" in c.input]
     assert own, "own captures should be registered"
     for c in own:
-        assert (REPO / c.input).is_dir(), c.input
+        if (REPO / "data").is_dir():
+            assert (REPO / c.input).is_dir(), c.input
         gt = load_ground_truth(REPO / c.ground_truth)
         assert gt.capture_id == c.capture_id
         assert gt.truth_uncertainty_m == pytest.approx(0.013)
