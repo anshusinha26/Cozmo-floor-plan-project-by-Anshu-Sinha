@@ -142,3 +142,35 @@ That is why the prediction is 40% and not 90%.
 * **Ghosts are the real cause** if dropping ghost faces alone, with the
   erosion segmentation left in place, brings room counts to within one of each
   other. That is a cheap experiment and worth running first.
+
+---
+
+# ADDENDUM, written after the fix was attempted
+
+The original text above is unchanged. This records what happened to it.
+
+**The falsifier fired negative, so the cell complex was built as declared.**
+Dropping ghost faces alone left the gate at 0 rows within tolerance and moved
+room counts apart by one. See `experiments/ghost_only/RESULT.md`.
+
+**The fix shipped and did not work.** The repeatability gate still fails at 0
+of 153 rows. Rooms paired across the two apartment captures fell from 6 to 3
+and footprint areas inflated. Full numbers in `POSTMORTEM.md` and `DIFF.md`.
+
+**Evidence d above should not be trusted.** It reported 16% of wall-face
+length outside the room envelope. That envelope came from the room polygons
+produced by the segmentation under test, which were themselves inflated, so
+the measure over-counted ghosts. A visibility test that asks whether anyone
+stood beside the face puts the real figure near 1%. Hypothesis H3 is not a
+cause of anything here.
+
+**The root cause named above was incomplete.** Room partition is unstable,
+which is true, but the deeper cause is that the two captures observe
+different subsets of the building: only 56% and 37% of each capture's
+wall-face length has any counterpart in the other. No segmentation rule can
+invent a wall one capture never saw. The third falsifier listed above,
+"coverage, not method, dominates", is the one that fired.
+
+**One number from the declaration held up.** Matched wall faces agree to
+1.9 cm. The geometry is sound; the partition and the capture coverage are
+not.

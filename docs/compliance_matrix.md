@@ -54,12 +54,25 @@ exists yet, so every accuracy row is scored on the stub only.
 | Point cloud with normals, voxel downsample | cozmo/lidar/cloud.py | Cloud | done |
 | Floor and ceiling detection, ceiling prior when unobserved | cozmo/lidar/levels.py | prior_no_ceiling_observed method and warning | done |
 | Manhattan alignment and wall faces | cozmo/lidar/walls.py | WallFace list, recorded in assumptions | done |
-| Room segmentation and rectilinear polygons | cozmo/lidar/rooms.py | room polygons snapped to wall faces | partial: not repeatable across two captures of one property; subject of the fix loop in fix_loop/ |
+| Room segmentation and rectilinear polygons | cozmo/lidar/rooms.py, cozmo/lidar/cells.py | erosion and wall-driven cell complex, selectable with --segmentation | partial: neither is repeatable across two captures of one property. One fix loop run, see fix_loop/POSTMORTEM.md |
 | Openings from wall occupancy gaps | cozmo/lidar/openings.py | doors and pass-throughs; windows not attempted, with a warning | partial |
 | Adjacency from openings | cozmo/lidar/openings.py | adjacency[] | done |
-| Drift correction, plane anchored | cozmo/lidar/drift.py | per-chunk yaw, height and 1D shift; drift_report.json | done |
+| Drift correction, plane anchored | cozmo/lidar/drift.py | per-chunk yaw, height and 1D shift; drift_report.json | done; re-measured under wall-driven segmentation and it does not reduce wall smear on this data |
 | Uncertainty model with named terms | cozmo/lidar/uncertainty.py | every Measurement in a lidar plan | done |
 | Debug images | cozmo/lidar/debug.py | density, wall faces, room masks, openings | done |
 | Bench without ground truth | cozmo/cli.py, cozmo/eval/self_consistency.py | benchmark.md no-ground-truth section | done |
 | Cross-capture repeatability of the apartment pair | cozmo/eval/self_consistency.py | same-space check then the repeatability gate | done; the gate currently fails, reported as such |
 | Runtime under 3 minutes for the largest scan | cozmo/pipeline/lidar.py | 9745 frames in 28 s on an M1 Max | done |
+
+## Added in the repeatability fix loop
+
+| requirement | file path | artifact | status |
+|---|---|---|---|
+| Cross-capture plan registration | cozmo/eval/registration.py | four quarter turns after per-plan Manhattan canonicalisation, translation by mask correlation | done |
+| Room matching by polygon IoU | cozmo/eval/registration.py | Hungarian assignment, floor of 0.3 | done |
+| Wall matching by nearest parallel face | cozmo/eval/registration.py | replaces cyclic order, which pairs walls that are not the same wall | done |
+| Ghost-face rejection | cozmo/lidar/ghosts.py | visibility test, about 1% of face length rejected | done |
+| Wall-driven cell complex segmentation | cozmo/lidar/cells.py | 1.0 to 1.6 m support band, doorway gap rule | done, but not better on the gate |
+| Partially observed rooms flagged | cozmo/lidar/cells.py, cozmo/pipeline/lidar.py | perimeter support under 80%, intervals doubled | done |
+| Fix loop artifacts | fix_loop/ | DECLARATION.md with addendum, before/, after/, evidence/, experiments/, DIFF.md, POSTMORTEM.md, regenerate.sh | done |
+| Cross-capture repeatability gate passing | cozmo/eval/gates.py | 0 of 153 rows within tolerance | NOT DONE, see fix_loop/POSTMORTEM.md |

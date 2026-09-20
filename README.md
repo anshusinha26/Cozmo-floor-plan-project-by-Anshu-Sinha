@@ -106,10 +106,17 @@ Classical geometry only. No machine learning, no open3d. Stages:
    Recorded in the plan's assumptions.
 4. **Wall faces.** Histogram peaks along each axis, extents from occupancy
    runs. A face whose points stop below 1.6 m is furniture, not wall.
-5. **Rooms.** Free space is seen floor plus the walked path, with the
-   wall-enclosed region filled. Eroding by half a metre pinches doorways
-   shut; a watershed grows the seeds back. Polygons are the union of
-   wall-bounded cells the room mask fills.
+5. **Rooms.** Two methods, picked with `--segmentation`:
+   * `cells` (default): wall faces become grid lines, the lines cut the plan
+     into cells, and two cells are separated only where the edge between them
+     carries wall support in the 1.0 to 1.6 m band. Rooms under 80% supported
+     are flagged partially observed with doubled intervals.
+   * `erosion` (the original): free space from seen floor and the walked
+     path, eroded by half a metre, watershed back.
+
+   On the sample captures neither is repeatable across two scans of one
+   property. See `fix_loop/POSTMORTEM.md`; the recommendation there is to
+   default to `erosion` until the cell method's footprint inflation is fixed.
 6. **Openings.** Gaps in wall occupancy between 0.3 and 1.9 m that free space
    crosses on both sides. Height from lintel points, or a prior with a
    warning. Windows are not attempted, and a warning says so.
@@ -119,6 +126,14 @@ Classical geometry only. No machine learning, no open3d. Stages:
    offset, then a 1D shift onto the global wall faces. Estimates beyond the
    configured limits are rejected. `drift_report.json` carries footprint area
    and mean wall thickness for both settings.
+
+   Re-measured under the wall-driven segmentation: mean wall thickness is
+   32.1 mm without correction and 35.8 mm with it on `1a8384c3f6`, and 32.5
+   against 32.6 mm on `c7d28f72c6`. Correction does not reduce the smear on
+   these captures, because the estimated corrections are small to begin with
+   (mean yaw error 0.55 to 1.57 degrees, mean height error 3 to 8 mm). It is
+   left on by default because it costs a second pass and does no harm, but
+   it is not earning its keep on this data.
 9. **Uncertainty.** Wall length intervals combine each bounding face's
    position error (residual spread over an effective sample size that counts
    0.25 m patches, not 2 cm points) with a 1% depth scale bias and a 1 cm
@@ -127,9 +142,14 @@ Classical geometry only. No machine learning, no open3d. Stages:
 ### Known limitations of the LiDAR path
 
 * Room segmentation is not repeatable across two captures of one property.
-  The two sample apartment scans produce 8 and 10 rooms, and the
-  cross-capture repeatability gate fails. This is reported, not hidden, and
-  it is the subject of the current fix loop (see `fix_loop/`).
+  Under the erosion method the two sample apartment scans produce 8 and 10
+  rooms; under the wall-driven cell complex they produce 6 and 9. The
+  cross-capture repeatability gate fails under both, at 0 rows within
+  tolerance. One fix loop has been run and did not fix it; see
+  `fix_loop/POSTMORTEM.md` for what remains.
+* The cell method inflates footprint area, because a room with an unobserved
+  side is closed at the edge of what was seen. 86.6 m2 and 64.7 m2 against a
+  flat of roughly 75 m2.
 * No scan has ground truth for room count or room size. `c00a170fe1` is not
   one closed room: the camera path crosses two or three partly scanned
   spaces with unobserved sides. Any earlier text treating its camera-path
