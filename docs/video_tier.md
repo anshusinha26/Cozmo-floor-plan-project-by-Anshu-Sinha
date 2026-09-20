@@ -138,6 +138,27 @@ interval as one built from all of it.
 Nothing here makes a fragment accurate. It makes the number honest about what
 it is.
 
+## What the per-frame scale spread does not tell you
+
+Stage 3 reports how much the per-frame scale ratios disagree inside one chunk.
+That number came out between 2.7% and 11% on the sample scan. The bridge then
+measures something different and much larger: how much two neighbouring chunks'
+metric scales disagree with each other, through MapAnything's relative pose.
+That came out between 18% and 142% on the same run.
+
+The two disagree by an order of magnitude because Depth Pro's error is
+correlated inside a chunk. A chunk covers a few seconds of one sweep across one
+part of one room, so every frame in it sees similar surfaces at similar
+distances and the model is wrong in the same direction on all of them. Averaging
+twelve such frames tightens the spread without touching the bias.
+
+So the per-frame spread is a lower bound on this tier's scale error, not an
+estimate of it. The chunk-to-chunk disagreement the bridge measures is the
+better estimator, and folding it into the interval budget is the first thing to
+do to this tier. Today the budget uses the per-frame standard error plus the
+spread of chunk scales within the accepted group, which is closer to the truth
+than the per-frame term alone but still not the bridge measurement.
+
 ## Known limits
 
 * **Monocular metric scale is the weak link on close-range captures.** The
@@ -151,9 +172,20 @@ it is.
 * **Mirrors.** A wardrobe mirror puts a confident wall where the room continues.
   The face-support check that drops such faces lives in `cozmo.lidar.ghosts`
   and is used when it is present in the build; the plan warns when it is not.
+* **Runs are not bit-reproducible.** COLMAP's incremental mapper is
+  multi-threaded and unseeded, so it can split a clip into different chunks on
+  two runs of the same input. Two runs of `c00a170fe1` produced per-chunk scale
+  spreads of 34.6% and 3.9% for what was nominally the same part of the scan.
+  Everything downstream is deterministic given the chunks, but the pipeline
+  contract asks for determinism in (input, config, seed) and this stage does not
+  meet it. Fixing it means single-threaded mapping, which costs runtime.
 * **Windows are not attempted**, same as the LiDAR tier.
 * **Damage detection is not implemented.** Two paper sheets taped to a wall in
   `bedroom_2_repeat` are staged damage and this tier does not look for them.
+* **Runtime is near the budget, not inside it with room to spare.** The sample
+  scan takes 428 s on an M-series Mac with nothing else running. Depth Pro
+  dominates at about 3.5 s per frame, twelve frames per chunk; a clip that
+  splits into eight chunks spends most of its time there.
 
 ## Evidence
 
