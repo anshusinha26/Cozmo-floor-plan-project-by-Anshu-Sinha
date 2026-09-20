@@ -14,7 +14,13 @@ from typing import Any
 from shapely.geometry import Polygon as SPoly
 
 from cozmo.contracts.models import Plan
-from cozmo.eval.matching import cyclic_wall_assignment
+from cozmo.eval.registration import (
+    DEFAULT_MIN_IOU,
+    DEFAULT_WALL_OFFSET_M,
+    match_rooms_by_iou,
+    match_walls_by_face,
+    register_plans,
+)
 
 
 def self_consistency(plan: Plan) -> dict[str, Any]:
@@ -55,12 +61,11 @@ def self_consistency(plan: Plan) -> dict[str, Any]:
 
 
 def match_rooms_by_area(plan_a: Plan, plan_b: Plan, rel_tolerance: float = 0.25) -> list[tuple[str, str, float]]:
-    """Greedy nearest floor area, best pairs first. Only for captures of one space.
+    """Kept only for the ceiling of what area alone can do. Not used for scoring.
 
-    Room ids are per-capture inventions here (the pipeline numbers rooms by
-    size), so area is the only stable handle without ground truth. Pairs whose
-    areas differ by more than the tolerance are left unmatched rather than
-    forced.
+    Superseded by registration plus polygon IoU: two rooms of similar size in
+    different corners of a flat pair happily under an area rule, which turns an
+    eval artefact into a reconstruction failure.
     """
     cands = []
     for ra in plan_a.rooms:
@@ -83,45 +88,92 @@ def match_rooms_by_area(plan_a: Plan, plan_b: Plan, rel_tolerance: float = 0.25)
     return out
 
 
-def cross_plan_repeat_pairs(plan_a: Plan, plan_b: Plan, space_id: str, tier: str) -> list[dict[str, Any]]:
-    """Per-wall rows for the repeatability gate, from two captures of one space."""
-    rows = []
-    for ra_id, rb_id, _ in match_rooms_by_area(plan_a, plan_b):
-        ra = next(r for r in plan_a.rooms if r.id == ra_id)
-        rb = next(r for r in plan_b.rooms if r.id == rb_id)
-        la = [w.length_m.value for w in ra.walls]
-        lb = [w.length_m.value for w in rb.walls]
-        assign = cyclic_wall_assignment(la, lb)
-        for ia, ib in assign.pairs:
-            rows.append({
-                "space_id": space_id, "tier": tier,
+def cross_plan_repeat_pairs(plan_a: Plan, plan_b: Plan, space_id: str, tier: str,
+                            min_iou: float = DEFAULT_MIN_IOU,
+                            max_offset_m: float = DEFAULT_WALL_OFFSET_M) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    """Per-wall rows for the repeatability gate, after registering the two plans.
+
+    Rooms are paired by polygon IoU and walls by nearest parallel face. Rooms
+    and walls with no counterpart are returned as failure rows with an infinite
+    difference, so a capture that simply loses a room cannot score well by
+    reporting fewer things.
+    """
+    reg = register_plans(plan_a, plan_b)
+    room_pairs = match_rooms_by_iou(plan_a, plan_b, reg, min_iou=min_iou)
+    rooms_a = {r.id: r for r in plan_a.rooms}
+    rooms_b = {r.id: r for r in plan_b.rooms}
+    rows: list[dict[str, Any]] = []
+    n_walls_matched = n_walls_unmatched = 0
+
+    def row(room_id: str, wall_id: str, a: float, b: float, matched: bool) -> dict[str, Any]:
+        return {"space_id": space_id, "tier": tier,
                 "capture_a": plan_a.capture.id, "capture_b": plan_b.capture.id,
-                "room_id": f"{ra_id}~{rb_id}", "wall_id": f"{ra.walls[ia].id}~{rb.walls[ib].id}",
-                "a": la[ia], "b": lb[ib],
-            })
-    return rows
+                "room_id": room_id, "wall_id": wall_id, "a": a, "b": b, "matched": matched}
+
+    for rp in room_pairs:
+        ra, rb = rooms_a[rp.room_a], rooms_b[rp.room_b]
+        pairs, un_a, un_b = match_walls_by_face(ra, rb, reg, max_offset_m=max_offset_m)
+        for wp in pairs:
+            rows.append(row(f"{rp.room_a}~{rp.room_b}", f"{wp.wall_a}~{wp.wall_b}",
+                            wp.length_a, wp.length_b, True))
+        n_walls_matched += len(pairs)
+        for wid in un_a:
+            rows.append(row(f"{rp.room_a}~{rp.room_b}", f"{wid}~none",
+                            next(w.length_m.value for w in ra.walls if w.id == wid), float("nan"), False))
+        for wid in un_b:
+            rows.append(row(f"{rp.room_a}~{rp.room_b}", f"none~{wid}",
+                            float("nan"), next(w.length_m.value for w in rb.walls if w.id == wid), False))
+        n_walls_unmatched += len(un_a) + len(un_b)
+
+    matched_a = {rp.room_a for rp in room_pairs}
+    matched_b = {rp.room_b for rp in room_pairs}
+    unmatched_rooms_a = [r.id for r in plan_a.rooms if r.id not in matched_a]
+    unmatched_rooms_b = [r.id for r in plan_b.rooms if r.id not in matched_b]
+    for rid in unmatched_rooms_a:
+        for w in rooms_a[rid].walls:
+            rows.append(row(f"{rid}~none", f"{w.id}~none", w.length_m.value, float("nan"), False))
+    for rid in unmatched_rooms_b:
+        for w in rooms_b[rid].walls:
+            rows.append(row(f"none~{rid}", f"none~{w.id}", float("nan"), w.length_m.value, False))
+
+    summary = {
+        "registration": {"rotation_deg": reg.rotation_deg, "tx": reg.tx, "ty": reg.ty, "footprint_iou": reg.iou},
+        "rooms_a": len(plan_a.rooms), "rooms_b": len(plan_b.rooms),
+        "rooms_matched": len(room_pairs),
+        "room_iou": [round(rp.iou, 3) for rp in room_pairs],
+        "unmatched_rooms_a": unmatched_rooms_a,
+        "unmatched_rooms_b": unmatched_rooms_b,
+        "walls_matched": n_walls_matched,
+        "walls_unmatched": n_walls_unmatched,
+        "min_iou": min_iou, "max_wall_offset_m": max_offset_m,
+    }
+    return rows, summary
 
 
 def same_space_verdict(plan_a: Plan, plan_b: Plan) -> dict[str, Any]:
     """Evidence that two captures really are the same property, before trusting agreement.
 
     Repeatability across two different places is meaningless, so this is
-    checked and reported rather than assumed from the registry.
+    checked and reported rather than assumed from the registry. The check is
+    the registered footprint IoU plus the share of rooms that pair by IoU.
     """
+    reg = register_plans(plan_a, plan_b)
+    matched = match_rooms_by_iou(plan_a, plan_b, reg)
+    n_min = min(len(plan_a.rooms), len(plan_b.rooms))
+    share = len(matched) / n_min if n_min else 0.0
     fa = plan_a.stitched_plan.footprint_area_m2.value
     fb = plan_b.stitched_plan.footprint_area_m2.value
     ratio = min(fa, fb) / max(fa, fb) if max(fa, fb) else 0.0
-    matched = match_rooms_by_area(plan_a, plan_b)
-    n_min = min(len(plan_a.rooms), len(plan_b.rooms))
-    share = len(matched) / n_min if n_min else 0.0
-    confident = ratio >= 0.75 and share >= 0.5
+    confident = reg.iou >= 0.5 and share >= 0.5
     return {
+        "footprint_iou_after_registration": float(reg.iou),
+        "registration": {"rotation_deg": reg.rotation_deg, "tx": reg.tx, "ty": reg.ty},
         "footprint_area_ratio": float(ratio),
         "matched_rooms": len(matched),
         "rooms_a": len(plan_a.rooms),
         "rooms_b": len(plan_b.rooms),
         "matched_share": float(share),
         "same_space": bool(confident),
-        "basis": "footprint areas within 25% and at least half the rooms pairing by area",
+        "basis": "registered footprint IoU at least 0.5 and at least half the rooms pairing by polygon IoU",
         "note": "Agreement between two captures is repeatability, not accuracy. Both can be wrong together.",
     }

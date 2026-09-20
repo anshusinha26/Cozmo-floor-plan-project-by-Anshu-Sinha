@@ -172,15 +172,25 @@ def repeatability(pairs: list[dict[str, Any]], cfg: dict[str, Any]) -> dict[str,
     rel_tol = float(c.get("rel_tolerance", 0.005))
     table = []
     for p in pairs:
+        # A wall with no counterpart in the other capture is the worst kind of
+        # disagreement, so it fails outright instead of being dropped from the
+        # denominator. Callers mark those rows with matched=False.
+        if not p.get("matched", True) or math.isnan(p["a"]) or math.isnan(p["b"]):
+            table.append({**p, "diff_m": math.inf, "allowed_m": abs_tol, "ratio": math.inf, "ok": False})
+            continue
         diff = abs(p["a"] - p["b"])
         allowed = max(abs_tol, rel_tol * (p["a"] + p["b"]) / 2.0)
         table.append({**p, "diff_m": diff, "allowed_m": allowed, "ratio": diff / allowed if allowed else math.inf,
                       "ok": diff <= allowed + EPS})
-    worst = max(table, key=lambda r: r["ratio"], default=None)
+    worst = max(table, key=lambda r: (r["ratio"], not r["ok"]), default=None)
     detail: dict[str, Any] = {"abs_tolerance_m": abs_tol, "rel_tolerance": rel_tol, "per_wall": table, "worst": worst}
     if not pairs:
         detail["note"] = "no repeat captures of the same space and tier; vacuous pass"
-    return _gate("repeatability", all(r["ok"] for r in table), worst["ratio"] if worst else 0.0, 1.0, len(table), detail)
+    value = worst["ratio"] if worst else 0.0
+    n_ok = sum(1 for r in table if r["ok"])
+    detail["n_within_tolerance"] = n_ok
+    detail["share_within_tolerance"] = n_ok / len(table) if table else 1.0
+    return _gate("repeatability", all(r["ok"] for r in table), value, 1.0, len(table), detail)
 
 
 # ------------------------------------------------------------- wall_length_tier

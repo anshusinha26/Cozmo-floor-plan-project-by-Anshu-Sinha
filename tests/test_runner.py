@@ -108,21 +108,46 @@ def test_bench_handles_captures_without_ground_truth(tmp_path):
         path.unlink()
 
 
-def test_cross_plan_repeatability_rows_pair_walls_cyclically():
+def test_cross_plan_repeatability_pairs_walls_after_registration():
+    """Walls pair by nearest parallel face, and a lost room becomes failure rows."""
     import pytest
 
     from cozmo.eval.self_consistency import cross_plan_repeat_pairs
-    from tests.conftest import two_room_plan_dict
+    from tests.test_registration import world_two_room_plan
 
-    a = Plan.model_validate(two_room_plan_dict())
-    d = two_room_plan_dict()
+    a = Plan.model_validate(world_two_room_plan())
+    d = world_two_room_plan()
     for w in d["rooms"][0]["walls"]:
-        w["length_m"]["value"] += 0.02
-        w["length_m"]["ci_high"] += 0.02
-        w["length_m"]["ci_low"] += 0.02
+        for k in ("value", "ci_low", "ci_high"):
+            w["length_m"][k] += 0.02
     d["capture"]["id"] = "apt_living_02"
     b = Plan.model_validate(d)
-    rows = cross_plan_repeat_pairs(a, b, "apt_living", "lidar")
-    assert rows and all(r["space_id"] == "apt_living" for r in rows)
-    living = [r for r in rows if r["room_id"].startswith("living")]
-    assert living and all(abs(r["b"] - r["a"]) == pytest.approx(0.02) for r in living)
+    rows, summary = cross_plan_repeat_pairs(a, b, "apt_living", "lidar")
+    assert summary["rooms_matched"] == 2 and summary["walls_unmatched"] == 0
+    assert summary["registration"]["footprint_iou"] > 0.9
+    living = [r for r in rows if r["room_id"].startswith("living") and r["matched"]]
+    assert living and all(abs(r["b"] - r["a"]) == pytest.approx(0.02, abs=1e-9) for r in living)
+
+
+def test_a_lost_room_produces_failing_rows_not_silence():
+    from cozmo.eval import gates as G
+    from cozmo.eval.self_consistency import cross_plan_repeat_pairs
+    from cozmo.io.manifest import load_config
+    from tests.test_registration import world_two_room_plan
+
+    a = Plan.model_validate(world_two_room_plan())
+    d = world_two_room_plan()
+    d["rooms"] = d["rooms"][:1]
+    d["adjacency"] = []
+    d["stitched_plan"]["placements"] = d["stitched_plan"]["placements"][:1]
+    d["surfaces"] = [s for s in d["surfaces"] if s["room_id"] == "living"]
+    d["capture"]["id"] = "apt_living_03"
+    b = Plan.model_validate(d)
+    rows, summary = cross_plan_repeat_pairs(a, b, "apt_living", "lidar")
+    assert summary["unmatched_rooms_a"] == ["hall"]
+    unmatched = [r for r in rows if not r["matched"]]
+    assert len(unmatched) == 4, [r["wall_id"] for r in unmatched]
+    gate = G.repeatability(rows, load_config(CONFIG))
+    assert not gate["passed"]
+    assert gate["n"] == len(rows)
+    assert gate["detail"]["n_within_tolerance"] == len(rows) - 4

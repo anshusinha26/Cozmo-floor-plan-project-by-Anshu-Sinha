@@ -246,10 +246,10 @@ def _no_truth_report(entries, manifests, plans: dict[str, Plan], cfg: dict[str, 
             continue
         a, b = plans[e.repeat_of], plans[e.capture_id]
         verdict = same_space_verdict(a, b)
-        pairs = cross_plan_repeat_pairs(a, b, e.space_id, e.tier) if verdict["same_space"] else []
-        gate = G.repeatability(pairs, cfg)
+        pairs, match_summary = cross_plan_repeat_pairs(a, b, e.space_id, e.tier)
+        gate = G.repeatability(pairs if verdict["same_space"] else [], cfg)
         repeats.append({"capture_a": a.capture.id, "capture_b": b.capture.id, "space_id": e.space_id,
-                        "tier": e.tier, "same_space": verdict, "gate": gate})
+                        "tier": e.tier, "same_space": verdict, "matching": match_summary, "gate": gate})
     return {"self_consistency": rows, "repeat_pairs": repeats,
             "note": "No ground truth for these captures. Nothing here measures accuracy."}
 
@@ -271,20 +271,33 @@ def _no_truth_md(entries, manifests, report: dict[str, Any]) -> list[str]:
                   f"{len(r['ceiling_from_prior'])}/{r['n_rooms']} | {m['duration_s']:.1f} |")
     for rp in report["repeat_pairs"]:
         v = rp["same_space"]
+        ms = rp["matching"]
+        reg = ms["registration"]
         md += ["", f"### Repeat pair: {rp['capture_a']} and {rp['capture_b']} ({rp['tier']})", "",
-               f"Same space check: footprint ratio {v['footprint_area_ratio']:.2f}, "
-               f"{v['matched_rooms']} of {min(v['rooms_a'], v['rooms_b'])} rooms pair by area. "
+               f"Registration: rotation {reg['rotation_deg']} degrees, translation "
+               f"({reg['tx']:.2f}, {reg['ty']:.2f}) m, footprint IoU {reg['footprint_iou']:.2f}.", "",
+               f"Same space check: {v['matched_rooms']} of {min(v['rooms_a'], v['rooms_b'])} rooms pair by polygon IoU. "
                f"Verdict: **{'same space' if v['same_space'] else 'NOT confirmed as the same space'}** "
-               f"({v['basis']}).", "", v["note"], ""]
+               f"({v['basis']}).", "", v["note"], "",
+               f"Room matching: {ms['rooms_a']} rooms in {rp['capture_a']}, {ms['rooms_b']} in {rp['capture_b']}, "
+               f"{ms['rooms_matched']} matched at IoU >= {ms['min_iou']} (IoU values {ms['room_iou']}). "
+               f"Unmatched: {ms['unmatched_rooms_a']} and {ms['unmatched_rooms_b']}.", "",
+               f"Wall matching inside matched rooms: {ms['walls_matched']} paired by nearest parallel face "
+               f"within {ms['max_wall_offset_m']} m, {ms['walls_unmatched']} with no counterpart.", ""]
         g = rp["gate"]
-        md += [f"Repeatability gate: {'PASS' if g['passed'] else 'FAIL'} on {g['n']} wall pairs, "
-               f"worst ratio {g['value']:.2f} against the allowed 1.0."]
+        md += [f"Repeatability gate: {'PASS' if g['passed'] else 'FAIL'} on {g['n']} wall rows, "
+               f"worst ratio {g['value']:.2f} against the allowed 1.0. "
+               f"Within tolerance: {g['detail'].get('n_within_tolerance', 0)} of {g['n']}."]
         if g["n"]:
-            w = g["detail"]["worst"]
-            md += ["", f"Worst wall: {w['room_id']} {w['wall_id']} {w['a']:.3f} m vs {w['b']:.3f} m, "
-                       f"difference {w['diff_m'] * 100:.1f} cm against {w['allowed_m'] * 100:.1f} cm allowed.", ""]
-            ok = sum(1 for r in g["detail"]["per_wall"] if r["ok"])
-            md += [f"Walls within tolerance: {ok} of {g['n']}.", ""]
+            matched_rows = [r for r in g["detail"]["per_wall"] if r.get("matched", True)]
+            if matched_rows:
+                w = max(matched_rows, key=lambda r: r["ratio"])
+                md += ["", f"Worst matched wall: {w['room_id']} {w['wall_id']} {w['a']:.3f} m vs {w['b']:.3f} m, "
+                           f"difference {w['diff_m'] * 100:.1f} cm against {w['allowed_m'] * 100:.1f} cm allowed.",
+                       "", f"Of the {len(matched_rows)} matched wall pairs, "
+                           f"{sum(1 for r in matched_rows if r['ok'])} are within tolerance.", ""]
+            md += [f"Rows failing because a wall or room has no counterpart: "
+                   f"{sum(1 for r in g['detail']['per_wall'] if not r.get('matched', True))}.", ""]
     return md
 
 
