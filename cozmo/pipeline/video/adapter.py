@@ -141,7 +141,7 @@ def plan_from_cloud(points: np.ndarray, normals: np.ndarray, camera_path: np.nda
     detail = {"n_cloud_points": int(len(points)), "n_wall_points": int(sel.sum()),
               "n_faces": len(faces), "n_ghost_faces": len(ghosts), "ghost_report": ghost_report,
               "manhattan_yaw_deg": round(float(np.degrees(frame.yaw)), 3),
-              "floor_height_m": round(float(levels.floor.offset), 4),
+              "floor_height_m": round(float(np.median(levels.floor.height_at(cloud.points[:, [0, 2]]))), 4),
               "n_rooms": len(plan.rooms), "n_openings": sum(len(r.openings) for r in plan.rooms),
               "interval_budget": budget.summary()}
     return PlanBuild(plan=plan, detail=detail,

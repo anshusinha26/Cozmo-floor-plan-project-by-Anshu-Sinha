@@ -199,3 +199,119 @@ def test_the_video_tier_is_registered_and_configured():
     assert cfg["wall"]["hist_bin_m"] > lidar["wall"]["hist_bin_m"]
     assert cfg["room"]["snap_m"] > lidar["room"]["snap_m"]
     assert cfg["uncertainty"]["abs_floor_m"] > lidar["uncertainty"]["abs_floor_m"]
+
+
+# ----------------------------------------------------------------- the seam
+
+def _box_room(width: float = 4.0, depth: float = 3.0, height: float = 2.7,
+              wall_thickness: float = 0.12, noise_m: float = 0.04, step: float = 0.04):
+    """A rectangular room as the video tier would hand it over: points, normals, path.
+
+    Noise is set to the wall spread spike 2 measured for this tier, 4 cm, so the
+    test exercises the backend at the tolerance the tier actually ships with.
+    """
+    rng = np.random.default_rng(7)
+    pts, nrm = [], []
+
+    def face(axis: int, pos: float, normal_sign: float, lo: float, hi: float):
+        a = np.arange(lo, hi, step)
+        y = np.arange(0.02, height, step)
+        A, Y = np.meshgrid(a, y)
+        P = np.zeros((A.size, 3))
+        P[:, axis] = pos + rng.normal(0, noise_m, A.size)
+        P[:, 1] = Y.ravel()
+        P[:, 2 if axis == 0 else 0] = A.ravel()
+        n = np.zeros((A.size, 3))
+        n[:, axis] = normal_sign
+        pts.append(P)
+        nrm.append(n)
+
+    # Inner faces look inward; outer faces of the same walls look outward.
+    face(0, 0.0, 1.0, 0.0, depth)
+    face(0, -wall_thickness, -1.0, 0.0, depth)
+    face(0, width, -1.0, 0.0, depth)
+    face(0, width + wall_thickness, 1.0, 0.0, depth)
+    face(2, 0.0, 1.0, 0.0, width)
+    face(2, -wall_thickness, -1.0, 0.0, width)
+    face(2, depth, -1.0, 0.0, width)
+    face(2, depth + wall_thickness, 1.0, 0.0, width)
+
+    gx, gz = np.meshgrid(np.arange(0, width, step), np.arange(0, depth, step))
+    flat = np.column_stack([gx.ravel(), np.zeros(gx.size), gz.ravel()])
+    pts.append(flat + rng.normal(0, 0.005, flat.shape) * np.array([0, 1, 0]))
+    nrm.append(np.tile([0.0, 1.0, 0.0], (len(flat), 1)))
+    ceil = flat.copy()
+    ceil[:, 1] = height
+    pts.append(ceil)
+    nrm.append(np.tile([0.0, -1.0, 0.0], (len(ceil), 1)))
+
+    t = np.linspace(0, 1, 60)
+    path = np.column_stack([width / 2 + 0.8 * np.cos(2 * np.pi * t),
+                            np.full(60, 1.4),
+                            depth / 2 + 0.6 * np.sin(2 * np.pi * t)])
+    return np.vstack(pts), np.vstack(nrm), path
+
+
+def test_the_adapter_turns_a_synthetic_room_into_a_one_room_plan(tmp_path):
+    """The seam into the LiDAR backend works on video-tier shaped input.
+
+    Model free on purpose: no weights, no GPU, no COLMAP. What is under test is
+    that points, normals and a camera path with this tier's configuration and
+    noise come out as a plan with the right room and the right wall lengths.
+    """
+    from cozmo.pipeline.video.adapter import plan_from_cloud
+    from cozmo.pipeline.video.drift import YawSnapModel
+    from cozmo.pipeline.video.pipeline import VideoPipeline
+
+    points, normals, path = _box_room(width=4.0, depth=3.0)
+    config = load_config("config/gates.yaml")
+    config["run"] = {"pipeline": "video", "drift_correction": True, "video_rotation": "auto"}
+    capture = tmp_path / "synthetic_room"
+    capture.mkdir()
+    (capture / "clip.mp4").write_bytes(b"not decoded by this test")
+
+    pipeline = VideoPipeline()
+    pipeline.input_manifest_sha256 = "0" * 64
+    built = plan_from_cloud(points, normals, path, np.linspace(0, 6, len(path)), len(path),
+                            capture, "video", config, 0, pipeline,
+                            IntervalBudget(coverage=1.0), YawSnapModel({"applied": True, "per_chunk": []}),
+                            warnings=[], assumptions=[])
+
+    plan = built.plan
+    assert len(plan.rooms) == 1, [r.id for r in plan.rooms]
+    room = plan.rooms[0]
+    lengths = sorted(w.length_m.value for w in room.walls)
+    assert len(lengths) == 4, lengths
+    # A rectangle: two walls near 3 m and two near 4 m.
+    assert lengths[0] == pytest.approx(3.0, abs=0.25) and lengths[1] == pytest.approx(3.0, abs=0.25)
+    assert lengths[2] == pytest.approx(4.0, abs=0.25) and lengths[3] == pytest.approx(4.0, abs=0.25)
+    assert room.ceiling_height_m.value == pytest.approx(2.7, abs=0.1)
+    # Every measurement carries an interval, and none is tighter than the floor.
+    for w in room.walls:
+        assert w.length_m.ci_low < w.length_m.value < w.length_m.ci_high
+        assert w.length_m.width / 2 >= 0.03
+
+
+def test_a_fragment_reports_a_wider_interval_than_a_full_capture(tmp_path):
+    """Same geometry, different coverage: the fragment must not claim as much."""
+    from cozmo.pipeline.video.adapter import plan_from_cloud
+    from cozmo.pipeline.video.drift import YawSnapModel
+    from cozmo.pipeline.video.pipeline import VideoPipeline
+
+    points, normals, path = _box_room()
+    config = load_config("config/gates.yaml")
+    config["run"] = {"pipeline": "video", "drift_correction": True, "video_rotation": "auto"}
+    capture = tmp_path / "synthetic_room"
+    capture.mkdir()
+    (capture / "clip.mp4").write_bytes(b"")
+
+    widths = []
+    for coverage in (1.0, 0.25):
+        pipeline = VideoPipeline()
+        pipeline.input_manifest_sha256 = "0" * 64
+        built = plan_from_cloud(points, normals, path, np.linspace(0, 6, len(path)), len(path),
+                                capture, "video", config, 0, pipeline,
+                                IntervalBudget(coverage=coverage), YawSnapModel({"applied": True, "per_chunk": []}),
+                                warnings=[], assumptions=[])
+        widths.append(max(w.length_m.width for w in built.plan.rooms[0].walls))
+    assert widths[1] > widths[0]
