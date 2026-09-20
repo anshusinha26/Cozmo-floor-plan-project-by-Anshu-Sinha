@@ -77,14 +77,37 @@ def _geometry(scan: StrayScan, cfg: dict, pipeline: "LidarPipeline", drift: Drif
     return cloud, levels, frame, faces, rooms
 
 
-def _mean_wall_thickness(faces) -> float:
+def _mean_wall_thickness(cloud, levels, frame, faces, cfg) -> float:
     """Mean point spread about each wall face: the direct read-out of pose drift.
 
-    A perfectly registered scan puts every point of one wall on one plane. Drift
-    smears it, so this number falls when drift correction works.
+    A perfectly registered scan puts every point of one wall on one plane, so
+    drift shows up as a thicker face. The spread is measured over a wide 8 cm
+    band, not the narrow band the face was fitted in, because a narrow band
+    cannot show a smear larger than itself.
     """
-    vals = [f.resid_std for f in faces if f.n_points > 0]
+    sel = wall_points(cloud, levels, cfg)
+    if not sel.any():
+        return 0.0
+    xz = frame.to_frame(cloud.points[sel][:, [0, 2]])
+    nrm = frame.rotate_normals(cloud.normals[sel])
+    vals = []
+    for f in faces:
+        if not f.is_structural(cfg["wall"]["wall_min_top_m"]):
+            continue
+        a_lo, a_hi = f.extent()
+        belongs = (np.abs(nrm[:, 0]) >= np.abs(nrm[:, 2])) if f.axis == 0 else (np.abs(nrm[:, 2]) > np.abs(nrm[:, 0]))
+        near = belongs & (np.abs(xz[:, f.axis] - f.pos) <= 0.08) & \
+               (xz[:, 1 - f.axis] >= a_lo) & (xz[:, 1 - f.axis] <= a_hi)
+        if near.sum() >= 200:
+            vals.append(float(np.std(xz[near, f.axis])))
     return float(np.mean(vals)) if vals else 0.0
+
+
+def _closed_union(polys, bridge: float = 0.25):
+    """Union of room polygons, closed across wall thickness so the property is one outline."""
+    merged = unary_union(polys)
+    closed = merged.buffer(bridge, join_style=2).buffer(-bridge, join_style=2)
+    return closed if not closed.is_empty else merged
 
 
 def _footprint(rooms) -> tuple[list[tuple[float, float]], float, float]:
@@ -96,13 +119,13 @@ def _footprint(rooms) -> tuple[list[tuple[float, float]], float, float]:
     for i in range(len(polys)):
         for j in range(i + 1, len(polys)):
             overlap += polys[i].intersection(polys[j]).area
-    merged = unary_union(polys)
-    if merged.geom_type == "MultiPolygon":
-        merged = max(merged.geoms, key=lambda g: g.area)
-    ring = [(float(x), float(y)) for x, y in merged.exterior.coords[:-1]]
+    closed = _closed_union(polys)
+    area = float(closed.area)
+    outline = max(closed.geoms, key=lambda g: g.area) if closed.geom_type == "MultiPolygon" else closed
+    ring = [(float(x), float(y)) for x, y in outline.exterior.coords[:-1]]
     if not SPoly(ring).exterior.is_ccw:
         ring = ring[::-1]
-    return ring, float(merged.area), float(overlap)
+    return ring, area, float(overlap)
 
 
 class LidarPipeline(Pipeline):
@@ -111,6 +134,7 @@ class LidarPipeline(Pipeline):
 
     def __init__(self) -> None:
         super().__init__()
+        self.cfg: dict[str, Any] = {}
         self.debug_dir: Path | None = None
         self.drift_report: dict[str, Any] | None = None
         self.debug_images: list[str] = []
@@ -119,6 +143,7 @@ class LidarPipeline(Pipeline):
         if tier != "lidar":
             raise ValueError(f"LidarPipeline only handles the lidar tier, got {tier!r}")
         cfg = config["pipeline"]["lidar"]
+        self.cfg = cfg
         drift_on = bool(config.get("run", {}).get("drift_correction", True))
         scan = StrayScan(Path(input_path), "lidar")
         warnings: list[str] = []
@@ -159,13 +184,14 @@ class LidarPipeline(Pipeline):
         return plan
 
     def _build_drift_report(self, raw, corrected, model: DriftModel, drift_on: bool) -> dict[str, Any]:
+        """Footprint area and wall thickness with and without correction, plus the model summary."""
         out = {}
         for name, geom in (("drift_off", raw), ("drift_on", corrected)):
-            _, _, _, faces, rooms = geom
+            cloud, levels, frame, faces, rooms = geom
             ring, area, overlap = _footprint(rooms.rooms)
             out[name] = {
                 "footprint_area_m2": area,
-                "mean_wall_thickness_m": _mean_wall_thickness(faces),
+                "mean_wall_thickness_m": _mean_wall_thickness(cloud, levels, frame, faces, self.cfg),
                 "n_rooms": len(rooms.rooms),
                 "n_wall_faces": len(faces),
                 "room_overlap_m2": overlap,
@@ -202,7 +228,10 @@ class LidarPipeline(Pipeline):
         out_rooms: list[Room] = []
         surfaces: list[Surface] = []
         contract_openings: dict[str, list[Opening]] = {}
-        opening_ids: dict[int, str] = {}
+        # A doorway is shared by two rooms but belongs to a different wall in
+        # each, and contract opening ids are globally unique, so each side gets
+        # its own entity. Adjacency points at the first side reported.
+        opening_ids: dict[tuple[str, int], str] = {}
 
         for room in rooms.rooms:
             poly = np.array(room.polygon_frame)
@@ -254,7 +283,7 @@ class LidarPipeline(Pipeline):
                 wall = self._wall_for_opening(walls, frame, o)
                 if wall is None:
                     continue
-                oid = opening_ids.setdefault(id(o), f"o{len(opening_ids) + 1}")
+                oid = opening_ids.setdefault((room.id, id(o)), f"{room.id}_o{len(room_openings) + 1}")
                 unc = cfg["uncertainty"]
                 half_w = max(1.96 * np.hypot(cfg["opening"]["bin_m"] / 2, unc["depth_scale_bias"] * o.width_m),
                              unc["abs_floor_m"])
@@ -308,8 +337,14 @@ class LidarPipeline(Pipeline):
             seen.add(key)
             via = None
             for o in openings:
-                if set(o.room_ids) == set(key) and opening_ids.get(id(o)) in known_openings:
-                    via = opening_ids[id(o)]
+                if set(o.room_ids) != set(key):
+                    continue
+                for side in key:
+                    cand = opening_ids.get((side, id(o)))
+                    if cand in known_openings:
+                        via = cand
+                        break
+                if via:
                     break
             adj.append(Adjacency(room_a=key[0], room_b=key[1], via_opening_id=via))
 
