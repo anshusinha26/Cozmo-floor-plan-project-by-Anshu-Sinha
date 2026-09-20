@@ -130,6 +130,11 @@ def plan_from_cloud(points: np.ndarray, normals: np.ndarray, camera_path: np.nda
         warnings.append("Mirror and glass rejection is not available in this build, so a wardrobe "
                         "mirror can still read as a wall")
     rooms = segment_rooms(cloud, levels, frame, faces, cfg)
+    if not rooms.rooms:
+        raise ValueError(
+            f"no room segmented from {len(points)} points: {len(faces)} wall faces from "
+            f"{int(sel.sum())} wall points, {len(camera_path)} camera poses. Either too little "
+            f"of the room registered or the floor was never seen from enough of it")
     openings = find_openings(cloud, levels, frame, faces, rooms, cfg)
     adjacency = adjacency_from_openings(openings)
 

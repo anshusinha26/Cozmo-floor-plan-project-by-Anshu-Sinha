@@ -37,7 +37,10 @@ ffmpeg applies a container rotation tag by itself, so phone video comes out
 upright with no help and `--video-rotation auto` (the default) is correct for
 it. Stray Scanner's `rgb.mp4` carries no tag and needs `--video-rotation 90`;
 `benchmarks/captures.yaml` carries a `video_rotation` field per capture so
-`cozmo bench` does not need the flag.
+`cozmo bench` does not need the flag. No video capture is registered there yet:
+`cozmo bench` runs every entry, `tests/test_runner.py` runs `cozmo bench`, and a
+video entry would put a multi-minute reconstruction inside the test suite. The
+entries belong with the ground-truth files when those land.
 
 Of the five own-capture clips, four carry a `-90` tag and one, `bedroom_1`,
 carries none and is genuinely landscape. Both come out upright under `auto`.
@@ -125,9 +128,11 @@ and one multiplier sits on top.
 * **Chunk disagreement.** When several chunks reach the output, their scales
   spread about the group median, and no single number removes that.
 
-**Coverage.** If less than 60% of the decoded video reached the output, every
-interval is multiplied by 1.6 and the plan warns that it should be read as a
-fragment. A plan built from a third of a room is not entitled to the same
+**Coverage.** If less than 60% of the frames the tier kept reached the output,
+every interval is multiplied by 1.6 and the plan warns that it should be read as
+a fragment. The denominator is kept frames, not decoded frames: the blur filter
+drops a fifth by design, so a share of decoded frames can never pass 80% and
+would trip the gate on a healthy run. Both numbers are reported. A plan built from a third of a room is not entitled to the same
 interval as one built from all of it.
 
 Nothing here makes a fragment accurate. It makes the number honest about what

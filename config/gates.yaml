@@ -137,6 +137,9 @@ pipeline:
       max_frames: 12            # Depth Pro frames per chunk, chosen by SfM conditioning
     bridge:
       overlap_frames: 4
+      overlap_window_s: 2.0     # the 4 frames are spread over this many seconds, so the
+                                # similarity fit has a baseline to pin a scale with
+      min_span_m: 0.20          # below this camera span the fit cannot pin a scale at all
       max_rms_m: 0.12           # alignment residual allowed on each side of a bridge
       max_rms_frac: 0.25        # or this share of the overlap's camera span, whichever is larger
       max_scale_disagreement: 0.15

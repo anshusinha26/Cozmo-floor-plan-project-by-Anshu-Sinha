@@ -82,9 +82,9 @@ def biggest_room(plan: dict) -> dict | None:
 
 
 def per_clip_table(runs: list[dict]) -> str:
-    cols = ["clip", "share of video", "chunks kept", "group", "bridges ok/rejected",
-            "scale m per SfM unit", "runtime s", "rooms", "walls", "openings",
-            "footprint m2", "plan.png"]
+    cols = ["clip", "share of video", "share of kept frames", "chunks kept", "group",
+            "bridges ok/rejected", "scale m per SfM unit", "runtime s", "rooms", "walls",
+            "openings", "footprint m2", "plan.png"]
     rows = ["| " + " | ".join(cols) + " |", "|" + "---|" * len(cols)]
     for r in runs:
         v = r.get("video", {})
@@ -98,6 +98,7 @@ def per_clip_table(runs: list[dict]) -> str:
         cells = [
             r["name"],
             f"{cov.get('share_of_video', 0):.0%}" if cov else "?",
+            f"{cov.get('share_of_kept_frames', 0):.0%}" if cov.get("share_of_kept_frames") else "-",
             str(sfm.get("chunks_kept", "?")),
             str(len(group)),
             f"{br.get('n_accepted', '?')}/{br.get('n_rejected', '?')}",

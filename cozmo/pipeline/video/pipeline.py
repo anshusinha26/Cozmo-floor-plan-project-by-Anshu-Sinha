@@ -104,6 +104,7 @@ class VideoPipeline(Pipeline):
                 result.chunks, fs, device, overlap_frames=bcfg["overlap_frames"],
                 max_rms_m=bcfg["max_rms_m"], max_rms_frac=bcfg["max_rms_frac"],
                 max_scale_disagreement=bcfg["max_scale_disagreement"],
+                overlap_window_s=bcfg["overlap_window_s"], min_span_m=bcfg["min_span_m"],
                 time_box_s=bcfg["time_box_s"])
         if br.timed_out:
             warnings.append("Chunk bridging hit its time box; the plan uses only what was bridged "
@@ -150,10 +151,37 @@ class VideoPipeline(Pipeline):
                                min_depth_m=cfg["dense"]["min_depth_m"],
                                max_depth_m=cfg["dense"]["max_depth_m"])
 
+        if self.debug_dir is not None:
+            # Dumped before assembly, so a run that fails to find a room can be
+            # diagnosed from the cloud it failed on instead of being re-run.
+            np.savez_compressed(Path(self.debug_dir) / "fused_cloud.npz",
+                                points=cloud.points.astype(np.float32),
+                                normals=cloud.normals.astype(np.float32),
+                                camera_path=cloud.camera_path.astype(np.float32),
+                                camera_times=cloud.camera_times.astype(np.float32))
+
         group_frames = sum(len(result.chunks[i]) for i in br.group)
-        coverage = group_frames / max(fs.n_decoded, 1)
-        budget = build_budget(scale_rows, br.group, coverage, cfg)
+        # Two denominators, for two questions. The blur filter drops a fifth of
+        # the frames by design, so the share of decoded frames can never pass
+        # 80% and is the wrong thing to gate on; the share of the frames the
+        # tier actually kept measures how much of the capture registered and
+        # bridged, which is what the interval widening is about.
+        share_kept = group_frames / max(len(fs), 1)
+        share_decoded = group_frames / max(fs.n_decoded, 1)
+        budget = build_budget(scale_rows, br.group, share_kept, cfg)
         warnings.extend(budget.warnings())
+
+        self.report = {
+            "video": fs.summary(), "sfm": result.summary(), "scale": scale_rows,
+            "bridge": br.summary(), "dense": build.stats,
+            "coverage": {"group_chunks": br.group, "frames_in_group": group_frames,
+                         "frames_decoded": fs.n_decoded, "frames_kept": len(fs),
+                         "share_of_kept_frames": round(share_kept, 4),
+                         "share_of_video": round(share_decoded, 4)},
+            "device": device, "interval_budget": budget.summary(),
+        }
+        if self.debug_dir is not None:
+            self._write_report()
 
         with self.stage("assemble"):
             built = plan_from_cloud(cloud.points, cloud.normals, cloud.camera_path,
@@ -166,24 +194,22 @@ class VideoPipeline(Pipeline):
                                  "method": gravity.method,
                                  "seed_angle_deg": round(gravity.seed_angle_deg, 3),
                                  "inlier_fraction": round(gravity.inlier_fraction, 3)}}
-        self.report = {
-            "video": fs.summary(), "sfm": result.summary(), "scale": scale_rows,
-            "bridge": br.summary(), "dense": build.stats, "geometry": built.detail,
-            "coverage": {"group_chunks": br.group, "frames_in_group": group_frames,
-                         "frames_decoded": fs.n_decoded, "frames_kept": len(fs),
-                         "share_of_video": round(coverage, 4)},
-            "device": device, "stage_timings_s": dict(self.stage_timings_s),
-        }
+        self.report["geometry"] = built.detail
+        self.report["stage_timings_s"] = dict(self.stage_timings_s)
         if self.debug_dir is not None:
             with self.stage("debug"):
                 self._write_debug(built.geometry)
-            (Path(self.debug_dir) / "video_report.json").write_text(
-                json.dumps(self.report, indent=2, default=_jsonable) + "\n", encoding="utf-8")
-        log.info("video tier done: %d room(s), %.0f%% of the video covered, %.1f s",
-                 len(plan.rooms), 100 * coverage, sum(self.stage_timings_s.values()))
+            self._write_report()
+        log.info("video tier done: %d room(s), %.0f%% of the decoded video covered "
+                 "(%.0f%% of the frames kept), %.1f s", len(plan.rooms), 100 * share_decoded,
+                 100 * share_kept, sum(self.stage_timings_s.values()))
         return plan
 
     # ------------------------------------------------------------------
+    def _write_report(self) -> None:
+        (Path(self.debug_dir) / "video_report.json").write_text(
+            json.dumps(self.report, indent=2, default=_jsonable) + "\n", encoding="utf-8")
+
     def _write_debug(self, geometry) -> None:
         from cozmo.lidar.debug import write_debug_images
 
