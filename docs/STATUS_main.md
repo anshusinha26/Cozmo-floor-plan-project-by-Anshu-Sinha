@@ -240,3 +240,42 @@ Done.
 
 Failures and open items: none. The tests use tiny generated fixtures, so they
 run without the gitignored data.
+
+## Stage D (task 6): documents and the reproduction bundle
+
+Done.
+
+* `docs/capture_protocol.md`: one page, three routes, each ending in the exact
+  command. Written for someone with no technical knowledge: which phone, which
+  lens, what height, how far from the wall, how long, and a "what to avoid"
+  list. The LiDAR route names Stray Scanner and says plainly that without
+  tilting up to catch the ceiling, ceiling height falls back to a 2.2 to 3.2 m
+  prior.
+* `docs/device_matrix.md`: capture hardware by processing hardware by tier.
+  Both Android phones are listed with what each captured and the file facts
+  read from the captures themselves. Video and photo accuracy cells read
+  "pending loop 2 results" and carry no invented numbers. The LiDAR row states
+  that no tape ground truth exists for the supplied scans and gives the
+  cross-capture agreement instead: 1.9 cm face placement, 56% and 37% face
+  coverage, 0 of 153 on the strict gate.
+* **No iPhone was available for capture**, stated in the device matrix. Every
+  LiDAR result comes from the three supplied scans, so the LiDAR capture route
+  in the protocol has been written from the format and the data and not walked
+  through on our own device.
+* `README.md`: clone to first plan in under 15 minutes, one command per
+  capture, weights and data by script, what is and is not implemented, the two
+  third-party models with their Apache 2.0 licences, and AI coding assistance
+  disclosed in one line.
+* Reproduction bundle: `scripts/fetch_weights.sh`, `scripts/fetch_sample_data.sh`
+  and `scripts/regenerate_all.sh`, which rebuilds every reported number and has
+  a `--quick` mode that skips the parts needing model weights.
+* `docs/compliance_matrix.md` refreshed. Every file path in it was checked to
+  exist; none are missing.
+
+Failures and open items: the technical report is still spread across
+`STATUS_main.md`, `fix_loop/POSTMORTEM.md` and `docs/damage_eval/README.md`
+rather than bound into one document, and the compliance matrix says so.
+`scripts/fetch_sample_data.sh` needs `COZMO_DATA_URL` set to the shared Drive
+folder; it refuses with instructions rather than failing silently.
+
+Tests: 168 passing.

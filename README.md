@@ -1,208 +1,125 @@
 # Cozmo
 
-Pipeline scaffold that turns handheld phone captures of interior spaces into a
-dimensioned, stitched floor plan with damage annotations. Three input tiers
-(photo, video, LiDAR) share one output contract. Accuracy is graded against
-tape and laser ground truth, and every reported dimension carries a calibrated
-confidence interval.
+Turns a handheld phone capture of an interior into a dimensioned, stitched
+floor plan with damage annotations. Three input tiers (photo, video, LiDAR)
+share one output contract. Every reported dimension carries a confidence
+interval, and the evaluation harness scores those intervals as well as the
+numbers.
 
-This repository holds the output contract, the CLI, the input convention, the
-ground-truth format, the evaluation harness (matching, gates, calibration,
-repeatability), a PNG renderer and a stub pipeline. It contains no computer
-vision and no ML dependencies. Everything runs CPU-only and offline.
-
-## Install
+## Install and first run, under 15 minutes
 
 Requires Python 3.11 and [uv](https://docs.astral.sh/uv/).
 
 ```bash
-uv sync            # creates .venv and installs locked dependencies
-uv run pytest      # run the test suite
+git clone <this repo> && cd Cozmo-floor-plan-project-by-Anshu-Sinha
+uv sync                          # about 2 minutes
+uv run pytest -q                 # about 2 minutes, no data or weights needed
+scripts/fetch_sample_data.sh     # capture data, gitignored (see the script)
+uv run cozmo run --input data/sample/c00a170fe1 --tier lidar --out runs/first
 ```
 
-Without uv:
+That last command writes `plan.json`, `plan.png`, `run_manifest.json`,
+`drift_report.json` and a `debug/` folder, and takes 4 to 28 seconds
+depending on the scan.
+
+Damage detection needs model weights, which are fetched once and never
+downloaded during a run:
 
 ```bash
-python3.11 -m venv .venv && source .venv/bin/activate
-pip install -e . pytest
+scripts/fetch_weights.sh         # about 1.9 GB, 3 to 5 minutes
 ```
 
-## Input convention
+Reconstruction itself needs no weights and no network.
 
-| tier | input |
-|---|---|
-| photo | a directory with one subfolder per room (the room id), each with 2 or more images (jpg, jpeg, png, heic) |
-| video | one Stray Scanner scan folder; only `rgb.mp4` may be read |
-| lidar | one Stray Scanner scan folder covering the whole property; the pipeline segments rooms itself |
-
-A Stray Scanner scan folder holds `rgb.mp4` (1920x1440, 60 fps),
-`depth/NNNNNN.png` (256x192 uint16 millimetres), `confidence/NNNNNN.png`
-(0, 1, 2), `odometry.csv` and `camera_matrix.csv`.
-
-Tier isolation is enforced in code, not by convention: every file access goes
-through a check that refuses files the tier may not read, and the run manifest
-hashes only those files. A photo input that looks like a scan folder is
-rejected, because `depth/` holds png files that would otherwise pass as room
-photos.
-
-## Run
+## One command per capture
 
 ```bash
-# LiDAR tier: the real reconstruction
-uv run cozmo run --input data/sample/c00a170fe1 --tier lidar --out runs/c00a170fe1 \
-    [--config config/gates.yaml] [--seed 0] [--drift-correction on|off] [--pipeline stub]
+uv run cozmo run --input <path> --tier photo|video|lidar --out <dir> \
+    [--config config/gates.yaml] [--seed 0] [--drift-correction on|off] \
+    [--segmentation erosion|cells] [--pipeline stub]
+```
 
-# Photo and video tiers: still the stub, which says so in warnings
-uv run cozmo run --input benchmarks/captures/EXAMPLE --tier photo --out runs/EXAMPLE
+The rest of the commands:
 
-# Evaluate one plan or a directory of runs against ground truth
-uv run cozmo eval --pred runs/EXAMPLE/plan.json --truth benchmarks/ground_truth/EXAMPLE.yaml --out evals/EXAMPLE
-
-# Run and evaluate every capture in the registry
-uv run cozmo bench --set benchmarks/captures.yaml --out bench
-
-# Draw an existing plan
-uv run cozmo render --plan runs/EXAMPLE/plan.json --out runs/EXAMPLE
-
-# Publish the JSON Schema for plan.json
+```bash
+uv run cozmo eval   --pred <plan.json|dir> --truth <ground_truth.yaml|dir> --out <dir>
+uv run cozmo bench  --set benchmarks/captures.yaml --out <dir>
+uv run cozmo render --plan <plan.json> --out <dir>
 uv run cozmo schema --out schema/plan.schema.json
 ```
 
-`run` writes `plan.json`, `plan.png` and `run_manifest.json` into `--out`. A
-LiDAR run also writes `drift_report.json` and `debug/` (density map, wall
-faces, room masks, openings).
-The plan is byte-identical for the same input, config and seed. The manifest
-records SHA-256 of every input file, the resolved config and its hash, git
-commit, seed, per-stage timings and library versions.
+`scripts/regenerate_all.sh` rebuilds every number in this repository.
 
-`eval` writes `eval.json` and `eval.md`: gate pass/fail table, matching
-counts (matched / missed / phantom), per-room error tables, calibration
-table by tier and quantity, repeatability table and the ceiling-height
-diagnosis label. `bench` runs every registry capture, evaluates them together
-(so repeat captures feed the spread and repeatability gates) and writes
-`benchmark.md` with per-capture timing from each `run_manifest.json`.
+## Capturing your own property
 
-## Ground truth
+Follow [docs/capture_protocol.md](docs/capture_protocol.md). It is one page
+and assumes no technical knowledge. The short version: LiDAR route if you have
+an iPhone Pro, otherwise one video loop per room at chest height on the 1x
+lens.
 
-One YAML per capture in `benchmarks/ground_truth/`, listed in
-`benchmarks/captures.yaml`. Walls are listed clockwise starting from the wall
-with the main door. `EXAMPLE.yaml` holds obviously fake values so the
-harness can run end to end; replace with tape or laser readings.
+## What is implemented
 
-## LiDAR reconstruction
+| area | state |
+|---|---|
+| Output contract, JSON schema, no bare dimensions anywhere | done |
+| CLI, run manifest, byte-identical reruns | done |
+| Input handling for photo, video and LiDAR, including HEIC and .mov | done |
+| **LiDAR reconstruction**: floor, ceiling, walls, rooms, openings, adjacency, drift correction, uncertainty | done, accuracy unverified |
+| Renderer, debug images | done |
+| Ground truth format, hand-measured captures, benchmark registry | done |
+| Evaluation: matching, eight gates, calibration, repeatability, cross-capture registration | done |
+| Damage detection, concealed-damage rules, scope items | done, precision is poor on photos |
+| Head-to-head comparison scaffold | done, our column pending |
 
-Classical geometry only. No machine learning, no open3d. Stages:
+## What is not implemented
 
-1. **Fuse** every 10th depth frame, keeping confidence 2 and depth 0.2 to
-   4.5 m. Normals come from the depth image itself and are oriented toward
-   the camera. Voxel downsample to 2 cm.
-2. **Levels.** Floor and ceiling are histogram peaks of near-vertical-normal
-   points, refined by a trimmed plane fit. Ceiling height is measured per
-   grid cell. Where the ceiling covers under 15% of floor cells, a 2.2 to
-   3.2 m prior is emitted with method `prior_no_ceiling_observed` and a
-   warning, rather than a number invented from a few points.
-3. **Manhattan frame.** Wall normal azimuths collapse modulo 90 degrees into
-   one dominant direction; rotating by it makes wall fitting two 1D problems.
-   Recorded in the plan's assumptions.
-4. **Wall faces.** Histogram peaks along each axis, extents from occupancy
-   runs. A face whose points stop below 1.6 m is furniture, not wall.
-5. **Rooms.** Two methods, picked with `--segmentation`:
-   * `cells` (default): wall faces become grid lines, the lines cut the plan
-     into cells, and two cells are separated only where the edge between them
-     carries wall support in the 1.0 to 1.6 m band. Rooms under 80% supported
-     are flagged partially observed with doubled intervals.
-   * `erosion` (the original): free space from seen floor and the walked
-     path, eroded by half a metre, watershed back.
+* **Photo and video reconstruction.** Both tiers validate their input and then
+  run the stub, which says so loudly in `warnings`. They are being built
+  separately.
+* **Accuracy against tape for any tier.** The LiDAR scans have no tape ground
+  truth. Tape readings exist for five hand-measured rooms, but no tier
+  produces plans for them yet.
+* **Cross-capture repeatability.** The gate fails. One fix loop was run and
+  did not fix it; see [fix_loop/POSTMORTEM.md](fix_loop/POSTMORTEM.md).
+* **Damage detection at usable precision.** Clean on a LiDAR capture, 9 false
+  regions in a photographed room with 2 marks. See
+  [docs/damage_eval/README.md](docs/damage_eval/README.md).
 
-   On the sample captures neither is repeatable across two scans of one
-   property. See `fix_loop/POSTMORTEM.md`; the recommendation there is to
-   default to `erosion` until the cell method's footprint inflation is fixed.
-6. **Openings.** Gaps in wall occupancy between 0.3 and 1.9 m that free space
-   crosses on both sides. Height from lintel points, or a prior with a
-   warning. Windows are not attempted, and a warning says so.
-7. **Adjacency** from openings joining two rooms.
-8. **Drift correction** (`--drift-correction on|off`, default on). Per
-   5 second chunk: yaw against the global Manhattan axes, floor height
-   offset, then a 1D shift onto the global wall faces. Estimates beyond the
-   configured limits are rejected. `drift_report.json` carries footprint area
-   and mean wall thickness for both settings.
+## Where the numbers are
 
-   Re-measured under the wall-driven segmentation: mean wall thickness is
-   32.1 mm without correction and 35.8 mm with it on `1a8384c3f6`, and 32.5
-   against 32.6 mm on `c7d28f72c6`. Correction does not reduce the smear on
-   these captures, because the estimated corrections are small to begin with
-   (mean yaw error 0.55 to 1.57 degrees, mean height error 3 to 8 mm). It is
-   left on by default because it costs a second pass and does no harm, but
-   it is not earning its keep on this data.
-9. **Uncertainty.** Wall length intervals combine each bounding face's
-   position error (residual spread over an effective sample size that counts
-   0.25 m patches, not 2 cm points) with a 1% depth scale bias and a 1 cm
-   floor. Areas propagate from the lengths.
+| document | what it holds |
+|---|---|
+| [docs/STATUS_main.md](docs/STATUS_main.md) | running status, newest stage last |
+| [docs/device_matrix.md](docs/device_matrix.md) | what ran on what, and what each tier delivers |
+| [docs/damage_eval/README.md](docs/damage_eval/README.md) | damage precision, filter by filter |
+| [docs/compliance_matrix.md](docs/compliance_matrix.md) | every requirement against a real file |
+| [fix_loop/](fix_loop/) | the repeatability fix loop, including its negative result |
+| [docs/schema.md](docs/schema.md) | the output contract |
 
-### Known limitations of the LiDAR path
+## Third-party models and licences
 
-* Room segmentation is not repeatable across two captures of one property.
-  Under the erosion method the two sample apartment scans produce 8 and 10
-  rooms; under the wall-driven cell complex they produce 6 and 9. The
-  cross-capture repeatability gate fails under both, at 0 rows within
-  tolerance. One fix loop has been run and did not fix it; see
-  `fix_loop/POSTMORTEM.md` for what remains.
-* The cell method inflates footprint area, because a room with an unobserved
-  side is closed at the edge of what was seen. 86.6 m2 and 64.7 m2 against a
-  flat of roughly 75 m2.
-* No scan has ground truth for room count or room size. `c00a170fe1` is not
-  one closed room: the camera path crosses two or three partly scanned
-  spaces with unobserved sides. Any earlier text treating its camera-path
-  extent as a room size was wrong.
-* Accuracy is unverified. There is no tape ground truth for the sample scans,
-  so `bench` reports outputs, runtime and self-consistency only.
-* Damage detection does not exist. LiDAR plans emit empty damage lists and a
-  warning.
+| model | used for | licence |
+|---|---|---|
+| [OWLv2](https://huggingface.co/google/owlv2-base-patch16-ensemble) `google/owlv2-base-patch16-ensemble` | open-vocabulary damage detection | Apache 2.0 |
+| [SigLIP](https://huggingface.co/google/siglip-base-patch16-224) `google/siglip-base-patch16-224` | crop verifier that rejects false detections | Apache 2.0 |
 
-## Evaluation design
+No other model weights are used. Reconstruction is classical geometry: numpy,
+scipy, OpenCV, shapely, scikit-image. There is no trained model anywhere in
+the measurement path, so nothing in a reported dimension came from a network.
 
-* Rooms match by id. Walls match by cyclic order: every rotation and both
-  directions are tried, lowest total length error wins, openings break ties
-  on symmetric rooms. Openings match by centre position within 0.5 m on the
-  matched wall. Nothing is dropped: unmatched entities are counted.
-* Gate denominators include missed and phantom entities, so predicting less
-  cannot raise a score.
-* Calibration is scored separately: coverage against the nominal 95%, mean
-  interval width as % of value, and a "confident garbage" count (truth
-  outside the interval and interval narrower than the median for that
-  quantity).
-* Thresholds live in `config/gates.yaml`. The LiDAR wall budget is marked
-  PROVISIONAL.
+Python dependencies and their licences are resolved by `uv sync` from
+`pyproject.toml`.
 
-## Output contract
+## Data
 
-See [docs/schema.md](docs/schema.md). The one rule: no dimension is ever a
-bare float. Every `*_m`, `*_m2`, `*_deg` key holds a `Measurement` with
-`value`, `ci_low`, `ci_high`, `unit`, `method` and `ci_level`.
+Capture data lives in `data/` and is gitignored: it is large, and the supplied
+LiDAR scans are not ours to redistribute. `scripts/fetch_sample_data.sh`
+retrieves it. Everything else, including every test, runs without it.
 
-## Status
+## AI coding assistance
 
-See [docs/compliance_matrix.md](docs/compliance_matrix.md) for the full
-requirement table.
-
-| area | status |
-|------|--------|
-| Measurement type and validation | done |
-| Plan output models, referential integrity, schema export | done |
-| CLI `run` and `schema`, run manifest, byte-identical reruns | done |
-| Input convention validation (photo, video, lidar) | done |
-| Stub pipeline (hand-written two-room plan, loudly marked) | done |
-| Ground-truth format and benchmark registry | done (EXAMPLE values fake) |
-| Entity matching (rooms by id, walls cyclic, openings by offset) | done |
-| Gates, calibration, repeatability | done |
-| `cozmo eval`, `cozmo bench`, eval.json, eval.md, benchmark.md | done |
-| Renderer (`plan.png`) | done |
-| Compliance matrix | done |
-| Drift correction and ablation report | done, lidar tier |
-| LiDAR reconstruction (Stray Scanner scans) | done, accuracy unverified |
-| Photo and video reconstruction | not started, both use the stub |
-
-The stub pipeline ignores input content. Its plan is marked with
-`"STUB PIPELINE: NOT A REAL RECONSTRUCTION"` in `warnings`, a WARNING log line
-on every run, red text on the rendered PNG, and a banner in eval.md and
-benchmark.md. It must never be read as a result.
+This repository was written with AI coding assistance (Claude). Every design
+decision, threshold and reported number was reviewed and, where it mattered,
+re-measured by the author; the negative results in `fix_loop/` and
+`docs/damage_eval/` are reported as they came out rather than as they were
+predicted.

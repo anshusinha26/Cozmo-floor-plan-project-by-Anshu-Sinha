@@ -37,12 +37,12 @@ exists yet, so every accuracy row is scored on the stub only.
 | Drift ablation (--drift-correction on vs off) | cozmo/lidar/drift.py, cozmo/pipeline/lidar.py | drift_report.json: footprint area and mean wall thickness for both settings | done for the lidar tier |
 | Head-to-head (tiers or pipelines on the same space) | benchmarks/captures.yaml, cozmo/eval/runner.py | same space_id across captures in one bench | partial: harness groups by space_id; no second pipeline to compare |
 | Fix loop bundle (eval.md pasted back for iteration) | cozmo/eval/runner.py | eval.md | done |
-| Capture protocol (how to film each tier) | docs/ | protocol document | not started |
+| Capture protocol (how to film each tier) | docs/capture_protocol.md | one-page protocol, three routes, each ending in the exact command | done |
 | Device matrix (phones tested per tier) | docs/device_matrix.md, benchmarks/captures.yaml device field | matrix document, device recorded per capture | done |
-| Reproduction bundle (inputs, config, seed, manifest, outputs) | cozmo/cli.py, cozmo/io/manifest.py | run_manifest.json with hashes, versions, commit | done for a single run; no packaging script |
-| Technical report | docs/ | report | not started |
+| Reproduction bundle (inputs, config, seed, manifest, outputs) | scripts/regenerate_all.sh, scripts/fetch_weights.sh, scripts/fetch_sample_data.sh, cozmo/io/manifest.py | one command rebuilds every reported number; run_manifest.json carries hashes, versions and commit | done |
+| Technical report | docs/STATUS_main.md, fix_loop/POSTMORTEM.md, docs/damage_eval/README.md | running status plus the two measured write-ups | partial: no single bound report yet |
 | Raw data (captures and tape measurements) | data/sample/ (gitignored), benchmarks/captures.yaml | three iPhone LiDAR scans registered with truth null | partial: captures exist, tape measurements do not |
-| Mirrors, glass, wet-look and low-light coverage | benchmarks/captures.yaml | flagged captures in registry | not started; registry has no scene-condition flags yet |
+| Mirrors, glass, wet-look and low-light coverage | cozmo/damage/filters.py, docs/damage_eval/README.md | glass and mirror returns handled by the geometry and multi-view filters; measured on the scan with the shower screen | partial: handled and measured for damage, no scene-condition flags in the registry |
 
 ## Added in the LiDAR reconstruction task
 
@@ -77,3 +77,17 @@ exists yet, so every accuracy row is scored on the stub only.
 | Partially observed rooms flagged | cozmo/lidar/cells.py, cozmo/pipeline/lidar.py | perimeter support under 80%, intervals doubled | done |
 | Fix loop artifacts | fix_loop/ | DECLARATION.md with addendum, before/, after/, evidence/, experiments/, DIFF.md, POSTMORTEM.md, regenerate.sh | done |
 | Cross-capture repeatability gate passing | cozmo/eval/gates.py | 0 of 153 rows within tolerance | NOT DONE, see fix_loop/POSTMORTEM.md |
+
+## Added in the precision, robustness and documents pass
+
+| requirement | file path | artifact | status |
+|---|---|---|---|
+| Damage precision filters, measured individually | cozmo/damage/filters.py, scripts/damage_ablation.py | ablation table per filter and per threshold | done: 63 to 9 false regions on photos, 106 to 0 on LiDAR |
+| Distractor prompts | cozmo/damage/detector.py | 14 everyday lookalikes competing with the damage prompts | done; measured effect is small |
+| Crop verifier | cozmo/damage/filters.py | SigLIP zero-shot check on each surviving crop | done; the filter that does most of the work |
+| iPhone input robustness | cozmo/io/inputs.py, tests/test_iphone_inputs.py | HEIC, .mov, .hevc, mixed case, sidecar files, any scan folder name | done |
+| Clear input error messages | cozmo/io/inputs.py | every rejection names what was found and what is accepted | done |
+| Capture protocol | docs/capture_protocol.md | one page, three routes, what to avoid | done |
+| Device matrix | docs/device_matrix.md | capture hardware by processing hardware by tier | done; video and photo accuracy cells marked pending, never invented |
+| README, install to first run under 15 minutes | README.md | quickstart, licences, AI disclosure | done |
+| Reproduction bundle | scripts/regenerate_all.sh and the two fetch scripts | rebuilds every reported number | done |
