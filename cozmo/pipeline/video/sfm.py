@@ -17,6 +17,7 @@ never imports torch.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import logging
 import shutil
@@ -33,6 +34,11 @@ log = logging.getLogger(__name__)
 
 class SfmError(RuntimeError):
     pass
+
+
+def frames_digest(names: list[str]) -> str:
+    """Identifies the exact frame set a reconstruction was built from."""
+    return hashlib.sha256("\n".join(sorted(names)).encode()).hexdigest()[:16]
 
 
 @dataclass
@@ -96,8 +102,12 @@ class SfmResult:
 # --------------------------------------------------------------------------
 
 def _reconstruct(image_dir: Path, out_dir: Path, overlap: int, max_image_size: int,
-                 min_images: int, times_json: Path | None) -> dict:
+                 min_images: int, times_json: Path | None, seed: int, deterministic: bool) -> dict:
     import pycolmap
+
+    # The mapper is randomised (initial pair trials, RANSAC) and threaded, so
+    # both have to be pinned or the same clip splits differently on two runs.
+    pycolmap.set_random_seed(seed)
 
     out_dir = Path(out_dir)
     if out_dir.exists():
@@ -123,12 +133,23 @@ def _reconstruct(image_dir: Path, out_dir: Path, overlap: int, max_image_size: i
     pair.overlap = overlap
     pair.quadratic_overlap = True
     pair.loop_detection = False
-    pycolmap.match_sequential(database_path=db, pairing_options=pair)
+    fm = pycolmap.FeatureMatchingOptions()
+    if deterministic:
+        # Geometric verification is RANSAC per pair and COLMAP gives each worker
+        # its own generator, so a global seed is not enough on its own.
+        fm.num_threads = 1
+        pair.num_threads = 1
+    pycolmap.match_sequential(database_path=db, matching_options=fm, pairing_options=pair)
     timings["match"] = time.perf_counter() - t0
 
     t0 = time.perf_counter()
     opts = pycolmap.IncrementalPipelineOptions()
     opts.ba_refine_principal_point = False
+    opts.random_seed = seed
+    opts.mapper.random_seed = seed
+    if deterministic:
+        opts.num_threads = 1
+        opts.mapper.num_threads = 1
     recs = pycolmap.incremental_mapping(database_path=db, image_path=image_dir,
                                         output_path=out_dir / "models", options=opts)
     timings["mapping"] = time.perf_counter() - t0
@@ -176,7 +197,8 @@ def _reconstruct(image_dir: Path, out_dir: Path, overlap: int, max_image_size: i
                  times_s=c["times"], obs_uv=c["uv"], obs_z=c["z"], obs_off=c["off"], xyz=c["xyz"],
                  cam_params=c["params"], cam_wh=c["wh"], mean_reproj_err_px=np.array(c["err"]))
     index = {"n_images": len(names_all), "n_models_found": len(recs), "model_sizes": sizes,
-             "n_chunks": len(kept), "min_images": min_images,
+             "n_chunks": len(kept), "min_images": min_images, "seed": seed,
+             "deterministic": deterministic, "frames_digest": frames_digest(names_all),
              "timings_s": {k: round(v, 2) for k, v in timings.items()}}
     (out_dir / "sfm.json").write_text(json.dumps(index, indent=2) + "\n")
     return index
@@ -190,10 +212,14 @@ def _main(argv: list[str] | None = None) -> int:
     ap.add_argument("--max-image-size", type=int, default=1600)
     ap.add_argument("--min-images", type=int, default=15)
     ap.add_argument("--times-json", default=None)
+    ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--nondeterministic", action="store_true",
+                    help="let the mapper use every core; faster, and not regenerable")
     a = ap.parse_args(argv)
     logging.basicConfig(level=logging.INFO, stream=sys.stderr)
     index = _reconstruct(Path(a.images), Path(a.out), a.overlap, a.max_image_size,
-                         a.min_images, Path(a.times_json) if a.times_json else None)
+                         a.min_images, Path(a.times_json) if a.times_json else None,
+                         a.seed, not a.nondeterministic)
     print(json.dumps(index))
     return 0
 
@@ -219,16 +245,35 @@ def load_chunks(out_dir: Path) -> list[SfmChunk]:
 
 def run_sfm(image_dir: Path, out_dir: Path, times_s: dict[str, float] | None = None,
             overlap: int = 10, max_image_size: int = 1600, min_images: int = 15,
+            seed: int = 0, deterministic: bool = True, reuse: bool = True,
             timeout_s: float = 3600.0) -> SfmResult:
     """Run COLMAP in a child interpreter and load the chunks it wrote.
 
     The subprocess exists because pycolmap and torch cannot share a process.
+
+    ``deterministic`` pins every seed and thread count the library exposes. On
+    pycolmap 4.2 that is still not enough: two runs of one clip come back with
+    the same chunk sizes but camera centres up to 6% of the chunk extent apart,
+    which is a structurally different reconstruction rather than solver noise.
+    So the reconstruction is cached as well. ``reuse`` loads an existing one
+    whose frame digest matches, which is what makes a run regenerable and what
+    lets a before-and-after comparison be about the change rather than about two
+    draws from the mapper.
     """
     out_dir = Path(out_dir)
+    if reuse:
+        cached = _load_cached(out_dir, image_dir)
+        if cached is not None:
+            log.info("reusing the cached reconstruction in %s (%d chunks)", out_dir,
+                     len(cached.chunks))
+            return cached
     out_dir.parent.mkdir(parents=True, exist_ok=True)
     args = [sys.executable, "-m", "cozmo.pipeline.video.sfm", "--images", str(image_dir),
             "--out", str(out_dir), "--overlap", str(overlap),
-            "--max-image-size", str(max_image_size), "--min-images", str(min_images)]
+            "--max-image-size", str(max_image_size), "--min-images", str(min_images),
+            "--seed", str(seed)]
+    if not deterministic:
+        args.append("--nondeterministic")
     if times_s:
         tj = out_dir.parent / "frame_times.json"
         tj.write_text(json.dumps(times_s))
@@ -245,6 +290,28 @@ def run_sfm(image_dir: Path, out_dir: Path, times_s: dict[str, float] | None = N
     if not chunks:
         raise SfmError(f"no COLMAP sub-model reached {min_images} images "
                        f"(sizes found: {index['model_sizes']})")
+    return SfmResult(chunks=chunks, n_images=index["n_images"],
+                     n_models_found=index["n_models_found"], model_sizes=index["model_sizes"],
+                     timings_s=index["timings_s"])
+
+
+def _load_cached(out_dir: Path, image_dir: Path) -> SfmResult | None:
+    """An earlier reconstruction of exactly this frame set, or None."""
+    index_path = out_dir / "sfm.json"
+    if not index_path.is_file():
+        return None
+    try:
+        index = json.loads(index_path.read_text())
+    except (OSError, json.JSONDecodeError):
+        return None
+    names = sorted(p.name for p in Path(image_dir).glob("*.jpg"))
+    if index.get("frames_digest") != frames_digest(names):
+        return None
+    chunks = load_chunks(out_dir)
+    if not chunks:
+        return None
+    index.setdefault("timings_s", {})["subprocess_wall"] = 0.0
+    index["timings_s"]["reused"] = True
     return SfmResult(chunks=chunks, n_images=index["n_images"],
                      n_models_found=index["n_models_found"], model_sizes=index["model_sizes"],
                      timings_s=index["timings_s"])

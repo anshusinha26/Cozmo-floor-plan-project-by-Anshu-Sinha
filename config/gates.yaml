@@ -133,6 +133,10 @@ pipeline:
       overlap: 10
       max_image_size: 1600
       min_chunk_images: 15      # every sub-model this size or larger is kept, not just the largest
+      deterministic: true       # pin every seed and thread count pycolmap exposes
+      reuse_reconstruction: true  # reuse an existing reconstruction of the same frames.
+                                # pycolmap 4.2 is not bit-reproducible even fully pinned, so
+                                # the cache is what actually makes a run regenerable
     scale:
       max_frames: 12            # Depth Pro frames per chunk, chosen by SfM conditioning
     bridge:

@@ -88,7 +88,9 @@ class VideoPipeline(Pipeline):
             result = sfm_mod.run_sfm(fs.dir, work / "sfm",
                                      times_s={n: float(t) for n, t in zip(fs.names, fs.times_s)},
                                      overlap=scfg["overlap"], max_image_size=scfg["max_image_size"],
-                                     min_images=scfg["min_chunk_images"])
+                                     min_images=scfg["min_chunk_images"], seed=seed,
+                                     deterministic=scfg.get("deterministic", True),
+                                     reuse=scfg.get("reuse_reconstruction", True))
         if result.registered < 0.25 * len(fs):
             warnings.append(f"COLMAP registered only {result.registered} of {len(fs)} frames "
                             f"({result.registered / max(len(fs), 1):.0%}); the plan rests on a minority "
