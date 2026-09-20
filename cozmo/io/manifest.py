@@ -49,14 +49,17 @@ def list_input_files(input_path: Path) -> list[Path]:
     return files
 
 
-def build_input_manifest(input_path: Path) -> dict[str, Any]:
+def build_input_manifest(input_path: Path, files: list[Path] | None = None) -> dict[str, Any]:
     """Per-file SHA-256 plus a manifest-level SHA-256 over the (path, sha) list.
 
     The manifest hash ignores absolute location: paths are relative to the input
-    root (or just the file name for a single file).
+    root (or just the file name for a single file). ``files`` restricts the
+    manifest to the files a tier may read, so provenance respects tier isolation.
     """
     input_path = Path(input_path)
-    files = list_input_files(input_path)
+    files = sorted(files) if files is not None else list_input_files(input_path)
+    if not files:
+        raise ValueError(f"no files to hash under {input_path}")
     root = input_path if input_path.is_dir() else input_path.parent
     entries = []
     for f in files:

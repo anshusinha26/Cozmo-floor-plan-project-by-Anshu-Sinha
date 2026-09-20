@@ -94,14 +94,18 @@ def execute_run(input_path: Path, tier: str, out: Path, config: Path, seed: int,
         raise FileNotFoundError(f"input not found: {input_path}")
     if not config.exists():
         raise FileNotFoundError(f"config not found: {config}")
-    rooms = validate_input(input_path, tier)
-    logging.getLogger("cozmo.cli").info("input ok: %d room folder(s): %s", len(rooms), ", ".join(r.room_id for r in rooms))
+    spec = validate_input(input_path, tier)
+    if spec.rooms is not None:
+        logging.getLogger("cozmo.cli").info("input ok: %d room folder(s): %s", len(spec.rooms), ", ".join(r.room_id for r in spec.rooms))
+    else:
+        logging.getLogger("cozmo.cli").info("input ok: scan folder with %d readable file(s) for tier %s", len(spec.files), tier)
 
     resolved = resolve_config(config, drift_correction, DEFAULT_PIPELINE)
     config_hash = prov.config_sha256(resolved)
-    input_manifest = prov.build_input_manifest(input_path)
+    input_manifest = prov.build_input_manifest(input_path, spec.files)
 
     pipeline = get_pipeline(DEFAULT_PIPELINE)
+    pipeline.input_manifest_sha256 = input_manifest["sha256"]
     started = _now()
     plan = pipeline.run(input_path, tier, resolved, seed)
     finished = _now()
