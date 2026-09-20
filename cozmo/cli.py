@@ -27,7 +27,9 @@ from cozmo import __version__
 from cozmo.contracts.export_schema import write_schema
 from cozmo.contracts.models import Plan, Renders
 from cozmo.io import manifest as prov
+from cozmo.io.ground_truth import GroundTruth, load_ground_truth, load_registry
 from cozmo.io.inputs import InputError, validate_input
+from cozmo.eval.runner import evaluate, write_eval
 from cozmo.pipeline import DEFAULT_PIPELINE, get_pipeline
 from cozmo.render.plan import render_plan_png
 
@@ -83,40 +85,31 @@ def resolve_config(config_path: Path, drift_correction: bool, pipeline_name: str
     return cfg
 
 
-@app.command()
-def run(
-    input_path: Path = typer.Option(..., "--input", help="Capture file or directory"),
-    tier: TierOpt = typer.Option(..., "--tier", help="Input tier: photo, video or lidar"),
-    out: Path = typer.Option(..., "--out", help="Output directory"),
-    config: Path = typer.Option(DEFAULT_CONFIG, "--config", help="Gate and matching config"),
-    seed: int = typer.Option(0, "--seed"),
-    drift_correction: Switch = typer.Option(Switch.on, "--drift-correction"),
-) -> None:
-    """Run the pipeline on one capture and write plan.json plus run_manifest.json."""
-    if not input_path.exists():
-        _fail(f"input not found: {input_path}")
-    if not config.exists():
-        _fail(f"config not found: {config}")
+def execute_run(input_path: Path, tier: str, out: Path, config: Path, seed: int, drift_correction: bool) -> dict[str, Any]:
+    """Run one capture: validate input, run the pipeline, write plan.json, plan.png, run_manifest.json.
 
-    try:
-        rooms = validate_input(input_path, tier.value)
-    except InputError as e:
-        _fail(str(e))
+    Raises InputError / FileNotFoundError on bad input. Returns the manifest dict.
+    """
+    if not input_path.exists():
+        raise FileNotFoundError(f"input not found: {input_path}")
+    if not config.exists():
+        raise FileNotFoundError(f"config not found: {config}")
+    rooms = validate_input(input_path, tier)
     logging.getLogger("cozmo.cli").info("input ok: %d room folder(s): %s", len(rooms), ", ".join(r.room_id for r in rooms))
 
-    resolved = resolve_config(config, drift_correction == Switch.on, DEFAULT_PIPELINE)
+    resolved = resolve_config(config, drift_correction, DEFAULT_PIPELINE)
     config_hash = prov.config_sha256(resolved)
     input_manifest = prov.build_input_manifest(input_path)
 
     pipeline = get_pipeline(DEFAULT_PIPELINE)
     started = _now()
-    plan = pipeline.run(input_path, tier.value, resolved, seed)
+    plan = pipeline.run(input_path, tier, resolved, seed)
     finished = _now()
 
     if plan.capture.input_manifest_sha256 != input_manifest["sha256"]:
-        _fail("pipeline and CLI disagree on input manifest hash")
+        raise RuntimeError("pipeline and CLI disagree on input manifest hash")
     if plan.run.config_sha256 != config_hash:
-        _fail("pipeline and CLI disagree on config hash")
+        raise RuntimeError("pipeline and CLI disagree on config hash")
 
     out.mkdir(parents=True, exist_ok=True)
     with pipeline.stage("render"):
@@ -128,7 +121,7 @@ def run(
 
     manifest = {
         "capture_id": plan.capture.id,
-        "tier": tier.value,
+        "tier": tier,
         "input": input_manifest,
         "config": {"path": str(config), "sha256": config_hash, "resolved": resolved},
         "git": {"commit": prov.git_commit(), "dirty": prov.git_dirty()},
@@ -143,34 +136,145 @@ def run(
         "platform": platform.platform(),
         "outputs": {"plan": plan_path.name, "plan_png": "plan.png"},
         "plan_sha256": prov.sha256_bytes(plan_bytes),
+        "n_rooms": len(plan.rooms),
         "warnings": list(plan.warnings),
     }
     (out / "run_manifest.json").write_text(
         json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
     )
+    return manifest
 
-    typer.echo(f"wrote {plan_path} ({len(plan.rooms)} rooms) and {out / 'run_manifest.json'}")
-    for w in plan.warnings:
+
+@app.command()
+def run(
+    input_path: Path = typer.Option(..., "--input", help="Capture directory: one subfolder per room"),
+    tier: TierOpt = typer.Option(..., "--tier", help="Input tier: photo, video or lidar"),
+    out: Path = typer.Option(..., "--out", help="Output directory"),
+    config: Path = typer.Option(DEFAULT_CONFIG, "--config", help="Gate and matching config"),
+    seed: int = typer.Option(0, "--seed"),
+    drift_correction: Switch = typer.Option(Switch.on, "--drift-correction"),
+) -> None:
+    """Run the pipeline on one capture and write plan.json, plan.png and run_manifest.json."""
+    try:
+        manifest = execute_run(input_path, tier.value, out, config, seed, drift_correction == Switch.on)
+    except (InputError, FileNotFoundError, RuntimeError) as e:
+        _fail(str(e))
+    typer.echo(f"wrote {out / 'plan.json'} ({manifest['n_rooms']} rooms), plan.png and run_manifest.json")
+    for w in manifest["warnings"]:
         typer.echo(f"warning: {w}", err=True)
+
+
+def _collect_plans(pred: Path) -> list[Path]:
+    if pred.is_file():
+        return [pred]
+    return sorted(pred.rglob("plan.json"))
+
+
+def _collect_truths(truth: Path) -> dict[str, GroundTruth]:
+    files = [truth] if truth.is_file() else sorted(list(truth.glob("*.yaml")) + list(truth.glob("*.yml")))
+    out: dict[str, GroundTruth] = {}
+    for f in files:
+        gt = load_ground_truth(f)
+        if gt.capture_id in out:
+            raise ValueError(f"duplicate ground truth for capture {gt.capture_id!r}: {f}")
+        out[gt.capture_id] = gt
+    return out
+
+
+def _pair_plans_with_truth(plan_paths: list[Path], truths: dict[str, GroundTruth]) -> list[tuple[Plan, GroundTruth]]:
+    pairs = []
+    for p in plan_paths:
+        plan = Plan.from_json_bytes(p.read_bytes())
+        gt = truths.get(plan.capture.id)
+        if gt is None:
+            raise KeyError(f"no ground truth for capture {plan.capture.id!r} (from {p}); have {sorted(truths)}")
+        pairs.append((plan, gt))
+    return pairs
+
+
+def run_eval(pred: Path, truth: Path, out: Path, config: Path) -> dict[str, Any]:
+    cfg = prov.load_config(config)
+    plan_paths = _collect_plans(pred)
+    if not plan_paths:
+        raise FileNotFoundError(f"no plan.json under {pred}")
+    pairs = _pair_plans_with_truth(plan_paths, _collect_truths(truth))
+    result = evaluate(pairs, cfg)
+    result["config"] = {"path": str(config), "sha256": prov.config_sha256(cfg)}
+    write_eval(result, out)
+    return result
 
 
 @app.command()
 def eval(
     pred: Path = typer.Option(..., "--pred", help="plan.json or directory of runs"),
-    truth: Path = typer.Option(..., "--truth", help="ground_truth.yaml or directory"),
+    truth: Path = typer.Option(..., "--truth", help="ground_truth.yaml or directory of them"),
     out: Path = typer.Option(..., "--out"),
+    config: Path = typer.Option(DEFAULT_CONFIG, "--config"),
 ) -> None:
     """Evaluate predictions against ground truth; writes eval.json and eval.md."""
-    _not_implemented("eval", "sections 5-7, 10")
+    try:
+        result = run_eval(pred, truth, out, config)
+    except (FileNotFoundError, KeyError, ValueError) as e:
+        _fail(str(e).strip('"'))
+    s = result["summary"]
+    typer.echo(f"wrote {out / 'eval.json'} and {out / 'eval.md'}: {s['n_passed']}/{s['n_gates']} gates passed, "
+               f"ceiling diagnosis {s['ceiling_height_diagnosis']}")
+
+
+def _bench_md(entries, manifests: dict[str, dict[str, Any]], result: dict[str, Any], eval_md: str) -> str:
+    md = ["# Benchmark report", "", f"Captures: {len(entries)}. cozmo {__version__}.", ""]
+    if result["summary"]["stub_output"]:
+        md += ["**WARNING: plans came from the STUB PIPELINE. Timings and scores describe the harness, not a reconstruction.**", ""]
+    md += ["## Captures", "", "| capture | space | tier | repeat_of | multi_room | rooms | duration_s | stages (s) | plan sha256 |",
+           "|---|---|---|---|---|---|---|---|---|"]
+    for e in entries:
+        m = manifests[e.capture_id]
+        stages = ", ".join(f"{k} {v:.3f}" for k, v in m["stage_timings_s"].items())
+        md.append(f"| {e.capture_id} | {e.space_id} | {e.tier} | {e.repeat_of or ''} | {e.multi_room} | {m['n_rooms']} | "
+                  f"{m['duration_s']:.3f} | {stages} | {m['plan_sha256'][:12]} |")
+    md += ["", "## Gate summary", "", "| gate | result | value | threshold | n |", "|---|---|---|---|---|"]
+    for g in result["gates"]:
+        md.append(f"| {g['name']} | {'PASS' if g['passed'] else 'FAIL'} | {g['value']:.4f} | {g['threshold']:.4f} | {g['n']} |")
+    md += ["", "---", "", eval_md]
+    return "\n".join(md)
 
 
 @app.command()
 def bench(
     set_path: Path = typer.Option(..., "--set", help="benchmarks/captures.yaml"),
     out: Path = typer.Option(..., "--out"),
+    config: Path = typer.Option(DEFAULT_CONFIG, "--config"),
+    seed: int = typer.Option(0, "--seed"),
 ) -> None:
-    """Run and evaluate every capture in a benchmark registry."""
-    _not_implemented("bench", "section 4 and 10")
+    """Run and evaluate every capture in a registry; writes runs/, eval.json, eval.md, benchmark.md."""
+    if not set_path.exists():
+        _fail(f"registry not found: {set_path}")
+    registry = load_registry(set_path)
+    base = set_path.resolve().parent.parent  # registry paths are relative to the repo root
+    resolve = lambda p: Path(p) if Path(p).is_absolute() else base / p  # noqa: E731
+
+    manifests: dict[str, dict[str, Any]] = {}
+    pairs: list[tuple[Plan, GroundTruth]] = []
+    for e in registry.captures:
+        run_dir = out / "runs" / e.capture_id
+        try:
+            manifests[e.capture_id] = execute_run(resolve(e.input), e.tier, run_dir, config, seed, True)
+        except (InputError, FileNotFoundError, RuntimeError) as ex:
+            _fail(f"{e.capture_id}: {ex}")
+        plan = Plan.from_json_bytes((run_dir / "plan.json").read_bytes())
+        gt = load_ground_truth(resolve(e.ground_truth))
+        if gt.capture_id != e.capture_id:
+            _fail(f"{e.capture_id}: ground truth file says capture_id {gt.capture_id!r}")
+        pairs.append((plan, gt))
+
+    cfg = prov.load_config(config)
+    result = evaluate(pairs, cfg)
+    result["config"] = {"path": str(config), "sha256": prov.config_sha256(cfg)}
+    _, md_path = write_eval(result, out)
+    (out / "benchmark.md").write_text(_bench_md(registry.captures, manifests, result, md_path.read_text(encoding="utf-8")), encoding="utf-8")
+    s = result["summary"]
+    typer.echo(f"wrote {out / 'benchmark.md'}: {len(pairs)} captures, {s['n_passed']}/{s['n_gates']} gates passed, "
+               f"ceiling diagnosis {s['ceiling_height_diagnosis']}")
 
 
 @app.command()

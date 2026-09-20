@@ -112,16 +112,3 @@ def test_run_rejects_bad_layout(tmp_path):
 def test_run_rejects_missing_input(tmp_path):
     result = runner.invoke(app, ["run", "--input", str(tmp_path / "nope"), "--tier", "photo", "--out", str(tmp_path / "o")])
     assert result.exit_code != 0
-
-
-@pytest.mark.parametrize(
-    "args",
-    [
-        ["eval", "--pred", "x.json", "--truth", "y.yaml", "--out", "o"],
-        ["bench", "--set", "benchmarks/captures.yaml", "--out", "o"],
-    ],
-)
-def test_unimplemented_commands_fail_loudly(args):
-    result = runner.invoke(app, args)
-    assert result.exit_code == 2
-    assert "not implemented" in result.output.lower()
