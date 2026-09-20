@@ -323,3 +323,98 @@ and a reader with pandoc will get a better-looking document from the same
 source. The technical report row in the compliance matrix is now `done`.
 
 Tests: 168 passing.
+
+## Task 8: walk-in rehearsal, hazards, publish hygiene
+
+Done.
+
+### Stage A: clean-machine rehearsal
+
+`docs/rehearsal.md`. Fresh clone into a temporary directory, README followed
+literally, every step timed.
+
+**Clone to first plan: 2 minutes 51 seconds**, including the optional test
+run, against a 15-minute target. Breakdown: clone 0.5 s, `uv sync` on a cold
+cache 11.2 s, tests 43.5 s, the real Drive download of all three scans 96.4 s,
+first plan 19.0 s. The largest scan takes 33.5 s.
+
+A run with the network off, proxy pointed at a dead port and `HF_HUB_OFFLINE`
+set, completed in 5.6 s and produced a **byte-identical** plan. Nothing calls
+out at run time.
+
+**Four real failures were found by rehearsing, and all four are fixed:**
+
+1. A test asserted the hand-measured capture folders exist, but `data/` is
+   gitignored, so it failed on any fresh clone.
+2. `scripts/fetch_sample_data.sh` needed `gdown`, which `uv sync` did not
+   install, so a stranger hit a dead end two steps into the README.
+3. That script passed `--remaining-ok`, a flag gdown 6 removed, so the
+   download failed with a usage error.
+4. **torch and transformers were never declared in `pyproject.toml`.** They
+   had been installed by hand during development, so `uv sync` on a clean
+   clone produced a venv where `scripts/fetch_weights.sh` failed on
+   `No module named 'transformers'`. Fixed with a `damage` extra; the README
+   now says `uv sync --extra damage`.
+
+Only the fourth needed a design decision: the damage dependencies are now an
+optional extra, because reconstruction genuinely does not need them.
+
+### Stage B: hazards
+
+`docs/hazards.md`, one section each with evidence or an explicit gap.
+
+* **Glass**: 16% of wall-face length outside the room envelope on two scans,
+  but that measure over-counts because the envelope comes from the polygons
+  under test. The visibility test puts it near 1%. For damage, the filters
+  take the shower-screen scan from 106 regions to 0.
+* **Mirrors**: no number. The bedroom_2 captures could not be re-read (see
+  below). The pipeline does nothing specific about mirrors; stated as a gap.
+* **Glossy floors**: floor plane residual 10 to 13 mm, still a single sharp
+  peak; the trimmed plane fit discards the reflection population.
+* **Low light**: LiDAR is active sensing and does not depend on room light,
+  and the reconstruction never reads the RGB stream at all. For the image
+  detector, measured on gamma-darkened frames: detection volume is flat from
+  150.6 to 65.5 mean brightness.
+* **A moving dog, textureless white walls, a ceiling never observed**: each
+  with what breaks and what the pipeline does.
+
+**Blocked measurement, stated rather than worked around.** `data/own` became
+unreadable partway through this session: the files carry
+`com.apple.quarantine` and every read returns `Operation not permitted`, while
+`data/sample` is unaffected. So whether the staged stain and crack survive
+darkening is marked PENDING with the one command that answers it. Results
+already derived from those photos stand and are unaffected. Nothing was
+substituted silently.
+
+### Stage C: publish hygiene
+
+| check | result |
+|---|---|
+| absolute `/Users/` paths in tracked files | 0, four run logs scrubbed and `fix_loop/regenerate.sh` now scrubs as it writes |
+| tracked files over 5 MB | 0 |
+| secrets or tokens | none found |
+| `data/` tracked | 0 files; fully ignored |
+| `.DS_Store` tracked | removed, and now ignored along with other editor noise |
+| LICENSE | added, MIT |
+| THIRD_PARTY.md | added |
+
+`THIRD_PARTY.md` lists every model, library, tool and dataset with its licence
+and use, including the one copyleft dependency (pillow-heif, LGPL, used
+unmodified through its public API) and the models evaluated and rejected.
+
+`docs/MERGE_PLAN.md` names the eight files both branches touched, what each
+side did to them, and how each should resolve. The one needing care is
+`cozmo/io/inputs.py`, where both branches independently extended the same two
+functions; the resolution is a union, and video-tier's more forgiving `_photo`
+should win with main's error text inside it. `cozmo/pipeline/__init__.py`
+takes video-tier whole, since it is a strict superset.
+
+**Nothing was merged.**
+
+Failures and open items: the cold-cache timing for the model weights was
+attempted twice and neither attempt produced a clean number, so
+`docs/rehearsal.md` quotes the measured download sizes (OWLv2 1.2 GB, SigLIP
+1.5 GB) and no time. The `data/own` permission problem above blocks one hazard
+measurement.
+
+Tests: 168 passing.

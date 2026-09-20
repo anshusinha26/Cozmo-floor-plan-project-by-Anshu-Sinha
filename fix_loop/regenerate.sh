@@ -29,6 +29,13 @@ mkdir -p "$OUT"
 "$PY" -m cozmo.cli bench --set benchmarks/captures.yaml --out "$RUN" --seed 0 \
   --segmentation "$SEG" 2>"$OUT/bench.log" | tee "$OUT/bench.stdout"
 
+# Logs are committed, so the machine they were produced on must not be.
+for f in "$OUT/bench.log" "$OUT/bench.stdout"; do
+  [ -f "$f" ] || continue
+  sed -i '' -e "s#$ROOT/##g" -e "s#$ROOT#.#g" "$f" 2>/dev/null ||
+    sed -i -e "s#$ROOT/##g" -e "s#$ROOT#.#g" "$f"
+done
+
 {
   echo "side: $SIDE"
   echo "segmentation: $SEG"

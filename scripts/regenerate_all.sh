@@ -40,6 +40,9 @@ rm -rf fix_loop/experiments/ghost_only/runs
 "$PY" fix_loop/experiments/ghost_only/run.py >/dev/null
 echo "wrote fix_loop/experiments/ghost_only/result.json"
 
+step "Technical report PDF"
+scripts/build_report.sh
+
 step "Head to head against AR Plan 3D"
 "$PY" scripts/head_to_head.py --out docs/head_to_head.md >/dev/null
 echo "wrote docs/head_to_head.md"

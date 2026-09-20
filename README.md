@@ -98,6 +98,10 @@ lens.
 | [docs/compliance_matrix.md](docs/compliance_matrix.md) | every requirement against a real file |
 | [fix_loop/](fix_loop/) | the repeatability fix loop, including its negative result |
 | [docs/schema.md](docs/schema.md) | the output contract |
+| [docs/technical_report.md](docs/technical_report.md) | the bound report, six pages |
+| [docs/capture_protocol.md](docs/capture_protocol.md) | how to capture a property |
+| [docs/hazards.md](docs/hazards.md) | mirrors, glass, glossy floors, low light and the rest |
+| [docs/rehearsal.md](docs/rehearsal.md) | clone to first plan, timed on a fresh machine |
 
 ## Third-party models and licences
 
@@ -118,6 +122,12 @@ Python dependencies and their licences are resolved by `uv sync` from
 Capture data lives in `data/` and is gitignored: it is large, and the supplied
 LiDAR scans are not ours to redistribute. `scripts/fetch_sample_data.sh`
 retrieves it. Everything else, including every test, runs without it.
+
+## Licence
+
+MIT, see [LICENSE](LICENSE). Every third-party model, library and dataset,
+with its licence and what it is used for, is listed in
+[THIRD_PARTY.md](THIRD_PARTY.md).
 
 ## AI coding assistance
 

@@ -1,7 +1,7 @@
 INFO cozmo.cli: input ok: 2 room folder(s): hall, living
-WARNING cozmo.pipeline.stub: STUB PIPELINE: NOT A REAL RECONSTRUCTION (input=/Users/anshusinha/Downloads/Cozmo-AI/Cozmo-floor-plan-project-by-Anshu-Sinha/benchmarks/captures/EXAMPLE, tier=photo, seed=0)
+WARNING cozmo.pipeline.stub: STUB PIPELINE: NOT A REAL RECONSTRUCTION (input=benchmarks/captures/EXAMPLE, tier=photo, seed=0)
 INFO cozmo.cli: input ok: 2 room folder(s): hall, living
-WARNING cozmo.pipeline.stub: STUB PIPELINE: NOT A REAL RECONSTRUCTION (input=/Users/anshusinha/Downloads/Cozmo-AI/Cozmo-floor-plan-project-by-Anshu-Sinha/benchmarks/captures/EXAMPLE_REPEAT, tier=photo, seed=0)
+WARNING cozmo.pipeline.stub: STUB PIPELINE: NOT A REAL RECONSTRUCTION (input=benchmarks/captures/EXAMPLE_REPEAT, tier=photo, seed=0)
 INFO cozmo.cli: input ok: scan folder with 3434 readable file(s) for tier lidar
 INFO cozmo.cli: input ok: scan folder with 10506 readable file(s) for tier lidar
 INFO cozmo.cli: input ok: scan folder with 19494 readable file(s) for tier lidar
