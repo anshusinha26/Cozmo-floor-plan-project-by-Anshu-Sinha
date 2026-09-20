@@ -30,7 +30,7 @@ from cozmo.io import manifest as prov
 from cozmo.io.ground_truth import GroundTruth, load_ground_truth, load_registry
 from cozmo.io.inputs import InputError, validate_input
 from cozmo.eval.runner import evaluate, write_eval
-from cozmo.pipeline import DEFAULT_PIPELINE, get_pipeline
+from cozmo.pipeline import get_pipeline, pipeline_for
 from cozmo.render.plan import render_plan_png
 
 app = typer.Typer(
@@ -85,7 +85,8 @@ def resolve_config(config_path: Path, drift_correction: bool, pipeline_name: str
     return cfg
 
 
-def execute_run(input_path: Path, tier: str, out: Path, config: Path, seed: int, drift_correction: bool) -> dict[str, Any]:
+def execute_run(input_path: Path, tier: str, out: Path, config: Path, seed: int, drift_correction: bool,
+                pipeline_name: str | None = None, debug: bool = True) -> dict[str, Any]:
     """Run one capture: validate input, run the pipeline, write plan.json, plan.png, run_manifest.json.
 
     Raises InputError / FileNotFoundError on bad input. Returns the manifest dict.
@@ -100,12 +101,16 @@ def execute_run(input_path: Path, tier: str, out: Path, config: Path, seed: int,
     else:
         logging.getLogger("cozmo.cli").info("input ok: scan folder with %d readable file(s) for tier %s", len(spec.files), tier)
 
-    resolved = resolve_config(config, drift_correction, DEFAULT_PIPELINE)
+    name = pipeline_for(tier, pipeline_name)
+    resolved = resolve_config(config, drift_correction, name)
     config_hash = prov.config_sha256(resolved)
     input_manifest = prov.build_input_manifest(input_path, spec.files)
 
-    pipeline = get_pipeline(DEFAULT_PIPELINE)
+    pipeline = get_pipeline(name)
     pipeline.input_manifest_sha256 = input_manifest["sha256"]
+    out.mkdir(parents=True, exist_ok=True)
+    if debug and hasattr(pipeline, "debug_dir"):
+        pipeline.debug_dir = out / "debug"
     started = _now()
     plan = pipeline.run(input_path, tier, resolved, seed)
     finished = _now()
@@ -115,7 +120,6 @@ def execute_run(input_path: Path, tier: str, out: Path, config: Path, seed: int,
     if plan.run.config_sha256 != config_hash:
         raise RuntimeError("pipeline and CLI disagree on config hash")
 
-    out.mkdir(parents=True, exist_ok=True)
     with pipeline.stage("render"):
         render_plan_png(plan, out / "plan.png")
     plan = plan.model_copy(update={"renders": Renders(plan_png="plan.png")})
@@ -138,11 +142,15 @@ def execute_run(input_path: Path, tier: str, out: Path, config: Path, seed: int,
         "library_versions": prov.library_versions(),
         "python_version": platform.python_version(),
         "platform": platform.platform(),
-        "outputs": {"plan": plan_path.name, "plan_png": "plan.png"},
+        "outputs": {"plan": plan_path.name, "plan_png": "plan.png",
+                    "debug": getattr(pipeline, "debug_images", []),
+                    "drift_report": "drift_report.json" if getattr(pipeline, "drift_report", None) else None},
         "plan_sha256": prov.sha256_bytes(plan_bytes),
         "n_rooms": len(plan.rooms),
         "warnings": list(plan.warnings),
     }
+    if getattr(pipeline, "drift_report", None):
+        pipeline.write_drift_report(out / "drift_report.json")
     (out / "run_manifest.json").write_text(
         json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
     )
@@ -157,11 +165,13 @@ def run(
     config: Path = typer.Option(DEFAULT_CONFIG, "--config", help="Gate and matching config"),
     seed: int = typer.Option(0, "--seed"),
     drift_correction: Switch = typer.Option(Switch.on, "--drift-correction"),
+    pipeline: str = typer.Option(None, "--pipeline", help="Force a pipeline: stub or lidar"),
 ) -> None:
     """Run the pipeline on one capture and write plan.json, plan.png and run_manifest.json."""
     try:
-        manifest = execute_run(input_path, tier.value, out, config, seed, drift_correction == Switch.on)
-    except (InputError, FileNotFoundError, RuntimeError) as e:
+        manifest = execute_run(input_path, tier.value, out, config, seed, drift_correction == Switch.on,
+                               pipeline_name=pipeline)
+    except (InputError, FileNotFoundError, RuntimeError, ValueError, KeyError) as e:
         _fail(str(e))
     typer.echo(f"wrote {out / 'plan.json'} ({manifest['n_rooms']} rooms), plan.png and run_manifest.json")
     for w in manifest["warnings"]:
@@ -263,7 +273,7 @@ def bench(
         run_dir = out / "runs" / e.capture_id
         try:
             manifests[e.capture_id] = execute_run(resolve(e.input), e.tier, run_dir, config, seed, True)
-        except (InputError, FileNotFoundError, RuntimeError) as ex:
+        except (InputError, FileNotFoundError, RuntimeError, ValueError, KeyError) as ex:
             _fail(f"{e.capture_id}: {ex}")
         plan = Plan.from_json_bytes((run_dir / "plan.json").read_bytes())
         gt = load_ground_truth(resolve(e.ground_truth))

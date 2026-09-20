@@ -117,6 +117,22 @@ class VoxelGrid:
 
 
 @dataclass
+class Chunk:
+    """A few seconds of trajectory with a subsample of its own points.
+
+    Kept during the single fusing pass so drift correction can estimate a
+    per-chunk yaw and height offset without reading every depth frame again.
+    """
+
+    t0: float
+    t1: float
+    frames: list[int]
+    centroid: np.ndarray
+    points: np.ndarray
+    normals: np.ndarray
+
+
+@dataclass
 class Cloud:
     points: np.ndarray  # (N, 3) world metres
     normals: np.ndarray  # (N, 3) unit, oriented toward the observing camera
@@ -125,6 +141,7 @@ class Cloud:
     camera_times: np.ndarray = field(default_factory=lambda: np.zeros(0))
     frame_index: np.ndarray = field(default_factory=lambda: np.zeros(0, dtype=np.int64))
     n_frames_used: int = 0
+    chunks: list["Chunk"] = field(default_factory=list)
 
     def __len__(self) -> int:
         return len(self.points)
@@ -146,7 +163,8 @@ def frame_points(frame: Frame, min_depth: float, max_depth: float) -> tuple[np.n
 
 def build_cloud(scan: StrayScan, stride: int = 10, voxel_m: float = 0.02,
                 min_depth: float = 0.2, max_depth: float = 4.5,
-                pose_fn=None, batch: int = 64) -> Cloud:
+                pose_fn=None, batch: int = 64, chunk_s: float | None = None,
+                chunk_subsample: int = 40000) -> Cloud:
     """Fuse every ``stride``-th frame into a voxel cloud.
 
     ``pose_fn(frame) -> (R, t)`` lets drift correction substitute corrected
@@ -159,6 +177,25 @@ def build_cloud(scan: StrayScan, stride: int = 10, voxel_m: float = 0.02,
     buf_p: list[np.ndarray] = []
     buf_n: list[np.ndarray] = []
     used = 0
+    chunks: list[Chunk] = []
+    cur_p: list[np.ndarray] = []
+    cur_n: list[np.ndarray] = []
+    cur_f: list[int] = []
+    cur_t: list[float] = []
+    cur_pos: list[np.ndarray] = []
+
+    def close_chunk() -> None:
+        if not cur_f:
+            return
+        pts = np.concatenate(cur_p) if cur_p else np.zeros((0, 3))
+        nrm = np.concatenate(cur_n) if cur_n else np.zeros((0, 3))
+        if len(pts) > chunk_subsample:
+            # Deterministic thinning: every kth point, no RNG.
+            step = int(np.ceil(len(pts) / chunk_subsample))
+            pts, nrm = pts[::step], nrm[::step]
+        chunks.append(Chunk(cur_t[0], cur_t[-1], list(cur_f), np.mean(cur_pos, axis=0), pts, nrm))
+        cur_p.clear(); cur_n.clear(); cur_f.clear(); cur_t.clear(); cur_pos.clear()
+
     for frame in scan.frames(stride=stride):
         if pose_fn is not None:
             frame.R, frame.t = pose_fn(frame)
@@ -170,10 +207,21 @@ def build_cloud(scan: StrayScan, stride: int = 10, voxel_m: float = 0.02,
         times.append(frame.timestamp)
         idx.append(frame.index)
         used += 1
+        if chunk_s is not None:
+            if cur_t and frame.timestamp - cur_t[0] > chunk_s:
+                close_chunk()
+            cur_f.append(frame.index)
+            cur_t.append(frame.timestamp)
+            cur_pos.append(frame.t.copy())
+            if len(p):
+                cur_p.append(p)
+                cur_n.append(n)
         if len(buf_p) >= batch:
             grid.add(np.concatenate(buf_p), np.concatenate(buf_n))
             buf_p, buf_n = [], []
     if buf_p:
         grid.add(np.concatenate(buf_p), np.concatenate(buf_n))
+    if chunk_s is not None:
+        close_chunk()
     pts, nrm, cnt = grid.result()
-    return Cloud(pts, nrm, cnt, np.array(path), np.array(times), np.array(idx, dtype=np.int64), used)
+    return Cloud(pts, nrm, cnt, np.array(path), np.array(times), np.array(idx, dtype=np.int64), used, chunks)
