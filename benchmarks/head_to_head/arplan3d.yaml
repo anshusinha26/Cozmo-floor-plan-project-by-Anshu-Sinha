@@ -1,0 +1,54 @@
+# Head-to-head against a consumer floor-plan app.
+#
+# Rival: AR Plan 3D (Grymala) on Android. One casual attempt per room, the way
+# a member of the public would use it: no retries, no tidying the room first.
+# Corners hidden behind furniture were estimated by the operator, which is the
+# app's normal failure mode rather than a handicap imposed on it.
+#
+# Recorded so the comparison is auditable: these are the numbers the app
+# displayed, not numbers derived from its export.
+
+rival:
+  name: AR Plan 3D
+  vendor: Grymala
+  platform: Android
+  protocol: one casual attempt per room, corners hidden by furniture estimated by the operator
+  screenshots_dir: data/own/app_comparision
+  captured_on: 2026-09-20
+
+# Apps considered and not compared, with the reason. Kept because "we only
+# compared against the weakest rival" is the obvious objection.
+not_compared:
+  - name: magicplan
+    reason: >-
+      Offers no camera scan on Android, so there is nothing to compare on the
+      same device. Screenshot kept in data/own/app_comparision.
+    screenshot: data/own/app_comparision/ar_plan_screenshot_info.jpeg
+
+# The app reports a room as two dimensions, not four walls, except where it
+# gave each wall separately. Values are metres.
+rooms:
+  - room_id: bedroom_1
+    screenshot: data/own/app_comparision/ar_plan_screenshot_bedroom1.jpeg
+    dimensions:
+      # The app gives one pair for the room, so each maps to the two walls of
+      # that direction. Wall A and C are the 3.6576 m pair in the tape record.
+      - {name: short_pair, value_m: 3.41, maps_to_walls: [A, C]}
+      - {name: long_pair, value_m: 3.73, maps_to_walls: [B, D]}
+  - room_id: kitchen
+    screenshot: data/own/app_comparision/ar_plan_screenshot_kitchen.jpeg
+    dimensions:
+      # The app gave each wall separately for this room.
+      - {name: short_wall_1, value_m: 2.75, maps_to_walls: [A]}
+      - {name: short_wall_2, value_m: 2.70, maps_to_walls: [C]}
+      - {name: long_wall_1, value_m: 3.51, maps_to_walls: [B]}
+      - {name: long_wall_2, value_m: 3.79, maps_to_walls: [D]}
+
+comparison:
+  # A dimension counts as a tie when the two errors against tape differ by
+  # less than this. Anything closer is not a real difference at this scale.
+  tie_threshold_m: 0.015
+  # Ours is filled once the photo and video tiers land; until then the table
+  # prints the rival against tape and leaves our column empty rather than
+  # inventing a placeholder.
+  our_source: benchmarks/captures.yaml
