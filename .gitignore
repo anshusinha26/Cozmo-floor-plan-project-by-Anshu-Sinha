@@ -5,4 +5,7 @@ __pycache__/
 *.egg-info/
 out/
 runs/
+# Fix-loop snapshots are evidence, not run output: they are committed on purpose.
+!fix_loop/**/runs/
+!fix_loop/**/runs/**
 data/

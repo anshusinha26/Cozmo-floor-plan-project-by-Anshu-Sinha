@@ -1,0 +1,48 @@
+{
+  "tier": "video",
+  "yaw_snap": {
+    "applied": true,
+    "max_yaw_deg": 6.0,
+    "per_chunk": [
+      {
+        "chunk": 2,
+        "n_wall_points": 8671,
+        "yaw_delta_deg": 0.72,
+        "rejected": null
+      },
+      {
+        "chunk": 3,
+        "n_wall_points": 1889,
+        "yaw_delta_deg": -1.247,
+        "rejected": null
+      },
+      {
+        "chunk": 4,
+        "n_wall_points": 448,
+        "yaw_delta_deg": -28.195,
+        "rejected": "yaw beyond the limit"
+      }
+    ],
+    "global_yaw_deg": 10.297
+  },
+  "applied": true,
+  "model": {
+    "method": "manhattan_yaw_snap_per_sfm_chunk",
+    "applied": true,
+    "n_chunks": 3,
+    "n_corrected": 2,
+    "yaw_deg": {
+      "mean": 0.984,
+      "max": 1.247
+    },
+    "rejected": [
+      "yaw beyond the limit"
+    ],
+    "note": ""
+  },
+  "gravity": {
+    "method": "ransac_floor_plane",
+    "seed_angle_deg": 23.371,
+    "inlier_fraction": 0.561
+  }
+}
