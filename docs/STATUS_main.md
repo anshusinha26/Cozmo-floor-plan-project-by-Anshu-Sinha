@@ -220,3 +220,23 @@ ground-truth file. EXIF make and model were stripped from the supplied photos,
 so device attribution is the operator's record and says so in the files.
 Measured from the files themselves: photos are 1200 x 1600, videos are
 3840 x 2160 H.264 at about 30 fps.
+
+## Stage C (task 6): input robustness for the walk-in test
+
+Done.
+
+* HEIC and HEIF stills are accepted and decoded through pillow-heif, which is
+  now a dependency. A real HEIC file is written and read back in the tests
+  rather than a stub.
+* `.mov`, `.m4v` and `.hevc` clips join `.mp4`.
+* Extensions are matched lower-cased, so `IMG_0001.HEIC` and `clip.MOV` work.
+* Sidecar files are ignored: iOS `.AAE` edit files and Finder's `.DS_Store`
+  no longer count as room contents.
+* A Stray Scanner export is recognised by its layout, not its folder name, so
+  a renamed scan folder still loads.
+* Error messages now name what was found and what is accepted, for example
+  "photo tier needs at least 2 images, found 1. Accepted: .heic, .heif, .jpeg,
+  .jpg, .png, any case. Folder holds: only.HEIC".
+
+Failures and open items: none. The tests use tiny generated fixtures, so they
+run without the gitignored data.

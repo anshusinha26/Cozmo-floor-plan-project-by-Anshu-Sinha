@@ -22,8 +22,12 @@ from pathlib import Path
 
 from cozmo.io.stray import StrayScan
 
-IMAGE_EXT = {".jpg", ".jpeg", ".png", ".heic"}
-VIDEO_EXT = {".mp4", ".mov", ".m4v"}
+# iPhones produce HEIC stills and HEVC .mov clips by default, and the
+# extension case depends on how the files were transferred, so everything is
+# compared lower-cased.
+IMAGE_EXT = {".jpg", ".jpeg", ".png", ".heic", ".heif"}
+VIDEO_EXT = {".mp4", ".mov", ".m4v", ".hevc"}
+KNOWN_JUNK = {".ds_store", ".thumbs.db", ".aae"}  # Finder and iOS sidecar files
 
 
 class InputError(ValueError):
@@ -46,7 +50,21 @@ class InputSpec:
 
 
 def _visible(paths):
-    return sorted(p for p in paths if not p.name.startswith("."))
+    """Sorted, skipping dotfiles and the sidecar files phones leave behind."""
+    return sorted(p for p in paths
+                  if not p.name.startswith(".") and p.suffix.lower() not in KNOWN_JUNK)
+
+
+def _describe_contents(root: Path, limit: int = 6) -> str:
+    """What is actually in a folder, for an error message that helps."""
+    try:
+        names = [p.name for p in _visible(root.iterdir())][:limit]
+    except OSError:
+        return "unreadable"
+    if not names:
+        return "empty"
+    more = "" if len(names) < limit else ", ..."
+    return ", ".join(names) + more
 
 
 def looks_like_scan(root: Path) -> bool:
@@ -73,17 +91,25 @@ def _photo(root: Path) -> InputSpec:
     if own:
         # A folder of photos is one room, named after the folder.
         if len(own) < 2:
-            raise InputError(f"room {root.name!r}: photo tier needs at least 2 images, found {len(own)}")
+            raise InputError(
+                f"room {root.name!r}: photo tier needs at least 2 images, found {len(own)}. "
+                f"Accepted: {', '.join(sorted(IMAGE_EXT))}, any case. Folder holds: "
+                f"{_describe_contents(root)}")
         rooms = [RoomInput(root.name, own)]
         return InputSpec("photo", root, own, rooms=rooms)
     subdirs = _visible(p for p in root.iterdir() if p.is_dir())
     if not subdirs:
-        raise InputError(f"no images and no room subfolders under {root}")
+        raise InputError(
+            f"no images and no room subfolders under {root}. The photo tier wants either a folder "
+            f"of 2 or more images ({', '.join(sorted(IMAGE_EXT))}, any case) or a folder of such "
+            f"folders. Folder holds: {_describe_contents(root)}")
     rooms = []
     for d in subdirs:
         imgs = _images_in(d)
         if len(imgs) < 2:
-            raise InputError(f"room {d.name!r}: photo tier needs at least 2 images, found {len(imgs)}")
+            raise InputError(
+                f"room {d.name!r}: photo tier needs at least 2 images, found {len(imgs)}. "
+                f"Folder holds: {_describe_contents(d)}")
         rooms.append(RoomInput(d.name, imgs))
     return InputSpec("photo", root, [f for r in rooms for f in r.files], rooms=rooms)
 
@@ -100,29 +126,44 @@ def _video(root: Path) -> InputSpec:
     if len(clips) == 1:
         return InputSpec("video", root, clips, rooms=[RoomInput(root.name, clips)])
     if len(clips) > 1:
-        raise InputError(f"room {root.name!r}: video tier needs exactly one clip, found {len(clips)}")
+        raise InputError(
+            f"room {root.name!r}: video tier needs exactly one clip, found {len(clips)}: "
+            f"{', '.join(p.name for p in clips)}. Put one room's clip in one folder")
     subdirs = _visible(p for p in root.iterdir() if p.is_dir())
     if not subdirs:
-        raise InputError(f"video tier needs one clip or room subfolders in {root}")
+        raise InputError(
+            f"video tier needs one clip or room subfolders in {root}. Accepted clip types: "
+            f"{', '.join(sorted(VIDEO_EXT))}, any case. Folder holds: {_describe_contents(root)}")
     rooms = []
     for d in subdirs:
         c = _clips_in(d)
         if len(c) != 1:
-            raise InputError(f"room {d.name!r}: video tier needs exactly one clip, found {len(c)}")
+            raise InputError(
+                f"room {d.name!r}: video tier needs exactly one clip, found {len(c)}. "
+                f"Folder holds: {_describe_contents(d)}")
         rooms.append(RoomInput(d.name, c))
     return InputSpec("video", root, [f for r in rooms for f in r.files], rooms=rooms)
 
 
 def _lidar(root: Path) -> InputSpec:
+    """A Stray Scanner export, whatever the folder is called.
+
+    Stray names the folder after the scan id, and people rename it. Nothing
+    here depends on the name: the layout is what identifies the format.
+    """
     if not root.is_dir():
         raise InputError(f"lidar input must be a scan folder: {root}")
     scan = StrayScan(root, "lidar")
     for name in ("odometry.csv",):
         if not (root / name).is_file():
-            raise InputError(f"lidar tier needs {name} in {root}")
+            raise InputError(
+                f"lidar tier needs {name} in {root}. This should be a Stray Scanner export folder "
+                f"holding rgb.mp4, depth/, confidence/ and odometry.csv; the folder may be named "
+                f"anything. Folder holds: {_describe_contents(root)}")
     for sub in ("depth", "confidence"):
         if not (root / sub).is_dir():
-            raise InputError(f"lidar tier needs {sub}/ in {root}")
+            raise InputError(
+                f"lidar tier needs {sub}/ in {root}. Folder holds: {_describe_contents(root)}")
     n_depth = sum(1 for p in (root / "depth").glob("*.png"))
     n_conf = sum(1 for p in (root / "confidence").glob("*.png"))
     if n_depth == 0:

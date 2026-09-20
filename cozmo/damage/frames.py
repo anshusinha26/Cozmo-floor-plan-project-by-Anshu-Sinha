@@ -16,6 +16,14 @@ from typing import Iterator
 import cv2
 import numpy as np
 
+try:  # iPhone stills are HEIC; the plugin teaches Pillow to open them.
+    import pillow_heif
+
+    pillow_heif.register_heif_opener()
+    HEIF_AVAILABLE = True
+except ImportError:  # pragma: no cover - exercised only where the wheel is missing
+    HEIF_AVAILABLE = False
+
 
 @dataclass
 class DamageFrame:
@@ -54,6 +62,13 @@ def frames_from_images(paths: list[Path], max_side: int = 1600) -> Iterator[Dama
     """Photo tier and any loose image set. No depth, so extents stay unbounded."""
     for p in sorted(paths):
         img = cv2.imread(str(p))
+        if img is None and p.suffix.lower() in (".heic", ".heif"):
+            if not HEIF_AVAILABLE:
+                raise RuntimeError(
+                    f"{p.name} is HEIC and pillow-heif is not installed; run uv sync")
+            from PIL import Image
+
+            img = np.asarray(Image.open(p).convert("RGB"))[..., ::-1].copy()
         if img is None:
             continue
         if max(img.shape[:2]) > max_side:
