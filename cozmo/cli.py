@@ -26,6 +26,7 @@ import typer
 from cozmo import __version__
 from cozmo.contracts.export_schema import write_schema
 from cozmo.io import manifest as prov
+from cozmo.io.inputs import InputError, validate_input
 from cozmo.pipeline import DEFAULT_PIPELINE, get_pipeline
 
 app = typer.Typer(
@@ -94,6 +95,12 @@ def run(
         _fail(f"input not found: {input_path}")
     if not config.exists():
         _fail(f"config not found: {config}")
+
+    try:
+        rooms = validate_input(input_path, tier.value)
+    except InputError as e:
+        _fail(str(e))
+    logging.getLogger("cozmo.cli").info("input ok: %d room folder(s): %s", len(rooms), ", ".join(r.room_id for r in rooms))
 
     resolved = resolve_config(config, drift_correction == Switch.on, DEFAULT_PIPELINE)
     config_hash = prov.config_sha256(resolved)

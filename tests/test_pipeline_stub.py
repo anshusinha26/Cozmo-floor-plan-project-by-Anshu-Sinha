@@ -14,8 +14,8 @@ from cozmo.pipeline.stub import STUB_WARNING, StubPipeline
 @pytest.fixture
 def capture_dir(tmp_path):
     d = tmp_path / "apt_living_01"
-    d.mkdir()
-    (d / "clip.mp4").write_bytes(b"not really a video")
+    (d / "living").mkdir(parents=True)
+    (d / "living" / "clip.mp4").write_bytes(b"not really a video")
     return d
 
 

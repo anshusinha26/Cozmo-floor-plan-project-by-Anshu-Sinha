@@ -24,9 +24,10 @@ runner = CliRunner()
 @pytest.fixture
 def capture_dir(tmp_path):
     d = tmp_path / "apt_living_01"
-    d.mkdir()
-    (d / "img_001.jpg").write_bytes(b"jpeg one")
-    (d / "img_002.jpg").write_bytes(b"jpeg two")
+    for room in ("living", "hall"):
+        (d / room).mkdir(parents=True)
+        (d / room / "img_001.jpg").write_bytes(b"jpeg one")
+        (d / room / "img_002.jpg").write_bytes(b"jpeg two")
     return d
 
 
@@ -59,7 +60,9 @@ def test_run_writes_plan_and_manifest(capture_dir, tmp_path):
     assert plan.capture.tier == "photo"
 
     man = json.loads(manifest_path.read_text())
-    assert [f["path"] for f in man["input"]["files"]] == ["img_001.jpg", "img_002.jpg"]
+    assert [f["path"] for f in man["input"]["files"]] == [
+        "hall/img_001.jpg", "hall/img_002.jpg", "living/img_001.jpg", "living/img_002.jpg"
+    ]
     assert all(len(f["sha256"]) == 64 for f in man["input"]["files"])
     assert man["input"]["sha256"] == plan.capture.input_manifest_sha256
     assert man["config"]["sha256"] == plan.run.config_sha256
@@ -95,6 +98,15 @@ def test_seed_and_drift_flag_are_recorded(capture_dir, tmp_path):
 def test_run_rejects_unknown_tier(capture_dir, tmp_path):
     result = runner.invoke(app, ["run", "--input", str(capture_dir), "--tier", "sonar", "--out", str(tmp_path / "o")])
     assert result.exit_code != 0
+
+
+def test_run_rejects_bad_layout(tmp_path):
+    d = tmp_path / "cap" / "living"
+    d.mkdir(parents=True)
+    (d / "only_one.jpg").write_bytes(b"x")
+    result = runner.invoke(app, ["run", "--input", str(tmp_path / "cap"), "--tier", "photo", "--out", str(tmp_path / "o"), "--config", str(CONFIG)])
+    assert result.exit_code == 1
+    assert "at least 2" in result.output
 
 
 def test_run_rejects_missing_input(tmp_path):
