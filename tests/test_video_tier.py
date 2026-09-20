@@ -395,3 +395,27 @@ def test_the_scale_gate_widens_to_the_chunks_own_measured_error():
     assert scale_standard_error(loose) > 0.08
     # A chunk with no scale frames yet must not claim a spurious precision.
     assert scale_standard_error(chunk([0.2])) == 0.0
+
+
+def test_an_impossible_camera_height_is_reported_as_a_scale_error():
+    """A monocular scale error is invisible in the plan: a room scaled by 1.9 looks
+    like a bigger room. The camera height is the one quantity with a known answer."""
+    from cozmo.pipeline.video.adapter import camera_height_check
+
+    class _Floor:
+        def height_at(self, xz):
+            return np.zeros(len(xz))
+
+    class _Levels:
+        floor = _Floor()
+
+    def path(y):
+        return np.column_stack([np.zeros(10), np.full(10, y), np.zeros(10)])
+
+    h, warn = camera_height_check(path(1.45), _Levels(), np.zeros((0, 3)))
+    assert h == pytest.approx(1.45) and warn is None
+    h, warn = camera_height_check(path(2.61), _Levels(), np.zeros((0, 3)))
+    assert h == pytest.approx(2.61) and warn and "1.8x" in warn
+    h, warn = camera_height_check(path(0.43), _Levels(), np.zeros((0, 3)))
+    assert warn and "0.3x" in warn
+    assert camera_height_check(np.zeros((0, 3)), _Levels(), np.zeros((0, 3)))[1] is None

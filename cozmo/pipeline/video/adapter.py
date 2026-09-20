@@ -95,6 +95,34 @@ class _ScanShim:
         self.root = Path(root)
 
 
+CAMERA_HEIGHT_RANGE_M = (1.1, 1.8)
+
+
+def camera_height_check(camera_path: np.ndarray, levels, points: np.ndarray) -> tuple[float, str | None]:
+    """How far the phone sat above the reconstructed floor, and whether that is possible.
+
+    Nothing in this tier measures a distance directly, so a scale error is
+    invisible in the plan itself: a room scaled by 1.9 looks like a bigger room.
+    The camera height is the one quantity with a known answer. A person carries a
+    phone somewhere between knee and eye level, and every capture here was taken
+    walking, so a reconstruction that puts the camera 0.43 m or 2.61 m above its
+    own floor has a scale error of roughly that ratio, whatever its walls say.
+    """
+    if not len(camera_path):
+        return float("nan"), None
+    floor_y = float(np.median(levels.floor.height_at(camera_path[:, [0, 2]])))
+    height = float(np.median(camera_path[:, 1]) - floor_y)
+    lo, hi = CAMERA_HEIGHT_RANGE_M
+    if lo <= height <= hi:
+        return height, None
+    factor = height / (0.5 * (lo + hi))
+    return height, (
+        f"The reconstruction puts the camera {height:.2f} m above its own floor, outside the "
+        f"{lo:.1f} to {hi:.1f} m a hand-held phone can be. Every length in this plan is likely "
+        f"off by about {factor:.1f}x, because the metric scale comes from a monocular depth "
+        f"model and nothing here measured a distance directly")
+
+
 def plan_from_cloud(points: np.ndarray, normals: np.ndarray, camera_path: np.ndarray,
                     camera_times: np.ndarray, n_frames_used: int, input_path: Path, tier: Tier,
                     config: dict[str, Any], seed: int, pipeline, budget: IntervalBudget,
@@ -129,6 +157,9 @@ def plan_from_cloud(points: np.ndarray, normals: np.ndarray, camera_path: np.nda
     elif not ghost_report.get("available", True):
         warnings.append("Mirror and glass rejection is not available in this build, so a wardrobe "
                         "mirror can still read as a wall")
+    cam_height, cam_warning = camera_height_check(camera_path, levels, points)
+    if cam_warning:
+        warnings.append(cam_warning)
     rooms = segment_rooms(cloud, levels, frame, faces, cfg)
     if not rooms.rooms:
         raise ValueError(
@@ -147,6 +178,8 @@ def plan_from_cloud(points: np.ndarray, normals: np.ndarray, camera_path: np.nda
               "n_faces": len(faces), "n_ghost_faces": len(ghosts), "ghost_report": ghost_report,
               "manhattan_yaw_deg": round(float(np.degrees(frame.yaw)), 3),
               "floor_height_m": round(float(np.median(levels.floor.height_at(cloud.points[:, [0, 2]]))), 4),
+              "camera_height_above_floor_m": None if np.isnan(cam_height) else round(cam_height, 3),
+              "camera_height_plausible": bool(cam_warning is None),
               "n_rooms": len(plan.rooms), "n_openings": sum(len(r.openings) for r in plan.rooms),
               "interval_budget": budget.summary()}
     return PlanBuild(plan=plan, detail=detail,
