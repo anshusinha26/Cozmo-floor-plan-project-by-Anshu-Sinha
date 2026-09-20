@@ -1,8 +1,8 @@
 side: after
 segmentation: cells
-commit: b062c02ff499c05b6aed9c321948fdac3e0d2185
-commit_subject: feat(lidar): segment rooms from a wall-driven cell complex
+commit: e930febd13c21eab0ceee3fe1ce7eacde20cba28
+commit_subject: fix(lidar): collapse collinear edges in cell-complex room polygons
 dirty: true
-generated_at: 2026-09-20T14:27:36Z
+generated_at: 2026-09-20T14:31:13Z
 python: Python 3.11.15
 config_sha256: e6c3d84c290bf2e94a0395331212fd5524a8e600494670779df3d6667ad80f8b
