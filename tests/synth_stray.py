@@ -147,8 +147,10 @@ def default_trajectory(scene: Scene, n_per_room: int = 24) -> list[tuple[np.ndar
                 pitch = [0.0, 0.5, -0.6, -0.3][k % 4]
                 poses.append((pos, yaw, pitch))
                 k += 1
-        for i in range(4):
-            poses.append((np.array([cx, cam_y, cz]), i * np.pi / 2, -0.5))
+        # A real capture pans up and down from the middle of the room, which is
+        # what gives the ceiling and the floor under furniture any coverage.
+        for i in range(8):
+            poses.append((np.array([cx, cam_y, cz]), i * np.pi / 4, 1.0 if i % 2 else -1.0))
     for d in scene.doors:
         mid = (d.a0 + d.a1) / 2
         for s in np.linspace(-1.2, 1.2, 9):
