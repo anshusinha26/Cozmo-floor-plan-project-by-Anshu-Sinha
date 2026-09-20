@@ -38,6 +38,7 @@ from cozmo.io.stray import StrayScan
 from cozmo.lidar.cloud import build_cloud
 from cozmo.lidar.debug import write_debug_images
 from cozmo.lidar.drift import DriftModel, estimate_drift
+from cozmo.lidar.ghosts import reject_ghost_faces
 from cozmo.lidar.levels import detect_levels, measure_ceiling_height
 from cozmo.lidar.openings import WINDOWS_NOT_ATTEMPTED, adjacency_from_openings, find_openings
 from cozmo.lidar.rooms import segment_rooms
@@ -73,8 +74,9 @@ def _geometry(scan: StrayScan, cfg: dict, pipeline: "LidarPipeline", drift: Drif
     height = cloud.points[sel][:, 1] - levels.floor.height_at(cloud.points[sel][:, [0, 2]])
     faces = extract_faces(frame.to_frame(cloud.points[sel][:, [0, 2]]),
                           frame.rotate_normals(cloud.normals[sel]), height, cfg)
+    faces, ghosts, ghost_report = reject_ghost_faces(cloud, levels, frame, faces, cfg)
     rooms = segment_rooms(cloud, levels, frame, faces, cfg)
-    return cloud, levels, frame, faces, rooms
+    return cloud, levels, frame, faces, rooms, ghost_report
 
 
 def _mean_wall_thickness(cloud, levels, frame, faces, cfg) -> float:
@@ -137,6 +139,7 @@ class LidarPipeline(Pipeline):
         self.cfg: dict[str, Any] = {}
         self.debug_dir: Path | None = None
         self.drift_report: dict[str, Any] | None = None
+        self.ghost_report: dict[str, Any] = {}
         self.debug_images: list[str] = []
 
     def run(self, input_path: Path, tier: Tier, config: dict[str, Any], seed: int) -> Plan:
@@ -151,7 +154,7 @@ class LidarPipeline(Pipeline):
 
         with self.stage("fuse_raw"):
             raw = _geometry(scan, cfg, self, None, want_chunks=True)
-        cloud, levels, frame, faces, rooms = raw
+        cloud, levels, frame, faces, rooms, ghost_report = raw
 
         with self.stage("drift_estimate"):
             model = estimate_drift(cloud, levels, frame, faces, cfg)
@@ -160,7 +163,7 @@ class LidarPipeline(Pipeline):
         if drift_on:
             with self.stage("fuse_corrected"):
                 corrected = _geometry(scan, cfg, self, model, want_chunks=False)
-            cloud, levels, frame, faces, rooms = corrected
+            cloud, levels, frame, faces, rooms, ghost_report = corrected
         else:
             corrected = raw
             warnings.append("Drift correction was disabled with --drift-correction off; poses are used as given")
@@ -172,6 +175,13 @@ class LidarPipeline(Pipeline):
 
         with self.stage("drift_report"):
             self.drift_report = self._build_drift_report(raw, corrected, model, drift_on)
+
+        self.ghost_report = ghost_report
+        if ghost_report.get("n_rejected"):
+            warnings.append(
+                f"Dropped {ghost_report['n_rejected']} wall faces "
+                f"({ghost_report['rejected_length_m']:.1f} m) with no observed floor on either side; "
+                "these are glass, mirror or through-doorway returns outside the property")
 
         with self.stage("assemble"):
             plan = self._assemble(scan, tier, config, seed, cloud, levels, frame, faces, rooms,
@@ -187,7 +197,7 @@ class LidarPipeline(Pipeline):
         """Footprint area and wall thickness with and without correction, plus the model summary."""
         out = {}
         for name, geom in (("drift_off", raw), ("drift_on", corrected)):
-            cloud, levels, frame, faces, rooms = geom
+            cloud, levels, frame, faces, rooms = geom[:5]
             ring, area, overlap = _footprint(rooms.rooms)
             out[name] = {
                 "footprint_area_m2": area,

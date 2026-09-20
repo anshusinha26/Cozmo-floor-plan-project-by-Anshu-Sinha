@@ -1,0 +1,76 @@
+{
+  "experiment": "ghost_only",
+  "description": "ghost-face rejection on, erosion segmentation unchanged",
+  "rooms": {
+    "c00a170fe1": 2,
+    "1a8384c3f6": 8,
+    "c7d28f72c6": 11
+  },
+  "ghost_warnings": {
+    "c00a170fe1": [],
+    "1a8384c3f6": [
+      "Dropped 3 wall faces (2.0 m) with no observed floor on either side; these are glass, mirror or through-doorway returns outside the property"
+    ],
+    "c7d28f72c6": [
+      "Dropped 2 wall faces (1.0 m) with no observed floor on either side; these are glass, mirror or through-doorway returns outside the property"
+    ]
+  },
+  "same_space": {
+    "footprint_iou_after_registration": 0.6807115037248189,
+    "registration": {
+      "rotation_deg": 328.5119525266558,
+      "tx": -6.0385574409773,
+      "ty": 0.09479543885096786
+    },
+    "footprint_area_ratio": 0.9326625751037578,
+    "matched_rooms": 6,
+    "rooms_a": 8,
+    "rooms_b": 11,
+    "matched_share": 0.75,
+    "same_space": true,
+    "basis": "registered footprint IoU at least 0.5 and at least half the rooms pairing by polygon IoU",
+    "note": "Agreement between two captures is repeatability, not accuracy. Both can be wrong together."
+  },
+  "matching": {
+    "registration": {
+      "rotation_deg": 328.5119525266558,
+      "tx": -6.0385574409773,
+      "ty": 0.09479543885096786,
+      "footprint_iou": 0.6807115037248189
+    },
+    "rooms_a": 8,
+    "rooms_b": 11,
+    "rooms_matched": 6,
+    "room_iou": [
+      0.524,
+      0.481,
+      0.729,
+      0.501,
+      0.344,
+      0.605
+    ],
+    "unmatched_rooms_a": [
+      "room_01",
+      "room_07"
+    ],
+    "unmatched_rooms_b": [
+      "room_05",
+      "room_06",
+      "room_07",
+      "connector_03",
+      "connector_04"
+    ],
+    "walls_matched": 25,
+    "walls_unmatched": 40,
+    "min_iou": 0.3,
+    "max_wall_offset_m": 0.3
+  },
+  "gate": {
+    "passed": false,
+    "n": 117,
+    "value": Infinity,
+    "n_within_tolerance": 0,
+    "share_within_tolerance": 0.0
+  },
+  "median_abs_edge_length_difference_m": 0.9756809999999996
+}

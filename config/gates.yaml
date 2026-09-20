@@ -91,6 +91,15 @@ pipeline:
       min_run_m: 0.4            # shorter runs are clutter, not wall
       wall_min_top_m: 1.6       # a face whose points stop below this is furniture, not wall
       max_gap_m: 0.35           # runs closer than this join into one face extent
+    ghost:
+      # A real wall has observed floor on at least one side, because somebody
+      # stood there. Glass and mirror returns outside the property do not.
+      enabled: true
+      cell_m: 0.05
+      reach_m: 0.35
+      probe_offset_m: 0.25
+      min_supported_share: 0.25
+
     room:
       grid_m: 0.02
       erode_m: 0.5              # closes doorways so rooms separate
