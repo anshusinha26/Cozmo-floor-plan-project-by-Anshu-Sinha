@@ -23,7 +23,7 @@ directory, deliberately. `main` owns `cozmo/lidar/`, `cozmo/damage/`,
 
 ## Files both branches touched: eight, all resolvable
 
-### 1. `cozmo/io/inputs.py` — the one that needs care
+### 1. `cozmo/io/inputs.py`, the one that needs care
 
 Both branches extended the same two functions for different reasons.
 
