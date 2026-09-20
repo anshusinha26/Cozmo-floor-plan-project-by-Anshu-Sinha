@@ -39,7 +39,8 @@ if [ "$(count_scans)" -gt 0 ] && [ "$FORCE" != "--force" ]; then
 else
   if ! command -v gdown >/dev/null 2>&1 && ! "$PY" -c "import gdown" >/dev/null 2>&1; then
     cat >&2 <<'MSG'
-gdown is not installed. Install it and run again:
+gdown is not installed. It normally arrives with `uv sync`; if you installed
+some other way, add it and run again:
 
     uv pip install gdown
 
