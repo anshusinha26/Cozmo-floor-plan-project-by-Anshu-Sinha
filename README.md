@@ -29,24 +29,31 @@ pip install -e . pytest
 
 ## Input convention
 
-A capture is a directory with one subfolder per room; the subfolder name is
-the room id.
-
-| tier | each room subfolder holds |
+| tier | input |
 |---|---|
-| photo | 2 or more images (jpg, jpeg, png, heic) |
-| video | exactly one clip (mp4, mov) |
-| lidar | `rgb/`, `depth/`, `poses.json`, `intrinsics.json` (fx, fy, cx, cy) |
+| photo | a directory with one subfolder per room (the room id), each with 2 or more images (jpg, jpeg, png, heic) |
+| video | one Stray Scanner scan folder; only `rgb.mp4` may be read |
+| lidar | one Stray Scanner scan folder covering the whole property; the pipeline segments rooms itself |
 
-`run` validates this layout and fails with a message naming the room and the
-problem. No pixels are decoded in this version.
+A Stray Scanner scan folder holds `rgb.mp4` (1920x1440, 60 fps),
+`depth/NNNNNN.png` (256x192 uint16 millimetres), `confidence/NNNNNN.png`
+(0, 1, 2), `odometry.csv` and `camera_matrix.csv`.
+
+Tier isolation is enforced in code, not by convention: every file access goes
+through a check that refuses files the tier may not read, and the run manifest
+hashes only those files. A photo input that looks like a scan folder is
+rejected, because `depth/` holds png files that would otherwise pass as room
+photos.
 
 ## Run
 
 ```bash
-# Produce a plan for one capture (stub pipeline for now)
-uv run cozmo run --input benchmarks/captures/EXAMPLE --tier photo --out runs/EXAMPLE \
-    [--config config/gates.yaml] [--seed 0] [--drift-correction on|off]
+# LiDAR tier: the real reconstruction
+uv run cozmo run --input data/sample/c00a170fe1 --tier lidar --out runs/c00a170fe1 \
+    [--config config/gates.yaml] [--seed 0] [--drift-correction on|off] [--pipeline stub]
+
+# Photo and video tiers: still the stub, which says so in warnings
+uv run cozmo run --input benchmarks/captures/EXAMPLE --tier photo --out runs/EXAMPLE
 
 # Evaluate one plan or a directory of runs against ground truth
 uv run cozmo eval --pred runs/EXAMPLE/plan.json --truth benchmarks/ground_truth/EXAMPLE.yaml --out evals/EXAMPLE
@@ -61,7 +68,9 @@ uv run cozmo render --plan runs/EXAMPLE/plan.json --out runs/EXAMPLE
 uv run cozmo schema --out schema/plan.schema.json
 ```
 
-`run` writes `plan.json`, `plan.png` and `run_manifest.json` into `--out`.
+`run` writes `plan.json`, `plan.png` and `run_manifest.json` into `--out`. A
+LiDAR run also writes `drift_report.json` and `debug/` (density map, wall
+faces, room masks, openings).
 The plan is byte-identical for the same input, config and seed. The manifest
 records SHA-256 of every input file, the resolved config and its hash, git
 commit, seed, per-stage timings and library versions.
@@ -79,6 +88,52 @@ One YAML per capture in `benchmarks/ground_truth/`, listed in
 `benchmarks/captures.yaml`. Walls are listed clockwise starting from the wall
 with the main door. `EXAMPLE.yaml` holds obviously fake values so the
 harness can run end to end; replace with tape or laser readings.
+
+## LiDAR reconstruction
+
+Classical geometry only. No machine learning, no open3d. Stages:
+
+1. **Fuse** every 10th depth frame, keeping confidence 2 and depth 0.2 to
+   4.5 m. Normals come from the depth image itself and are oriented toward
+   the camera. Voxel downsample to 2 cm.
+2. **Levels.** Floor and ceiling are histogram peaks of near-vertical-normal
+   points, refined by a trimmed plane fit. Ceiling height is measured per
+   grid cell. Where the ceiling covers under 15% of floor cells, a 2.2 to
+   3.2 m prior is emitted with method `prior_no_ceiling_observed` and a
+   warning, rather than a number invented from a few points.
+3. **Manhattan frame.** Wall normal azimuths collapse modulo 90 degrees into
+   one dominant direction; rotating by it makes wall fitting two 1D problems.
+   Recorded in the plan's assumptions.
+4. **Wall faces.** Histogram peaks along each axis, extents from occupancy
+   runs. A face whose points stop below 1.6 m is furniture, not wall.
+5. **Rooms.** Free space is seen floor plus the walked path, with the
+   wall-enclosed region filled. Eroding by half a metre pinches doorways
+   shut; a watershed grows the seeds back. Polygons are the union of
+   wall-bounded cells the room mask fills.
+6. **Openings.** Gaps in wall occupancy between 0.3 and 1.9 m that free space
+   crosses on both sides. Height from lintel points, or a prior with a
+   warning. Windows are not attempted, and a warning says so.
+7. **Adjacency** from openings joining two rooms.
+8. **Drift correction** (`--drift-correction on|off`, default on). Per
+   5 second chunk: yaw against the global Manhattan axes, floor height
+   offset, then a 1D shift onto the global wall faces. Estimates beyond the
+   configured limits are rejected. `drift_report.json` carries footprint area
+   and mean wall thickness for both settings.
+9. **Uncertainty.** Wall length intervals combine each bounding face's
+   position error (residual spread over an effective sample size that counts
+   0.25 m patches, not 2 cm points) with a 1% depth scale bias and a 1 cm
+   floor. Areas propagate from the lengths.
+
+### Known limitations of the LiDAR path
+
+* Room segmentation over-segments real apartments: a tall wardrobe or a
+  partially scanned room splits into pieces. The two sample apartment scans
+  produce 8 and 10 rooms for the same property, and the cross-capture
+  repeatability gate fails as a result. This is reported, not hidden.
+* Accuracy is unverified. There is no tape ground truth for the sample scans,
+  so `bench` reports outputs, runtime and self-consistency only.
+* Damage detection does not exist. LiDAR plans emit empty damage lists and a
+  warning.
 
 ## Evaluation design
 
@@ -119,7 +174,9 @@ requirement table.
 | `cozmo eval`, `cozmo bench`, eval.json, eval.md, benchmark.md | done |
 | Renderer (`plan.png`) | done |
 | Compliance matrix | done |
-| Any real reconstruction (photo, video, LiDAR) | not started |
+| Drift correction and ablation report | done, lidar tier |
+| LiDAR reconstruction (Stray Scanner scans) | done, accuracy unverified |
+| Photo and video reconstruction | not started, both use the stub |
 
 The stub pipeline ignores input content. Its plan is marked with
 `"STUB PIPELINE: NOT A REAL RECONSTRUCTION"` in `warnings`, a WARNING log line

@@ -6,15 +6,15 @@ exists yet, so every accuracy row is scored on the stub only.
 
 | requirement | file path | artifact | status |
 |---|---|---|---|
-| Photo tier (2 or more stills per room, no depth, no poses) | cozmo/io/inputs.py, cozmo/pipeline/stub.py | input validation, stub plan | partial: input convention validated, no reconstruction |
-| Video tier (handheld walkthrough clip per room) | cozmo/io/inputs.py, cozmo/pipeline/stub.py | input validation, stub plan | partial: input convention validated, no reconstruction |
-| LiDAR tier (rgb, depth, poses, intrinsics per room) | cozmo/io/inputs.py, config/gates.yaml | input validation, PROVISIONAL gate | waived: no iPhone available, approved by email; validation on public ARKitScenes data is a stretch goal |
+| Photo tier (2 or more stills per room, no depth, no poses) | cozmo/io/inputs.py, cozmo/pipeline/stub.py | input validation, stub plan | partial: input convention validated, still the stub, which says so in warnings |
+| Video tier (one scan folder, rgb.mp4 only) | cozmo/io/inputs.py, cozmo/pipeline/stub.py | input validation, tier isolation, stub plan | partial: the tier may open only rgb.mp4, enforced in code; still the stub, which says so in warnings |
+| LiDAR tier (Stray Scanner scan folder) | cozmo/io/stray.py, cozmo/lidar/, cozmo/pipeline/lidar.py | reconstruction to plan.json, plan.png, drift_report.json, debug images | done: no longer waived. Sample iPhone LiDAR scans supplied; classical reconstruction runs on all three. Accuracy unverified: no tape ground truth yet |
 | Per-room plan (polygon, walls, openings) | cozmo/contracts/models.py | plan.json rooms[] | done (contract); stub values only |
 | Ceiling height per room with interval | cozmo/contracts/models.py, cozmo/eval/gates.py | rooms[].ceiling_height_m, ceiling_height gate | done (contract and gate); stub values only |
 | Floor area per room with interval | cozmo/contracts/models.py, cozmo/eval/calibration.py | rooms[].floor_area_m2, calibration row floor_area | done (contract and calibration); stub values only |
 | Openings (door, window, pass-through) with width, height, offset | cozmo/contracts/models.py, cozmo/eval/matching.py | rooms[].openings[], opening matching | done (contract and matching); stub values only |
 | Stitched plan with adjacency graph | cozmo/contracts/models.py, cozmo/eval/gates.py | stitched_plan, adjacency[], stitch_adjacency and stitch_overlap gates | done (contract and gates); stub values only |
-| Damage regions with class enum and extent | cozmo/contracts/models.py | damage_regions[], DamageClass | done (contract); no detector |
+| Damage regions with class enum and extent | cozmo/contracts/models.py | damage_regions[], DamageClass | partial: contract done, no detector; lidar plans emit an empty list and a warning saying so |
 | Concealed-damage flags with rule id and evidence | cozmo/contracts/models.py | concealed_damage_flags[] | done (contract); no rules engine |
 | Scope items with quantity and basis | cozmo/contracts/models.py | scope_items[] | done (contract); no generator |
 | Interval on every measurement (no bare floats) | cozmo/contracts/models.py, tests/test_contract.py, tests/test_cli.py | Measurement type, bare-dimension walker test on emitted output | done |
@@ -34,12 +34,32 @@ exists yet, so every accuracy row is scored on the stub only.
 | Calibration (coverage, width %, confident garbage by tier and quantity) | cozmo/eval/calibration.py | calibration table in eval.json and eval.md | done (Winkler score dropped per revised scope) |
 | Evaluation report | cozmo/eval/runner.py | eval.json, eval.md | done |
 | Benchmark report with per-capture timing | cozmo/cli.py (bench) | benchmark.md | done |
-| Drift ablation (--drift-correction on vs off) | cozmo/cli.py | flag recorded in run_manifest.json | partial: flag plumbed and hashed, no effect until a pipeline uses it |
+| Drift ablation (--drift-correction on vs off) | cozmo/lidar/drift.py, cozmo/pipeline/lidar.py | drift_report.json: footprint area and mean wall thickness for both settings | done for the lidar tier |
 | Head-to-head (tiers or pipelines on the same space) | benchmarks/captures.yaml, cozmo/eval/runner.py | same space_id across captures in one bench | partial: harness groups by space_id; no second pipeline to compare |
 | Fix loop bundle (eval.md pasted back for iteration) | cozmo/eval/runner.py | eval.md | done |
 | Capture protocol (how to film each tier) | docs/ | protocol document | not started |
 | Device matrix (phones tested per tier) | docs/, benchmarks/ground_truth/*.yaml device field | matrix document | not started; device recorded per ground-truth file |
 | Reproduction bundle (inputs, config, seed, manifest, outputs) | cozmo/cli.py, cozmo/io/manifest.py | run_manifest.json with hashes, versions, commit | done for a single run; no packaging script |
 | Technical report | docs/ | report | not started |
-| Raw data (captures and tape measurements) | benchmarks/captures/, benchmarks/ground_truth/ | real captures | not started; EXAMPLE placeholders only |
+| Raw data (captures and tape measurements) | data/sample/ (gitignored), benchmarks/captures.yaml | three iPhone LiDAR scans registered with truth null | partial: captures exist, tape measurements do not |
 | Mirrors, glass, wet-look and low-light coverage | benchmarks/captures.yaml | flagged captures in registry | not started; registry has no scene-condition flags yet |
+
+## Added in the LiDAR reconstruction task
+
+| requirement | file path | artifact | status |
+|---|---|---|---|
+| Stray Scanner format reader (rgb.mp4, depth, confidence, odometry.csv) | cozmo/io/stray.py | StrayScan, Frame.unproject | done |
+| Unprojection convention pinned by a regression test | tests/test_stray.py | floor of c00a170fe1 at world y = -1.48 m | done |
+| Tier isolation enforced in code | cozmo/io/stray.py, cozmo/io/inputs.py | TierViolation; video sees only rgb.mp4; photo rejects scan folders | done |
+| Point cloud with normals, voxel downsample | cozmo/lidar/cloud.py | Cloud | done |
+| Floor and ceiling detection, ceiling prior when unobserved | cozmo/lidar/levels.py | prior_no_ceiling_observed method and warning | done |
+| Manhattan alignment and wall faces | cozmo/lidar/walls.py | WallFace list, recorded in assumptions | done |
+| Room segmentation and rectilinear polygons | cozmo/lidar/rooms.py | room polygons snapped to wall faces | partial: over-segments real apartments; see README limitations |
+| Openings from wall occupancy gaps | cozmo/lidar/openings.py | doors and pass-throughs; windows not attempted, with a warning | partial |
+| Adjacency from openings | cozmo/lidar/openings.py | adjacency[] | done |
+| Drift correction, plane anchored | cozmo/lidar/drift.py | per-chunk yaw, height and 1D shift; drift_report.json | done |
+| Uncertainty model with named terms | cozmo/lidar/uncertainty.py | every Measurement in a lidar plan | done |
+| Debug images | cozmo/lidar/debug.py | density, wall faces, room masks, openings | done |
+| Bench without ground truth | cozmo/cli.py, cozmo/eval/self_consistency.py | benchmark.md no-ground-truth section | done |
+| Cross-capture repeatability of the apartment pair | cozmo/eval/self_consistency.py | same-space check then the repeatability gate | done; the gate currently fails, reported as such |
+| Runtime under 3 minutes for the largest scan | cozmo/pipeline/lidar.py | 9745 frames in 28 s on an M1 Max | done |
