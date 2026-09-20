@@ -91,7 +91,7 @@ def test_two_different_classes_stay_separate():
     dets = {"f0": [Detection(DamageClass.water_stain.value, "p", 0.4, (100, 80, 160, 120), "f0"),
                    Detection(DamageClass.crack.value, "p", 0.4, (100, 80, 160, 120), "f0")]}
     res = analyse_damage([_frame("f0")], plan, DummyDetector(dets), CFG,
-                         fallback_surface_id=plan.surfaces[0].id)
+                         fallback_surface_id=plan.surfaces[0].id, use_multiview_filter=False)
     assert res.merged == 2
 
 
@@ -119,7 +119,7 @@ def test_scope_items_carry_propagated_intervals_and_a_minimum():
     plan = _plan()
     dets = {"f0": [Detection(DamageClass.water_stain.value, "p", 0.6, (100, 80, 160, 120), "f0")]}
     res = analyse_damage([_frame("f0")], plan, DummyDetector(dets), CFG,
-                         fallback_surface_id=plan.surfaces[0].id)
+                         fallback_surface_id=plan.surfaces[0].id, use_multiview_filter=False)
     assert res.scope_items
     item = res.scope_items[0]
     assert item.quantity.ci_low <= item.quantity.value <= item.quantity.ci_high
@@ -138,7 +138,7 @@ def test_result_is_contract_valid_when_spliced_into_a_plan():
     plan = _plan()
     dets = {"f0": [Detection(DamageClass.water_stain.value, "p", 0.6, (100, 80, 160, 120), "f0")]}
     res = analyse_damage([_frame("f0")], plan, DummyDetector(dets), CFG,
-                         fallback_surface_id=plan.surfaces[0].id)
+                         fallback_surface_id=plan.surfaces[0].id, use_multiview_filter=False)
     spliced = plan.model_copy(update={"damage_regions": res.regions,
                                       "concealed_damage_flags": res.flags,
                                       "scope_items": res.scope_items})

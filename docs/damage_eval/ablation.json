@@ -1,0 +1,644 @@
+{
+  "cases": [
+    {
+      "case": "own/bedroom_2_repeat photos, threshold 0.15",
+      "frames": 9,
+      "threshold": 0.15,
+      "expected": [
+        "crack",
+        "water_stain"
+      ],
+      "stages": [
+        {
+          "stage": "raw",
+          "regions": 93,
+          "hits": [
+            "crack",
+            "water_stain"
+          ],
+          "misses": [],
+          "false_regions": 63,
+          "per_class": {
+            "water_stain": 21,
+            "peeling_paint": 18,
+            "missing_material": 25,
+            "crack": 9,
+            "mould": 2,
+            "burn_char": 6,
+            "hole_puncture": 12
+          },
+          "seconds": 0.0,
+          "rejections": {}
+        },
+        {
+          "stage": "1 distractors",
+          "regions": 91,
+          "hits": [
+            "crack",
+            "water_stain"
+          ],
+          "misses": [],
+          "false_regions": 61,
+          "per_class": {
+            "water_stain": 21,
+            "peeling_paint": 17,
+            "missing_material": 25,
+            "crack": 9,
+            "burn_char": 6,
+            "mould": 1,
+            "hole_puncture": 12
+          },
+          "seconds": 0.0,
+          "rejections": {
+            "distractor": 2
+          }
+        },
+        {
+          "stage": "2 +geometry",
+          "regions": 91,
+          "hits": [
+            "crack",
+            "water_stain"
+          ],
+          "misses": [],
+          "false_regions": 61,
+          "per_class": {
+            "water_stain": 21,
+            "peeling_paint": 17,
+            "missing_material": 25,
+            "crack": 9,
+            "burn_char": 6,
+            "mould": 1,
+            "hole_puncture": 12
+          },
+          "seconds": 0.0,
+          "rejections": {
+            "distractor": 2
+          }
+        },
+        {
+          "stage": "3 +multiview",
+          "regions": 91,
+          "hits": [
+            "crack",
+            "water_stain"
+          ],
+          "misses": [],
+          "false_regions": 61,
+          "per_class": {
+            "water_stain": 21,
+            "peeling_paint": 17,
+            "missing_material": 25,
+            "crack": 9,
+            "burn_char": 6,
+            "mould": 1,
+            "hole_puncture": 12
+          },
+          "seconds": 0.0,
+          "rejections": {
+            "distractor": 2
+          }
+        },
+        {
+          "stage": "4 +verifier",
+          "regions": 27,
+          "hits": [
+            "crack",
+            "water_stain"
+          ],
+          "misses": [],
+          "false_regions": 9,
+          "per_class": {
+            "water_stain": 14,
+            "burn_char": 1,
+            "hole_puncture": 5,
+            "crack": 4,
+            "peeling_paint": 1,
+            "missing_material": 2
+          },
+          "seconds": 7.0,
+          "rejections": {
+            "distractor": 2,
+            "verifier": 64
+          }
+        }
+      ]
+    },
+    {
+      "case": "data/sample/c7d28f72c6 lidar, threshold 0.15",
+      "frames": 25,
+      "threshold": 0.15,
+      "expected": [],
+      "stages": [
+        {
+          "stage": "raw",
+          "regions": 106,
+          "hits": [],
+          "misses": [],
+          "false_regions": 106,
+          "per_class": {
+            "missing_material": 58,
+            "mould": 8,
+            "water_stain": 22,
+            "hole_puncture": 8,
+            "peeling_paint": 4,
+            "crack": 5,
+            "burn_char": 1
+          },
+          "seconds": 2.2,
+          "rejections": {}
+        },
+        {
+          "stage": "1 distractors",
+          "regions": 104,
+          "hits": [],
+          "misses": [],
+          "false_regions": 104,
+          "per_class": {
+            "missing_material": 57,
+            "mould": 7,
+            "water_stain": 22,
+            "hole_puncture": 8,
+            "peeling_paint": 4,
+            "crack": 5,
+            "burn_char": 1
+          },
+          "seconds": 1.9,
+          "rejections": {
+            "distractor": 3
+          }
+        },
+        {
+          "stage": "2 +geometry",
+          "regions": 72,
+          "hits": [],
+          "misses": [],
+          "false_regions": 72,
+          "per_class": {
+            "missing_material": 40,
+            "mould": 3,
+            "water_stain": 17,
+            "hole_puncture": 6,
+            "peeling_paint": 2,
+            "crack": 3,
+            "burn_char": 1
+          },
+          "seconds": 1.9,
+          "rejections": {
+            "distractor": 3,
+            "geometry": 43
+          }
+        },
+        {
+          "stage": "3 +multiview",
+          "regions": 26,
+          "hits": [],
+          "misses": [],
+          "false_regions": 26,
+          "per_class": {
+            "missing_material": 14,
+            "water_stain": 7,
+            "mould": 1,
+            "hole_puncture": 2,
+            "crack": 1,
+            "burn_char": 1
+          },
+          "seconds": 2.0,
+          "rejections": {
+            "distractor": 3,
+            "geometry": 43,
+            "multiview": 46
+          }
+        },
+        {
+          "stage": "4 +verifier",
+          "regions": 0,
+          "hits": [],
+          "misses": [],
+          "false_regions": 0,
+          "per_class": {},
+          "seconds": 3.2,
+          "rejections": {
+            "distractor": 3,
+            "geometry": 43,
+            "multiview": 46,
+            "verifier": 26
+          }
+        }
+      ]
+    },
+    {
+      "case": "own/bedroom_2_repeat photos, threshold 0.2",
+      "frames": 9,
+      "threshold": 0.2,
+      "expected": [
+        "crack",
+        "water_stain"
+      ],
+      "stages": [
+        {
+          "stage": "raw",
+          "regions": 50,
+          "hits": [
+            "crack",
+            "water_stain"
+          ],
+          "misses": [],
+          "false_regions": 36,
+          "per_class": {
+            "water_stain": 12,
+            "peeling_paint": 14,
+            "crack": 2,
+            "burn_char": 5,
+            "missing_material": 10,
+            "mould": 1,
+            "hole_puncture": 6
+          },
+          "seconds": 0.0,
+          "rejections": {
+            "distractor": 1
+          }
+        },
+        {
+          "stage": "1 distractors",
+          "regions": 49,
+          "hits": [
+            "crack",
+            "water_stain"
+          ],
+          "misses": [],
+          "false_regions": 35,
+          "per_class": {
+            "water_stain": 12,
+            "peeling_paint": 13,
+            "crack": 2,
+            "burn_char": 5,
+            "missing_material": 10,
+            "mould": 1,
+            "hole_puncture": 6
+          },
+          "seconds": 0.0,
+          "rejections": {
+            "distractor": 1
+          }
+        },
+        {
+          "stage": "2 +geometry",
+          "regions": 49,
+          "hits": [
+            "crack",
+            "water_stain"
+          ],
+          "misses": [],
+          "false_regions": 35,
+          "per_class": {
+            "water_stain": 12,
+            "peeling_paint": 13,
+            "crack": 2,
+            "burn_char": 5,
+            "missing_material": 10,
+            "mould": 1,
+            "hole_puncture": 6
+          },
+          "seconds": 0.0,
+          "rejections": {
+            "distractor": 1
+          }
+        },
+        {
+          "stage": "3 +multiview",
+          "regions": 49,
+          "hits": [
+            "crack",
+            "water_stain"
+          ],
+          "misses": [],
+          "false_regions": 35,
+          "per_class": {
+            "water_stain": 12,
+            "peeling_paint": 13,
+            "crack": 2,
+            "burn_char": 5,
+            "missing_material": 10,
+            "mould": 1,
+            "hole_puncture": 6
+          },
+          "seconds": 0.0,
+          "rejections": {
+            "distractor": 1
+          }
+        },
+        {
+          "stage": "4 +verifier",
+          "regions": 11,
+          "hits": [
+            "water_stain"
+          ],
+          "misses": [
+            "crack"
+          ],
+          "false_regions": 4,
+          "per_class": {
+            "water_stain": 7,
+            "burn_char": 1,
+            "hole_puncture": 2,
+            "peeling_paint": 1
+          },
+          "seconds": 1.6,
+          "rejections": {
+            "distractor": 1,
+            "verifier": 38
+          }
+        }
+      ]
+    },
+    {
+      "case": "data/sample/c7d28f72c6 lidar, threshold 0.2",
+      "frames": 25,
+      "threshold": 0.2,
+      "expected": [],
+      "stages": [
+        {
+          "stage": "raw",
+          "regions": 44,
+          "hits": [],
+          "misses": [],
+          "false_regions": 44,
+          "per_class": {
+            "missing_material": 28,
+            "water_stain": 10,
+            "peeling_paint": 2,
+            "mould": 4
+          },
+          "seconds": 1.1,
+          "rejections": {
+            "distractor": 2
+          }
+        },
+        {
+          "stage": "1 distractors",
+          "regions": 42,
+          "hits": [],
+          "misses": [],
+          "false_regions": 42,
+          "per_class": {
+            "missing_material": 27,
+            "water_stain": 10,
+            "peeling_paint": 2,
+            "mould": 3
+          },
+          "seconds": 1.0,
+          "rejections": {
+            "distractor": 2
+          }
+        },
+        {
+          "stage": "2 +geometry",
+          "regions": 31,
+          "hits": [],
+          "misses": [],
+          "false_regions": 31,
+          "per_class": {
+            "missing_material": 20,
+            "water_stain": 8,
+            "peeling_paint": 2,
+            "mould": 1
+          },
+          "seconds": 1.0,
+          "rejections": {
+            "distractor": 2,
+            "geometry": 13
+          }
+        },
+        {
+          "stage": "3 +multiview",
+          "regions": 10,
+          "hits": [],
+          "misses": [],
+          "false_regions": 10,
+          "per_class": {
+            "missing_material": 6,
+            "water_stain": 4
+          },
+          "seconds": 1.0,
+          "rejections": {
+            "distractor": 2,
+            "geometry": 13,
+            "multiview": 21
+          }
+        },
+        {
+          "stage": "4 +verifier",
+          "regions": 0,
+          "hits": [],
+          "misses": [],
+          "false_regions": 0,
+          "per_class": {},
+          "seconds": 2.1,
+          "rejections": {
+            "distractor": 2,
+            "geometry": 13,
+            "multiview": 21,
+            "verifier": 10
+          }
+        }
+      ]
+    },
+    {
+      "case": "own/bedroom_2_repeat photos, threshold 0.25",
+      "frames": 9,
+      "threshold": 0.25,
+      "expected": [
+        "crack",
+        "water_stain"
+      ],
+      "stages": [
+        {
+          "stage": "raw",
+          "regions": 24,
+          "hits": [
+            "water_stain"
+          ],
+          "misses": [
+            "crack"
+          ],
+          "false_regions": 17,
+          "per_class": {
+            "water_stain": 7,
+            "burn_char": 5,
+            "peeling_paint": 6,
+            "missing_material": 4,
+            "hole_puncture": 2
+          },
+          "seconds": 0.0,
+          "rejections": {}
+        },
+        {
+          "stage": "1 distractors",
+          "regions": 24,
+          "hits": [
+            "water_stain"
+          ],
+          "misses": [
+            "crack"
+          ],
+          "false_regions": 17,
+          "per_class": {
+            "water_stain": 7,
+            "burn_char": 5,
+            "peeling_paint": 6,
+            "missing_material": 4,
+            "hole_puncture": 2
+          },
+          "seconds": 0.0,
+          "rejections": {}
+        },
+        {
+          "stage": "2 +geometry",
+          "regions": 24,
+          "hits": [
+            "water_stain"
+          ],
+          "misses": [
+            "crack"
+          ],
+          "false_regions": 17,
+          "per_class": {
+            "water_stain": 7,
+            "burn_char": 5,
+            "peeling_paint": 6,
+            "missing_material": 4,
+            "hole_puncture": 2
+          },
+          "seconds": 0.0,
+          "rejections": {}
+        },
+        {
+          "stage": "3 +multiview",
+          "regions": 24,
+          "hits": [
+            "water_stain"
+          ],
+          "misses": [
+            "crack"
+          ],
+          "false_regions": 17,
+          "per_class": {
+            "water_stain": 7,
+            "burn_char": 5,
+            "peeling_paint": 6,
+            "missing_material": 4,
+            "hole_puncture": 2
+          },
+          "seconds": 0.0,
+          "rejections": {}
+        },
+        {
+          "stage": "4 +verifier",
+          "regions": 5,
+          "hits": [
+            "water_stain"
+          ],
+          "misses": [
+            "crack"
+          ],
+          "false_regions": 2,
+          "per_class": {
+            "water_stain": 3,
+            "burn_char": 1,
+            "hole_puncture": 1
+          },
+          "seconds": 2.4,
+          "rejections": {
+            "verifier": 19
+          }
+        }
+      ]
+    },
+    {
+      "case": "data/sample/c7d28f72c6 lidar, threshold 0.25",
+      "frames": 25,
+      "threshold": 0.25,
+      "expected": [],
+      "stages": [
+        {
+          "stage": "raw",
+          "regions": 21,
+          "hits": [],
+          "misses": [],
+          "false_regions": 21,
+          "per_class": {
+            "missing_material": 15,
+            "water_stain": 2,
+            "peeling_paint": 1,
+            "mould": 3
+          },
+          "seconds": 0.6,
+          "rejections": {}
+        },
+        {
+          "stage": "1 distractors",
+          "regions": 21,
+          "hits": [],
+          "misses": [],
+          "false_regions": 21,
+          "per_class": {
+            "missing_material": 15,
+            "water_stain": 2,
+            "peeling_paint": 1,
+            "mould": 3
+          },
+          "seconds": 0.7,
+          "rejections": {}
+        },
+        {
+          "stage": "2 +geometry",
+          "regions": 13,
+          "hits": [],
+          "misses": [],
+          "false_regions": 13,
+          "per_class": {
+            "missing_material": 9,
+            "water_stain": 2,
+            "peeling_paint": 1,
+            "mould": 1
+          },
+          "seconds": 0.6,
+          "rejections": {
+            "geometry": 8
+          }
+        },
+        {
+          "stage": "3 +multiview",
+          "regions": 3,
+          "hits": [],
+          "misses": [],
+          "false_regions": 3,
+          "per_class": {
+            "missing_material": 1,
+            "water_stain": 2
+          },
+          "seconds": 0.6,
+          "rejections": {
+            "geometry": 8,
+            "multiview": 10
+          }
+        },
+        {
+          "stage": "4 +verifier",
+          "regions": 0,
+          "hits": [],
+          "misses": [],
+          "false_regions": 0,
+          "per_class": {},
+          "seconds": 1.1,
+          "rejections": {
+            "geometry": 8,
+            "multiview": 10,
+            "verifier": 3
+          }
+        }
+      ]
+    }
+  ]
+}

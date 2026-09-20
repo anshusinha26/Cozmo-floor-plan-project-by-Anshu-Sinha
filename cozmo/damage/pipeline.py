@@ -27,6 +27,13 @@ from cozmo.contracts.models import (
 from cozmo.damage.detector import Detection, Detector
 from cozmo.damage.extent import UNBOUNDED_METHOD, estimate_extent
 from cozmo.damage.frames import DamageFrame
+from cozmo.damage.filters import (
+    GeometryLimits,
+    NullVerifier,
+    geometry_ok,
+    keep_best_damage_label,
+    multiview_ok,
+)
 from cozmo.damage.rules import RULES, scope_for
 
 log = logging.getLogger(__name__)
@@ -36,6 +43,23 @@ UNBOUNDED_WARNING = (
     "extent_m2 carries a nominal value with an interval spanning the plausible range and "
     "method {method}. Do not read these as measured areas"
 )
+
+
+@dataclass
+class FilterStats:
+    """How many detections each filter removed, so its effect can be reported."""
+
+    raw: int = 0
+    after_distractors: int = 0
+    after_geometry: int = 0
+    regions_before_multiview: int = 0
+    after_multiview: int = 0
+    after_verifier: int = 0
+    reasons: dict = field(default_factory=dict)
+
+    def note(self, reason: str) -> None:
+        key = reason.split(":")[0] if ":" in reason else reason
+        self.reasons[key] = self.reasons.get(key, 0) + 1
 
 
 @dataclass
@@ -49,6 +73,7 @@ class MergedRegion:
     height_above_floor_m: float | None = None
     bounded: bool = False
     notes: list[str] = field(default_factory=list)
+    verifier_score: float | None = None
 
     @property
     def confidence(self) -> float:
@@ -100,8 +125,14 @@ def _box_iou(a, b) -> float:
     return inter / union if union > 0 else 0.0
 
 
-def _surface_for_point(plan: Plan, point: np.ndarray, floor_y: float | None) -> tuple[str | None, float | None]:
-    """Nearest wall surface to a world point, and the point's height above the floor."""
+def _surface_for_point(plan: Plan, point: np.ndarray, floor_y: float | None
+                       ) -> tuple[str | None, float | None, float | None, float | None]:
+    """Nearest surface to a world point.
+
+    Returns the surface id, the height above the floor, the distance to that
+    surface's plane and the surface's own area. The distance is what tells a
+    mark on a wall from a box floating in the middle of a room.
+    """
     best_id, best_d = None, 1e9
     for room in plan.rooms:
         poly = np.asarray(room.polygon)
@@ -119,11 +150,11 @@ def _surface_for_point(plan: Plan, point: np.ndarray, floor_y: float | None) -> 
                 best_d = d
                 wall = room.walls[i] if i < len(room.walls) else None
                 best_id = f"s_{room.id}_{wall.id}" if wall else None
-    known = {s.id for s in plan.surfaces}
-    if best_id not in known:
-        best_id = None
+    areas = {s.id: s.area_m2.value for s in plan.surfaces}
+    if best_id not in areas:
+        return None, (float(point[1] - floor_y) if floor_y is not None else None), None, None
     height = float(point[1] - floor_y) if floor_y is not None else None
-    return best_id, height
+    return best_id, height, float(best_d), float(areas[best_id])
 
 
 @dataclass
@@ -135,25 +166,70 @@ class DamageResult:
     detections: int = 0
     merged: int = 0
     per_class: dict[str, int] = field(default_factory=dict)
+    stats: FilterStats = field(default_factory=FilterStats)
 
 
 def analyse_damage(frames: Iterable[DamageFrame], plan: Plan, detector: Detector, cfg: dict,
                    floor_y: float | None = None, merge_radius_m: float = 0.35,
-                   min_confidence: float = 0.15, fallback_surface_id: str | None = None) -> DamageResult:
+                   min_confidence: float = 0.15, fallback_surface_id: str | None = None,
+                   use_distractor_filter: bool = True, use_geometry_filter: bool = True,
+                   use_multiview_filter: bool = True, verifier=None,
+                   geometry_limits: GeometryLimits | None = None,
+                   min_frames: int = 2) -> DamageResult:
+    """Detect, filter, merge and turn into contract objects.
+
+    Each filter can be switched off so its own effect can be measured. The
+    defaults are all on, because with them all off the detector reports dozens
+    of marks in a room with two.
+    """
+    limits = geometry_limits or GeometryLimits()
+    verifier = verifier or NullVerifier()
+    stats = FilterStats()
     regions: list[MergedRegion] = []
     n_det = 0
     any_depth = False
+    surface_areas = {s.id: s.area_m2.value for s in plan.surfaces}
+
     for frame in frames:
-        dets = [d for d in detector.detect(frame.image, frame.frame_id) if d.confidence >= min_confidence]
+        raw = detector.detect(frame.image, frame.frame_id)
+        stats.raw += len([d for d in raw if not d.extras.get("is_distractor")])
+        dets = keep_best_damage_label(raw) if use_distractor_filter else \
+            [d for d in raw if not d.extras.get("is_distractor")]
+        for d in raw:
+            if d.extras.get("rejected_by"):
+                stats.note(d.extras["rejected_by"])
+        dets = [d for d in dets if d.confidence >= min_confidence]
+        stats.after_distractors += len(dets)
         n_det += len(dets)
         any_depth = any_depth or frame.has_metric_depth
+
         for det in dets:
             world = frame.unproject(*det.centre) if frame.has_metric_depth and frame.pose is not None else None
+            ext = estimate_extent(frame, det, cfg)
+            surface_id = plane_d = surface_area = height = None
+            if world is not None:
+                surface_id, height, plane_d, surface_area = _surface_for_point(plan, world, floor_y)
+            if use_geometry_filter:
+                ok, why = geometry_ok(frame, det, ext.upper_bound_m2, surface_area, world, plane_d, limits)
+                if not ok:
+                    stats.note(f"geometry:{why.split()[0]}")
+                    continue
+            stats.after_geometry += 1
+
+            if verifier is not None and not isinstance(verifier, NullVerifier):
+                # Keep just the crop, not the frame: the verifier needs pixels
+                # after the loop has moved on, and frames can be large.
+                x0, y0, x1, y1 = (int(round(v)) for v in det.box)
+                h, w = frame.image.shape[:2]
+                det.extras["crop"] = frame.image[max(y0 - 8, 0):min(y1 + 8, h),
+                                                 max(x0 - 8, 0):min(x1 + 8, w)].copy()
             region = _merge(regions, det, world, merge_radius_m)
             region.detections.append(det)
             if world is not None:
                 region.world_points.append(world)
-            ext = estimate_extent(frame, det, cfg)
+                region.surface_id = region.surface_id or surface_id
+                if region.height_above_floor_m is None:
+                    region.height_above_floor_m = height
             if ext.bounded:
                 region.bounded = True
                 region.upper_bounds.append(ext.upper_bound_m2)
@@ -163,16 +239,46 @@ def analyse_damage(frames: Iterable[DamageFrame], plan: Plan, detector: Detector
             elif ext.note:
                 region.notes.append(ext.note)
 
-    result = DamageResult(detections=n_det, merged=len(regions))
+    stats.regions_before_multiview = len(regions)
+    if use_multiview_filter:
+        kept = []
+        for r in regions:
+            ok, why = multiview_ok(r, min_frames=min_frames)
+            if ok:
+                kept.append(r)
+            else:
+                stats.note("multiview")
+        regions = kept
+    stats.after_multiview = len(regions)
+
+    if not isinstance(verifier, NullVerifier):
+        kept = []
+        for r in regions:
+            det = max(r.detections, key=lambda d: d.confidence)
+            crop = det.extras.get("crop")
+            if crop is None or crop.size == 0:
+                kept.append(r)
+                continue
+            # The crop is already padded, so the box covers all of it.
+            ok, score, why = verifier.score(crop, (0, 0, crop.shape[1], crop.shape[0]), r.damage_class)
+            r.verifier_score = score
+            if ok:
+                kept.append(r)
+            else:
+                stats.note("verifier")
+        regions = kept
+    stats.after_verifier = len(regions)
+
+    result = DamageResult(detections=n_det, merged=len(regions), stats=stats)
     surface_types = {s.id: s.type for s in plan.surfaces}
     unc = cfg.get("uncertainty", {})
     ci_level = unc.get("ci_level", 0.95)
 
     for i, region in enumerate(regions, start=1):
         centre = region.world_centre
-        surface_id, height = (None, None)
-        if centre is not None:
-            surface_id, height = _surface_for_point(plan, centre, floor_y)
+        surface_id, height = region.surface_id, region.height_above_floor_m
+        if surface_id is None and centre is not None:
+            surface_id, height, _, _ = _surface_for_point(plan, centre, floor_y)
         if surface_id is None:
             surface_id = fallback_surface_id or (plan.surfaces[0].id if plan.surfaces else None)
         if surface_id is None:

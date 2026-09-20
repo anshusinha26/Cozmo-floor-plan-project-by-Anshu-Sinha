@@ -56,6 +56,28 @@ PROMPTS: dict[str, list[str]] = {
 }
 
 
+# Everyday things that look like damage to an open-vocabulary detector. They
+# are given to the model as competing labels, so a shadow scores as a shadow
+# instead of being forced to pick the nearest damage class. A box is kept only
+# when its best label is a damage class.
+DISTRACTOR_PROMPTS: list[str] = [
+    "a shadow on the wall",
+    "a light switch",
+    "a power socket",
+    "a picture frame on the wall",
+    "a poster on the wall",
+    "a curtain",
+    "a glass panel",
+    "a mirror",
+    "a reflection on a glossy surface",
+    "a tile grout line",
+    "an electrical cable",
+    "a door handle",
+    "an air conditioner unit",
+    "a wall clock",
+]
+
+
 @dataclass
 class Detection:
     damage_class: str
@@ -106,12 +128,14 @@ class Owlv2Detector:
     downloads during a run without saying so.
     """
 
-    # 0.20 is the only setting measured on the staged captures that keeps both
-    # planted classes. Precision there is poor; see docs/damage_eval/README.md.
-    DEFAULT_THRESHOLD = 0.20
+    # 0.15 with the four precision filters on. Measured on the staged captures:
+    # it keeps both planted classes, while 0.20 loses the crack at the crop
+    # verifier and 0.25 loses it at the detector. The filters, not the
+    # threshold, are what buy precision. See docs/damage_eval/README.md.
+    DEFAULT_THRESHOLD = 0.15
 
     def __init__(self, threshold: float = DEFAULT_THRESHOLD, device: str | None = None,
-                 model_id: str = MODEL_ID) -> None:
+                 model_id: str = MODEL_ID, use_distractors: bool = True) -> None:
         import torch
         from transformers import Owlv2ForObjectDetection, Owlv2Processor
 
@@ -122,11 +146,16 @@ class Owlv2Detector:
         self.processor = Owlv2Processor.from_pretrained(model_id)
         self.model = Owlv2ForObjectDetection.from_pretrained(model_id).to(self.device).eval()
         self.prompts: list[str] = []
-        self.prompt_class: list[str] = []
+        self.prompt_class: list[str | None] = []
         for cls, phrases in PROMPTS.items():
             for p in phrases:
                 self.prompts.append(p)
                 self.prompt_class.append(cls)
+        self.n_damage_prompts = len(self.prompts)
+        if use_distractors:
+            for p in DISTRACTOR_PROMPTS:
+                self.prompts.append(p)
+                self.prompt_class.append(None)  # None marks a distractor
 
     def detect(self, image: np.ndarray, frame_id: str) -> list[Detection]:
         from PIL import Image
@@ -141,8 +170,10 @@ class Owlv2Detector:
         dets = []
         for score, label, box in zip(res["scores"], res["labels"], res["boxes"]):
             i = int(label)
-            dets.append(Detection(damage_class=self.prompt_class[i], prompt=self.prompts[i],
+            cls = self.prompt_class[i]
+            dets.append(Detection(damage_class=cls or "__distractor__", prompt=self.prompts[i],
                                   confidence=float(score),
-                                  box=tuple(float(v) for v in box), frame_id=frame_id))
+                                  box=tuple(float(v) for v in box), frame_id=frame_id,
+                                  extras={"is_distractor": cls is None}))
         dets.sort(key=lambda d: (-d.confidence, d.damage_class))
         return dets
