@@ -54,7 +54,7 @@ exists yet, so every accuracy row is scored on the stub only.
 | Point cloud with normals, voxel downsample | cozmo/lidar/cloud.py | Cloud | done |
 | Floor and ceiling detection, ceiling prior when unobserved | cozmo/lidar/levels.py | prior_no_ceiling_observed method and warning | done |
 | Manhattan alignment and wall faces | cozmo/lidar/walls.py | WallFace list, recorded in assumptions | done |
-| Room segmentation and rectilinear polygons | cozmo/lidar/rooms.py | room polygons snapped to wall faces | partial: over-segments real apartments; see README limitations |
+| Room segmentation and rectilinear polygons | cozmo/lidar/rooms.py | room polygons snapped to wall faces | partial: not repeatable across two captures of one property; subject of the fix loop in fix_loop/ |
 | Openings from wall occupancy gaps | cozmo/lidar/openings.py | doors and pass-throughs; windows not attempted, with a warning | partial |
 | Adjacency from openings | cozmo/lidar/openings.py | adjacency[] | done |
 | Drift correction, plane anchored | cozmo/lidar/drift.py | per-chunk yaw, height and 1D shift; drift_report.json | done |

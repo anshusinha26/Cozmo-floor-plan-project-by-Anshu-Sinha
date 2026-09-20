@@ -19,8 +19,10 @@ captures:
   # iPhone LiDAR sample scans in Stray Scanner format. No tape ground truth
   # exists for these yet, so bench reports outputs, runtime and
   # self-consistency only. The two apartment scans are a repeat pair.
+  # c00a170fe1 is not one closed room: the path crosses two or three partly
+  # scanned spaces with unobserved sides. No scan has a ground-truth room count.
   - capture_id: c00a170fe1
-    space_id: sample_single_room
+    space_id: sample_partial_spaces
     tier: lidar
     input: data/sample/c00a170fe1
     ground_truth: null

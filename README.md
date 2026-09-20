@@ -126,10 +126,14 @@ Classical geometry only. No machine learning, no open3d. Stages:
 
 ### Known limitations of the LiDAR path
 
-* Room segmentation over-segments real apartments: a tall wardrobe or a
-  partially scanned room splits into pieces. The two sample apartment scans
-  produce 8 and 10 rooms for the same property, and the cross-capture
-  repeatability gate fails as a result. This is reported, not hidden.
+* Room segmentation is not repeatable across two captures of one property.
+  The two sample apartment scans produce 8 and 10 rooms, and the
+  cross-capture repeatability gate fails. This is reported, not hidden, and
+  it is the subject of the current fix loop (see `fix_loop/`).
+* No scan has ground truth for room count or room size. `c00a170fe1` is not
+  one closed room: the camera path crosses two or three partly scanned
+  spaces with unobserved sides. Any earlier text treating its camera-path
+  extent as a room size was wrong.
 * Accuracy is unverified. There is no tape ground truth for the sample scans,
   so `bench` reports outputs, runtime and self-consistency only.
 * Damage detection does not exist. LiDAR plans emit empty damage lists and a
