@@ -1,0 +1,215 @@
+{
+  "a_wall_face_repeatability": {
+    "tolerance_m": 0.05,
+    "tolerance_deg": 2.0,
+    "registration": {
+      "rotation_deg": 328.50887025548724,
+      "footprint_iou": 0.6808799797090456
+    },
+    "1a8384c3f6_total_face_length_m": 102.4732686581355,
+    "1a8384c3f6_matched_length_m": 57.497959435515,
+    "1a8384c3f6_matched_share": 0.5611020336175269,
+    "c7d28f72c6_total_face_length_m": 216.20819184153603,
+    "c7d28f72c6_matched_length_m": 80.44444290776667,
+    "c7d28f72c6_matched_share": 0.3720693569590844,
+    "median_offset_m_matched": 0.019428031327893558
+  },
+  "a2_edge_length_vs_face_offset": {
+    "gate_rows_total": 112,
+    "gate_rows_matched": 20,
+    "median_abs_edge_length_difference_m": 0.9754909999999997,
+    "median_face_offset_m_matched": 0.019428031327893558,
+    "note": "Faces that both captures saw sit within a couple of centimetres of each other, but the polygon edges built from them differ by most of a metre, because the two captures cut the same wall into different edges."
+  },
+  "b_erosion_sensitivity": {
+    "c00a170fe1": [
+      {
+        "erode_m": 0.3,
+        "n_rooms": 3,
+        "total_area_m2": 13.907685540000001,
+        "n_connectors": 1
+      },
+      {
+        "erode_m": 0.4,
+        "n_rooms": 2,
+        "total_area_m2": 13.699916220000002,
+        "n_connectors": 0
+      },
+      {
+        "erode_m": 0.5,
+        "n_rooms": 2,
+        "total_area_m2": 24.574356,
+        "n_connectors": 0
+      },
+      {
+        "erode_m": 0.6,
+        "n_rooms": 2,
+        "total_area_m2": 24.574356,
+        "n_connectors": 0
+      },
+      {
+        "erode_m": 0.7,
+        "n_rooms": 2,
+        "total_area_m2": 24.574356,
+        "n_connectors": 0
+      }
+    ],
+    "1a8384c3f6": [
+      {
+        "erode_m": 0.3,
+        "n_rooms": 7,
+        "total_area_m2": 49.902949640725,
+        "n_connectors": 3
+      },
+      {
+        "erode_m": 0.4,
+        "n_rooms": 8,
+        "total_area_m2": 47.163425673066996,
+        "n_connectors": 0
+      },
+      {
+        "erode_m": 0.5,
+        "n_rooms": 9,
+        "total_area_m2": 46.800458121054994,
+        "n_connectors": 1
+      },
+      {
+        "erode_m": 0.6,
+        "n_rooms": 7,
+        "total_area_m2": 47.020191049952004,
+        "n_connectors": 0
+      },
+      {
+        "erode_m": 0.7,
+        "n_rooms": 6,
+        "total_area_m2": 46.92113040654201,
+        "n_connectors": 0
+      }
+    ],
+    "c7d28f72c6": [
+      {
+        "erode_m": 0.3,
+        "n_rooms": 16,
+        "total_area_m2": 56.391097646209985,
+        "n_connectors": 5
+      },
+      {
+        "erode_m": 0.4,
+        "n_rooms": 16,
+        "total_area_m2": 56.232736646188,
+        "n_connectors": 4
+      },
+      {
+        "erode_m": 0.5,
+        "n_rooms": 11,
+        "total_area_m2": 48.530400915505005,
+        "n_connectors": 1
+      },
+      {
+        "erode_m": 0.6,
+        "n_rooms": 6,
+        "total_area_m2": 46.254237319223,
+        "n_connectors": 0
+      },
+      {
+        "erode_m": 0.7,
+        "n_rooms": 6,
+        "total_area_m2": 46.254237319223,
+        "n_connectors": 0
+      }
+    ]
+  },
+  "c_fragmentation": {
+    "c00a170fe1": {
+      "free_components_before_erosion": 4,
+      "largest_free_component_m2": 19.5392,
+      "free_components_over_1m2": 1,
+      "seeds_after_erosion": 2,
+      "rooms_after_merge": 2,
+      "free_area_m2": 19.5988,
+      "envelope_area_m2": 24.574356,
+      "free_share_of_envelope": 0.7975305639749013
+    },
+    "1a8384c3f6": {
+      "free_components_before_erosion": 24,
+      "largest_free_component_m2": 41.666000000000004,
+      "free_components_over_1m2": 3,
+      "seeds_after_erosion": 10,
+      "rooms_after_merge": 9,
+      "free_area_m2": 49.050000000000004,
+      "envelope_area_m2": 47.85886652943398,
+      "free_share_of_envelope": 1.0248884596929069
+    },
+    "c7d28f72c6": {
+      "free_components_before_erosion": 60,
+      "largest_free_component_m2": 22.728800000000003,
+      "free_components_over_1m2": 9,
+      "seeds_after_erosion": 12,
+      "rooms_after_merge": 11,
+      "free_area_m2": 56.8952,
+      "envelope_area_m2": 49.75929964258499,
+      "free_share_of_envelope": 1.1434083760959521
+    }
+  },
+  "d_ghost_faces": {
+    "c00a170fe1": {
+      "inside_envelope_m": 10.351440517428214,
+      "outside_envelope_m": 0.0,
+      "outside_share": 0.0,
+      "n_outside_segments": 0
+    },
+    "1a8384c3f6": {
+      "inside_envelope_m": 85.64534371354594,
+      "outside_envelope_m": 16.827924944589547,
+      "outside_share": 0.1642177044310917,
+      "n_outside_segments": 15
+    },
+    "c7d28f72c6": {
+      "inside_envelope_m": 181.3102687400916,
+      "outside_envelope_m": 34.89792310144439,
+      "outside_share": 0.16140888466900408,
+      "n_outside_segments": 29
+    }
+  },
+  "e_height_coverage": {
+    "c00a170fe1": {
+      "n_wall_points": 202002,
+      "median_height_m": 0.8689642776668006,
+      "p90_height_m": 1.3936884374023804,
+      "share_by_band": {
+        "0.3-1.0": 0.6161919188918922,
+        "1.0-1.6": 0.35638261007316757,
+        "1.0-2.2": 0.3838080811081078,
+        "1.6-2.2": 0.02742547103494025,
+        "2.2-3.0": 0.0
+      },
+      "ceiling_observed": false
+    },
+    "1a8384c3f6": {
+      "n_wall_points": 740518,
+      "median_height_m": 0.9715543336731913,
+      "p90_height_m": 1.6067281526772927,
+      "share_by_band": {
+        "0.3-1.0": 0.5231473103962362,
+        "1.0-1.6": 0.37460534382688876,
+        "1.0-2.2": 0.47496482192195194,
+        "1.6-2.2": 0.10035947809506318,
+        "2.2-3.0": 0.0018878676818119208
+      },
+      "ceiling_observed": false
+    },
+    "c7d28f72c6": {
+      "n_wall_points": 1608862,
+      "median_height_m": 1.4241300033619484,
+      "p90_height_m": 2.4309167858179563,
+      "share_by_band": {
+        "0.3-1.0": 0.2806642210456832,
+        "1.0-1.6": 0.3022639604888424,
+        "1.0-2.2": 0.537862787485813,
+        "1.6-2.2": 0.23559882699697052,
+        "2.2-3.0": 0.18147299146850382
+      },
+      "ceiling_observed": true
+    }
+  }
+}
