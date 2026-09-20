@@ -119,7 +119,6 @@ def test_run_rejects_missing_input(tmp_path):
     [
         ["eval", "--pred", "x.json", "--truth", "y.yaml", "--out", "o"],
         ["bench", "--set", "benchmarks/captures.yaml", "--out", "o"],
-        ["render", "--plan", "x.json", "--out", "o"],
     ],
 )
 def test_unimplemented_commands_fail_loudly(args):

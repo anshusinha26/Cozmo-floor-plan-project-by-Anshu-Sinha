@@ -25,9 +25,11 @@ import typer
 
 from cozmo import __version__
 from cozmo.contracts.export_schema import write_schema
+from cozmo.contracts.models import Plan, Renders
 from cozmo.io import manifest as prov
 from cozmo.io.inputs import InputError, validate_input
 from cozmo.pipeline import DEFAULT_PIPELINE, get_pipeline
+from cozmo.render.plan import render_plan_png
 
 app = typer.Typer(
     no_args_is_help=True,
@@ -117,6 +119,9 @@ def run(
         _fail("pipeline and CLI disagree on config hash")
 
     out.mkdir(parents=True, exist_ok=True)
+    with pipeline.stage("render"):
+        render_plan_png(plan, out / "plan.png")
+    plan = plan.model_copy(update={"renders": Renders(plan_png="plan.png")})
     plan_bytes = plan.to_json_bytes()
     plan_path = out / "plan.json"
     plan_path.write_bytes(plan_bytes)
@@ -136,7 +141,7 @@ def run(
         "library_versions": prov.library_versions(),
         "python_version": platform.python_version(),
         "platform": platform.platform(),
-        "outputs": {"plan": plan_path.name},
+        "outputs": {"plan": plan_path.name, "plan_png": "plan.png"},
         "plan_sha256": prov.sha256_bytes(plan_bytes),
         "warnings": list(plan.warnings),
     }
@@ -182,8 +187,11 @@ def render(
     plan: Path = typer.Option(..., "--plan"),
     out: Path = typer.Option(..., "--out"),
 ) -> None:
-    """Draw a plan.json to PNG and SVG."""
-    _not_implemented("render", "section 9")
+    """Draw a plan.json to plan.png in the output directory."""
+    if not plan.exists():
+        _fail(f"plan not found: {plan}")
+    path = render_plan_png(Plan.from_json_bytes(plan.read_bytes()), out / "plan.png")
+    typer.echo(f"wrote {path}")
 
 
 if __name__ == "__main__":
