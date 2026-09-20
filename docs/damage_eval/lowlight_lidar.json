@@ -1,0 +1,48 @@
+{
+  "source": "lidar",
+  "expected": [],
+  "threshold": 0.15,
+  "n_photos": 9,
+  "levels": [
+    {
+      "level": "bright (original)",
+      "gamma": 1.0,
+      "mean_brightness_0_255": 150.6,
+      "regions": 5,
+      "hits": [],
+      "misses": [],
+      "false_regions": 5,
+      "per_class": {
+        "hole_puncture": 2,
+        "water_stain": 3
+      }
+    },
+    {
+      "level": "dim (gamma 1.8)",
+      "gamma": 1.8,
+      "mean_brightness_0_255": 105.2,
+      "regions": 6,
+      "hits": [],
+      "misses": [],
+      "false_regions": 6,
+      "per_class": {
+        "hole_puncture": 1,
+        "water_stain": 4,
+        "crack": 1
+      }
+    },
+    {
+      "level": "dark (gamma 3.0)",
+      "gamma": 3.0,
+      "mean_brightness_0_255": 65.5,
+      "regions": 4,
+      "hits": [],
+      "misses": [],
+      "false_regions": 4,
+      "per_class": {
+        "water_stain": 3,
+        "crack": 1
+      }
+    }
+  ]
+}

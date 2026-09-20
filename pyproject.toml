@@ -18,6 +18,17 @@ dependencies = [
     "pillow-heif>=1.7.0",
 ]
 
+[project.optional-dependencies]
+# Damage detection only. Reconstruction needs none of this: it is classical
+# geometry, and the measurement path contains no trained model.
+damage = [
+    "torch>=2.2",
+    "torchvision>=0.17",
+    "transformers>=4.40",
+    "sentencepiece>=0.2",
+    "protobuf>=4.25",
+]
+
 [project.scripts]
 cozmo = "cozmo.cli:app"
 
@@ -25,7 +36,12 @@ cozmo = "cozmo.cli:app"
 # gdown is here because scripts/fetch_sample_data.sh is part of the
 # documented first run, and a stranger should not have to install a tool
 # by hand before the README works.
-dev = ["pytest>=8.0", "gdown>=5.0"]
+dev = [
+    "pytest>=8.0",
+    "gdown>=5.0",      # scripts/fetch_sample_data.sh
+    "reportlab>=4.0",  # scripts/md_to_pdf.py, the no-pandoc report renderer
+    "pypdf>=4.0",      # page-count check in scripts/build_report.sh
+]
 
 [build-system]
 requires = ["hatchling"]

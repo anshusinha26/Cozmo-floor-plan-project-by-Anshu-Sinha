@@ -22,14 +22,17 @@ That last command writes `plan.json`, `plan.png`, `run_manifest.json`,
 `drift_report.json` and a `debug/` folder, and takes 4 to 28 seconds
 depending on the scan.
 
-Damage detection needs model weights, which are fetched once and never
-downloaded during a run:
+Damage detection is optional and needs two extra things, neither of which
+reconstruction touches:
 
 ```bash
-scripts/fetch_weights.sh         # about 1.9 GB, 3 to 5 minutes
+uv sync --extra damage           # torch and transformers, about 3 minutes
+scripts/fetch_weights.sh         # model weights, about 1.9 GB
 ```
 
-Reconstruction itself needs no weights and no network.
+**Reconstruction needs no weights, no network and no torch.** It is classical
+geometry, so nothing in a reported dimension came from a trained model. A run
+works with the network off; that is checked in `docs/rehearsal.md`.
 
 ## One command per capture
 
