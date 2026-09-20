@@ -61,6 +61,10 @@ class Room:
     polygon_world: list[tuple[float, float]]
     area_m2: float
     mask: np.ndarray = field(repr=False, default=None)
+    # Set by the cell-complex segmentation: a room whose outline is only
+    # partly backed by observed wall is reported, not silently closed.
+    partially_observed: bool = False
+    perimeter_support: float = 1.0
 
 
 @dataclass
@@ -71,6 +75,9 @@ class RoomResult:
     occupied: np.ndarray
     labels: np.ndarray
     warnings: list[str] = field(default_factory=list)
+    edges: list = field(default_factory=list)
+    support: object = None
+    complex: object = None
 
 
 def _densify(path: np.ndarray, step: float) -> np.ndarray:

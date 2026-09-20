@@ -41,6 +41,7 @@ from cozmo.lidar.drift import DriftModel, estimate_drift
 from cozmo.lidar.ghosts import reject_ghost_faces
 from cozmo.lidar.levels import detect_levels, measure_ceiling_height
 from cozmo.lidar.openings import WINDOWS_NOT_ATTEMPTED, adjacency_from_openings, find_openings
+from cozmo.lidar.cells import segment_rooms_cells
 from cozmo.lidar.rooms import segment_rooms
 from cozmo.lidar.uncertainty import area_measurement, face_position_sigma, length_measurement
 from cozmo.lidar.walls import ManhattanFrame, extract_faces, wall_points
@@ -48,6 +49,7 @@ from cozmo.pipeline.base import Pipeline
 
 log = logging.getLogger(__name__)
 
+PARTIAL_WIDEN = 2.0
 MANHATTAN_ASSUMPTION = (
     "Manhattan assumption: walls meet at right angles and are axis aligned after a single "
     "global rotation. A curved or 45 degree wall appears as a missing face, not a wrong one"
@@ -75,8 +77,18 @@ def _geometry(scan: StrayScan, cfg: dict, pipeline: "LidarPipeline", drift: Drif
     faces = extract_faces(frame.to_frame(cloud.points[sel][:, [0, 2]]),
                           frame.rotate_normals(cloud.normals[sel]), height, cfg)
     faces, ghosts, ghost_report = reject_ghost_faces(cloud, levels, frame, faces, cfg)
-    rooms = segment_rooms(cloud, levels, frame, faces, cfg)
+    if cfg.get("segmentation", "cells") == "erosion":
+        rooms = segment_rooms(cloud, levels, frame, faces, cfg)
+    else:
+        rooms = segment_rooms_cells(cloud, levels, frame, faces, cfg)
     return cloud, levels, frame, faces, rooms, ghost_report
+
+
+def _widen(m: Measurement, factor: float) -> Measurement:
+    """Multiply an interval's half width, keeping the point estimate."""
+    half = (m.width / 2) * factor
+    return m.model_copy(update={"ci_low": m.value - half, "ci_high": m.value + half,
+                                "method": f"{m.method}+partially_observed"})
 
 
 def _mean_wall_thickness(cloud, levels, frame, faces, cfg) -> float:
@@ -285,7 +297,19 @@ class LidarPipeline(Pipeline):
             for w in walls:
                 w.height_m = ceiling_m
 
+            partial = bool(getattr(room, "partially_observed", False))
+            if partial:
+                # An unobserved side means the room's extent is a lower bound,
+                # not a measurement. Widening says so in the interval instead of
+                # closing the room by guesswork.
+                walls = [w.model_copy(update={"length_m": _widen(w.length_m, PARTIAL_WIDEN)}) for w in walls]
+                edge_ms = [w.length_m for w in walls]
             area = area_measurement(room.area_m2, edge_ms, cfg)
+            if partial:
+                area = _widen(area, PARTIAL_WIDEN)
+                warnings.append(
+                    f"{room.id}: only {getattr(room, 'perimeter_support', 0.0):.0%} of the outline is backed "
+                    "by observed wall; the room is partially observed and its intervals are widened")
             room_openings: list[Opening] = []
             for oi, o in enumerate(openings):
                 if room.id not in o.room_ids:

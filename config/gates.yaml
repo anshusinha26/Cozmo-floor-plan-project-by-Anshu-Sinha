@@ -100,6 +100,33 @@ pipeline:
       probe_offset_m: 0.25
       min_supported_share: 0.25
 
+    # Wall-driven segmentation (default). Rooms come from wall support rather
+    # than from where the operator walked, which is what made the erosion
+    # method disagree between two captures of one flat.
+    cells:
+      support_band_m: [1.0, 1.6]   # highest band both apartment captures cover
+      support_cell_m: 0.05
+      support_tol_m: 0.12          # a wall is two faces about this far apart
+      min_support_share: 0.55      # below this the edge is open space, not wall
+      max_opening_m: 1.6           # a longer unsupported run means one space
+      # Grid lines closer than this merge. Chosen by sweeping both apartment
+      # captures: 0.16 m gave the closest room counts (7 and 8, six large in
+      # each) and the most consistent largest-room area (37.4 and 37.8 m2).
+      # Larger values collapse distinct walls into one line and merge rooms.
+      min_line_gap_m: 0.16
+      min_cell_area_m2: 0.06
+      min_observed_share: 0.25     # a cell joins the interior at this coverage
+      observed_cell_m: 0.05
+      observed_reach_m: 0.35
+      min_keep_area_m2: 0.8
+      min_perimeter_support: 0.80  # below this the room is partially observed
+      # Closed synthetic rooms measure 0.94 to 1.00; a room with one wall
+      # unobserved measures 0.68, so 0.80 separates them with margin.
+
+    # Which segmentation the lidar pipeline uses: cells (wall driven, default)
+    # or erosion (the original, kept so the fix-loop BEFORE run regenerates).
+    segmentation: cells
+
     room:
       grid_m: 0.02
       erode_m: 0.5              # closes doorways so rooms separate

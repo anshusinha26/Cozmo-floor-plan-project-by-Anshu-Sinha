@@ -56,6 +56,11 @@ class Switch(str, Enum):
     off = "off"
 
 
+class Segmentation(str, Enum):
+    cells = "cells"
+    erosion = "erosion"
+
+
 @app.callback()
 def _setup_logging() -> None:
     logging.basicConfig(
@@ -80,15 +85,20 @@ def _now() -> datetime:
     return datetime.now(timezone.utc)
 
 
-def resolve_config(config_path: Path, drift_correction: bool, pipeline_name: str) -> dict[str, Any]:
+def resolve_config(config_path: Path, drift_correction: bool, pipeline_name: str,
+                   segmentation: str | None = None) -> dict[str, Any]:
     """File config plus CLI overrides. This resolved dict is what gets hashed."""
     cfg = prov.load_config(config_path)
-    cfg["run"] = {"pipeline": pipeline_name, "drift_correction": drift_correction}
+    if segmentation:
+        cfg.setdefault("pipeline", {}).setdefault("lidar", {})["segmentation"] = segmentation
+    cfg["run"] = {"pipeline": pipeline_name, "drift_correction": drift_correction,
+                  "segmentation": (cfg.get("pipeline", {}).get("lidar", {}) or {}).get("segmentation", "cells")}
     return cfg
 
 
 def execute_run(input_path: Path, tier: str, out: Path, config: Path, seed: int, drift_correction: bool,
-                pipeline_name: str | None = None, debug: bool = True) -> dict[str, Any]:
+                pipeline_name: str | None = None, debug: bool = True,
+                segmentation: str | None = None) -> dict[str, Any]:
     """Run one capture: validate input, run the pipeline, write plan.json, plan.png, run_manifest.json.
 
     Raises InputError / FileNotFoundError on bad input. Returns the manifest dict.
@@ -104,7 +114,7 @@ def execute_run(input_path: Path, tier: str, out: Path, config: Path, seed: int,
         logging.getLogger("cozmo.cli").info("input ok: scan folder with %d readable file(s) for tier %s", len(spec.files), tier)
 
     name = pipeline_for(tier, pipeline_name)
-    resolved = resolve_config(config, drift_correction, name)
+    resolved = resolve_config(config, drift_correction, name, segmentation)
     config_hash = prov.config_sha256(resolved)
     input_manifest = prov.build_input_manifest(input_path, spec.files)
 
@@ -168,11 +178,14 @@ def run(
     seed: int = typer.Option(0, "--seed"),
     drift_correction: Switch = typer.Option(Switch.on, "--drift-correction"),
     pipeline: str = typer.Option(None, "--pipeline", help="Force a pipeline: stub or lidar"),
+    segmentation: Segmentation = typer.Option(None, "--segmentation",
+                                              help="Room segmentation: cells (default) or erosion"),
 ) -> None:
     """Run the pipeline on one capture and write plan.json, plan.png and run_manifest.json."""
     try:
         manifest = execute_run(input_path, tier.value, out, config, seed, drift_correction == Switch.on,
-                               pipeline_name=pipeline)
+                               pipeline_name=pipeline,
+                               segmentation=segmentation.value if segmentation else None)
     except (InputError, FileNotFoundError, RuntimeError, ValueError, KeyError) as e:
         _fail(str(e))
     typer.echo(f"wrote {out / 'plan.json'} ({manifest['n_rooms']} rooms), plan.png and run_manifest.json")
@@ -335,6 +348,8 @@ def bench(
     out: Path = typer.Option(..., "--out"),
     config: Path = typer.Option(DEFAULT_CONFIG, "--config"),
     seed: int = typer.Option(0, "--seed"),
+    segmentation: Segmentation = typer.Option(None, "--segmentation",
+                                              help="Room segmentation: cells (default) or erosion"),
 ) -> None:
     """Run and evaluate every capture in a registry; writes runs/, eval.json, eval.md, benchmark.md."""
     if not set_path.exists():
@@ -349,7 +364,9 @@ def bench(
     for e in registry.captures:
         run_dir = out / "runs" / e.capture_id
         try:
-            manifests[e.capture_id] = execute_run(resolve(e.input), e.tier, run_dir, config, seed, True)
+            manifests[e.capture_id] = execute_run(
+                resolve(e.input), e.tier, run_dir, config, seed, True,
+                segmentation=segmentation.value if segmentation else None)
         except (InputError, FileNotFoundError, RuntimeError, ValueError, KeyError) as ex:
             _fail(f"{e.capture_id}: {ex}")
         plan = Plan.from_json_bytes((run_dir / "plan.json").read_bytes())

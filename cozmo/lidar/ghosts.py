@@ -24,8 +24,13 @@ MIN_SUPPORTED_SHARE = 0.25
 
 
 def observed_mask(cloud: Cloud, levels: Levels, frame: ManhattanFrame, cell: float,
-                  reach_m: float = 0.35) -> tuple[np.ndarray, np.ndarray]:
+                  reach_m: float = 0.35, barriers: np.ndarray | None = None
+                  ) -> tuple[np.ndarray, np.ndarray]:
     """Cells where the floor was seen or the camera walked, dilated by ``reach_m``.
+
+    With ``barriers`` the dilation is geodesic: it stops at wall cells instead
+    of bleeding through them. The ghost test passes no barriers, because asking
+    whether a face has floor beside it must not depend on that same face.
 
     Returns the mask and the frame-space origin of cell (0, 0).
     """
@@ -60,7 +65,13 @@ def observed_mask(cloud: Cloud, levels: Levels, frame: ManhattanFrame, cell: flo
         put(path)
 
     it = max(int(round(reach_m / cell)), 1)
-    return ndimage.binary_dilation(mask, np.ones((3, 3), bool), iterations=it), lo
+    if barriers is None:
+        return ndimage.binary_dilation(mask, np.ones((3, 3), bool), iterations=it), lo
+    blocked = barriers if barriers.shape == mask.shape else np.zeros_like(mask)
+    mask &= ~blocked
+    for _ in range(it):
+        mask = ndimage.binary_dilation(mask, np.ones((3, 3), bool)) & ~blocked
+    return mask, lo
 
 
 def face_support(face: WallFace, mask: np.ndarray, origin: np.ndarray, cell: float,
