@@ -78,9 +78,13 @@ class ChunkScale:
                 "disagreement": None if self.disagreement is None else round(self.disagreement, 4)}
 
 
-def chunk_cloud(build, chunk_index: int, transforms, voxel_m: float = 0.05):
-    """The chunk's own fused points and cameras, at whatever scale it currently has."""
-    return build.fuse(transforms, voxel_m=voxel_m, only={chunk_index})
+def chunk_cloud(build, chunk_index: int, transforms, voxel_m: float = 0.05, coarse: int = 3):
+    """The chunk's own fused points and cameras, at whatever scale it currently has.
+
+    Decimated: this is used to find a floor plane, which needs a surface's
+    direction, not its detail.
+    """
+    return build.fuse(transforms, voxel_m=voxel_m, only={chunk_index}, coarse=coarse)
 
 
 def height_prior_scale(points: np.ndarray, normals: np.ndarray, camera_path: np.ndarray,
@@ -106,7 +110,7 @@ def height_prior_scale(points: np.ndarray, normals: np.ndarray, camera_path: np.
 
 def level_chunks(build, chunks: list[SfmChunk], group: list[int],
                  target_height_m: float = DEFAULT_CAMERA_HEIGHT_M, max_tilt_deg: float = 30.0,
-                 seed: int = 0, voxel_m: float = 0.05
+                 seed: int = 0, voxel_m: float = 0.05, coarse: int = 3
                  ) -> tuple[list[ChunkLevel], list[ChunkScale]]:
     """Stand every chunk upright on its own floor and scale it to the height prior.
 
@@ -123,7 +127,7 @@ def level_chunks(build, chunks: list[SfmChunk], group: list[int],
     for ci in group:
         chunk = chunks[ci]
         s0 = float(chunk.scale_m_per_unit)
-        cloud = chunk_cloud(build, ci, identity, voxel_m=voxel_m)
+        cloud = chunk_cloud(build, ci, identity, voxel_m=voxel_m, coarse=coarse)
         ups = build.camera_path(identity, only={ci})[2]
         if len(cloud.points) < MIN_FLOOR_POINTS or len(cloud.camera_path) == 0:
             levels.append(ChunkLevel(ci, s0, np.eye(3), np.zeros(3), float("nan"), 0.0,

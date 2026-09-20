@@ -42,6 +42,37 @@ from cozmo.pipeline.video.singleroom import as_room_result, fit_single_room
 log = logging.getLogger(__name__)
 
 
+def _adaptive_wall_top(height_above_floor: np.ndarray, cfg: dict, warnings: list[str]) -> float:
+    """How high a face must reach before it counts as a wall rather than furniture.
+
+    The LiDAR tier asks for 1.5 m, which works when the scan sees a whole wall.
+    This tier does not see one: the phone is carried at about 1.4 m and pointed
+    level or down, so a reconstructed wall stops around 1.5 m and often lower.
+    On bedroom_2_repeat every face topped out between 0.72 and 1.46 m, so nothing
+    passed and the room came back as the camera path in a box.
+
+    So the bar is relative to what was actually reconstructed: a wall is a face
+    that reaches most of the way up whatever this capture saw. It is never
+    stricter than the configured value, and never low enough for a table.
+    """
+    rcfg = cfg["room"]
+    configured = float(rcfg["wall_min_top_m"])
+    if not len(height_above_floor):
+        return configured
+    observed = float(np.percentile(height_above_floor, 95))
+    floor_m = float(rcfg.get("wall_min_top_floor_m", 0.9))
+    fraction = float(rcfg.get("wall_min_top_fraction", 0.75))
+    adaptive = min(configured, max(floor_m, fraction * observed))
+    if adaptive < configured:
+        warnings.append(
+            f"Walls were only reconstructed to about {observed:.2f} m above the floor, so a face "
+            f"counts as a wall at {adaptive:.2f} m rather than the usual {configured:.2f} m. "
+            f"Wall heights and the ceiling are not measured from this capture")
+    cfg["room"]["wall_min_top_m"] = adaptive
+    cfg["wall"]["wall_min_top_m"] = adaptive
+    return adaptive
+
+
 def _reject_ghosts(cloud, levels, frame, faces, cfg):
     """Drop wall faces with no observed floor on either side, when that stage exists.
 
@@ -150,6 +181,7 @@ def plan_from_cloud(points: np.ndarray, normals: np.ndarray, camera_path: np.nda
         raise ValueError(f"too few wall points to reconstruct a plan: {int(sel.sum())}")
     frame = ManhattanFrame.fit(cloud.normals[sel], cloud.points[sel][:, [0, 2]])
     height = cloud.points[sel][:, 1] - levels.floor.height_at(cloud.points[sel][:, [0, 2]])
+    top = _adaptive_wall_top(height, cfg, warnings)
     faces = extract_faces(frame.to_frame(cloud.points[sel][:, [0, 2]]),
                           frame.rotate_normals(cloud.normals[sel]), height, cfg)
     faces, ghosts, ghost_report = _reject_ghosts(cloud, levels, frame, faces, cfg)
@@ -195,6 +227,7 @@ def plan_from_cloud(points: np.ndarray, normals: np.ndarray, camera_path: np.nda
                                list(assumptions) + [MANHATTAN_ASSUMPTION], drift_model)
     detail = {"n_cloud_points": int(len(points)), "n_wall_points": int(sel.sum()),
               "n_faces": len(faces), "n_ghost_faces": len(ghosts), "ghost_report": ghost_report,
+              "wall_min_top_m": round(top, 3),
               "manhattan_yaw_deg": round(float(np.degrees(frame.yaw)), 3),
               "floor_height_m": round(float(np.median(levels.floor.height_at(cloud.points[:, [0, 2]]))), 4),
               "camera_height_above_floor_m": None if np.isnan(cam_height) else round(cam_height, 3),

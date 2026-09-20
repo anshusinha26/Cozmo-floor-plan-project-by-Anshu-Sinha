@@ -208,6 +208,7 @@ class VideoPipeline(Pipeline):
         if self.debug_dir is not None:
             # Dumped before assembly, so a run that fails to find a room can be
             # diagnosed from the cloud it failed on instead of being re-run.
+            Path(self.debug_dir).mkdir(parents=True, exist_ok=True)
             np.savez_compressed(Path(self.debug_dir) / "fused_cloud.npz",
                                 points=cloud.points.astype(np.float32),
                                 normals=cloud.normals.astype(np.float32),
@@ -273,6 +274,7 @@ class VideoPipeline(Pipeline):
 
     # ------------------------------------------------------------------
     def _write_report(self) -> None:
+        Path(self.debug_dir).mkdir(parents=True, exist_ok=True)
         (Path(self.debug_dir) / "video_report.json").write_text(
             json.dumps(self.report, indent=2, default=_jsonable) + "\n", encoding="utf-8")
 

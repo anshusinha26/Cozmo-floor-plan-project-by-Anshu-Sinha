@@ -131,11 +131,15 @@ class DenseBuild:
 
     def fuse(self, transforms: Transforms, voxel_m: float = 0.03,
              max_depth_m: float = 8.0, min_depth_m: float = 0.25,
-             batch_frames: int = 8, only: set[int] | None = None) -> Cloud:
+             batch_frames: int = 8, only: set[int] | None = None, coarse: int = 1) -> Cloud:
         """Unproject cached keyframes at the given chunk placements and voxelise.
 
         ``only`` restricts the fuse to a subset of chunks, which the drift step
-        uses to read one chunk's wall directions on its own.
+        uses to read one chunk's wall directions on its own. ``coarse`` decimates
+        the depth maps again: levelling and the yaw snap need a floor plane and a
+        wall direction, not a surface, and paying full resolution for the dozen
+        fuses they make between them cost more than the rest of the tier put
+        together.
         """
         grid = VoxelGrid(voxel_m)
         buf_p: list[np.ndarray] = []
@@ -158,11 +162,13 @@ class DenseBuild:
             R_g, t_g = transforms[kf.chunk]
             s = float(chunk.scale_m_per_unit)
             rays_x, rays_y = self.rays[kf.chunk]
+            if coarse > 1:
+                rays_x, rays_y = rays_x[::coarse, ::coarse], rays_y[::coarse, ::coarse]
             # The cached map is metric at whatever scale the chunk had when it was
             # fitted. Rescaling the chunk rescales its depth with it, otherwise the
             # geometry and the poses drift apart.
             ratio = s / self.scale_at_fit.get(kf.chunk, s)
-            zmap = kf.zmap.astype(np.float64) * ratio
+            zmap = kf.zmap[::coarse, ::coarse].astype(np.float64) * ratio
             valid = (zmap > min_depth_m) & (zmap < max_depth_m)
             zmap = np.where(valid, zmap, 0.0)
             P = np.stack([rays_x * zmap, rays_y * zmap, zmap], axis=-1)

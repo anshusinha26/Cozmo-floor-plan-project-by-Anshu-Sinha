@@ -163,6 +163,8 @@ pipeline:
       min_area_m2: 1.0
       min_constriction_m: 0.62
       wall_min_top_m: 1.4
+      wall_min_top_fraction: 0.70
+      wall_min_top_floor_m: 0.9
       snap_m: 0.30
       unsupported_margin_m: 0.45
       allow_l_shape: true
@@ -273,7 +275,10 @@ pipeline:
                                 # only part of the floor is ever reconstructed
       min_area_m2: 1.0
       min_constriction_m: 0.62
-      wall_min_top_m: 1.5
+      wall_min_top_m: 1.5       # a ceiling on the bar, not the bar itself: see below
+      wall_min_top_fraction: 0.75  # a wall reaches this share of the height actually
+                                   # reconstructed, because this tier never sees a whole wall
+      wall_min_top_floor_m: 0.9    # but never low enough for a table or a bed back
       snap_m: 0.22              # LiDAR uses 0.15; matches the wider face tolerance
       unsupported_margin_m: 0.35  # single-room mode: how far past the camera path a side with
                                   # no wall face is closed by the rectangle assumption

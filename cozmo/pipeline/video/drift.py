@@ -50,7 +50,7 @@ def _wall_mask(points: np.ndarray, normals: np.ndarray, floor_y: float,
 
 
 def yaw_snap(build: DenseBuild, transforms: Transforms, cfg: dict, voxel_m: float = 0.06,
-             max_yaw_deg: float = 6.0) -> tuple[Transforms, dict]:
+             max_yaw_deg: float = 6.0, coarse: int = 2) -> tuple[Transforms, dict]:
     """Rotate each chunk so its walls line up with the group's Manhattan direction.
 
     ``transforms`` must already be gravity aligned (y up). Returns new
@@ -64,7 +64,7 @@ def yaw_snap(build: DenseBuild, transforms: Transforms, cfg: dict, voxel_m: floa
         report["note"] = "single chunk: nothing to snap against"
         return transforms, report
 
-    whole = build.fuse(transforms, voxel_m=voxel_m)
+    whole = build.fuse(transforms, voxel_m=voxel_m, coarse=coarse)
     if len(whole.points) < MIN_WALL_POINTS:
         report["note"] = "too few fused points to measure a Manhattan direction"
         return transforms, report
@@ -78,7 +78,7 @@ def yaw_snap(build: DenseBuild, transforms: Transforms, cfg: dict, voxel_m: floa
 
     out = dict(transforms)
     for ci in build.group:
-        one = build.fuse(transforms, voxel_m=voxel_m, only={ci})
+        one = build.fuse(transforms, voxel_m=voxel_m, only={ci}, coarse=coarse)
         row = {"chunk": ci, "n_wall_points": 0, "yaw_delta_deg": 0.0, "rejected": None}
         if len(one.points):
             m = _wall_mask(one.points, one.normals, floor_y, horiz, low, high)
