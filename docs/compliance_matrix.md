@@ -38,7 +38,7 @@ exists yet, so every accuracy row is scored on the stub only.
 | Head-to-head (tiers or pipelines on the same space) | benchmarks/captures.yaml, cozmo/eval/runner.py | same space_id across captures in one bench | partial: harness groups by space_id; no second pipeline to compare |
 | Fix loop bundle (eval.md pasted back for iteration) | cozmo/eval/runner.py | eval.md | done |
 | Capture protocol (how to film each tier) | docs/ | protocol document | not started |
-| Device matrix (phones tested per tier) | docs/, benchmarks/ground_truth/*.yaml device field | matrix document | not started; device recorded per ground-truth file |
+| Device matrix (phones tested per tier) | docs/device_matrix.md, benchmarks/captures.yaml device field | matrix document, device recorded per capture | done |
 | Reproduction bundle (inputs, config, seed, manifest, outputs) | cozmo/cli.py, cozmo/io/manifest.py | run_manifest.json with hashes, versions, commit | done for a single run; no packaging script |
 | Technical report | docs/ | report | not started |
 | Raw data (captures and tape measurements) | data/sample/ (gitignored), benchmarks/captures.yaml | three iPhone LiDAR scans registered with truth null | partial: captures exist, tape measurements do not |
@@ -61,7 +61,8 @@ exists yet, so every accuracy row is scored on the stub only.
 | Uncertainty model with named terms | cozmo/lidar/uncertainty.py | every Measurement in a lidar plan | done |
 | Debug images | cozmo/lidar/debug.py | density, wall faces, room masks, openings | done |
 | Bench without ground truth | cozmo/cli.py, cozmo/eval/self_consistency.py | benchmark.md no-ground-truth section | done |
-| Cross-capture repeatability of the apartment pair | cozmo/eval/self_consistency.py | same-space check then the repeatability gate | done; the gate currently fails, reported as such |
+| Cross-capture repeatability, official pair | cozmo/eval/self_consistency.py, benchmarks/captures.yaml | bedroom_2 against bedroom_2_repeat, same-device at video tier and cross-device at photo tier | registered; awaiting predictions from the photo and video tiers |
+| Cross-capture repeatability, sample LiDAR pair | cozmo/cli.py, fix_loop/evidence/ | reported as coverage-mismatched, not a valid repeat: strict 0 of 153 kept visible, plus 14 shared walls and 1.9 cm face agreement as a labelled secondary statistic | done |
 | Runtime under 3 minutes for the largest scan | cozmo/pipeline/lidar.py | 9745 frames in 28 s on an M1 Max | done |
 
 ## Added in the repeatability fix loop

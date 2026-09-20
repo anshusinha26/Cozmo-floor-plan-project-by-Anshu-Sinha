@@ -4,10 +4,12 @@
 # predicted interval covers it.
 #
 # Walls are listed clockwise starting from wall A, the wall holding the door.
+# Device is the operator's record. EXIF make and model were stripped from
+# these files, so it cannot be read back from the images.
 capture_id: own_home_photo
 space_id: own_home
 tier: photo
-device: "Redmi Note 13, Android"
+device: "Moto Edge 50 Neo, Android (hall, bedroom_1, bedroom_2, kitchen)"
 measured_with: "tape, cm to the nearest inch"
 measured_on: 2026-09-20
 truth_uncertainty_m: 0.013

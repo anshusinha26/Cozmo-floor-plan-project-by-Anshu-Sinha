@@ -1,8 +1,8 @@
 side: after
 segmentation: cells
-commit: e930febd13c21eab0ceee3fe1ce7eacde20cba28
-commit_subject: fix(lidar): collapse collinear edges in cell-complex room polygons
+commit: 10968b769f2f067ccfdf72c20038ce97ccf94230
+commit_subject: feat(damage): add four precision filters and measure each one
 dirty: true
-generated_at: 2026-09-20T14:31:13Z
+generated_at: 2026-09-20T18:15:36Z
 python: Python 3.11.15
-config_sha256: e6c3d84c290bf2e94a0395331212fd5524a8e600494670779df3d6667ad80f8b
+config_sha256: 2b1984124c8ac861912fcd227fafa8f82e5dbce8eecd0c09aa8da0f16b3ef88e

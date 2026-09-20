@@ -26,6 +26,7 @@ captures:
     tier: lidar
     input: data/sample/c00a170fe1
     ground_truth: null
+    device: "iPhone with LiDAR, supplied scan; no EXIF available"
     repeat_of: null
     multi_room: false
   - capture_id: 1a8384c3f6
@@ -33,6 +34,7 @@ captures:
     tier: lidar
     input: data/sample/1a8384c3f6
     ground_truth: null
+    device: "iPhone with LiDAR, supplied scan; no EXIF available"
     repeat_of: null
     multi_room: true
   - capture_id: c7d28f72c6
@@ -40,7 +42,12 @@ captures:
     tier: lidar
     input: data/sample/c7d28f72c6
     ground_truth: null
+    device: "iPhone with LiDAR, supplied scan; no EXIF available"
     repeat_of: 1a8384c3f6
+    # Not a valid repeat: the two scans cover different subsets of the flat,
+    # so their disagreement measures coverage, not repeatability. Reported as
+    # a coverage-mismatched pair with a secondary statistic, never as the gate.
+    repeat_kind: coverage_mismatched
     multi_room: true
 
   # Hand-measured captures. Every room was shot as photos and as one video
@@ -52,6 +59,7 @@ captures:
     tier: photo
     input: data/own/hall
     ground_truth: benchmarks/ground_truth/own_hall_photo.yaml
+    device: "Moto Edge 50 Neo, Android"
     repeat_of: null
     multi_room: false
   - capture_id: own_bedroom_1_photo
@@ -59,6 +67,7 @@ captures:
     tier: photo
     input: data/own/bedroom_1
     ground_truth: benchmarks/ground_truth/own_bedroom_1_photo.yaml
+    device: "Moto Edge 50 Neo, Android"
     repeat_of: null
     multi_room: false
   - capture_id: own_bedroom_2_photo
@@ -66,6 +75,7 @@ captures:
     tier: photo
     input: data/own/bedroom_2
     ground_truth: benchmarks/ground_truth/own_bedroom_2_photo.yaml
+    device: "Moto Edge 50 Neo, Android"
     repeat_of: null
     multi_room: false
   - capture_id: own_bedroom_2_repeat_photo
@@ -73,6 +83,8 @@ captures:
     tier: photo
     input: data/own/bedroom_2_repeat
     ground_truth: benchmarks/ground_truth/own_bedroom_2_repeat_photo.yaml
+    device: "Nokia 8.1, Android"
+    repeat_kind: cross_device_repeat
     repeat_of: own_bedroom_2_photo
     multi_room: false
   - capture_id: own_kitchen_photo
@@ -80,6 +92,7 @@ captures:
     tier: photo
     input: data/own/kitchen
     ground_truth: benchmarks/ground_truth/own_kitchen_photo.yaml
+    device: "Moto Edge 50 Neo, Android"
     repeat_of: null
     multi_room: false
   - capture_id: own_home_photo
@@ -87,6 +100,7 @@ captures:
     tier: photo
     input: data/own/home
     ground_truth: benchmarks/ground_truth/own_home_photo.yaml
+    device: "Moto Edge 50 Neo, Android (all four rooms)"
     repeat_of: null
     multi_room: true
   - capture_id: own_hall_video
@@ -94,6 +108,7 @@ captures:
     tier: video
     input: data/own/hall
     ground_truth: benchmarks/ground_truth/own_hall_video.yaml
+    device: "Nokia 8.1, Android"
     repeat_of: null
     multi_room: false
   - capture_id: own_bedroom_1_video
@@ -101,6 +116,7 @@ captures:
     tier: video
     input: data/own/bedroom_1
     ground_truth: benchmarks/ground_truth/own_bedroom_1_video.yaml
+    device: "Nokia 8.1, Android"
     repeat_of: null
     multi_room: false
   - capture_id: own_bedroom_2_video
@@ -108,6 +124,7 @@ captures:
     tier: video
     input: data/own/bedroom_2
     ground_truth: benchmarks/ground_truth/own_bedroom_2_video.yaml
+    device: "Nokia 8.1, Android"
     repeat_of: null
     multi_room: false
   - capture_id: own_bedroom_2_repeat_video
@@ -115,6 +132,8 @@ captures:
     tier: video
     input: data/own/bedroom_2_repeat
     ground_truth: benchmarks/ground_truth/own_bedroom_2_repeat_video.yaml
+    device: "Nokia 8.1, Android"
+    repeat_kind: same_device_repeat
     repeat_of: own_bedroom_2_video
     multi_room: false
   - capture_id: own_kitchen_video
@@ -122,6 +141,7 @@ captures:
     tier: video
     input: data/own/kitchen
     ground_truth: benchmarks/ground_truth/own_kitchen_video.yaml
+    device: "Nokia 8.1, Android"
     repeat_of: null
     multi_room: false
   - capture_id: own_home_video
@@ -129,5 +149,6 @@ captures:
     tier: video
     input: data/own/home
     ground_truth: benchmarks/ground_truth/own_home_video.yaml
+    device: "Nokia 8.1, Android"
     repeat_of: null
     multi_room: true

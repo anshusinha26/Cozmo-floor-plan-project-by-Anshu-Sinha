@@ -30,7 +30,12 @@ from cozmo.io import manifest as prov
 from cozmo.io.ground_truth import GroundTruth, load_ground_truth, load_registry
 from cozmo.io.inputs import InputError, validate_input
 from cozmo.eval.runner import evaluate, write_eval
-from cozmo.eval.self_consistency import cross_plan_repeat_pairs, same_space_verdict, self_consistency
+from cozmo.eval.self_consistency import (
+    cross_plan_repeat_pairs,
+    observed_in_both,
+    same_space_verdict,
+    self_consistency,
+)
 from cozmo.eval import gates as G
 from cozmo.pipeline import get_pipeline, pipeline_for
 from cozmo.render.plan import render_plan_png
@@ -250,7 +255,9 @@ def eval(
                f"ceiling diagnosis {s['ceiling_height_diagnosis']}")
 
 
-def _no_truth_report(entries, manifests, plans: dict[str, Plan], cfg: dict[str, Any]) -> dict[str, Any]:
+def _no_truth_report(entries, manifests, plans: dict[str, Plan], cfg: dict[str, Any],
+                     all_entries=None) -> dict[str, Any]:
+    entries_for_lookup = all_entries or entries
     """Everything that can honestly be said about captures with no ground truth."""
     rows = {cid: self_consistency(p) for cid, p in plans.items()}
     repeats = []
@@ -260,12 +267,17 @@ def _no_truth_report(entries, manifests, plans: dict[str, Plan], cfg: dict[str, 
         a, b = plans[e.repeat_of], plans[e.capture_id]
         verdict = same_space_verdict(a, b)
         pairs, match_summary = cross_plan_repeat_pairs(a, b, e.space_id, e.tier)
+        kind = e.repeat_kind or "same_device_repeat"
+        devices = {"a": next((x.device for x in entries_for_lookup if x.capture_id == e.repeat_of), None),
+                   "b": e.device}
+        shared = observed_in_both(a, b)
         # Score the gate whatever the same-space verdict says. Skipping it on a
         # weak verdict would report a vacuous pass on zero rows, which reads as
         # success and hides the failure being investigated.
         gate = G.repeatability(pairs, cfg)
         repeats.append({"capture_a": a.capture.id, "capture_b": b.capture.id, "space_id": e.space_id,
-                        "tier": e.tier, "same_space": verdict, "matching": match_summary, "gate": gate})
+                        "tier": e.tier, "same_space": verdict, "matching": match_summary, "gate": gate,
+                        "repeat_kind": kind, "devices": devices, "observed_in_both": shared})
     return {"self_consistency": rows, "repeat_pairs": repeats,
             "note": "No ground truth for these captures. Nothing here measures accuracy."}
 
@@ -285,11 +297,25 @@ def _no_truth_md(entries, manifests, report: dict[str, Any]) -> list[str]:
                   f"{r['footprint_area_m2']:.2f} | {r['sum_room_area_m2']:.2f} | {r['room_overlap_m2']:.3f} | "
                   f"{'yes' if r['rooms_connected'] else 'no ' + str(r['isolated_rooms'])} | "
                   f"{len(r['ceiling_from_prior'])}/{r['n_rooms']} | {m['duration_s']:.1f} |")
+    KIND_TEXT = {
+        "same_device_repeat": ("Same-device repeat. Two captures of one room with one phone on one "
+                               "protocol. This is the primary repeatability evidence."),
+        "cross_device_repeat": ("Cross-device repeat: the two captures used different phones, so any "
+                                "disagreement mixes pipeline repeatability with camera differences. "
+                                "Weaker evidence than a same-device pair."),
+        "coverage_mismatched": ("NOT a valid repeat pair. The two captures cover different subsets of "
+                                "the building, so the strict gate number below measures coverage as "
+                                "much as repeatability. It is kept visible, and a secondary statistic "
+                                "over the walls both captures saw is reported beneath it."),
+    }
     for rp in report["repeat_pairs"]:
         v = rp["same_space"]
         ms = rp["matching"]
         reg = ms["registration"]
+        dev = rp.get("devices", {})
         md += ["", f"### Repeat pair: {rp['capture_a']} and {rp['capture_b']} ({rp['tier']})", "",
+               f"**{KIND_TEXT.get(rp.get('repeat_kind', ''), '')}**", "",
+               f"Devices: {dev.get('a') or 'unrecorded'} and {dev.get('b') or 'unrecorded'}.", "",
                f"Registration: rotation {reg['rotation_deg']} degrees, translation "
                f"({reg['tx']:.2f}, {reg['ty']:.2f}) m, footprint IoU {reg['footprint_iou']:.2f}.", "",
                f"Same space check: {v['matched_rooms']} of {min(v['rooms_a'], v['rooms_b'])} rooms pair by polygon IoU. "
@@ -315,6 +341,27 @@ def _no_truth_md(entries, manifests, report: dict[str, Any]) -> list[str]:
                            f"{sum(1 for r in matched_rows if r['ok'])} are within tolerance.", ""]
             md += [f"Rows failing because a wall or room has no counterpart: "
                    f"{sum(1 for r in g['detail']['per_wall'] if not r.get('matched', True))}.", ""]
+        ob = rp.get("observed_in_both")
+        if ob and ob["walls_observed_in_both"]:
+            md += ["Secondary statistic, walls observed in both captures. "
+                   "**This is not the gate**: the gate scores every wall, including those only one "
+                   "capture saw, so that reporting fewer things cannot raise a score.", "",
+                   f"| walls seen in both | median difference | within {ob['within_tolerance_m'] * 100:.0f} cm | "
+                   f"registered footprint IoU |", "|---|---|---|---|",
+                   f"| {ob['walls_observed_in_both']} of {ob['walls_total_rows']} rows | "
+                   f"{ob['median_abs_difference_m'] * 100:.1f} cm | "
+                   f"{ob['n_within_tolerance']} ({ob['share_within_tolerance']:.0%}) | "
+                   f"{ob['registration_footprint_iou']:.2f} |", "",
+                   ob["note"], ""]
+            fa = ob.get("face_agreement")
+            if fa and fa.get("median_offset_m") is not None:
+                shares = ", ".join(f"{k.split('_matched_share')[0]} {v:.0%}"
+                                   for k, v in sorted(fa["matched_share_by_capture"].items()))
+                md += [f"At the wall-face level, below the polygon, the two captures place the same "
+                       f"wall within a median of {fa['median_offset_m'] * 100:.1f} cm. Face length "
+                       f"with any counterpart: {shares}. The polygon edges disagree far more than "
+                       f"the faces do, because the two captures cut the same wall into different "
+                       f"edges. Source: {fa['source']}.", ""]
     return md
 
 
@@ -382,8 +429,9 @@ def bench(
 
     cfg = prov.load_config(config)
     untruthed = [e for e in registry.captures if e.ground_truth is None]
-    no_truth = _no_truth_report(untruthed, manifests, {e.capture_id: plans[e.capture_id] for e in untruthed}, cfg) \
-        if untruthed else None
+    no_truth = _no_truth_report(untruthed, manifests,
+                                {e.capture_id: plans[e.capture_id] for e in untruthed}, cfg,
+                                all_entries=registry.captures) if untruthed else None
     result = None
     eval_md = ""
     if pairs:

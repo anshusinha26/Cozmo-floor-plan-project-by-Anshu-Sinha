@@ -181,8 +181,16 @@ class CaptureEntry(_Strict):
     tier: Tier
     input: str
     ground_truth: str | None = None  # null where no tape measurements exist yet
+    device: str | None = None
     repeat_of: str | None = None
+    repeat_kind: Literal["same_device_repeat", "cross_device_repeat", "coverage_mismatched"] | None = None
     multi_room: bool = False
+
+    @model_validator(mode="after")
+    def _repeat_kind_needs_a_repeat(self) -> "CaptureEntry":
+        if self.repeat_kind and not self.repeat_of:
+            raise ValueError(f"{self.capture_id}: repeat_kind without repeat_of")
+        return self
 
 
 class Registry(_Strict):

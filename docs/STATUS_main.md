@@ -155,3 +155,68 @@ and video tiers are being built elsewhere; `scripts/head_to_head.py --plans
 <dir>` fills it as soon as plans for these rooms exist.
 
 Tests: 161 passing.
+
+## Stage A (task 6): damage precision
+
+Done. Two of three targets met, and the miss is structural rather than a
+tuning failure.
+
+Four filters added, each switchable so its effect is measured rather than
+asserted: distractor prompts, a geometry test against the plan's surfaces, a
+multi-view requirement, and a SigLIP crop verifier.
+
+| case | raw false regions | after all four | staged marks kept |
+|---|---|---|---|
+| own/bedroom_2_repeat photos, threshold 0.15 | 63 | **9** | both |
+| clean LiDAR scan, threshold 0.15 | 106 | **0** | n/a, no damage present |
+
+| target | result |
+|---|---|
+| both staged marks still found | met at threshold 0.15 |
+| under 5 false regions in bedroom_2_repeat | not met, 9 |
+| under 5 false regions on the clean LiDAR scan | met, 0 |
+
+What each filter is worth: distractor prompts almost nothing (93 to 91 on
+photos, 106 to 104 on LiDAR); geometry a third of LiDAR boxes and nothing on
+photos; multi-view 72 to 26 on LiDAR and nothing on photos; the crop verifier
+26 to 0 on LiDAR and 91 to 27 on photos. The verifier does the work.
+
+Failures and open items: two of the four filters need depth and poses, so the
+photo case gets no benefit from them, which is why it is the one that misses.
+The multi-view rule cannot be applied to photo folders as specified, because
+without poses there is no way to know whether a mark was visible in another
+photo. The crop verifier costs recall: at threshold 0.20 it removes the crack
+along with the false positives, so cracks are the class most at risk. Full
+tables and failure modes in `docs/damage_eval/README.md`.
+
+Default threshold is 0.15, the setting that keeps both planted classes.
+
+## Stage B (task 6): repeatability reporting
+
+Done. No denominator changed.
+
+* The official repeat pair is `bedroom_2` against `bedroom_2_repeat`,
+  registered at both photo and video tier. The video pair is same-device
+  (Nokia 8.1) and is the primary repeatability evidence. The photo pair is
+  cross-device (Moto Edge 50 Neo against Nokia 8.1) and is labelled as such,
+  because its disagreement mixes pipeline repeatability with camera
+  differences.
+* The two sample LiDAR scans are now labelled `coverage_mismatched`: not a
+  valid repeat pair. The strict result stays visible and unchanged at 0 of 153
+  rows within tolerance.
+* Beneath it, a secondary statistic over the walls both captures saw, clearly
+  marked as not the gate: 14 shared walls of 153 rows, median polygon-edge
+  difference 76.1 cm, registered footprint IoU 0.61. And at the wall-face
+  level, below the polygon, the two captures place the same wall within a
+  median of 1.9 cm, with 56% and 37% of each capture's face length having any
+  counterpart.
+
+That contrast is the whole finding: the faces agree to two centimetres and
+the polygon edges disagree by most of a metre, because the two captures cut
+the same wall into different edges.
+
+Devices are recorded per capture in `benchmarks/captures.yaml` and in each
+ground-truth file. EXIF make and model were stripped from the supplied photos,
+so device attribution is the operator's record and says so in the files.
+Measured from the files themselves: photos are 1200 x 1600, videos are
+3840 x 2160 H.264 at about 30 fps.
