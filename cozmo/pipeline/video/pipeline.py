@@ -34,6 +34,7 @@ from typing import Any
 import numpy as np
 
 from cozmo.contracts.models import Plan, Tier
+from cozmo.io.inputs import validate_input
 from cozmo.pipeline.base import Pipeline
 from cozmo.pipeline.video import bridge as bridge_mod
 from cozmo.pipeline.video import dense as dense_mod
