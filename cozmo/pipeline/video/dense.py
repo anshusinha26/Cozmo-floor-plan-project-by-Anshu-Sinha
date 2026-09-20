@@ -164,7 +164,11 @@ class DenseBuild:
                 continue
             M = chunk.cam_from_world[kf.i]
             Rc, tc = M[:3, :3], M[:3, 3]
-            Pw = (P[keep] - tc) @ Rc * s
+            # The depth map is already metric; the pose is in SfM units. Scale
+            # the pose, never the points: X_metric = R^T (P_metric - s t). Scaling
+            # the points instead collapses every one of them onto its own camera
+            # centre by a factor of s.
+            Pw = (P[keep] - s * tc) @ Rc
             Nw = nrm[keep] @ Rc
             buf_p.append(Pw @ R_g.T + t_g)
             buf_n.append(Nw @ R_g.T)

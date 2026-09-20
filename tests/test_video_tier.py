@@ -315,3 +315,61 @@ def test_a_fragment_reports_a_wider_interval_than_a_full_capture(tmp_path):
                                 warnings=[], assumptions=[])
         widths.append(max(w.length_m.width for w in built.plan.rooms[0].walls))
     assert widths[1] > widths[0]
+
+
+# --------------------------------------------------------- dense unprojection
+
+def _one_frame_build(scale: float, camera_centre_sfm: np.ndarray, depth_m: float, n: int = 9):
+    """A DenseBuild holding one camera and one constant-depth map.
+
+    The camera looks down +z with no rotation, so a pixel at the principal point
+    must land exactly ``depth_m`` metres in front of the camera's metric centre.
+    """
+    from cozmo.pipeline.video.dense import DenseBuild, Keyframe
+    from cozmo.pipeline.video.sfm import SfmChunk
+
+    M = np.eye(4)
+    M[:3, 3] = -camera_centre_sfm          # R = I, so t = -centre
+    chunk = SfmChunk(index=0, names=["f00001.jpg"], times_s=np.zeros(1),
+                     cam_from_world=M[None, ...], obs_uv=np.zeros((0, 2), np.float32),
+                     obs_z=np.zeros(0, np.float32), obs_off=np.array([0, 0]),
+                     xyz=np.zeros((0, 3)), focal_px=500.0,
+                     cam_params=np.array([500.0, n / 2, n / 2, 0.0]), cam_wh=(n, n),
+                     mean_reproj_err_px=0.5, scale_m_per_unit=scale)
+    ax = (np.arange(n) - (n - 1) / 2) / 500.0
+    rays_x, rays_y = np.meshgrid(ax, ax)
+    build = DenseBuild(keyframes=[Keyframe(chunk=0, i=0, zmap=np.full((n, n), depth_m, np.float16))],
+                       rays={0: (rays_x, rays_y)}, chunks=[chunk], group=[0])
+    return build, chunk
+
+
+def test_fused_points_sit_at_their_metric_depth_from_the_camera():
+    """The depth map is metric and the pose is in SfM units, so the pose gets scaled.
+
+    Scaling the points instead silently shrinks every one of them toward its own
+    camera centre by a factor of s, which leaves the camera path correct and the
+    geometry collapsed. This caught exactly that.
+    """
+    scale, depth = 0.2, 3.0
+    centre_sfm = np.array([10.0, 0.0, 0.0])
+    build, _ = _one_frame_build(scale, centre_sfm, depth)
+    cloud = build.fuse({0: (np.eye(3), np.zeros(3))}, voxel_m=0.01)
+
+    centre_m = scale * centre_sfm
+    assert np.allclose(cloud.camera_path[0], centre_m)
+    assert len(cloud.points) > 0
+    # Every point is depth metres in front of the camera, along +z.
+    offsets = cloud.points - centre_m
+    assert offsets[:, 2] == pytest.approx(depth, abs=0.02)
+    assert np.abs(offsets[:, :2]).max() < 0.05
+    # The cloud must be at the right distance, not squashed onto the camera.
+    assert np.linalg.norm(offsets, axis=1).min() == pytest.approx(depth, abs=0.02)
+
+
+def test_a_chunk_transform_moves_the_fused_points_with_it():
+    """The group transform is applied in metres, after the pose conversion."""
+    build, _ = _one_frame_build(0.2, np.array([10.0, 0.0, 0.0]), 3.0)
+    shift = np.array([5.0, -1.0, 2.0])
+    a = build.fuse({0: (np.eye(3), np.zeros(3))}, voxel_m=0.01)
+    b = build.fuse({0: (np.eye(3), shift)}, voxel_m=0.01)
+    assert np.allclose(np.sort(b.points, axis=0) - np.sort(a.points, axis=0), shift, atol=1e-3)
