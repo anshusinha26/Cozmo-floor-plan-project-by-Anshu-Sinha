@@ -151,6 +151,9 @@ class DenseBuild:
         for kf in self.keyframes:
             if only is not None and kf.chunk not in only:
                 continue
+            if kf.chunk not in transforms:
+                # Every chunk is fitted, but only the bridged group is placed.
+                continue
             chunk = self.chunks[kf.chunk]
             R_g, t_g = transforms[kf.chunk]
             s = float(chunk.scale_m_per_unit)
@@ -197,7 +200,8 @@ class DenseBuild:
                     only: set[int] | None = None) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
         """Every registered camera of the group, in metres, plus each camera's up vector."""
         pts, times, ups = [], [], []
-        for ci in (self.group if only is None else [c for c in self.group if c in only]):
+        wanted = self.group if only is None else [c for c in self.group if c in only]
+        for ci in [c for c in wanted if c in transforms]:
             chunk = self.chunks[ci]
             R_g, t_g = transforms[ci]
             s = float(chunk.scale_m_per_unit)

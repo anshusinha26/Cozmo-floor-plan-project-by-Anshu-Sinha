@@ -154,3 +154,80 @@ def test_the_fit_converts_to_what_the_plan_backend_expects():
     # The mask has to agree with the polygon, or ceiling measurement reads the wrong points.
     assert room.mask.mean() == pytest.approx(12.0 / (rooms.grid.shape[0] * rooms.grid.shape[1] *
                                                      0.05 ** 2), rel=0.15)
+
+
+# ------------------------------------------- regressions from the first run
+
+def test_fusing_skips_chunks_that_were_never_placed():
+    """Every chunk is fitted, only the bridged group is placed.
+
+    The first after-run died on this with KeyError(0), whose message is the bare
+    string '0', so the failure surfaced as `error: 0`.
+    """
+    from cozmo.pipeline.video.dense import DenseBuild, Keyframe
+    from cozmo.pipeline.video.sfm import SfmChunk
+
+    chunks = []
+    for i in range(3):
+        c = SfmChunk(index=i, names=["f.jpg"], times_s=np.zeros(1),
+                     cam_from_world=np.eye(4)[None, ...], obs_uv=np.zeros((0, 2)),
+                     obs_z=np.zeros(0), obs_off=np.array([0, 0]), xyz=np.zeros((0, 3)),
+                     focal_px=500.0, cam_params=np.array([500.0, 4.0, 4.0, 0.0]), cam_wh=(9, 9),
+                     mean_reproj_err_px=0.5)
+        c.scale_m_per_unit = 0.2
+        chunks.append(c)
+    ax = (np.arange(9) - 4) / 500.0
+    rx, ry = np.meshgrid(ax, ax)
+    build = DenseBuild(
+        keyframes=[Keyframe(chunk=i, i=0, zmap=np.full((9, 9), 3.0, np.float16)) for i in range(3)],
+        rays={i: (rx, ry) for i in range(3)}, chunks=chunks, group=[1],
+        scale_at_fit={i: 0.2 for i in range(3)})
+    cloud = build.fuse({1: (np.eye(3), np.zeros(3))}, voxel_m=0.05)
+    assert len(cloud.points) > 0
+    assert len(cloud.camera_path) == 1      # only the placed chunk contributes
+
+
+def test_a_planar_fit_pins_the_turn_even_for_cameras_walking_in_a_line():
+    """A 3D similarity on four cameras in a line leaves the roll free.
+
+    That is how two chunks standing on the same floor came out 164 degrees apart
+    about which way was down. Solving in the floor plane removes the freedom.
+    """
+    from cozmo.pipeline.video.bridge import umeyama_2d
+
+    theta = 0.9
+    Rot = np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
+    line = np.column_stack([np.linspace(0, 1.5, 4), np.zeros(4)])
+    target = (Rot @ line.T).T + np.array([1.0, 2.0])
+    scale, yaw, t, rms = umeyama_2d(line, target)
+    assert yaw == pytest.approx(theta, abs=1e-9)
+    assert scale == pytest.approx(1.0, abs=1e-9)
+    assert rms == pytest.approx(0.0, abs=1e-9)
+
+
+def test_the_planar_fit_recovers_scale_and_shift_together():
+    from cozmo.pipeline.video.bridge import umeyama_2d
+
+    rng = np.random.default_rng(3)
+    X = rng.normal(size=(8, 2))
+    theta = -0.4
+    Rot = np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
+    Y = (2.5 * (Rot @ X.T)).T + np.array([-1.0, 4.0])
+    scale, yaw, t, rms = umeyama_2d(X, Y)
+    assert (scale, yaw) == (pytest.approx(2.5), pytest.approx(theta))
+    assert t == pytest.approx(np.array([-1.0, 4.0]))
+    assert rms < 1e-9
+
+
+def test_mapanything_is_stood_up_before_it_is_compared():
+    """MapAnything does not know which way is down, so its frame is aligned first."""
+    from cozmo.pipeline.video.bridge import gravity_align
+
+    tilt = np.deg2rad(20.0)
+    Rx = np.array([[1, 0, 0], [0, np.cos(tilt), -np.sin(tilt)], [0, np.sin(tilt), np.cos(tilt)]])
+    poses = np.tile(np.eye(4), (5, 1, 1))
+    for p in poses:
+        p[:3, :3] = Rx @ np.diag([1.0, -1.0, -1.0])   # camera y points down
+    R = gravity_align(poses)
+    up_world = -poses[0, :3, 1]
+    assert (R @ up_world)[1] == pytest.approx(1.0, abs=1e-6)

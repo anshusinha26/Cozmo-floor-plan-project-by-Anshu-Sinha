@@ -90,6 +90,49 @@ class BridgeResult:
                 "dropped": self.dropped}
 
 
+def umeyama_2d(X: np.ndarray, Y: np.ndarray) -> tuple[float, float, np.ndarray, float]:
+    """Similarity in the floor plane: returns (scale, yaw, translation, rms).
+
+    Once both sides are gravity aligned the only freedom left is a turn about
+    gravity and a slide, and solving for exactly that is the point. A full 3D
+    similarity fitted to four cameras walking in a line leaves the rotation about
+    the line of travel unconstrained, which is how two chunks standing on the
+    same floor came out 164 degrees apart about which way was down.
+    """
+    if len(X) < 2:
+        raise ValueError("a planar similarity fit needs at least 2 correspondences")
+    mx, my = X.mean(0), Y.mean(0)
+    Xc, Yc = X - mx, Y - my
+    var = float((Xc ** 2).sum())
+    if var <= 1e-12:
+        raise ValueError("degenerate correspondences: source points coincide")
+    # Complex form: the least squares similarity is one complex division.
+    a = float((Xc[:, 0] * Yc[:, 0] + Xc[:, 1] * Yc[:, 1]).sum())
+    b = float((Xc[:, 0] * Yc[:, 1] - Xc[:, 1] * Yc[:, 0]).sum())
+    scale = float(np.hypot(a, b) / var)
+    yaw = float(np.arctan2(b, a))
+    c, sn = np.cos(yaw), np.sin(yaw)
+    Rot = np.array([[c, -sn], [sn, c]])
+    t = my - scale * (Rot @ mx)
+    resid = (scale * (Rot @ X.T)).T + t - Y
+    return scale, yaw, t, float(np.sqrt((resid ** 2).sum(1).mean()))
+
+
+def gravity_align(poses: np.ndarray) -> np.ndarray:
+    """Rotation taking MapAnything's own frame to y-up, from its camera up vectors.
+
+    MapAnything does not know which way is down, so its output has to be stood up
+    before it can be compared with two chunks that already have been.
+    """
+    from cozmo.pipeline.video.up import rotation_between
+
+    up = -poses[:, :3, 1].mean(axis=0)
+    n = float(np.linalg.norm(up))
+    if n < 1e-9:
+        return np.eye(3)
+    return rotation_between(up / n, np.array([0.0, 1.0, 0.0]))
+
+
 def umeyama(X: np.ndarray, Y: np.ndarray) -> Sim3:
     """Least squares similarity mapping X onto Y, both (N, 3)."""
     if len(X) < 3:
@@ -230,6 +273,10 @@ def try_bridge(chunk_a: SfmChunk, chunk_b: SfmChunk, frames: FrameSet, oracle: M
     ma = poses[:, :3, 3]
     ma_a, ma_b = ma[:len(ia)], ma[len(ia):]
 
+    if levelled:
+        return _planar_bridge(chunk_a, chunk_b, ia, ib, poses, centres, max_rms_m, max_rms_frac,
+                              max_vertical_m, min_span_m, time.perf_counter() - t0)
+
     try:
         fit_a = umeyama(ma_a, centres(chunk_a, ia))
         fit_b = umeyama(ma_b, centres(chunk_b, ib))
@@ -260,27 +307,6 @@ def try_bridge(chunk_a: SfmChunk, chunk_b: SfmChunk, frames: FrameSet, oracle: M
     # their own noise.
     R = fit_a.R @ fit_b.R.T
     t = fit_a.t - R @ fit_b.t
-
-    if levelled:
-        # Both chunks already stand upright on the same floor at their own metric
-        # scale, so only a turn about gravity and a slide along the floor are left
-        # to find. Scale no longer has to be agreed, which is what made most
-        # bridges fail; what does still have to agree is which way is down.
-        Rp, tp, tilt_deg, vertical = planar(R, t)
-        if tilt_deg > max_tilt_deg:
-            return BridgeAttempt(chunk_a.index, chunk_b.index, False,
-                                 f"the two chunks disagree about which way is down by "
-                                 f"{tilt_deg:.1f} degrees, over the {max_tilt_deg:.0f} allowed",
-                                 fit_a.rms_m, fit_b.rms_m, ratio, secs), None
-        if vertical > max_vertical_m:
-            return BridgeAttempt(chunk_a.index, chunk_b.index, False,
-                                 f"the bridge would lift one chunk {vertical:.2f} m off the "
-                                 f"other's floor, over the {max_vertical_m:.2f} m allowed",
-                                 fit_a.rms_m, fit_b.rms_m, ratio, secs), None
-        return BridgeAttempt(chunk_a.index, chunk_b.index, True,
-                             f"accepted on yaw {np.degrees(yaw_of(Rp)):+.1f} degrees, tilt "
-                             f"discarded {tilt_deg:.1f}, vertical {vertical:.2f} m",
-                             fit_a.rms_m, fit_b.rms_m, ratio, secs), (Rp, tp)
 
     sem = float(np.hypot(scale_standard_error(chunk_a), scale_standard_error(chunk_b)))
     tol_scale = max(max_scale_disagreement, scale_sem_sigmas * sem)
@@ -325,6 +351,59 @@ def planar(R: np.ndarray, t: np.ndarray) -> tuple[np.ndarray, np.ndarray, float,
     tilt_deg = float(np.rad2deg(np.arccos(np.clip((np.trace(Rp.T @ R) - 1) / 2, -1, 1))))
     tp = np.array([t[0], 0.0, t[2]])
     return Rp, tp, tilt_deg, float(abs(t[1]))
+
+
+def _planar_bridge(chunk_a, chunk_b, ia, ib, poses, centres, max_rms_m, max_rms_frac,
+                   max_vertical_m, min_span_m, secs):
+    """Bridge two chunks that already stand upright on a common floor.
+
+    Everything is stood up first, MapAnything included, and then the fit is a
+    turn about gravity and a slide. There is no rotation left over to get wrong.
+    """
+    R_ma = gravity_align(poses)
+    ma = poses[:, :3, 3] @ R_ma.T
+    ma_a, ma_b = ma[:len(ia)], ma[len(ia):]
+    ca, cb = centres(chunk_a, ia), centres(chunk_b, ib)
+
+    span_a = float(np.linalg.norm(np.ptp(ca[:, [0, 2]], axis=0)))
+    span_b = float(np.linalg.norm(np.ptp(cb[:, [0, 2]], axis=0)))
+    if min(span_a, span_b) < min_span_m:
+        return BridgeAttempt(chunk_a.index, chunk_b.index, False,
+                             f"overlap cameras span only {min(span_a, span_b):.2f} m on the floor, "
+                             f"under the {min_span_m:.2f} m a fit needs to pin a turn",
+                             seconds=secs), None
+    try:
+        s_a, yaw_a, t_a, rms_a = umeyama_2d(ma_a[:, [0, 2]], ca[:, [0, 2]])
+        s_b, yaw_b, t_b, rms_b = umeyama_2d(ma_b[:, [0, 2]], cb[:, [0, 2]])
+    except ValueError as e:
+        return BridgeAttempt(chunk_a.index, chunk_b.index, False, f"alignment degenerate: {e}",
+                             seconds=secs), None
+
+    tol_a = max(max_rms_m, max_rms_frac * span_a)
+    tol_b = max(max_rms_m, max_rms_frac * span_b)
+    ratio = s_a / s_b if s_b else float("inf")
+    if rms_a > tol_a or rms_b > tol_b:
+        return BridgeAttempt(chunk_a.index, chunk_b.index, False,
+                             f"floor-plane alignment residual {rms_a:.3f} m and {rms_b:.3f} m "
+                             f"against {tol_a:.3f} and {tol_b:.3f} allowed",
+                             rms_a, rms_b, ratio, secs), None
+    vertical = float(abs(np.median(ca[:, 1]) - np.median(cb[:, 1])))
+    if vertical > max_vertical_m:
+        return BridgeAttempt(chunk_a.index, chunk_b.index, False,
+                             f"the two chunks put their cameras {vertical:.2f} m apart in height, "
+                             f"over the {max_vertical_m:.2f} m allowed, so they are not on one floor",
+                             rms_a, rms_b, ratio, secs), None
+
+    yaw = yaw_a - yaw_b
+    Rp = yaw_matrix(yaw)
+    c, sn = np.cos(yaw), np.sin(yaw)
+    Rot2 = np.array([[c, -sn], [sn, c]])
+    t2 = t_a - Rot2 @ t_b
+    tp = np.array([t2[0], 0.0, t2[1]])
+    return BridgeAttempt(chunk_a.index, chunk_b.index, True,
+                         f"accepted on yaw {np.degrees(yaw):+.1f} degrees, residuals "
+                         f"{rms_a:.3f} and {rms_b:.3f} m, implied scales differ by "
+                         f"{abs(ratio - 1):.0%}", rms_a, rms_b, ratio, secs), (Rp, tp)
 
 
 def _largest_group(n: int, edges: list[tuple[int, int]], weights: list[int]) -> list[int]:
