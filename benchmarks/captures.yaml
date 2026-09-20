@@ -16,3 +16,27 @@ captures:
     ground_truth: benchmarks/ground_truth/EXAMPLE_REPEAT.yaml
     repeat_of: EXAMPLE
     multi_room: true
+  # iPhone LiDAR sample scans in Stray Scanner format. No tape ground truth
+  # exists for these yet, so bench reports outputs, runtime and
+  # self-consistency only. The two apartment scans are a repeat pair.
+  - capture_id: c00a170fe1
+    space_id: sample_single_room
+    tier: lidar
+    input: data/sample/c00a170fe1
+    ground_truth: null
+    repeat_of: null
+    multi_room: false
+  - capture_id: 1a8384c3f6
+    space_id: sample_apartment
+    tier: lidar
+    input: data/sample/1a8384c3f6
+    ground_truth: null
+    repeat_of: null
+    multi_room: true
+  - capture_id: c7d28f72c6
+    space_id: sample_apartment
+    tier: lidar
+    input: data/sample/c7d28f72c6
+    ground_truth: null
+    repeat_of: 1a8384c3f6
+    multi_room: true

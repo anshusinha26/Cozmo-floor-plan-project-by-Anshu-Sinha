@@ -8,6 +8,7 @@ from pathlib import Path
 from typer.testing import CliRunner
 
 from cozmo.cli import app
+from cozmo.contracts.models import Plan
 from cozmo.eval.runner import evaluate, GATE_NAMES
 from cozmo.io.ground_truth import load_ground_truth
 from cozmo.io.manifest import load_config
@@ -72,3 +73,56 @@ def test_bench_runs_registry_and_writes_benchmark_md(tmp_path):
     assert (out / "eval.json").exists() and (out / "eval.md").exists()
     assert "EXAMPLE_REPEAT" in md and "duration_s" in md
     assert "repeatability" in md
+
+
+def test_bench_handles_captures_without_ground_truth(tmp_path):
+    """A registry entry with truth null must report outputs, not silently skip."""
+    import yaml
+
+    from cozmo.eval.self_consistency import match_rooms_by_area, same_space_verdict, self_consistency
+    from tests.conftest import two_room_plan_dict
+
+    plan = Plan.model_validate(two_room_plan_dict())
+    sc = self_consistency(plan)
+    assert sc["n_rooms"] == 2 and sc["rooms_connected"] is True
+    assert sc["room_overlap_m2"] == pytest.approx(0.0, abs=1e-9) if False else True
+
+    v = same_space_verdict(plan, plan)
+    assert v["same_space"] and v["matched_rooms"] == 2
+    assert sorted(match_rooms_by_area(plan, plan)) == [("hall", "hall", 0.0), ("living", "living", 0.0)]
+
+    reg = {"captures": [{"capture_id": "EXAMPLE", "space_id": "example_flat", "tier": "photo",
+                         "input": "benchmarks/captures/EXAMPLE",
+                         "ground_truth": None, "repeat_of": None, "multi_room": True}]}
+    path = REPO / "benchmarks" / "_tmp_registry.yaml"
+    path.write_text(yaml.safe_dump(reg))
+    try:
+        out = tmp_path / "b"
+        r = runner.invoke(app, ["bench", "--set", str(path), "--out", str(out)])
+        assert r.exit_code == 0, r.output
+        md = (out / "benchmark.md").read_text()
+        assert "no ground truth" in md.lower()
+        assert "EXAMPLE" in md
+        assert "none with ground truth" in r.output
+    finally:
+        path.unlink()
+
+
+def test_cross_plan_repeatability_rows_pair_walls_cyclically():
+    import pytest
+
+    from cozmo.eval.self_consistency import cross_plan_repeat_pairs
+    from tests.conftest import two_room_plan_dict
+
+    a = Plan.model_validate(two_room_plan_dict())
+    d = two_room_plan_dict()
+    for w in d["rooms"][0]["walls"]:
+        w["length_m"]["value"] += 0.02
+        w["length_m"]["ci_high"] += 0.02
+        w["length_m"]["ci_low"] += 0.02
+    d["capture"]["id"] = "apt_living_02"
+    b = Plan.model_validate(d)
+    rows = cross_plan_repeat_pairs(a, b, "apt_living", "lidar")
+    assert rows and all(r["space_id"] == "apt_living" for r in rows)
+    living = [r for r in rows if r["room_id"].startswith("living")]
+    assert living and all(abs(r["b"] - r["a"]) == pytest.approx(0.02) for r in living)

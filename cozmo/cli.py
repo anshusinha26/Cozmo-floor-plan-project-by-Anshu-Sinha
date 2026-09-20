@@ -30,6 +30,8 @@ from cozmo.io import manifest as prov
 from cozmo.io.ground_truth import GroundTruth, load_ground_truth, load_registry
 from cozmo.io.inputs import InputError, validate_input
 from cozmo.eval.runner import evaluate, write_eval
+from cozmo.eval.self_consistency import cross_plan_repeat_pairs, same_space_verdict, self_consistency
+from cozmo.eval import gates as G
 from cozmo.pipeline import get_pipeline, pipeline_for
 from cozmo.render.plan import render_plan_png
 
@@ -235,21 +237,78 @@ def eval(
                f"ceiling diagnosis {s['ceiling_height_diagnosis']}")
 
 
-def _bench_md(entries, manifests: dict[str, dict[str, Any]], result: dict[str, Any], eval_md: str) -> str:
+def _no_truth_report(entries, manifests, plans: dict[str, Plan], cfg: dict[str, Any]) -> dict[str, Any]:
+    """Everything that can honestly be said about captures with no ground truth."""
+    rows = {cid: self_consistency(p) for cid, p in plans.items()}
+    repeats = []
+    for e in entries:
+        if e.repeat_of is None or e.repeat_of not in plans or e.capture_id not in plans:
+            continue
+        a, b = plans[e.repeat_of], plans[e.capture_id]
+        verdict = same_space_verdict(a, b)
+        pairs = cross_plan_repeat_pairs(a, b, e.space_id, e.tier) if verdict["same_space"] else []
+        gate = G.repeatability(pairs, cfg)
+        repeats.append({"capture_a": a.capture.id, "capture_b": b.capture.id, "space_id": e.space_id,
+                        "tier": e.tier, "same_space": verdict, "gate": gate})
+    return {"self_consistency": rows, "repeat_pairs": repeats,
+            "note": "No ground truth for these captures. Nothing here measures accuracy."}
+
+
+def _no_truth_md(entries, manifests, report: dict[str, Any]) -> list[str]:
+    md = ["## Captures with no ground truth", "",
+          "**These captures have no tape or laser measurements, so nothing below is an accuracy result.** "
+          "Reported: what the pipeline produced, how long it took, and whether the output is self-consistent.", "",
+          "| capture | tier | rooms | walls | openings | footprint m2 | sum of rooms m2 | room overlap m2 | rooms connected | ceiling from prior | duration_s |",
+          "|---|---|---|---|---|---|---|---|---|---|---|"]
+    for e in entries:
+        r = report["self_consistency"].get(e.capture_id)
+        if r is None:
+            continue
+        m = manifests[e.capture_id]
+        md.append(f"| {e.capture_id} | {e.tier} | {r['n_rooms']} | {r['n_walls']} | {r['n_openings']} | "
+                  f"{r['footprint_area_m2']:.2f} | {r['sum_room_area_m2']:.2f} | {r['room_overlap_m2']:.3f} | "
+                  f"{'yes' if r['rooms_connected'] else 'no ' + str(r['isolated_rooms'])} | "
+                  f"{len(r['ceiling_from_prior'])}/{r['n_rooms']} | {m['duration_s']:.1f} |")
+    for rp in report["repeat_pairs"]:
+        v = rp["same_space"]
+        md += ["", f"### Repeat pair: {rp['capture_a']} and {rp['capture_b']} ({rp['tier']})", "",
+               f"Same space check: footprint ratio {v['footprint_area_ratio']:.2f}, "
+               f"{v['matched_rooms']} of {min(v['rooms_a'], v['rooms_b'])} rooms pair by area. "
+               f"Verdict: **{'same space' if v['same_space'] else 'NOT confirmed as the same space'}** "
+               f"({v['basis']}).", "", v["note"], ""]
+        g = rp["gate"]
+        md += [f"Repeatability gate: {'PASS' if g['passed'] else 'FAIL'} on {g['n']} wall pairs, "
+               f"worst ratio {g['value']:.2f} against the allowed 1.0."]
+        if g["n"]:
+            w = g["detail"]["worst"]
+            md += ["", f"Worst wall: {w['room_id']} {w['wall_id']} {w['a']:.3f} m vs {w['b']:.3f} m, "
+                       f"difference {w['diff_m'] * 100:.1f} cm against {w['allowed_m'] * 100:.1f} cm allowed.", ""]
+            ok = sum(1 for r in g["detail"]["per_wall"] if r["ok"])
+            md += [f"Walls within tolerance: {ok} of {g['n']}.", ""]
+    return md
+
+
+def _bench_md(entries, manifests: dict[str, dict[str, Any]], result: dict[str, Any] | None,
+              eval_md: str, no_truth: dict[str, Any] | None, no_truth_entries) -> str:
     md = ["# Benchmark report", "", f"Captures: {len(entries)}. cozmo {__version__}.", ""]
-    if result["summary"]["stub_output"]:
-        md += ["**WARNING: plans came from the STUB PIPELINE. Timings and scores describe the harness, not a reconstruction.**", ""]
-    md += ["## Captures", "", "| capture | space | tier | repeat_of | multi_room | rooms | duration_s | stages (s) | plan sha256 |",
-           "|---|---|---|---|---|---|---|---|---|"]
+    if result is not None and result["summary"]["stub_output"]:
+        md += ["**WARNING: some plans came from the STUB PIPELINE. Their numbers describe the harness, not a reconstruction.**", ""]
+    md += ["## Captures", "",
+           "| capture | space | tier | pipeline | repeat_of | multi_room | rooms | duration_s | stages (s) | plan sha256 |",
+           "|---|---|---|---|---|---|---|---|---|---|"]
     for e in entries:
         m = manifests[e.capture_id]
-        stages = ", ".join(f"{k} {v:.3f}" for k, v in m["stage_timings_s"].items())
-        md.append(f"| {e.capture_id} | {e.space_id} | {e.tier} | {e.repeat_of or ''} | {e.multi_room} | {m['n_rooms']} | "
-                  f"{m['duration_s']:.3f} | {stages} | {m['plan_sha256'][:12]} |")
-    md += ["", "## Gate summary", "", "| gate | result | value | threshold | n |", "|---|---|---|---|---|"]
-    for g in result["gates"]:
-        md.append(f"| {g['name']} | {'PASS' if g['passed'] else 'FAIL'} | {g['value']:.4f} | {g['threshold']:.4f} | {g['n']} |")
-    md += ["", "---", "", eval_md]
+        stages = ", ".join(f"{k} {v:.2f}" for k, v in m["stage_timings_s"].items())
+        md.append(f"| {e.capture_id} | {e.space_id} | {e.tier} | {m['pipeline']['name']} | {e.repeat_of or ''} | "
+                  f"{e.multi_room} | {m['n_rooms']} | {m['duration_s']:.1f} | {stages} | {m['plan_sha256'][:12]} |")
+    if no_truth is not None:
+        md += [""] + _no_truth_md(no_truth_entries, manifests, no_truth)
+    if result is not None:
+        md += ["", "## Gate summary (captures with ground truth)", "",
+               "| gate | result | value | threshold | n |", "|---|---|---|---|---|"]
+        for g in result["gates"]:
+            md.append(f"| {g['name']} | {'PASS' if g['passed'] else 'FAIL'} | {g['value']:.4f} | {g['threshold']:.4f} | {g['n']} |")
+        md += ["", "---", "", eval_md]
     return "\n".join(md)
 
 
@@ -269,6 +328,7 @@ def bench(
 
     manifests: dict[str, dict[str, Any]] = {}
     pairs: list[tuple[Plan, GroundTruth]] = []
+    plans: dict[str, Plan] = {}
     for e in registry.captures:
         run_dir = out / "runs" / e.capture_id
         try:
@@ -276,20 +336,40 @@ def bench(
         except (InputError, FileNotFoundError, RuntimeError, ValueError, KeyError) as ex:
             _fail(f"{e.capture_id}: {ex}")
         plan = Plan.from_json_bytes((run_dir / "plan.json").read_bytes())
+        plans[e.capture_id] = plan
+        if e.ground_truth is None:
+            continue
         gt = load_ground_truth(resolve(e.ground_truth))
         if gt.capture_id != e.capture_id:
             _fail(f"{e.capture_id}: ground truth file says capture_id {gt.capture_id!r}")
         pairs.append((plan, gt))
 
     cfg = prov.load_config(config)
-    result = evaluate(pairs, cfg)
-    result["config"] = {"path": str(config), "sha256": prov.config_sha256(cfg)}
-    _, md_path = write_eval(result, out)
-    (out / "benchmark.md").write_text(_bench_md(registry.captures, manifests, result, md_path.read_text(encoding="utf-8")), encoding="utf-8")
-    s = result["summary"]
-    typer.echo(f"wrote {out / 'benchmark.md'}: {len(pairs)} captures, {s['n_passed']}/{s['n_gates']} gates passed, "
-               f"ceiling diagnosis {s['ceiling_height_diagnosis']}")
-
+    untruthed = [e for e in registry.captures if e.ground_truth is None]
+    no_truth = _no_truth_report(untruthed, manifests, {e.capture_id: plans[e.capture_id] for e in untruthed}, cfg) \
+        if untruthed else None
+    result = None
+    eval_md = ""
+    if pairs:
+        result = evaluate(pairs, cfg)
+        result["config"] = {"path": str(config), "sha256": prov.config_sha256(cfg)}
+        if no_truth is not None:
+            result["no_ground_truth"] = no_truth
+        _, md_path = write_eval(result, out)
+        eval_md = md_path.read_text(encoding="utf-8")
+    elif no_truth is not None:
+        (out / "eval.json").write_text(json.dumps({"no_ground_truth": no_truth}, indent=2, default=str) + "\n",
+                                       encoding="utf-8")
+    (out / "benchmark.md").write_text(
+        _bench_md(registry.captures, manifests, result, eval_md, no_truth, untruthed), encoding="utf-8")
+    if result is not None:
+        s = result["summary"]
+        typer.echo(f"wrote {out / 'benchmark.md'}: {len(registry.captures)} captures, "
+                   f"{s['n_passed']}/{s['n_gates']} gates passed on {len(pairs)} with ground truth, "
+                   f"ceiling diagnosis {s['ceiling_height_diagnosis']}")
+    else:
+        typer.echo(f"wrote {out / 'benchmark.md'}: {len(registry.captures)} captures, none with ground truth")
+    return
 
 @app.command()
 def schema(

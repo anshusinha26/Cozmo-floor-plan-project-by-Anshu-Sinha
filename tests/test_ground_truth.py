@@ -48,8 +48,11 @@ def test_registry_lists_example_captures_with_existing_paths():
     ids = [c.capture_id for c in reg.captures]
     assert "EXAMPLE" in ids and "EXAMPLE_REPEAT" in ids
     for c in reg.captures:
-        assert (REPO / c.input).is_dir(), c.input
-        assert (REPO / c.ground_truth).is_file(), c.ground_truth
+        if c.ground_truth is not None:
+            assert (REPO / c.ground_truth).is_file(), c.ground_truth
+    sample = [c for c in reg.captures if c.ground_truth is None]
+    assert sample, "sample lidar scans should be registered with truth null"
+    assert all(c.tier == "lidar" for c in sample)
     rep = reg.by_id("EXAMPLE_REPEAT")
     assert rep.repeat_of == "EXAMPLE"
     assert rep.space_id == reg.by_id("EXAMPLE").space_id

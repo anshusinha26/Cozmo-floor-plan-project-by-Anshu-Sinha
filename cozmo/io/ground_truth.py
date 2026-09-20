@@ -120,7 +120,7 @@ class CaptureEntry(_Strict):
     space_id: str
     tier: Tier
     input: str
-    ground_truth: str
+    ground_truth: str | None = None  # null where no tape measurements exist yet
     repeat_of: str | None = None
     multi_room: bool = False
 
