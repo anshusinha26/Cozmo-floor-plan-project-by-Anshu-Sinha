@@ -1,0 +1,1512 @@
+{
+  "cozmo_version": "0.1.0",
+  "n_captures": 2,
+  "summary": {
+    "passed": false,
+    "n_passed": 4,
+    "n_gates": 8,
+    "ceiling_height_diagnosis": "repeatable_but_biased",
+    "stub_output": true
+  },
+  "gates": [
+    {
+      "name": "opening_width",
+      "passed": false,
+      "value": 0.0,
+      "threshold": 0.85,
+      "n": 10,
+      "detail": {
+        "tolerance_m": 0.02,
+        "within_tolerance": 0,
+        "matched": 0,
+        "missed": 6,
+        "phantom": 4,
+        "errors_m": []
+      }
+    },
+    {
+      "name": "ceiling_height",
+      "passed": false,
+      "value": 0.20000000000000018,
+      "threshold": 0.015,
+      "n": 4,
+      "detail": {
+        "tolerance_m": 0.015,
+        "spread_tolerance_m": 0.01,
+        "per_room": [
+          {
+            "capture_id": "EXAMPLE",
+            "space_id": "example_flat",
+            "room_id": "living",
+            "pred": 2.7,
+            "truth": 2.5,
+            "abs_error_m": 0.20000000000000018,
+            "ok": false
+          },
+          {
+            "capture_id": "EXAMPLE",
+            "space_id": "example_flat",
+            "room_id": "hall",
+            "pred": 2.7,
+            "truth": 2.5,
+            "abs_error_m": 0.20000000000000018,
+            "ok": false
+          },
+          {
+            "capture_id": "EXAMPLE_REPEAT",
+            "space_id": "example_flat",
+            "room_id": "living",
+            "pred": 2.7,
+            "truth": 2.5,
+            "abs_error_m": 0.20000000000000018,
+            "ok": false
+          },
+          {
+            "capture_id": "EXAMPLE_REPEAT",
+            "space_id": "example_flat",
+            "room_id": "hall",
+            "pred": 2.7,
+            "truth": 2.5,
+            "abs_error_m": 0.20000000000000018,
+            "ok": false
+          }
+        ],
+        "spread": [
+          {
+            "space_id": "example_flat",
+            "room_id": "hall",
+            "captures": [
+              "EXAMPLE",
+              "EXAMPLE_REPEAT"
+            ],
+            "spread_m": 0.0,
+            "ok": true
+          },
+          {
+            "space_id": "example_flat",
+            "room_id": "living",
+            "captures": [
+              "EXAMPLE",
+              "EXAMPLE_REPEAT"
+            ],
+            "spread_m": 0.0,
+            "ok": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "ceiling_height_diagnosis",
+      "passed": false,
+      "value": 0.20000000000000018,
+      "threshold": 0.015,
+      "n": 4,
+      "detail": {
+        "label": "repeatable_but_biased",
+        "small_spread_m": 0.01,
+        "biased_mean_m": 0.015,
+        "per_space": [
+          {
+            "space_id": "example_flat",
+            "room_id": "hall",
+            "n_captures": 2,
+            "spread_m": 0.0,
+            "mean_error_m": 0.20000000000000018,
+            "label": "repeatable_but_biased",
+            "single_capture": false
+          },
+          {
+            "space_id": "example_flat",
+            "room_id": "living",
+            "n_captures": 2,
+            "spread_m": 0.0,
+            "mean_error_m": 0.20000000000000018,
+            "label": "repeatable_but_biased",
+            "single_capture": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "repeatability",
+      "passed": true,
+      "value": 0.0,
+      "threshold": 1.0,
+      "n": 8,
+      "detail": {
+        "abs_tolerance_m": 0.01,
+        "rel_tolerance": 0.005,
+        "per_wall": [
+          {
+            "space_id": "example_flat",
+            "tier": "photo",
+            "capture_a": "EXAMPLE",
+            "capture_b": "EXAMPLE_REPEAT",
+            "room_id": "hall",
+            "wall_id": "east",
+            "a": 3.0,
+            "b": 3.0,
+            "diff_m": 0.0,
+            "allowed_m": 0.015,
+            "ratio": 0.0,
+            "ok": true
+          },
+          {
+            "space_id": "example_flat",
+            "tier": "photo",
+            "capture_a": "EXAMPLE",
+            "capture_b": "EXAMPLE_REPEAT",
+            "room_id": "hall",
+            "wall_id": "north",
+            "a": 1.2,
+            "b": 1.2,
+            "diff_m": 0.0,
+            "allowed_m": 0.01,
+            "ratio": 0.0,
+            "ok": true
+          },
+          {
+            "space_id": "example_flat",
+            "tier": "photo",
+            "capture_a": "EXAMPLE",
+            "capture_b": "EXAMPLE_REPEAT",
+            "room_id": "hall",
+            "wall_id": "south",
+            "a": 1.2,
+            "b": 1.2,
+            "diff_m": 0.0,
+            "allowed_m": 0.01,
+            "ratio": 0.0,
+            "ok": true
+          },
+          {
+            "space_id": "example_flat",
+            "tier": "photo",
+            "capture_a": "EXAMPLE",
+            "capture_b": "EXAMPLE_REPEAT",
+            "room_id": "hall",
+            "wall_id": "west",
+            "a": 3.0,
+            "b": 3.0,
+            "diff_m": 0.0,
+            "allowed_m": 0.015,
+            "ratio": 0.0,
+            "ok": true
+          },
+          {
+            "space_id": "example_flat",
+            "tier": "photo",
+            "capture_a": "EXAMPLE",
+            "capture_b": "EXAMPLE_REPEAT",
+            "room_id": "living",
+            "wall_id": "east",
+            "a": 4.2,
+            "b": 4.2,
+            "diff_m": 0.0,
+            "allowed_m": 0.021,
+            "ratio": 0.0,
+            "ok": true
+          },
+          {
+            "space_id": "example_flat",
+            "tier": "photo",
+            "capture_a": "EXAMPLE",
+            "capture_b": "EXAMPLE_REPEAT",
+            "room_id": "living",
+            "wall_id": "north",
+            "a": 4.4,
+            "b": 4.4,
+            "diff_m": 0.0,
+            "allowed_m": 0.022000000000000002,
+            "ratio": 0.0,
+            "ok": true
+          },
+          {
+            "space_id": "example_flat",
+            "tier": "photo",
+            "capture_a": "EXAMPLE",
+            "capture_b": "EXAMPLE_REPEAT",
+            "room_id": "living",
+            "wall_id": "south",
+            "a": 4.4,
+            "b": 4.4,
+            "diff_m": 0.0,
+            "allowed_m": 0.022000000000000002,
+            "ratio": 0.0,
+            "ok": true
+          },
+          {
+            "space_id": "example_flat",
+            "tier": "photo",
+            "capture_a": "EXAMPLE",
+            "capture_b": "EXAMPLE_REPEAT",
+            "room_id": "living",
+            "wall_id": "west",
+            "a": 4.2,
+            "b": 4.2,
+            "diff_m": 0.0,
+            "allowed_m": 0.021,
+            "ratio": 0.0,
+            "ok": true
+          }
+        ],
+        "worst": {
+          "space_id": "example_flat",
+          "tier": "photo",
+          "capture_a": "EXAMPLE",
+          "capture_b": "EXAMPLE_REPEAT",
+          "room_id": "hall",
+          "wall_id": "east",
+          "a": 3.0,
+          "b": 3.0,
+          "diff_m": 0.0,
+          "allowed_m": 0.015,
+          "ratio": 0.0,
+          "ok": true
+        },
+        "n_within_tolerance": 8,
+        "share_within_tolerance": 1.0
+      }
+    },
+    {
+      "name": "wall_length_tier",
+      "passed": false,
+      "value": 2.4999999999999996,
+      "threshold": 1.0,
+      "n": 16,
+      "detail": {
+        "per_wall": [
+          {
+            "capture_id": "EXAMPLE",
+            "room_id": "living",
+            "wall_id": "south",
+            "pred": 4.4,
+            "truth": 5.0,
+            "tier": "photo",
+            "abs_error_m": 0.5999999999999996,
+            "rel_error": 0.11999999999999993,
+            "allowed_m": 0.4,
+            "ratio": 1.4999999999999991,
+            "ok": false,
+            "budget": {
+              "rel_tolerance": 0.08
+            }
+          },
+          {
+            "capture_id": "EXAMPLE",
+            "room_id": "living",
+            "wall_id": "west",
+            "pred": 4.2,
+            "truth": 4.0,
+            "tier": "photo",
+            "abs_error_m": 0.20000000000000018,
+            "rel_error": 0.050000000000000044,
+            "allowed_m": 0.32,
+            "ratio": 0.6250000000000006,
+            "ok": true,
+            "budget": {
+              "rel_tolerance": 0.08
+            }
+          },
+          {
+            "capture_id": "EXAMPLE",
+            "room_id": "living",
+            "wall_id": "north",
+            "pred": 4.4,
+            "truth": 5.0,
+            "tier": "photo",
+            "abs_error_m": 0.5999999999999996,
+            "rel_error": 0.11999999999999993,
+            "allowed_m": 0.4,
+            "ratio": 1.4999999999999991,
+            "ok": false,
+            "budget": {
+              "rel_tolerance": 0.08
+            }
+          },
+          {
+            "capture_id": "EXAMPLE",
+            "room_id": "living",
+            "wall_id": "east",
+            "pred": 4.2,
+            "truth": 4.0,
+            "tier": "photo",
+            "abs_error_m": 0.20000000000000018,
+            "rel_error": 0.050000000000000044,
+            "allowed_m": 0.32,
+            "ratio": 0.6250000000000006,
+            "ok": true,
+            "budget": {
+              "rel_tolerance": 0.08
+            }
+          },
+          {
+            "capture_id": "EXAMPLE",
+            "room_id": "hall",
+            "wall_id": "west",
+            "pred": 3.0,
+            "truth": 3.0,
+            "tier": "photo",
+            "abs_error_m": 0.0,
+            "rel_error": 0.0,
+            "allowed_m": 0.24,
+            "ratio": 0.0,
+            "ok": true,
+            "budget": {
+              "rel_tolerance": 0.08
+            }
+          },
+          {
+            "capture_id": "EXAMPLE",
+            "room_id": "hall",
+            "wall_id": "north",
+            "pred": 1.2,
+            "truth": 1.0,
+            "tier": "photo",
+            "abs_error_m": 0.19999999999999996,
+            "rel_error": 0.19999999999999996,
+            "allowed_m": 0.08,
+            "ratio": 2.4999999999999996,
+            "ok": false,
+            "budget": {
+              "rel_tolerance": 0.08
+            }
+          },
+          {
+            "capture_id": "EXAMPLE",
+            "room_id": "hall",
+            "wall_id": "east",
+            "pred": 3.0,
+            "truth": 3.0,
+            "tier": "photo",
+            "abs_error_m": 0.0,
+            "rel_error": 0.0,
+            "allowed_m": 0.24,
+            "ratio": 0.0,
+            "ok": true,
+            "budget": {
+              "rel_tolerance": 0.08
+            }
+          },
+          {
+            "capture_id": "EXAMPLE",
+            "room_id": "hall",
+            "wall_id": "south",
+            "pred": 1.2,
+            "truth": 1.0,
+            "tier": "photo",
+            "abs_error_m": 0.19999999999999996,
+            "rel_error": 0.19999999999999996,
+            "allowed_m": 0.08,
+            "ratio": 2.4999999999999996,
+            "ok": false,
+            "budget": {
+              "rel_tolerance": 0.08
+            }
+          },
+          {
+            "capture_id": "EXAMPLE_REPEAT",
+            "room_id": "living",
+            "wall_id": "south",
+            "pred": 4.4,
+            "truth": 5.0,
+            "tier": "photo",
+            "abs_error_m": 0.5999999999999996,
+            "rel_error": 0.11999999999999993,
+            "allowed_m": 0.4,
+            "ratio": 1.4999999999999991,
+            "ok": false,
+            "budget": {
+              "rel_tolerance": 0.08
+            }
+          },
+          {
+            "capture_id": "EXAMPLE_REPEAT",
+            "room_id": "living",
+            "wall_id": "west",
+            "pred": 4.2,
+            "truth": 4.0,
+            "tier": "photo",
+            "abs_error_m": 0.20000000000000018,
+            "rel_error": 0.050000000000000044,
+            "allowed_m": 0.32,
+            "ratio": 0.6250000000000006,
+            "ok": true,
+            "budget": {
+              "rel_tolerance": 0.08
+            }
+          },
+          {
+            "capture_id": "EXAMPLE_REPEAT",
+            "room_id": "living",
+            "wall_id": "north",
+            "pred": 4.4,
+            "truth": 5.0,
+            "tier": "photo",
+            "abs_error_m": 0.5999999999999996,
+            "rel_error": 0.11999999999999993,
+            "allowed_m": 0.4,
+            "ratio": 1.4999999999999991,
+            "ok": false,
+            "budget": {
+              "rel_tolerance": 0.08
+            }
+          },
+          {
+            "capture_id": "EXAMPLE_REPEAT",
+            "room_id": "living",
+            "wall_id": "east",
+            "pred": 4.2,
+            "truth": 4.0,
+            "tier": "photo",
+            "abs_error_m": 0.20000000000000018,
+            "rel_error": 0.050000000000000044,
+            "allowed_m": 0.32,
+            "ratio": 0.6250000000000006,
+            "ok": true,
+            "budget": {
+              "rel_tolerance": 0.08
+            }
+          },
+          {
+            "capture_id": "EXAMPLE_REPEAT",
+            "room_id": "hall",
+            "wall_id": "west",
+            "pred": 3.0,
+            "truth": 3.0,
+            "tier": "photo",
+            "abs_error_m": 0.0,
+            "rel_error": 0.0,
+            "allowed_m": 0.24,
+            "ratio": 0.0,
+            "ok": true,
+            "budget": {
+              "rel_tolerance": 0.08
+            }
+          },
+          {
+            "capture_id": "EXAMPLE_REPEAT",
+            "room_id": "hall",
+            "wall_id": "north",
+            "pred": 1.2,
+            "truth": 1.0,
+            "tier": "photo",
+            "abs_error_m": 0.19999999999999996,
+            "rel_error": 0.19999999999999996,
+            "allowed_m": 0.08,
+            "ratio": 2.4999999999999996,
+            "ok": false,
+            "budget": {
+              "rel_tolerance": 0.08
+            }
+          },
+          {
+            "capture_id": "EXAMPLE_REPEAT",
+            "room_id": "hall",
+            "wall_id": "east",
+            "pred": 3.0,
+            "truth": 3.0,
+            "tier": "photo",
+            "abs_error_m": 0.0,
+            "rel_error": 0.0,
+            "allowed_m": 0.24,
+            "ratio": 0.0,
+            "ok": true,
+            "budget": {
+              "rel_tolerance": 0.08
+            }
+          },
+          {
+            "capture_id": "EXAMPLE_REPEAT",
+            "room_id": "hall",
+            "wall_id": "south",
+            "pred": 1.2,
+            "truth": 1.0,
+            "tier": "photo",
+            "abs_error_m": 0.19999999999999996,
+            "rel_error": 0.19999999999999996,
+            "allowed_m": 0.08,
+            "ratio": 2.4999999999999996,
+            "ok": false,
+            "budget": {
+              "rel_tolerance": 0.08
+            }
+          }
+        ],
+        "unmatched_truth": 0,
+        "unmatched_pred": 0,
+        "budgets": {
+          "photo": {
+            "rel_tolerance": 0.08
+          },
+          "video": {
+            "rel_tolerance": 0.03
+          },
+          "lidar": {
+            "abs_tolerance_m": 0.02,
+            "rel_tolerance": 0.01,
+            "status": "PROVISIONAL"
+          }
+        }
+      }
+    },
+    {
+      "name": "footprint",
+      "passed": true,
+      "value": 0.04000000000000008,
+      "threshold": 0.08,
+      "n": 2,
+      "detail": {
+        "per_capture": [
+          {
+            "capture_id": "EXAMPLE",
+            "pred": 22.08,
+            "truth": 23.0,
+            "rel_error": 0.04000000000000008,
+            "ok": true
+          },
+          {
+            "capture_id": "EXAMPLE_REPEAT",
+            "pred": 22.08,
+            "truth": 23.0,
+            "rel_error": 0.04000000000000008,
+            "ok": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "stitch_adjacency",
+      "passed": true,
+      "value": 0.0,
+      "threshold": 0.0,
+      "n": 2,
+      "detail": {
+        "per_capture": [
+          {
+            "capture_id": "EXAMPLE",
+            "missing": [],
+            "spurious": [],
+            "ok": true
+          },
+          {
+            "capture_id": "EXAMPLE_REPEAT",
+            "missing": [],
+            "spurious": [],
+            "ok": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "stitch_overlap",
+      "passed": true,
+      "value": 0.0,
+      "threshold": 0.05,
+      "n": 2,
+      "detail": {
+        "per_capture": [
+          {
+            "capture_id": "EXAMPLE",
+            "overlap_m2": 0.0,
+            "ok": true
+          },
+          {
+            "capture_id": "EXAMPLE_REPEAT",
+            "overlap_m2": 0.0,
+            "ok": true
+          }
+        ]
+      }
+    }
+  ],
+  "captures": [
+    {
+      "capture_id": "EXAMPLE",
+      "space_id": "example_flat",
+      "tier": "photo",
+      "pipeline_version": "stub-0.1.0",
+      "warnings": [
+        "STUB PIPELINE: NOT A REAL RECONSTRUCTION"
+      ],
+      "matching": {
+        "counts": {
+          "rooms": {
+            "matched": 2,
+            "missing": 0,
+            "phantom": 0
+          },
+          "walls": {
+            "matched": 8,
+            "unmatched_truth": 0,
+            "unmatched_pred": 0
+          },
+          "openings": {
+            "matched": 0,
+            "missed": 3,
+            "phantom": 2
+          }
+        },
+        "missing_rooms": [],
+        "phantom_rooms": [],
+        "rooms": [
+          {
+            "room_id": "living",
+            "reversed": true,
+            "total_length_error_m": 1.5999999999999996,
+            "walls": [
+              {
+                "truth_id": "south",
+                "pred_id": "w4",
+                "truth_m": 5.0,
+                "pred": {
+                  "value": 4.4,
+                  "ci_low": 4.25,
+                  "ci_high": 4.550000000000001,
+                  "unit": "m",
+                  "method": "stub_hand_written",
+                  "ci_level": 0.95
+                },
+                "abs_error": 0.5999999999999996
+              },
+              {
+                "truth_id": "west",
+                "pred_id": "w3",
+                "truth_m": 4.0,
+                "pred": {
+                  "value": 4.2,
+                  "ci_low": 4.05,
+                  "ci_high": 4.3500000000000005,
+                  "unit": "m",
+                  "method": "stub_hand_written",
+                  "ci_level": 0.95
+                },
+                "abs_error": 0.20000000000000018
+              },
+              {
+                "truth_id": "north",
+                "pred_id": "w2",
+                "truth_m": 5.0,
+                "pred": {
+                  "value": 4.4,
+                  "ci_low": 4.25,
+                  "ci_high": 4.550000000000001,
+                  "unit": "m",
+                  "method": "stub_hand_written",
+                  "ci_level": 0.95
+                },
+                "abs_error": 0.5999999999999996
+              },
+              {
+                "truth_id": "east",
+                "pred_id": "w1",
+                "truth_m": 4.0,
+                "pred": {
+                  "value": 4.2,
+                  "ci_low": 4.05,
+                  "ci_high": 4.3500000000000005,
+                  "unit": "m",
+                  "method": "stub_hand_written",
+                  "ci_level": 0.95
+                },
+                "abs_error": 0.20000000000000018
+              }
+            ],
+            "unmatched_truth_walls": [],
+            "unmatched_pred_walls": [],
+            "openings": [],
+            "missed_openings": [
+              "door_main",
+              "window_north"
+            ],
+            "phantom_openings": [
+              "o1",
+              "o2"
+            ]
+          },
+          {
+            "room_id": "hall",
+            "reversed": true,
+            "total_length_error_m": 0.3999999999999999,
+            "walls": [
+              {
+                "truth_id": "west",
+                "pred_id": "h4",
+                "truth_m": 3.0,
+                "pred": {
+                  "value": 3.0,
+                  "ci_low": 2.85,
+                  "ci_high": 3.15,
+                  "unit": "m",
+                  "method": "stub_hand_written",
+                  "ci_level": 0.95
+                },
+                "abs_error": 0.0
+              },
+              {
+                "truth_id": "north",
+                "pred_id": "h3",
+                "truth_m": 1.0,
+                "pred": {
+                  "value": 1.2,
+                  "ci_low": 1.05,
+                  "ci_high": 1.3499999999999999,
+                  "unit": "m",
+                  "method": "stub_hand_written",
+                  "ci_level": 0.95
+                },
+                "abs_error": 0.19999999999999996
+              },
+              {
+                "truth_id": "east",
+                "pred_id": "h2",
+                "truth_m": 3.0,
+                "pred": {
+                  "value": 3.0,
+                  "ci_low": 2.85,
+                  "ci_high": 3.15,
+                  "unit": "m",
+                  "method": "stub_hand_written",
+                  "ci_level": 0.95
+                },
+                "abs_error": 0.0
+              },
+              {
+                "truth_id": "south",
+                "pred_id": "h1",
+                "truth_m": 1.0,
+                "pred": {
+                  "value": 1.2,
+                  "ci_low": 1.05,
+                  "ci_high": 1.3499999999999999,
+                  "unit": "m",
+                  "method": "stub_hand_written",
+                  "ci_level": 0.95
+                },
+                "abs_error": 0.19999999999999996
+              }
+            ],
+            "unmatched_truth_walls": [],
+            "unmatched_pred_walls": [],
+            "openings": [],
+            "missed_openings": [
+              "door_main"
+            ],
+            "phantom_openings": []
+          }
+        ]
+      },
+      "rooms": [
+        {
+          "room_id": "living",
+          "ceiling_pred": 2.7,
+          "ceiling_truth": 2.5,
+          "ceiling_abs_error": 0.20000000000000018,
+          "floor_area_pred": 18.48,
+          "floor_area_truth": 20.0,
+          "floor_area_abs_error": 1.5199999999999996,
+          "walls_matched": 4,
+          "walls_unmatched_truth": [],
+          "walls_unmatched_pred": [],
+          "wall_order_reversed": true
+        },
+        {
+          "room_id": "hall",
+          "ceiling_pred": 2.7,
+          "ceiling_truth": 2.5,
+          "ceiling_abs_error": 0.20000000000000018,
+          "floor_area_pred": 3.6,
+          "floor_area_truth": 3.0,
+          "floor_area_abs_error": 0.6000000000000001,
+          "walls_matched": 4,
+          "walls_unmatched_truth": [],
+          "walls_unmatched_pred": [],
+          "wall_order_reversed": true
+        }
+      ],
+      "walls": [
+        {
+          "room_id": "living",
+          "truth_wall": "south",
+          "pred_wall": "w4",
+          "truth": 5.0,
+          "pred": 4.4,
+          "ci_low": 4.25,
+          "ci_high": 4.550000000000001,
+          "abs_error": 0.5999999999999996
+        },
+        {
+          "room_id": "living",
+          "truth_wall": "west",
+          "pred_wall": "w3",
+          "truth": 4.0,
+          "pred": 4.2,
+          "ci_low": 4.05,
+          "ci_high": 4.3500000000000005,
+          "abs_error": 0.20000000000000018
+        },
+        {
+          "room_id": "living",
+          "truth_wall": "north",
+          "pred_wall": "w2",
+          "truth": 5.0,
+          "pred": 4.4,
+          "ci_low": 4.25,
+          "ci_high": 4.550000000000001,
+          "abs_error": 0.5999999999999996
+        },
+        {
+          "room_id": "living",
+          "truth_wall": "east",
+          "pred_wall": "w1",
+          "truth": 4.0,
+          "pred": 4.2,
+          "ci_low": 4.05,
+          "ci_high": 4.3500000000000005,
+          "abs_error": 0.20000000000000018
+        },
+        {
+          "room_id": "hall",
+          "truth_wall": "west",
+          "pred_wall": "h4",
+          "truth": 3.0,
+          "pred": 3.0,
+          "ci_low": 2.85,
+          "ci_high": 3.15,
+          "abs_error": 0.0
+        },
+        {
+          "room_id": "hall",
+          "truth_wall": "north",
+          "pred_wall": "h3",
+          "truth": 1.0,
+          "pred": 1.2,
+          "ci_low": 1.05,
+          "ci_high": 1.3499999999999999,
+          "abs_error": 0.19999999999999996
+        },
+        {
+          "room_id": "hall",
+          "truth_wall": "east",
+          "pred_wall": "h2",
+          "truth": 3.0,
+          "pred": 3.0,
+          "ci_low": 2.85,
+          "ci_high": 3.15,
+          "abs_error": 0.0
+        },
+        {
+          "room_id": "hall",
+          "truth_wall": "south",
+          "pred_wall": "h1",
+          "truth": 1.0,
+          "pred": 1.2,
+          "ci_low": 1.05,
+          "ci_high": 1.3499999999999999,
+          "abs_error": 0.19999999999999996
+        }
+      ],
+      "openings": [],
+      "footprint": {
+        "pred": 22.08,
+        "truth": 23.0,
+        "truth_source": "sum of room floor areas"
+      },
+      "adjacency": {
+        "pred": [
+          [
+            "living",
+            "hall"
+          ]
+        ],
+        "truth": [
+          [
+            "living",
+            "hall"
+          ]
+        ]
+      },
+      "overlap_m2_geometric": 0.0,
+      "overlap_m2_claimed": 0.0
+    },
+    {
+      "capture_id": "EXAMPLE_REPEAT",
+      "space_id": "example_flat",
+      "tier": "photo",
+      "pipeline_version": "stub-0.1.0",
+      "warnings": [
+        "STUB PIPELINE: NOT A REAL RECONSTRUCTION"
+      ],
+      "matching": {
+        "counts": {
+          "rooms": {
+            "matched": 2,
+            "missing": 0,
+            "phantom": 0
+          },
+          "walls": {
+            "matched": 8,
+            "unmatched_truth": 0,
+            "unmatched_pred": 0
+          },
+          "openings": {
+            "matched": 0,
+            "missed": 3,
+            "phantom": 2
+          }
+        },
+        "missing_rooms": [],
+        "phantom_rooms": [],
+        "rooms": [
+          {
+            "room_id": "living",
+            "reversed": true,
+            "total_length_error_m": 1.5999999999999996,
+            "walls": [
+              {
+                "truth_id": "south",
+                "pred_id": "w4",
+                "truth_m": 5.0,
+                "pred": {
+                  "value": 4.4,
+                  "ci_low": 4.25,
+                  "ci_high": 4.550000000000001,
+                  "unit": "m",
+                  "method": "stub_hand_written",
+                  "ci_level": 0.95
+                },
+                "abs_error": 0.5999999999999996
+              },
+              {
+                "truth_id": "west",
+                "pred_id": "w3",
+                "truth_m": 4.0,
+                "pred": {
+                  "value": 4.2,
+                  "ci_low": 4.05,
+                  "ci_high": 4.3500000000000005,
+                  "unit": "m",
+                  "method": "stub_hand_written",
+                  "ci_level": 0.95
+                },
+                "abs_error": 0.20000000000000018
+              },
+              {
+                "truth_id": "north",
+                "pred_id": "w2",
+                "truth_m": 5.0,
+                "pred": {
+                  "value": 4.4,
+                  "ci_low": 4.25,
+                  "ci_high": 4.550000000000001,
+                  "unit": "m",
+                  "method": "stub_hand_written",
+                  "ci_level": 0.95
+                },
+                "abs_error": 0.5999999999999996
+              },
+              {
+                "truth_id": "east",
+                "pred_id": "w1",
+                "truth_m": 4.0,
+                "pred": {
+                  "value": 4.2,
+                  "ci_low": 4.05,
+                  "ci_high": 4.3500000000000005,
+                  "unit": "m",
+                  "method": "stub_hand_written",
+                  "ci_level": 0.95
+                },
+                "abs_error": 0.20000000000000018
+              }
+            ],
+            "unmatched_truth_walls": [],
+            "unmatched_pred_walls": [],
+            "openings": [],
+            "missed_openings": [
+              "door_main",
+              "window_north"
+            ],
+            "phantom_openings": [
+              "o1",
+              "o2"
+            ]
+          },
+          {
+            "room_id": "hall",
+            "reversed": true,
+            "total_length_error_m": 0.3999999999999999,
+            "walls": [
+              {
+                "truth_id": "west",
+                "pred_id": "h4",
+                "truth_m": 3.0,
+                "pred": {
+                  "value": 3.0,
+                  "ci_low": 2.85,
+                  "ci_high": 3.15,
+                  "unit": "m",
+                  "method": "stub_hand_written",
+                  "ci_level": 0.95
+                },
+                "abs_error": 0.0
+              },
+              {
+                "truth_id": "north",
+                "pred_id": "h3",
+                "truth_m": 1.0,
+                "pred": {
+                  "value": 1.2,
+                  "ci_low": 1.05,
+                  "ci_high": 1.3499999999999999,
+                  "unit": "m",
+                  "method": "stub_hand_written",
+                  "ci_level": 0.95
+                },
+                "abs_error": 0.19999999999999996
+              },
+              {
+                "truth_id": "east",
+                "pred_id": "h2",
+                "truth_m": 3.0,
+                "pred": {
+                  "value": 3.0,
+                  "ci_low": 2.85,
+                  "ci_high": 3.15,
+                  "unit": "m",
+                  "method": "stub_hand_written",
+                  "ci_level": 0.95
+                },
+                "abs_error": 0.0
+              },
+              {
+                "truth_id": "south",
+                "pred_id": "h1",
+                "truth_m": 1.0,
+                "pred": {
+                  "value": 1.2,
+                  "ci_low": 1.05,
+                  "ci_high": 1.3499999999999999,
+                  "unit": "m",
+                  "method": "stub_hand_written",
+                  "ci_level": 0.95
+                },
+                "abs_error": 0.19999999999999996
+              }
+            ],
+            "unmatched_truth_walls": [],
+            "unmatched_pred_walls": [],
+            "openings": [],
+            "missed_openings": [
+              "door_main"
+            ],
+            "phantom_openings": []
+          }
+        ]
+      },
+      "rooms": [
+        {
+          "room_id": "living",
+          "ceiling_pred": 2.7,
+          "ceiling_truth": 2.5,
+          "ceiling_abs_error": 0.20000000000000018,
+          "floor_area_pred": 18.48,
+          "floor_area_truth": 20.0,
+          "floor_area_abs_error": 1.5199999999999996,
+          "walls_matched": 4,
+          "walls_unmatched_truth": [],
+          "walls_unmatched_pred": [],
+          "wall_order_reversed": true
+        },
+        {
+          "room_id": "hall",
+          "ceiling_pred": 2.7,
+          "ceiling_truth": 2.5,
+          "ceiling_abs_error": 0.20000000000000018,
+          "floor_area_pred": 3.6,
+          "floor_area_truth": 3.0,
+          "floor_area_abs_error": 0.6000000000000001,
+          "walls_matched": 4,
+          "walls_unmatched_truth": [],
+          "walls_unmatched_pred": [],
+          "wall_order_reversed": true
+        }
+      ],
+      "walls": [
+        {
+          "room_id": "living",
+          "truth_wall": "south",
+          "pred_wall": "w4",
+          "truth": 5.0,
+          "pred": 4.4,
+          "ci_low": 4.25,
+          "ci_high": 4.550000000000001,
+          "abs_error": 0.5999999999999996
+        },
+        {
+          "room_id": "living",
+          "truth_wall": "west",
+          "pred_wall": "w3",
+          "truth": 4.0,
+          "pred": 4.2,
+          "ci_low": 4.05,
+          "ci_high": 4.3500000000000005,
+          "abs_error": 0.20000000000000018
+        },
+        {
+          "room_id": "living",
+          "truth_wall": "north",
+          "pred_wall": "w2",
+          "truth": 5.0,
+          "pred": 4.4,
+          "ci_low": 4.25,
+          "ci_high": 4.550000000000001,
+          "abs_error": 0.5999999999999996
+        },
+        {
+          "room_id": "living",
+          "truth_wall": "east",
+          "pred_wall": "w1",
+          "truth": 4.0,
+          "pred": 4.2,
+          "ci_low": 4.05,
+          "ci_high": 4.3500000000000005,
+          "abs_error": 0.20000000000000018
+        },
+        {
+          "room_id": "hall",
+          "truth_wall": "west",
+          "pred_wall": "h4",
+          "truth": 3.0,
+          "pred": 3.0,
+          "ci_low": 2.85,
+          "ci_high": 3.15,
+          "abs_error": 0.0
+        },
+        {
+          "room_id": "hall",
+          "truth_wall": "north",
+          "pred_wall": "h3",
+          "truth": 1.0,
+          "pred": 1.2,
+          "ci_low": 1.05,
+          "ci_high": 1.3499999999999999,
+          "abs_error": 0.19999999999999996
+        },
+        {
+          "room_id": "hall",
+          "truth_wall": "east",
+          "pred_wall": "h2",
+          "truth": 3.0,
+          "pred": 3.0,
+          "ci_low": 2.85,
+          "ci_high": 3.15,
+          "abs_error": 0.0
+        },
+        {
+          "room_id": "hall",
+          "truth_wall": "south",
+          "pred_wall": "h1",
+          "truth": 1.0,
+          "pred": 1.2,
+          "ci_low": 1.05,
+          "ci_high": 1.3499999999999999,
+          "abs_error": 0.19999999999999996
+        }
+      ],
+      "openings": [],
+      "footprint": {
+        "pred": 22.08,
+        "truth": 23.0,
+        "truth_source": "sum of room floor areas"
+      },
+      "adjacency": {
+        "pred": [
+          [
+            "living",
+            "hall"
+          ]
+        ],
+        "truth": [
+          [
+            "living",
+            "hall"
+          ]
+        ]
+      },
+      "overlap_m2_geometric": 0.0,
+      "overlap_m2_claimed": 0.0
+    }
+  ],
+  "calibration": {
+    "overall": {
+      "n": 26,
+      "coverage": 0.3076923076923077,
+      "mean_width_pct": 13.28745328745329,
+      "outside": 18,
+      "confident_garbage": 6,
+      "nominal_level": [
+        0.95
+      ]
+    },
+    "by_tier": {
+      "photo": {
+        "n": 26,
+        "coverage": 0.3076923076923077,
+        "mean_width_pct": 13.28745328745329,
+        "outside": 18,
+        "confident_garbage": 6,
+        "nominal_level": [
+          0.95
+        ]
+      }
+    },
+    "by_quantity": {
+      "ceiling_height": {
+        "n": 4,
+        "coverage": 0.0,
+        "mean_width_pct": 7.407407407407414,
+        "outside": 4,
+        "confident_garbage": 0,
+        "nominal_level": [
+          0.95
+        ]
+      },
+      "floor_area": {
+        "n": 4,
+        "coverage": 0.5,
+        "mean_width_pct": 19.99999999999999,
+        "outside": 2,
+        "confident_garbage": 2,
+        "nominal_level": [
+          0.95
+        ]
+      },
+      "footprint_area": {
+        "n": 2,
+        "coverage": 1.0,
+        "mean_width_pct": 19.999999999999986,
+        "outside": 0,
+        "confident_garbage": 0,
+        "nominal_level": [
+          0.95
+        ]
+      },
+      "wall_length": {
+        "n": 16,
+        "coverage": 0.25,
+        "mean_width_pct": 12.240259740259742,
+        "outside": 12,
+        "confident_garbage": 4,
+        "nominal_level": [
+          0.95
+        ]
+      }
+    },
+    "by_tier_quantity": {
+      "photo/ceiling_height": {
+        "n": 4,
+        "coverage": 0.0,
+        "mean_width_pct": 7.407407407407414,
+        "outside": 4,
+        "confident_garbage": 0,
+        "nominal_level": [
+          0.95
+        ]
+      },
+      "photo/floor_area": {
+        "n": 4,
+        "coverage": 0.5,
+        "mean_width_pct": 19.99999999999999,
+        "outside": 2,
+        "confident_garbage": 2,
+        "nominal_level": [
+          0.95
+        ]
+      },
+      "photo/footprint_area": {
+        "n": 2,
+        "coverage": 1.0,
+        "mean_width_pct": 19.999999999999986,
+        "outside": 0,
+        "confident_garbage": 0,
+        "nominal_level": [
+          0.95
+        ]
+      },
+      "photo/wall_length": {
+        "n": 16,
+        "coverage": 0.25,
+        "mean_width_pct": 12.240259740259742,
+        "outside": 12,
+        "confident_garbage": 4,
+        "nominal_level": [
+          0.95
+        ]
+      }
+    },
+    "median_width_by_quantity": {
+      "ceiling_height": 0.20000000000000018,
+      "floor_area": 2.207999999999999,
+      "wall_length": 0.30000000000000027,
+      "footprint_area": 4.415999999999997
+    }
+  },
+  "config": {
+    "path": "config/gates.yaml",
+    "sha256": "cb2b879a97713ec73153ec5523a0d10e1cd6c1ed04bda88e69d765709f14e9b6"
+  },
+  "no_ground_truth": {
+    "self_consistency": {
+      "c00a170fe1": {
+        "n_rooms": 2,
+        "n_walls": 8,
+        "n_openings": 0,
+        "room_overlap_m2": 0.04179116000000005,
+        "footprint_area_m2": 19.49291704,
+        "sum_room_area_m2": 19.534708200000004,
+        "area_ratio_sum_over_footprint": 1.002143915141805,
+        "rooms_connected": false,
+        "isolated_rooms": [
+          "room_02"
+        ],
+        "ceiling_from_prior": [
+          "room_01",
+          "room_02"
+        ]
+      },
+      "1a8384c3f6": {
+        "n_rooms": 8,
+        "n_walls": 56,
+        "n_openings": 6,
+        "room_overlap_m2": 0.013412352911999407,
+        "footprint_area_m2": 50.266417896544,
+        "sum_room_area_m2": 47.959446240158,
+        "area_ratio_sum_over_footprint": 0.9541051112666492,
+        "rooms_connected": false,
+        "isolated_rooms": [
+          "room_02",
+          "room_04",
+          "room_05",
+          "room_06",
+          "room_08"
+        ],
+        "ceiling_from_prior": [
+          "room_01",
+          "room_02",
+          "room_03",
+          "room_04",
+          "room_05",
+          "room_06",
+          "room_07",
+          "room_08"
+        ]
+      },
+      "c7d28f72c6": {
+        "n_rooms": 10,
+        "n_walls": 76,
+        "n_openings": 15,
+        "room_overlap_m2": 0.2717838450239999,
+        "footprint_area_m2": 46.886512554617994,
+        "sum_room_area_m2": 44.754821771195,
+        "area_ratio_sum_over_footprint": 0.9545350961869942,
+        "rooms_connected": false,
+        "isolated_rooms": [
+          "connector_01",
+          "connector_02",
+          "room_02",
+          "room_03",
+          "room_04",
+          "room_05",
+          "room_06",
+          "room_07"
+        ],
+        "ceiling_from_prior": [
+          "room_01",
+          "room_04",
+          "room_06",
+          "connector_01",
+          "connector_02",
+          "connector_03"
+        ]
+      }
+    },
+    "repeat_pairs": [
+      {
+        "capture_a": "1a8384c3f6",
+        "capture_b": "c7d28f72c6",
+        "space_id": "sample_apartment",
+        "tier": "lidar",
+        "same_space": {
+          "footprint_iou_after_registration": 0.41956543754489645,
+          "registration": {
+            "rotation_deg": 90,
+            "tx": 1.8277344176093622,
+            "ty": 2.913136965613281
+          },
+          "footprint_area_ratio": 0.9327601710374037,
+          "matched_rooms": 3,
+          "rooms_a": 8,
+          "rooms_b": 10,
+          "matched_share": 0.375,
+          "same_space": false,
+          "basis": "registered footprint IoU at least 0.5 and at least half the rooms pairing by polygon IoU",
+          "note": "Agreement between two captures is repeatability, not accuracy. Both can be wrong together."
+        },
+        "matching": {
+          "registration": {
+            "rotation_deg": 90,
+            "tx": 1.8277344176093622,
+            "ty": 2.913136965613281,
+            "footprint_iou": 0.41956543754489645
+          },
+          "rooms_a": 8,
+          "rooms_b": 10,
+          "rooms_matched": 3,
+          "room_iou": [
+            0.362,
+            0.496,
+            0.49
+          ],
+          "unmatched_rooms_a": [
+            "room_01",
+            "room_05",
+            "room_06",
+            "room_07",
+            "room_08"
+          ],
+          "unmatched_rooms_b": [
+            "room_04",
+            "room_05",
+            "room_06",
+            "room_07",
+            "connector_01",
+            "connector_02",
+            "connector_03"
+          ],
+          "walls_matched": 0,
+          "walls_unmatched": 52,
+          "min_iou": 0.3,
+          "max_wall_offset_m": 0.3
+        },
+        "gate": {
+          "name": "repeatability",
+          "passed": true,
+          "value": 0.0,
+          "threshold": 1.0,
+          "n": 0,
+          "detail": {
+            "abs_tolerance_m": 0.01,
+            "rel_tolerance": 0.005,
+            "per_wall": [],
+            "worst": null,
+            "note": "no repeat captures of the same space and tier; vacuous pass",
+            "n_within_tolerance": 0,
+            "share_within_tolerance": 1.0
+          }
+        }
+      }
+    ],
+    "note": "No ground truth for these captures. Nothing here measures accuracy."
+  }
+}

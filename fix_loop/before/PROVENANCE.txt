@@ -1,0 +1,7 @@
+side: before
+commit: b3b09b92d2d0312fe4351b03f6ffc05dea6e7177
+commit_subject: fix(eval): register plans before comparing them across captures
+dirty: true
+generated_at: 2026-09-20T05:22:56Z
+python: Python 3.11.15
+config_sha256: cb2b879a97713ec73153ec5523a0d10e1cd6c1ed04bda88e69d765709f14e9b6

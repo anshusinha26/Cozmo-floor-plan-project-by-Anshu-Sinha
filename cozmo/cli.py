@@ -247,7 +247,10 @@ def _no_truth_report(entries, manifests, plans: dict[str, Plan], cfg: dict[str, 
         a, b = plans[e.repeat_of], plans[e.capture_id]
         verdict = same_space_verdict(a, b)
         pairs, match_summary = cross_plan_repeat_pairs(a, b, e.space_id, e.tier)
-        gate = G.repeatability(pairs if verdict["same_space"] else [], cfg)
+        # Score the gate whatever the same-space verdict says. Skipping it on a
+        # weak verdict would report a vacuous pass on zero rows, which reads as
+        # success and hides the failure being investigated.
+        gate = G.repeatability(pairs, cfg)
         repeats.append({"capture_a": a.capture.id, "capture_b": b.capture.id, "space_id": e.space_id,
                         "tier": e.tier, "same_space": verdict, "matching": match_summary, "gate": gate})
     return {"self_consistency": rows, "repeat_pairs": repeats,
@@ -278,7 +281,8 @@ def _no_truth_md(entries, manifests, report: dict[str, Any]) -> list[str]:
                f"({reg['tx']:.2f}, {reg['ty']:.2f}) m, footprint IoU {reg['footprint_iou']:.2f}.", "",
                f"Same space check: {v['matched_rooms']} of {min(v['rooms_a'], v['rooms_b'])} rooms pair by polygon IoU. "
                f"Verdict: **{'same space' if v['same_space'] else 'NOT confirmed as the same space'}** "
-               f"({v['basis']}).", "", v["note"], "",
+               f"({v['basis']}). The gate below is scored either way; a weak verdict is itself "
+               f"evidence about the segmentation, not a reason to skip scoring.", "", v["note"], "",
                f"Room matching: {ms['rooms_a']} rooms in {rp['capture_a']}, {ms['rooms_b']} in {rp['capture_b']}, "
                f"{ms['rooms_matched']} matched at IoU >= {ms['min_iou']} (IoU values {ms['room_iou']}). "
                f"Unmatched: {ms['unmatched_rooms_a']} and {ms['unmatched_rooms_b']}.", "",

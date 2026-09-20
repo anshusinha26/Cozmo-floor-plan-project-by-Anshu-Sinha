@@ -148,3 +148,31 @@ def test_perpendicular_walls_never_match():
     pairs, _, _ = match_walls_by_face(a.rooms[0], a.rooms[0], register_plans(a, a), max_offset_m=0.3)
     for p in pairs:
         assert p.angle_deg < 1e-6
+
+
+def test_register_handles_plans_whose_world_frames_differ_by_any_angle():
+    """Two captures of one flat sit at an arbitrary relative angle.
+
+    Plans are emitted in the ARKit world frame, whose orientation depends on
+    where the capture started. Without canonicalising each plan to its own
+    Manhattan frame first, no quarter turn aligns them and nothing matches.
+    """
+    a = Plan.model_validate(world_two_room_plan())
+    b = Plan.model_validate(_rotate_plan(world_two_room_plan(), 58.0, -1.0, 4.0))
+    reg = register_plans(a, b)
+    assert reg.iou > 0.9, reg.iou
+    assert abs(((reg.rotation_deg + 58.0) % 90.0)) < 1.0 or abs(((reg.rotation_deg + 58.0) % 90.0) - 90.0) < 1.0
+    for ra, rb in zip(a.rooms, b.rooms):
+        moved = transform_xy(np.array(rb.polygon), reg).mean(axis=0)
+        assert np.abs(moved - np.array(ra.polygon).mean(axis=0)).max() < 0.15
+    pairs = match_rooms_by_iou(a, b, reg, min_iou=0.3)
+    assert {(p.room_a, p.room_b) for p in pairs} == {("living", "living"), ("hall", "hall")}
+    wp, un_a, un_b = match_walls_by_face(a.rooms[0], b.rooms[0], reg, max_offset_m=0.3)
+    assert len(wp) == 4 and not un_a and not un_b
+
+
+def test_manhattan_yaw_is_length_weighted_and_modulo_90():
+    from cozmo.eval.registration import manhattan_yaw
+
+    a = Plan.model_validate(_rotate_plan(world_two_room_plan(), 12.0, 0.0, 0.0))
+    assert manhattan_yaw(a) == pytest.approx(12.0, abs=0.5)

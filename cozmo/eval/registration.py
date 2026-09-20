@@ -7,8 +7,11 @@ an eval artefact into a reconstruction failure.
 
 This module puts both plans in one frame first:
 
-* both plans are Manhattan aligned, so the rotation between them is one of
-  0, 90, 180, 270 degrees. All four are tried.
+* each plan is first rotated into its own Manhattan frame, estimated from its
+  own wall segments. Plans are emitted in the ARKit world frame, whose
+  orientation depends on where the capture started, so two captures of one
+  flat can sit at any relative angle; only after this step is the residual
+  rotation one of 0, 90, 180, 270 degrees. All four are tried.
 * the translation comes from cross-correlating rasterised footprint masks on a
   5 cm grid, which is a plain brute-force best overlap rather than a fit that
   could converge to a local optimum.
@@ -40,19 +43,53 @@ DEFAULT_WALL_ANGLE_DEG = 2.0
 
 @dataclass
 class Registration:
-    """Rigid transform taking plan B into plan A's frame: rotate, then translate."""
+    """Rigid transform taking plan B into plan A's frame: rotate, then translate.
 
-    rotation_deg: int
+    ``rotation_deg`` is the total rotation in world terms, which is the
+    difference of the two plans' Manhattan yaws plus the chosen quarter turn.
+    ``quarter_turns`` records which of the four was picked.
+    """
+
+    rotation_deg: float
     tx: float
     ty: float
     iou: float
     cell_m: float = DEFAULT_CELL_M
+    quarter_turns: int = 0
+    yaw_a_deg: float = 0.0
+    yaw_b_deg: float = 0.0
 
     @property
     def matrix(self) -> np.ndarray:
         th = np.radians(self.rotation_deg)
         c, s = np.cos(th), np.sin(th)
         return np.array([[c, -s], [s, c]])
+
+
+def manhattan_yaw(plan: Plan) -> float:
+    """Dominant wall direction of one plan, in degrees in [0, 90).
+
+    Wall directions repeat every 90 degrees, so angles are quadrupled before
+    the length-weighted circular mean and divided back, which stops the two
+    orientations of a rectangular room from cancelling.
+    """
+    ang = []
+    wts = []
+    for room in plan.rooms:
+        for w in room.walls:
+            d = np.asarray(w.end, dtype=float) - np.asarray(w.start, dtype=float)
+            n = float(np.linalg.norm(d))
+            if n < 1e-9:
+                continue
+            ang.append(np.arctan2(d[1], d[0]))
+            wts.append(n)
+    if not ang:
+        return 0.0
+    ang = np.asarray(ang)
+    wts = np.asarray(wts)
+    c = float(np.sum(wts * np.cos(4 * ang)))
+    s = float(np.sum(wts * np.sin(4 * ang)))
+    return float(np.degrees((np.arctan2(s, c) / 4.0) % (np.pi / 2)))
 
 
 def transform_xy(xy: np.ndarray, reg: Registration) -> np.ndarray:
@@ -90,10 +127,18 @@ def _rasterise(polys: list[SPoly], cell: float, origin: np.ndarray, shape: tuple
     return mask
 
 
-def _room_polys(plan: Plan) -> list[SPoly]:
+def _rot(deg: float) -> np.ndarray:
+    th = np.radians(deg)
+    c, s = np.cos(th), np.sin(th)
+    return np.array([[c, -s], [s, c]])
+
+
+def _room_polys(plan: Plan, rotate_deg: float = 0.0) -> list[SPoly]:
     out = []
+    R = _rot(rotate_deg)
     for r in plan.rooms:
-        p = SPoly(r.polygon)
+        pts = np.asarray(r.polygon, dtype=float) @ R.T
+        p = SPoly(pts)
         if p.is_valid and p.area > 0:
             out.append(p)
     return out
@@ -119,10 +164,12 @@ def _rotate_polys(polys: list[SPoly], deg: int) -> list[SPoly]:
 
 def register_plans(plan_a: Plan, plan_b: Plan, cell: float = DEFAULT_CELL_M) -> Registration:
     """Best of the four Manhattan rotations, translation by mask cross-correlation."""
-    polys_a = _room_polys(plan_a)
-    polys_b = _room_polys(plan_b)
+    yaw_a = manhattan_yaw(plan_a)
+    yaw_b = manhattan_yaw(plan_b)
+    polys_a = _room_polys(plan_a, -yaw_a)
+    polys_b = _room_polys(plan_b, -yaw_b)
     if not polys_a or not polys_b:
-        return Registration(0, 0.0, 0.0, 0.0, cell)
+        return Registration(0.0, 0.0, 0.0, 0.0, cell, 0, yaw_a, yaw_b)
 
     pts_a = np.vstack([np.asarray(p.exterior.coords) for p in polys_a])
     origin_a = pts_a.min(axis=0) - 1.0
@@ -131,7 +178,7 @@ def register_plans(plan_a: Plan, plan_b: Plan, cell: float = DEFAULT_CELL_M) -> 
     mask_a = _rasterise(polys_a, cell, origin_a, shape_a)
     area_a = mask_a.sum()
 
-    best = Registration(0, 0.0, 0.0, 0.0, cell)
+    best = Registration(0.0, 0.0, 0.0, 0.0, cell, 0, yaw_a, yaw_b)
     for deg in (0, 90, 180, 270):
         rot = _rotate_polys(polys_b, deg)
         pts_b = np.vstack([np.asarray(p.exterior.coords) for p in rot])
@@ -153,7 +200,12 @@ def register_plans(plan_a: Plan, plan_b: Plan, cell: float = DEFAULT_CELL_M) -> 
         tx = origin_a[0] - origin_b[0] + shift_i * cell
         ty = origin_a[1] - origin_b[1] + shift_j * cell
         if iou > best.iou:
-            best = Registration(deg, float(tx), float(ty), float(iou), cell)
+            # Compose: canonicalise B, quarter turn, then back into A's world
+            # frame. Rotation adds up; the translation rotates with yaw_a.
+            total = (yaw_a - yaw_b + deg) % 360.0
+            t_world = _rot(yaw_a) @ np.array([tx, ty])
+            best = Registration(float(total), float(t_world[0]), float(t_world[1]),
+                                float(iou), cell, deg, yaw_a, yaw_b)
     return best
 
 
