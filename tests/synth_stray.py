@@ -123,27 +123,42 @@ def look_at_rotation(yaw: float, pitch: float) -> np.ndarray:
 
 
 def default_trajectory(scene: Scene, n_per_room: int = 24) -> list[tuple[np.ndarray, float, float]]:
-    """Camera positions and view angles: a small loop in each room plus a walk through every door."""
+    """A realistic-ish capture: walk a loop inside each room looking at the walls, then through each door.
+
+    A handheld capture sweeps the room rather than spinning on the spot, so the
+    trajectory follows a rectangle inset from the walls with the camera panning,
+    which is what gives near-complete floor coverage.
+    """
     cam_y = scene.floor_y + 1.4
     poses = []
     for x0, z0, x1, z1 in scene.rooms:
-        cxr, czr = (x0 + x1) / 2, (z0 + z1) / 2
-        rad = 0.25 * min(x1 - x0, z1 - z0)
-        for i in range(n_per_room):
-            ang = 2 * np.pi * i / n_per_room
-            pos = np.array([cxr + rad * np.cos(ang), cam_y, czr + rad * np.sin(ang)])
-            pitch = [0.0, 0.55, -0.55][i % 3]  # level, up (ceiling), down (floor)
-            poses.append((pos, ang, pitch))
+        inset = min(0.9, 0.3 * min(x1 - x0, z1 - z0))
+        cx, cz = (x0 + x1) / 2, (z0 + z1) / 2
+        corners = [(x0 + inset, z0 + inset), (x1 - inset, z0 + inset), (x1 - inset, z1 - inset), (x0 + inset, z1 - inset)]
+        per_edge = max(n_per_room // 4, 3)
+        k = 0
+        for a, b in zip(corners, corners[1:] + corners[:1]):
+            for s in np.linspace(0.0, 1.0, per_edge, endpoint=False):
+                px = a[0] + (b[0] - a[0]) * s
+                pz = a[1] + (b[1] - a[1]) * s
+                pos = np.array([px, cam_y, pz])
+                # Pan outward from the room centre so walls and floor are both covered.
+                yaw = np.arctan2(pz - cz, px - cx) + [0.0, 0.7, -0.7][k % 3]
+                pitch = [0.0, 0.5, -0.6, -0.3][k % 4]
+                poses.append((pos, yaw, pitch))
+                k += 1
+        for i in range(4):
+            poses.append((np.array([cx, cam_y, cz]), i * np.pi / 2, -0.5))
     for d in scene.doors:
         mid = (d.a0 + d.a1) / 2
-        for s in np.linspace(-1.0, 1.0, 9):
+        for s in np.linspace(-1.2, 1.2, 9):
             if d.axis == 0:
                 pos = np.array([d.pos + s, cam_y, mid])
-                yaw = 0.0 if s < 0 else 0.0
+                yaw = 0.0
             else:
                 pos = np.array([mid, cam_y, d.pos + s])
                 yaw = np.pi / 2
-            poses.append((pos, yaw, 0.0))
+            poses.append((pos, yaw, -0.3))
     return poses
 
 

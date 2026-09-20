@@ -57,7 +57,9 @@ def _faces_of(cloud):
     sel = wall_points(cloud, lv, CFG)
     frame = ManhattanFrame.fit(cloud.normals[sel], cloud.points[sel][:, [0, 2]])
     return extract_faces(frame.to_frame(cloud.points[sel][:, [0, 2]]),
-                         frame.rotate_normals(cloud.normals[sel]), CFG)
+                         frame.rotate_normals(cloud.normals[sel]),
+                         cloud.points[sel][:, 1] - detect_levels(cloud, CFG).floor.height_at(cloud.points[sel][:, [0, 2]]),
+                         CFG)
 
 
 def test_extract_faces_finds_both_outer_walls_and_the_shared_wall(two_room_cloud):
@@ -93,11 +95,15 @@ def test_face_segments_cover_the_wall_and_stop_at_its_ends(two_room_cloud):
 
 
 def test_extract_faces_is_deterministic(two_room_cloud):
-    lv = detect_levels(two_room_cloud, CFG)
-    sel = wall_points(two_room_cloud, lv, CFG)
-    frame = ManhattanFrame.fit(two_room_cloud.normals[sel], two_room_cloud.points[sel][:, [0, 2]])
-    xz = frame.to_frame(two_room_cloud.points[sel][:, [0, 2]])
-    nr = frame.rotate_normals(two_room_cloud.normals[sel])
-    a = [(f.axis, round(f.pos, 9), f.segments) for f in extract_faces(xz, nr, CFG)]
-    b = [(f.axis, round(f.pos, 9), f.segments) for f in extract_faces(xz, nr, CFG)]
+    a = [(f.axis, round(f.pos, 9), f.segments) for f in _faces_of(two_room_cloud)]
+    b = [(f.axis, round(f.pos, 9), f.segments) for f in _faces_of(two_room_cloud)]
     assert a == b
+
+
+def test_furniture_height_faces_are_not_structural(two_room_cloud):
+    """A face whose points stop at 0.9 m is furniture; a wall reaches the ceiling."""
+    from cozmo.lidar.walls import WallFace
+
+    assert not WallFace(axis=0, pos=0.0, y_top=0.9).is_structural(CFG["wall"]["wall_min_top_m"])
+    assert WallFace(axis=0, pos=0.0, y_top=2.4).is_structural(CFG["wall"]["wall_min_top_m"])
+    assert all(f.is_structural(CFG["wall"]["wall_min_top_m"]) for f in _faces_of(two_room_cloud))

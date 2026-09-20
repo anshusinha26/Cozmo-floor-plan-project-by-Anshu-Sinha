@@ -89,11 +89,14 @@ pipeline:
       peak_min_separation_m: 0.06
       occupancy_bin_m: 0.05
       min_run_m: 0.4            # shorter runs are clutter, not wall
+      wall_min_top_m: 1.6       # a face whose points stop below this is furniture, not wall
       max_gap_m: 0.35           # runs closer than this join into one face extent
     room:
       grid_m: 0.02
       erode_m: 0.5              # closes doorways so rooms separate
       min_area_m2: 1.5          # smaller components merge or become connectors
+      min_constriction_m: 0.62  # half-width: regions joined by a passage wider than 1.24 m are one room
+      wall_min_top_m: 1.6       # mirrors wall.wall_min_top_m; only structural faces block rooms
       snap_m: 0.15              # polygon edges snap to wall faces within this
     opening:
       band_low_m: 0.3

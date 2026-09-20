@@ -82,6 +82,16 @@ class WallFace:
     n_points: int = 0
     resid_std: float = 0.0
     sign: float = 0.0  # mean normal direction: which side the observer was on
+    y_top: float = 0.0  # height above the floor reached by the face's points
+    y_bottom: float = 0.0
+
+    def is_structural(self, min_top_m: float) -> bool:
+        """A wall reaches for the ceiling; a sofa back or a counter does not.
+
+        Furniture produces perfectly good vertical planes, and treating them as
+        walls splits one room into several. Height is the physical difference.
+        """
+        return self.y_top >= min_top_m
 
     def length(self) -> float:
         return float(sum(b - a for a, b in self.segments))
@@ -127,7 +137,7 @@ def _runs(along: np.ndarray, bin_m: float, max_gap_m: float, min_run_m: float) -
     return out
 
 
-def extract_faces(xz: np.ndarray, normals: np.ndarray, cfg: dict) -> list[WallFace]:
+def extract_faces(xz: np.ndarray, normals: np.ndarray, height_above_floor: np.ndarray, cfg: dict) -> list[WallFace]:
     """Wall faces per axis: histogram peaks along the normal, extents from occupancy runs.
 
     Points are assigned to the axis their normal is closest to, so a point on
@@ -144,6 +154,7 @@ def extract_faces(xz: np.ndarray, normals: np.ndarray, cfg: dict) -> list[WallFa
         pos = xz[belongs, axis]
         along = xz[belongs, 1 - axis]
         sign = normals[belongs, 0 if axis == 0 else 2]
+        hgt = height_above_floor[belongs]
         bin_m = wcfg["hist_bin_m"]
         lo, hi = float(pos.min()), float(pos.max())
         edges = np.arange(lo - bin_m, hi + 2 * bin_m, bin_m)
@@ -161,6 +172,8 @@ def extract_faces(xz: np.ndarray, normals: np.ndarray, cfg: dict) -> list[WallFa
             if not segments:
                 continue
             faces.append(WallFace(axis=axis, pos=refined, segments=segments, n_points=int(band.sum()),
-                                  resid_std=float(np.std(pos[band])), sign=float(np.mean(sign[band]))))
+                                  resid_std=float(np.std(pos[band])), sign=float(np.mean(sign[band])),
+                                  y_top=float(np.percentile(hgt[band], 97)),
+                                  y_bottom=float(np.percentile(hgt[band], 3))))
     faces.sort(key=lambda f: (f.axis, f.pos))
     return faces
