@@ -126,6 +126,9 @@ class CaptureEntry(_Strict):
     # Video tier only. ffmpeg applies a container rotation tag by itself, so
     # "auto" is right for phone video; Stray Scanner's rgb.mp4 carries no tag.
     video_rotation: Literal["auto", "0", "90", "180", "270"] = "auto"
+    # Synthetic harness fixtures pin the stub; real captures leave this null and
+    # take the tier's own pipeline.
+    pipeline: str | None = None
 
 
 class Registry(_Strict):

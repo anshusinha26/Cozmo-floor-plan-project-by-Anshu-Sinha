@@ -40,6 +40,7 @@ class InputSpec:
     files: list[Path]
     rooms: list[RoomInput] | None = None  # photo tier only
     n_frames: int | None = None  # lidar tier only
+    skipped: list[str] = field(default_factory=list)  # subfolders that hold no room
 
 
 def _visible(paths):
@@ -61,13 +62,21 @@ def _photo(root: Path) -> InputSpec:
     subdirs = _visible(p for p in root.iterdir() if p.is_dir())
     if not subdirs:
         raise InputError(f"no room subfolders under {root}")
-    rooms = []
+    rooms, skipped = [], []
     for d in subdirs:
         imgs = _visible(p for p in d.iterdir() if p.is_file() and p.suffix.lower() in IMAGE_EXT)
         if len(imgs) < 2:
-            raise InputError(f"room {d.name!r}: photo tier needs at least 2 images, found {len(imgs)}")
+            # A capture folder often carries things that are not rooms: a
+            # measurements pdf, a folder of screenshots. Naming them and moving
+            # on beats refusing the whole capture over one of them.
+            skipped.append(f"{d.name} ({len(imgs)} image(s), needs at least 2)")
+            continue
         rooms.append(RoomInput(d.name, imgs))
-    return InputSpec("photo", root, [f for r in rooms for f in r.files], rooms=rooms)
+    if not rooms:
+        raise InputError(f"no room folder under {root} has enough images; skipped: "
+                         f"{', '.join(skipped) if skipped else 'none'}")
+    return InputSpec("photo", root, [f for r in rooms for f in r.files], rooms=rooms,
+                     skipped=skipped)
 
 
 def _video(root: Path) -> InputSpec:
@@ -84,11 +93,26 @@ def _video(root: Path) -> InputSpec:
             raise InputError(f"video tier needs rgb.mp4 in {root}")
         return InputSpec("video", root, scan.files())
     vids = _visible(p for p in root.iterdir() if p.is_file() and p.suffix.lower() in VIDEO_EXT)
-    if not vids:
-        raise InputError(f"no video file in {root} (looked for {', '.join(sorted(VIDEO_EXT))})")
     if len(vids) > 1:
         raise InputError(f"{root} holds {len(vids)} video files: {', '.join(p.name for p in vids)}")
-    return InputSpec("video", root, vids)
+    if vids:
+        return InputSpec("video", root, vids)
+
+    # A property captured as one clip per room, the same layout the photo tier
+    # takes. Each room is reconstructed on its own and the rooms are stitched.
+    rooms, skipped = [], []
+    for d in _visible(p for p in root.iterdir() if p.is_dir()):
+        sub = _visible(p for p in d.iterdir() if p.is_file() and p.suffix.lower() in VIDEO_EXT)
+        if len(sub) == 1:
+            rooms.append(RoomInput(d.name, sub))
+        else:
+            skipped.append(f"{d.name} ({len(sub)} video(s), needs exactly 1)")
+    if rooms:
+        return InputSpec("video", root, [f for r in rooms for f in r.files], rooms=rooms,
+                         skipped=skipped)
+    raise InputError(f"no video file in {root}, and no subfolder holds exactly one "
+                     f"(looked for {', '.join(sorted(VIDEO_EXT))})"
+                     + (f"; skipped: {', '.join(skipped)}" if skipped else ""))
 
 
 def _lidar(root: Path) -> InputSpec:

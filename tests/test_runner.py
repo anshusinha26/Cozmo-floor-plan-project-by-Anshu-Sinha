@@ -37,7 +37,7 @@ def test_evaluate_stub_against_example_reports_every_gate_and_counts():
 def test_eval_command_writes_json_and_md(tmp_path):
     out = tmp_path / "run"
     r = runner.invoke(app, ["run", "--input", str(REPO / "benchmarks" / "captures" / "EXAMPLE"), "--tier", "photo",
-                            "--out", str(out), "--config", str(CONFIG)])
+                            "--out", str(out), "--config", str(CONFIG), "--pipeline", "stub"])
     assert r.exit_code == 0, r.output
     ev = tmp_path / "eval"
     r = runner.invoke(app, ["eval", "--pred", str(out / "plan.json"), "--truth",
