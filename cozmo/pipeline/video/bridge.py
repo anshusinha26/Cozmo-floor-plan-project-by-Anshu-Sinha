@@ -202,7 +202,9 @@ def _overlap_indices(chunk_a: SfmChunk, chunk_b: SfmChunk, k: int,
 def try_bridge(chunk_a: SfmChunk, chunk_b: SfmChunk, frames: FrameSet, oracle: MapAnythingOracle,
                overlap_frames: int = 4, max_rms_m: float = 0.12, max_rms_frac: float = 0.25,
                max_scale_disagreement: float = 0.15, overlap_window_s: float = 2.0,
-               min_span_m: float = 0.20, scale_sem_sigmas: float = 2.0
+               min_span_m: float = 0.20, scale_sem_sigmas: float = 2.0,
+               levelled: bool = False, transforms: dict | None = None,
+               max_tilt_deg: float = 12.0, max_vertical_m: float = 0.35
                ) -> tuple[BridgeAttempt, tuple[np.ndarray, np.ndarray] | None]:
     """One neighbouring pair. Returns the attempt record and, if accepted, (R, t) taking b into a."""
     t0 = time.perf_counter()
@@ -210,6 +212,14 @@ def try_bridge(chunk_a: SfmChunk, chunk_b: SfmChunk, frames: FrameSet, oracle: M
     if len(ia) < 3 or len(ib) < 3:
         return BridgeAttempt(chunk_a.index, chunk_b.index, False,
                              "fewer than 3 frames available on one side"), None
+    def centres(chunk, idx):
+        """Overlap camera centres in whatever frame the caller is working in."""
+        c = metric_centres(chunk, idx)
+        if transforms is not None and chunk.index in transforms:
+            R, t = transforms[chunk.index]
+            c = c @ R.T + t
+        return c
+
     paths = [frames.path(chunk_a.names[i]) for i in ia] + [frames.path(chunk_b.names[i]) for i in ib]
     try:
         poses = oracle.poses(paths)
@@ -221,14 +231,14 @@ def try_bridge(chunk_a: SfmChunk, chunk_b: SfmChunk, frames: FrameSet, oracle: M
     ma_a, ma_b = ma[:len(ia)], ma[len(ia):]
 
     try:
-        fit_a = umeyama(ma_a, metric_centres(chunk_a, ia))
-        fit_b = umeyama(ma_b, metric_centres(chunk_b, ib))
+        fit_a = umeyama(ma_a, centres(chunk_a, ia))
+        fit_b = umeyama(ma_b, centres(chunk_b, ib))
     except ValueError as e:
         return BridgeAttempt(chunk_a.index, chunk_b.index, False, f"alignment degenerate: {e}",
                              seconds=time.perf_counter() - t0), None
 
-    span_a = float(np.linalg.norm(np.ptp(metric_centres(chunk_a, ia), axis=0)))
-    span_b = float(np.linalg.norm(np.ptp(metric_centres(chunk_b, ib), axis=0)))
+    span_a = float(np.linalg.norm(np.ptp(centres(chunk_a, ia), axis=0)))
+    span_b = float(np.linalg.norm(np.ptp(centres(chunk_b, ib), axis=0)))
     tol_a = max(max_rms_m, max_rms_frac * span_a)
     tol_b = max(max_rms_m, max_rms_frac * span_b)
     ratio = fit_a.s / fit_b.s if fit_b.s else float("inf")
@@ -248,6 +258,30 @@ def try_bridge(chunk_a: SfmChunk, chunk_b: SfmChunk, frames: FrameSet, oracle: M
     # measured scale errors, whichever is looser. Holding a pair to 15% when
     # each side's scale is only known to 12% rejects bridges for being inside
     # their own noise.
+    R = fit_a.R @ fit_b.R.T
+    t = fit_a.t - R @ fit_b.t
+
+    if levelled:
+        # Both chunks already stand upright on the same floor at their own metric
+        # scale, so only a turn about gravity and a slide along the floor are left
+        # to find. Scale no longer has to be agreed, which is what made most
+        # bridges fail; what does still have to agree is which way is down.
+        Rp, tp, tilt_deg, vertical = planar(R, t)
+        if tilt_deg > max_tilt_deg:
+            return BridgeAttempt(chunk_a.index, chunk_b.index, False,
+                                 f"the two chunks disagree about which way is down by "
+                                 f"{tilt_deg:.1f} degrees, over the {max_tilt_deg:.0f} allowed",
+                                 fit_a.rms_m, fit_b.rms_m, ratio, secs), None
+        if vertical > max_vertical_m:
+            return BridgeAttempt(chunk_a.index, chunk_b.index, False,
+                                 f"the bridge would lift one chunk {vertical:.2f} m off the "
+                                 f"other's floor, over the {max_vertical_m:.2f} m allowed",
+                                 fit_a.rms_m, fit_b.rms_m, ratio, secs), None
+        return BridgeAttempt(chunk_a.index, chunk_b.index, True,
+                             f"accepted on yaw {np.degrees(yaw_of(Rp)):+.1f} degrees, tilt "
+                             f"discarded {tilt_deg:.1f}, vertical {vertical:.2f} m",
+                             fit_a.rms_m, fit_b.rms_m, ratio, secs), (Rp, tp)
+
     sem = float(np.hypot(scale_standard_error(chunk_a), scale_standard_error(chunk_b)))
     tol_scale = max(max_scale_disagreement, scale_sem_sigmas * sem)
     if not np.isfinite(ratio) or abs(ratio - 1.0) > tol_scale:
@@ -259,10 +293,38 @@ def try_bridge(chunk_a: SfmChunk, chunk_b: SfmChunk, frames: FrameSet, oracle: M
 
     # Compose, dropping the residual scale: both sides are already in metres
     # through their own chunk, so the chunk-to-chunk transform must be rigid.
-    R = fit_a.R @ fit_b.R.T
-    t = fit_a.t - R @ fit_b.t
     return BridgeAttempt(chunk_a.index, chunk_b.index, True, "accepted",
                          fit_a.rms_m, fit_b.rms_m, ratio, secs, tol_scale), (R, t)
+
+
+def yaw_of(R: np.ndarray) -> float:
+    """The rotation about y that best matches R, in radians.
+
+    After levelling, two chunks differ only by a turn about gravity and a slide
+    along the floor. Anything else in the bridge's rotation is error, so it is
+    projected out rather than applied.
+    """
+    return float(np.arctan2(R[0, 2] - R[2, 0], R[0, 0] + R[2, 2]))
+
+
+def yaw_matrix(theta: float) -> np.ndarray:
+    c, s_ = np.cos(theta), np.sin(theta)
+    return np.array([[c, 0.0, s_], [0.0, 1.0, 0.0], [-s_, 0.0, c]])
+
+
+def planar(R: np.ndarray, t: np.ndarray) -> tuple[np.ndarray, np.ndarray, float, float]:
+    """Reduce a rigid transform to a yaw and a slide on the floor.
+
+    Returns the planar rotation and translation plus what was discarded: the
+    tilt away from a pure yaw, and the vertical shift. Both are reported,
+    because a large one means the two chunks did not agree about which way is
+    down and the bridge should be distrusted.
+    """
+    theta = yaw_of(R)
+    Rp = yaw_matrix(theta)
+    tilt_deg = float(np.rad2deg(np.arccos(np.clip((np.trace(Rp.T @ R) - 1) / 2, -1, 1))))
+    tp = np.array([t[0], 0.0, t[2]])
+    return Rp, tp, tilt_deg, float(abs(t[1]))
 
 
 def _largest_group(n: int, edges: list[tuple[int, int]], weights: list[int]) -> list[int]:
@@ -288,6 +350,8 @@ def bridge_chunks(chunks: list[SfmChunk], frames: FrameSet, device: str, overlap
                   max_rms_m: float = 0.12, max_rms_frac: float = 0.25,
                   max_scale_disagreement: float = 0.15, overlap_window_s: float = 2.0,
                   min_span_m: float = 0.20, scale_sem_sigmas: float = 2.0,
+                  levelled: bool = False, transforms: dict | None = None,
+                  max_tilt_deg: float = 12.0, max_vertical_m: float = 0.35,
                   time_box_s: float = 5400.0) -> BridgeResult:
     """Bridge every neighbouring pair, then keep the largest connected group.
 
@@ -297,7 +361,8 @@ def bridge_chunks(chunks: list[SfmChunk], frames: FrameSet, device: str, overlap
     """
     n = len(chunks)
     if n == 1:
-        return BridgeResult(group=[0], transforms={0: (np.eye(3), np.zeros(3))},
+        base = transforms[0] if transforms else (np.eye(3), np.zeros(3))
+        return BridgeResult(group=[0], transforms={0: base},
                             note="single chunk: the clip registered as one model, nothing to bridge")
 
     oracle = MapAnythingOracle(device)
@@ -314,7 +379,8 @@ def bridge_chunks(chunks: list[SfmChunk], frames: FrameSet, device: str, overlap
             break
         attempt, tf = try_bridge(chunks[i], chunks[i + 1], frames, oracle, overlap_frames,
                                  max_rms_m, max_rms_frac, max_scale_disagreement,
-                                 overlap_window_s, min_span_m, scale_sem_sigmas)
+                                 overlap_window_s, min_span_m, scale_sem_sigmas,
+                                 levelled, transforms, max_tilt_deg, max_vertical_m)
         attempts.append(attempt)
         log.info("bridge %d-%d: %s", attempt.a, attempt.b,
                  "accepted" if attempt.accepted else f"rejected, {attempt.reason}")
@@ -326,15 +392,20 @@ def bridge_chunks(chunks: list[SfmChunk], frames: FrameSet, device: str, overlap
     group = sorted(_largest_group(n, edges, weights))
 
     # Compose along the chain to the first chunk of the group.
-    transforms: dict[int, tuple[np.ndarray, np.ndarray]] = {group[0]: (np.eye(3), np.zeros(3))}
+    out_tf: dict[int, tuple[np.ndarray, np.ndarray]] = {group[0]: (np.eye(3), np.zeros(3))}
     for k in range(len(group) - 1):
         i, j = group[k], group[k + 1]
         if (i, j) not in pair_tf:
             break
         R_ij, t_ij = pair_tf[(i, j)]
-        R_prev, t_prev = transforms[i]
-        transforms[j] = (R_prev @ R_ij, R_prev @ t_ij + t_prev)
-    group = [g for g in group if g in transforms]
+        R_prev, t_prev = out_tf[i]
+        out_tf[j] = (R_prev @ R_ij, R_prev @ t_ij + t_prev)
+    group = [g for g in group if g in out_tf]
+    if transforms is not None:
+        # Compose onto the levelling transform each chunk already carries.
+        out_tf = {g: (out_tf[g][0] @ transforms[g][0],
+                      out_tf[g][0] @ transforms[g][1] + out_tf[g][1]) for g in group}
+    transforms = out_tf
 
     total_frames = sum(weights)
     dropped = []

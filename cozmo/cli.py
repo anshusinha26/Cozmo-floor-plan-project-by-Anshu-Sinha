@@ -56,6 +56,14 @@ class Switch(str, Enum):
     off = "off"
 
 
+class RoomModeOpt(str, Enum):
+    """A per-room clip has one room in it; a property walk does not."""
+
+    auto = "auto"
+    on = "on"
+    off = "off"
+
+
 class RotationOpt(str, Enum):
     """ffmpeg applies a container rotation tag by itself, so `auto` is right for
     phone video. Stray Scanner's rgb.mp4 carries no tag and needs 90."""
@@ -92,17 +100,23 @@ def _now() -> datetime:
 
 
 def resolve_config(config_path: Path, drift_correction: bool, pipeline_name: str,
-                   video_rotation: str = "auto") -> dict[str, Any]:
+                   video_rotation: str = "auto", camera_height_m: float | None = None,
+                   single_room: str = "auto", connector: str | None = None,
+                   cache_root: str | None = None) -> dict[str, Any]:
     """File config plus CLI overrides. This resolved dict is what gets hashed."""
     cfg = prov.load_config(config_path)
     cfg["run"] = {"pipeline": pipeline_name, "drift_correction": drift_correction,
-                  "video_rotation": video_rotation}
+                  "video_rotation": video_rotation, "camera_height_m": camera_height_m,
+                  "single_room": single_room, "connector": connector,
+                  "cache_root": cache_root}
     return cfg
 
 
 def execute_run(input_path: Path, tier: str, out: Path, config: Path, seed: int, drift_correction: bool,
                 pipeline_name: str | None = None, debug: bool = True,
-                video_rotation: str = "auto") -> dict[str, Any]:
+                video_rotation: str = "auto", camera_height_m: float | None = None,
+                single_room: str = "auto", connector: str | None = None,
+                cache_root: str | None = None) -> dict[str, Any]:
     """Run one capture: validate input, run the pipeline, write plan.json, plan.png, run_manifest.json.
 
     Raises InputError / FileNotFoundError on bad input. Returns the manifest dict.
@@ -118,7 +132,8 @@ def execute_run(input_path: Path, tier: str, out: Path, config: Path, seed: int,
         logging.getLogger("cozmo.cli").info("input ok: scan folder with %d readable file(s) for tier %s", len(spec.files), tier)
 
     name = pipeline_for(tier, pipeline_name)
-    resolved = resolve_config(config, drift_correction, name, video_rotation)
+    resolved = resolve_config(config, drift_correction, name, video_rotation, camera_height_m,
+                              single_room, connector, cache_root)
     config_hash = prov.config_sha256(resolved)
     input_manifest = prov.build_input_manifest(input_path, spec.files)
 
@@ -184,11 +199,23 @@ def run(
     pipeline: str = typer.Option(None, "--pipeline", help="Force a pipeline: stub, lidar or video"),
     video_rotation: RotationOpt = typer.Option(RotationOpt.auto, "--video-rotation",
                                                help="Video tier only: override the container rotation tag"),
+    camera_height_m: float = typer.Option(None, "--camera-height",
+                                          help="Height the phone was held at, metres. Sets the metric "
+                                               "scale for the video and photo tiers (default 1.40)"),
+    single_room: RoomModeOpt = typer.Option(RoomModeOpt.auto, "--single-room",
+                                            help="Fit one room around the camera path instead of segmenting"),
+    connector: str = typer.Option(None, "--connector",
+                                  help="Room id that the other rooms attach to when stitching"),
+    cache_root: str = typer.Option(None, "--cache-root",
+                                   help="Share decoded frames and reconstructions between runs of "
+                                        "the same capture, keyed by capture name"),
 ) -> None:
     """Run the pipeline on one capture and write plan.json, plan.png and run_manifest.json."""
     try:
         manifest = execute_run(input_path, tier.value, out, config, seed, drift_correction == Switch.on,
-                               pipeline_name=pipeline, video_rotation=video_rotation.value)
+                               pipeline_name=pipeline, video_rotation=video_rotation.value,
+                               camera_height_m=camera_height_m, single_room=single_room.value,
+                               connector=connector, cache_root=cache_root)
     except (InputError, FileNotFoundError, RuntimeError, ValueError, KeyError) as e:
         _fail(str(e))
     typer.echo(f"wrote {out / 'plan.json'} ({manifest['n_rooms']} rooms), plan.png and run_manifest.json")
@@ -365,8 +392,10 @@ def bench(
     for e in registry.captures:
         run_dir = out / "runs" / e.capture_id
         try:
-            manifests[e.capture_id] = execute_run(resolve(e.input), e.tier, run_dir, config, seed, True,
-                                                  video_rotation=getattr(e, "video_rotation", None) or "auto")
+            manifests[e.capture_id] = execute_run(
+                resolve(e.input), e.tier, run_dir, config, seed, True,
+                pipeline_name=getattr(e, "pipeline", None),
+                video_rotation=getattr(e, "video_rotation", None) or "auto")
         except (InputError, FileNotFoundError, RuntimeError, ValueError, KeyError) as ex:
             _fail(f"{e.capture_id}: {ex}")
         plan = Plan.from_json_bytes((run_dir / "plan.json").read_bytes())

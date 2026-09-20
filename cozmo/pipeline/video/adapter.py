@@ -37,6 +37,7 @@ from cozmo.lidar.rooms import segment_rooms
 from cozmo.lidar.walls import ManhattanFrame, extract_faces, wall_points
 from cozmo.pipeline.lidar import MANHATTAN_ASSUMPTION, LidarPipeline
 from cozmo.pipeline.video.intervals import IntervalBudget
+from cozmo.pipeline.video.singleroom import as_room_result, fit_single_room
 
 log = logging.getLogger(__name__)
 
@@ -126,7 +127,8 @@ def camera_height_check(camera_path: np.ndarray, levels, points: np.ndarray) -> 
 def plan_from_cloud(points: np.ndarray, normals: np.ndarray, camera_path: np.ndarray,
                     camera_times: np.ndarray, n_frames_used: int, input_path: Path, tier: Tier,
                     config: dict[str, Any], seed: int, pipeline, budget: IntervalBudget,
-                    drift_model, warnings: list[str], assumptions: list[str]) -> PlanBuild:
+                    drift_model, warnings: list[str], assumptions: list[str],
+                    single_room: bool = False) -> PlanBuild:
     """Points, normals and a camera path to a Plan, through the LiDAR backend.
 
     ``budget`` carries this tier's interval widening; it is applied by editing
@@ -160,12 +162,29 @@ def plan_from_cloud(points: np.ndarray, normals: np.ndarray, camera_path: np.nda
     cam_height, cam_warning = camera_height_check(camera_path, levels, points)
     if cam_warning:
         warnings.append(cam_warning)
-    rooms = segment_rooms(cloud, levels, frame, faces, cfg)
-    if not rooms.rooms:
-        raise ValueError(
-            f"no room segmented from {len(points)} points: {len(faces)} wall faces from "
-            f"{int(sel.sum())} wall points, {len(camera_path)} camera poses. Either too little "
-            f"of the room registered or the floor was never seen from enough of it")
+
+    room_fit = None
+    if single_room:
+        # One clip, one room, and the person walked around inside it. Segmenting
+        # free space out of a partly reconstructed floor either finds nothing or
+        # finds a fragment and calls it the room; fitting around the whole camera
+        # path cannot do either.
+        path_frame = frame.to_frame(camera_path[:, [0, 2]])
+        room_fit = fit_single_room(faces, path_frame, cfg,
+                                   margin_m=cfg["room"].get("unsupported_margin_m", 0.35),
+                                   allow_l=cfg["room"].get("allow_l_shape", True))
+        rooms = as_room_result(room_fit, frame, cell_m=cfg["room"]["grid_m"])
+        warnings.extend(room_fit.warnings)
+        assumptions.extend(room_fit.assumptions)
+        budget = budget.with_unsupported_sides(4 - room_fit.n_supported)
+        cfg["uncertainty"] = budget.apply(cfg["uncertainty"])
+    else:
+        rooms = segment_rooms(cloud, levels, frame, faces, cfg)
+        if not rooms.rooms:
+            raise ValueError(
+                f"no room segmented from {len(points)} points: {len(faces)} wall faces from "
+                f"{int(sel.sum())} wall points, {len(camera_path)} camera poses. Either too little "
+                f"of the room registered or the floor was never seen from enough of it")
     openings = find_openings(cloud, levels, frame, faces, rooms, cfg)
     adjacency = adjacency_from_openings(openings)
 
@@ -181,6 +200,7 @@ def plan_from_cloud(points: np.ndarray, normals: np.ndarray, camera_path: np.nda
               "camera_height_above_floor_m": None if np.isnan(cam_height) else round(cam_height, 3),
               "camera_height_plausible": bool(cam_warning is None),
               "n_rooms": len(plan.rooms), "n_openings": sum(len(r.openings) for r in plan.rooms),
-              "interval_budget": budget.summary()}
+              "interval_budget": budget.summary(),
+              "single_room": None if room_fit is None else room_fit.summary()}
     return PlanBuild(plan=plan, detail=detail,
                      geometry=(cloud, levels, frame, faces, rooms, openings, cfg))

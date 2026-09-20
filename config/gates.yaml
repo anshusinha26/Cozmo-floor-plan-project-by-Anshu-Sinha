@@ -113,6 +113,77 @@ pipeline:
       abs_floor_m: 0.01         # 1 cm floor, no measurement is claimed tighter
       ci_level: 0.95
 
+  # Photo-tier reconstruction parameters. One folder per room, 2 or more stills.
+  # Geometry from MapAnything, scale from the camera-height prior, shape from the
+  # single-room fitter. Everything below mirrors the video tier's meaning.
+  photo:
+    device: null
+    voxel_m: 0.03
+    pixel_stride: 2
+    vertical_normal_cos: 0.9
+    horizontal_normal_cos: 0.25
+    height_prior:
+      camera_height_m: 1.40
+      camera_height_sigma_m: 0.12
+    gravity:
+      voxel_m: 0.05
+      max_tilt_deg: 30.0
+      band_m: 0.08
+    openings:
+      enabled: true
+      detector: owlv2          # OWLv2 "door" detections projected onto the nearest wall
+      min_score: 0.20
+      max_photos: 8
+    level:
+      hist_bin_m: 0.03
+      peak_min_fraction: 0.10
+      plane_band_m: 0.08
+      cell_m: 0.30
+      min_ceiling_coverage: 0.10
+      prior_height_m: [2.2, 3.2]
+    wall:
+      min_height_above_floor_m: 0.3
+      max_height_below_ceiling_m: 0.1
+      hist_bin_m: 0.06          # looser again than the video tier: fewer views, more spread
+      peak_min_points: 120
+      peak_min_separation_m: 0.14
+      occupancy_bin_m: 0.06
+      min_run_m: 0.4
+      wall_min_top_m: 1.4
+      max_gap_m: 0.60
+    ghost:
+      enabled: true
+      cell_m: 0.05
+      reach_m: 0.40
+      probe_offset_m: 0.25
+      min_supported_share: 0.20
+    room:
+      grid_m: 0.04
+      erode_m: 0.4
+      min_area_m2: 1.0
+      min_constriction_m: 0.62
+      wall_min_top_m: 1.4
+      snap_m: 0.30
+      unsupported_margin_m: 0.45
+      allow_l_shape: true
+    opening:
+      band_low_m: 0.3
+      band_high_m: 1.9
+      min_width_m: 0.6
+      max_width_m: 2.4
+      bin_m: 0.05
+    uncertainty:
+      # PROVISIONAL. The gate at this tier is 8%; the camera-height prior alone is
+      # 0.12 on 1.40, which is 8.6%, so this tier cannot claim to pass it on the
+      # prior's strength. See docs/photo_tier.md.
+      systematic_scale_bias: 0.05
+      depth_scale_bias: 0.05
+      abs_floor_m: 0.05
+      min_coverage: 0.60
+      low_coverage_factor: 1.6
+      ci_level: 0.95
+      status: PROVISIONAL
+
   # Video-tier reconstruction parameters. One video file in, nothing else.
   # Wall parameters are deliberately looser than the LiDAR tier's: spike 2 fitted
   # a line to one clean wall and measured 4.35 cm RMS against 0.96 cm for the
@@ -139,6 +210,12 @@ pipeline:
                                 # the cache is what actually makes a run regenerable
     scale:
       max_frames: 12            # Depth Pro frames per chunk, chosen by SfM conditioning
+    height_prior:
+      # Fix loop 2. The capture protocol says where the phone is held, which makes
+      # the camera height the one quantity in this tier with a known answer. Each
+      # chunk is scaled so its own median camera sits this far above its own floor.
+      camera_height_m: 1.40     # chest height, overridden per run with --camera-height
+      camera_height_sigma_m: 0.12
     bridge:
       overlap_frames: 4
       overlap_window_s: 2.0     # the 4 frames are spread over this many seconds, so the
@@ -149,9 +226,12 @@ pipeline:
       max_scale_disagreement: 0.15   # floor for the scale agreement gate
       scale_sem_sigmas: 2.0     # the gate widens to this many sigma of the two chunks'
                                 # own measured scale errors when those exceed the floor
+      max_tilt_deg: 12.0        # levelled mode: how far two chunks may disagree about down
+      max_vertical_m: 0.35      # levelled mode: how far a bridge may lift one chunk off the floor
       time_box_s: 5400.0
     dense:
-      max_keyframes: 80
+      max_keyframes: 140        # fix loop 2 fits every chunk, not just the bridged group,
+                                # because each one needs its own floor plane
       pixel_stride: 2
       min_depth_m: 0.25
       max_depth_m: 8.0
@@ -195,6 +275,9 @@ pipeline:
       min_constriction_m: 0.62
       wall_min_top_m: 1.5
       snap_m: 0.22              # LiDAR uses 0.15; matches the wider face tolerance
+      unsupported_margin_m: 0.35  # single-room mode: how far past the camera path a side with
+                                  # no wall face is closed by the rectangle assumption
+      allow_l_shape: true
     opening:
       band_low_m: 0.3
       band_high_m: 1.9

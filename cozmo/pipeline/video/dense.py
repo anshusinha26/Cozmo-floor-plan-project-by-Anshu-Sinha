@@ -125,6 +125,7 @@ class DenseBuild:
     rays: dict[int, tuple[np.ndarray, np.ndarray]]
     chunks: list[SfmChunk]
     group: list[int]
+    scale_at_fit: dict[int, float] = field(default_factory=dict)
     stats: dict = field(default_factory=dict)
     camera_up: np.ndarray = field(default_factory=lambda: np.zeros((0, 3)))
 
@@ -154,7 +155,11 @@ class DenseBuild:
             R_g, t_g = transforms[kf.chunk]
             s = float(chunk.scale_m_per_unit)
             rays_x, rays_y = self.rays[kf.chunk]
-            zmap = kf.zmap.astype(np.float64)
+            # The cached map is metric at whatever scale the chunk had when it was
+            # fitted. Rescaling the chunk rescales its depth with it, otherwise the
+            # geometry and the poses drift apart.
+            ratio = s / self.scale_at_fit.get(kf.chunk, s)
+            zmap = kf.zmap.astype(np.float64) * ratio
             valid = (zmap > min_depth_m) & (zmap < max_depth_m)
             zmap = np.where(valid, zmap, 0.0)
             P = np.stack([rays_x * zmap, rays_y * zmap, zmap], axis=-1)
@@ -209,13 +214,23 @@ class DenseBuild:
         return np.array(pts)[order], t[order], np.array(ups)[order]
 
 
+MIN_KEYFRAMES_PER_CHUNK = 6
+
+
 def _select_keyframes(chunks: list[SfmChunk], group: list[int], max_frames: int) -> dict[int, np.ndarray]:
-    """Spread the keyframe budget over the group in proportion to chunk size."""
+    """Spread the keyframe budget over the chunks in proportion to their size.
+
+    Every chunk gets a floor of its own, because after fix loop 2 each one has to
+    stand on its own floor plane before any of them are bridged, and a handful of
+    keyframes does not make a floor. The budget is a target, not a cap: a clip
+    that splits into eight chunks needs more frames than one that does not.
+    """
     sizes = {i: len(chunks[i]) for i in group}
     total = sum(sizes.values())
     out: dict[int, np.ndarray] = {}
     for i in group:
-        n = max(2, int(round(max_frames * sizes[i] / total))) if total else 2
+        n = max(MIN_KEYFRAMES_PER_CHUNK, int(round(max_frames * sizes[i] / total))) if total \
+            else MIN_KEYFRAMES_PER_CHUNK
         out[i] = np.unique(np.linspace(0, sizes[i] - 1, min(n, sizes[i])).round().astype(int))
     return out
 
@@ -228,6 +243,7 @@ def build(chunks: list[SfmChunk], group: list[int], frames: FrameSet, device: st
     picks = _select_keyframes(chunks, group, max_keyframes)
     keyframes: list[Keyframe] = []
     rays: dict[int, tuple[np.ndarray, np.ndarray]] = {}
+    scale_at_fit: dict[int, float] = {}
     per_chunk, secs = [], []
 
     for ci in group:
@@ -260,6 +276,7 @@ def build(chunks: list[SfmChunk], group: list[int], frames: FrameSet, device: st
                               "note": "no keyframe carried enough sparse depth to fit"})
             continue
 
+        scale_at_fit[ci] = s_chunk
         a_med = float(np.median([a for a, _ in fits.values()]))
         lo, hi = a_med * (1 - scale_tolerance), a_med * (1 + scale_tolerance)
         n_clamped = 0
@@ -280,8 +297,10 @@ def build(chunks: list[SfmChunk], group: list[int], frames: FrameSet, device: st
                           "chunk_scale_m_per_unit": round(s_chunk, 6)})
 
     stats = {"keyframes": len(keyframes), "per_chunk": per_chunk, "pixel_stride": pixel_stride,
+             "scale_at_fit": {k: round(v, 6) for k, v in scale_at_fit.items()},
              "sec_per_frame": round(float(np.mean(secs)), 3) if secs else None,
              "cached_depth_mb": round(sum(k.zmap.nbytes for k in keyframes) / 1e6, 1)}
     log.info("dense: %d keyframes fitted, %.1f MB of cached depth, %.2f s per frame",
              len(keyframes), stats["cached_depth_mb"], stats["sec_per_frame"] or 0.0)
-    return DenseBuild(keyframes=keyframes, rays=rays, chunks=chunks, group=group, stats=stats)
+    return DenseBuild(keyframes=keyframes, rays=rays, chunks=chunks, group=group,
+                      scale_at_fit=scale_at_fit, stats=stats)

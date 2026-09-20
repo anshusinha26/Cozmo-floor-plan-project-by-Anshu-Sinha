@@ -42,13 +42,21 @@ ABS_FLOOR_M = 0.03
 @dataclass
 class IntervalBudget:
     systematic: float = SYSTEMATIC_SCALE_BIAS
+    height_prior: float = 0.0
     scale_sem: float = 0.0
     chunk_spread: float = 0.0
     coverage: float = 1.0
     min_coverage: float = MIN_COVERAGE
     low_coverage_factor: float = LOW_COVERAGE_FACTOR
     abs_floor_m: float = ABS_FLOOR_M
+    unsupported_sides: int = 0
     notes: list[str] = field(default_factory=list)
+
+    def with_unsupported_sides(self, n: int) -> "IntervalBudget":
+        """A room side closed by assumption is not a measured side."""
+        out = IntervalBudget(**{k: v for k, v in self.__dict__.items() if k != "unsupported_sides"})
+        out.unsupported_sides = int(n)
+        return out
 
     @property
     def widened(self) -> bool:
@@ -56,12 +64,19 @@ class IntervalBudget:
 
     @property
     def factor(self) -> float:
-        return self.low_coverage_factor if self.widened else 1.0
+        f = self.low_coverage_factor if self.widened else 1.0
+        # Each side closed by the rectangle assumption rather than measured adds
+        # a quarter again to every interval in the room.
+        return f * (1.0 + 0.25 * self.unsupported_sides)
 
     @property
     def effective_bias(self) -> float:
         """The number that goes into the backend as ``depth_scale_bias``."""
-        base = np.sqrt(self.systematic ** 2 + self.scale_sem ** 2 + self.chunk_spread ** 2)
+        # Fix loop 2: the per-frame standard error understated the real scale
+        # error tenfold, so the scale term is the larger of the height prior's
+        # own uncertainty and how far the two scale methods ended up apart.
+        scale_term = max(self.height_prior, self.scale_sem)
+        base = np.sqrt(self.systematic ** 2 + scale_term ** 2 + self.chunk_spread ** 2)
         return float(base * self.factor)
 
     def apply(self, uncertainty: dict) -> dict:
@@ -82,7 +97,9 @@ class IntervalBudget:
 
     def summary(self) -> dict:
         return {"systematic": round(self.systematic, 4),
+                "height_prior": round(self.height_prior, 4),
                 "scale_sem": round(self.scale_sem, 4),
+                "unsupported_sides": self.unsupported_sides,
                 "chunk_spread": round(self.chunk_spread, 4),
                 "coverage": round(self.coverage, 4),
                 "min_coverage": self.min_coverage,
@@ -92,7 +109,8 @@ class IntervalBudget:
                 "abs_floor_m": round(max(self.abs_floor_m * self.factor, 0.0), 4)}
 
 
-def build_budget(scale_rows: list[dict], group: list[int], coverage: float, cfg: dict) -> IntervalBudget:
+def build_budget(scale_rows: list[dict], group: list[int], coverage: float, cfg: dict,
+                 height_prior_rel: float = 0.0, method_disagreement: float = 0.0) -> IntervalBudget:
     """Combine the measured scale evidence for the chunks that reached the output."""
     unc = cfg.get("uncertainty", {})
     rows = [r for r in scale_rows if r["chunk"] in group]
@@ -112,8 +130,16 @@ def build_budget(scale_rows: list[dict], group: list[int], coverage: float, cfg:
         notes.append(f"Monocular depth disagreed with itself across frames on this capture: the "
                      f"weighted standard error of the per-chunk scale is {sem:.1%}, which is "
                      f"carried into every interval")
+    # Fix loop 2: the scale term is the larger of the prior's own uncertainty and
+    # how far the prior and the depth model ended up apart, never the per-frame
+    # spread on its own.
+    if method_disagreement:
+        notes.append(f"The camera-height prior and the monocular depth scale disagree by "
+                     f"{method_disagreement:.0%} on this capture; the wider of that and the "
+                     f"prior's own uncertainty sets the scale term in every interval")
     return IntervalBudget(
         systematic=float(unc.get("systematic_scale_bias", SYSTEMATIC_SCALE_BIAS)),
+        height_prior=float(max(height_prior_rel, method_disagreement)),
         scale_sem=sem, chunk_spread=spread, coverage=float(coverage),
         min_coverage=float(unc.get("min_coverage", MIN_COVERAGE)),
         low_coverage_factor=float(unc.get("low_coverage_factor", LOW_COVERAGE_FACTOR)),
