@@ -1,0 +1,18 @@
+# Benchmark registry read by `cozmo bench`. Paths are relative to the repo root.
+# repeat_of marks a second capture of the same physical space at the same tier;
+# such pairs feed the repeatability gate and the ceiling-height spread check.
+captures:
+  - capture_id: EXAMPLE
+    space_id: example_flat
+    tier: photo
+    input: benchmarks/captures/EXAMPLE
+    ground_truth: benchmarks/ground_truth/EXAMPLE.yaml
+    repeat_of: null
+    multi_room: true
+  - capture_id: EXAMPLE_REPEAT
+    space_id: example_flat
+    tier: photo
+    input: benchmarks/captures/EXAMPLE_REPEAT
+    ground_truth: benchmarks/ground_truth/EXAMPLE_REPEAT.yaml
+    repeat_of: EXAMPLE
+    multi_room: true

@@ -1,0 +1,33 @@
+# EXAMPLE ground truth with obviously fake values. Exists only so the harness
+# can run end to end. Replace with real tape or laser readings per capture.
+capture_id: EXAMPLE
+space_id: example_flat
+tier: photo
+device: "EXAMPLE device"
+measured_with: "EXAMPLE: fake values, not measured"
+measured_on: 2026-01-01
+rooms:
+  - id: living
+    ceiling_height_m: 2.500
+    floor_area_m2: 20.000
+    # Clockwise, starting from the wall with the main door.
+    walls:
+      - {id: east, length_m: 4.000}
+      - {id: south, length_m: 5.000}
+      - {id: west, length_m: 4.000}
+      - {id: north, length_m: 5.000}
+    openings:
+      - {id: door_main, type: door, wall_id: east, offset_along_wall_m: 3.000, width_m: 0.800, height_m: 2.000}
+      - {id: window_north, type: window, wall_id: north, offset_along_wall_m: 2.000, width_m: 1.000, height_m: 1.000, sill_height_m: 1.000}
+  - id: hall
+    ceiling_height_m: 2.500
+    floor_area_m2: 3.000
+    walls:
+      - {id: west, length_m: 3.000}
+      - {id: north, length_m: 1.000}
+      - {id: east, length_m: 3.000}
+      - {id: south, length_m: 1.000}
+    openings:
+      - {id: door_main, type: door, wall_id: west, offset_along_wall_m: 1.000, width_m: 0.800, height_m: 2.000}
+adjacency:
+  - {room_a: living, room_b: hall, via_opening_id: door_main}
