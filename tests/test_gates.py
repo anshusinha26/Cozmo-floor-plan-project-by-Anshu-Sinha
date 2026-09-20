@@ -28,7 +28,7 @@ def test_opening_width_just_pass_and_just_fail_on_fraction():
     r = _shape(g.opening_width(ok + bad * 3, n_missed=0, n_phantom=0, cfg=CFG))
     assert r["passed"] and r["value"] == pytest.approx(0.85) and r["n"] == 20
     r = g.opening_width(ok + bad * 4, n_missed=0, n_phantom=0, cfg=CFG)
-    assert not r["passed"] and r["value"] == pytest.approx(16 / 20)
+    assert not r["passed"] and r["value"] == pytest.approx(17 / 21)
 
 
 def test_opening_width_missed_and_phantom_count_in_denominator():
