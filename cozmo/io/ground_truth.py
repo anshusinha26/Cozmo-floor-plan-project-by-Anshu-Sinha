@@ -123,6 +123,9 @@ class CaptureEntry(_Strict):
     ground_truth: str | None = None  # null where no tape measurements exist yet
     repeat_of: str | None = None
     multi_room: bool = False
+    # Video tier only. ffmpeg applies a container rotation tag by itself, so
+    # "auto" is right for phone video; Stray Scanner's rgb.mp4 carries no tag.
+    video_rotation: Literal["auto", "0", "90", "180", "270"] = "auto"
 
 
 class Registry(_Strict):

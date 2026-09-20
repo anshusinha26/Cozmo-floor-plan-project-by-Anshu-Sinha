@@ -20,6 +20,7 @@ from pathlib import Path
 from cozmo.io.stray import StrayScan
 
 IMAGE_EXT = {".jpg", ".jpeg", ".png", ".heic"}
+VIDEO_EXT = {".mp4", ".mov", ".m4v", ".avi", ".mkv"}
 
 
 class InputError(ValueError):
@@ -70,12 +71,24 @@ def _photo(root: Path) -> InputSpec:
 
 
 def _video(root: Path) -> InputSpec:
+    """A Stray Scanner folder (rgb.mp4) or any folder holding exactly one video file.
+
+    Either way the spec lists the one video, so tier isolation holds: the video
+    tier never sees depth, odometry or the still photos sitting beside the clip.
+    """
     if not root.is_dir():
-        raise InputError(f"video input must be a scan folder: {root}")
-    scan = StrayScan(root, "video")
-    if not scan.open("rgb.mp4").is_file():
-        raise InputError(f"video tier needs rgb.mp4 in {root}")
-    return InputSpec("video", root, scan.files())
+        raise InputError(f"video input must be a folder holding one video: {root}")
+    if looks_like_scan(root):
+        scan = StrayScan(root, "video")
+        if not scan.open("rgb.mp4").is_file():
+            raise InputError(f"video tier needs rgb.mp4 in {root}")
+        return InputSpec("video", root, scan.files())
+    vids = _visible(p for p in root.iterdir() if p.is_file() and p.suffix.lower() in VIDEO_EXT)
+    if not vids:
+        raise InputError(f"no video file in {root} (looked for {', '.join(sorted(VIDEO_EXT))})")
+    if len(vids) > 1:
+        raise InputError(f"{root} holds {len(vids)} video files: {', '.join(p.name for p in vids)}")
+    return InputSpec("video", root, vids)
 
 
 def _lidar(root: Path) -> InputSpec:

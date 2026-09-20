@@ -1,15 +1,15 @@
 """Pipeline registry.
 
-The lidar tier runs the real reconstruction. The photo and video tiers have no
-reconstruction yet and fall back to the stub, which marks itself in warnings.
-``--pipeline stub`` forces the stub for any tier.
+The lidar and video tiers run real reconstructions. The photo tier has none yet
+and falls back to the stub, which marks itself in warnings. ``--pipeline stub``
+forces the stub for any tier.
 """
 
 from __future__ import annotations
 
 from cozmo.pipeline.base import Pipeline
 
-REAL_BY_TIER = {"lidar": "lidar"}
+REAL_BY_TIER = {"lidar": "lidar", "video": "video"}
 
 
 def pipeline_for(tier: str, override: str | None = None) -> str:
@@ -27,4 +27,8 @@ def get_pipeline(name: str) -> Pipeline:
         from cozmo.pipeline.lidar import LidarPipeline
 
         return LidarPipeline()
-    raise KeyError(f"unknown pipeline {name!r}; available: stub, lidar")
+    if name == "video":
+        from cozmo.pipeline.video.pipeline import VideoPipeline
+
+        return VideoPipeline()
+    raise KeyError(f"unknown pipeline {name!r}; available: stub, lidar, video")
