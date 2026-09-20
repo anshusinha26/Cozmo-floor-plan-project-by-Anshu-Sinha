@@ -56,13 +56,10 @@ gates:
   stitch_overlap:
     max_overlap_m2: 0.05
 
-# Entity matching tolerances used before any error is computed.
-# DEFAULT values, chosen to be loose enough not to hide a bad wall as
-# "unmatched"; to be confirmed against real captures.
+# Entity matching. Rooms match by id, walls by cyclic order (no threshold),
+# openings by nearest centre along the matched wall within this gate.
 matching:
-  wall_midpoint_gate_m: 0.5
-  wall_angle_gate_deg: 15.0
-  opening_offset_gate_m: 0.3
+  opening_offset_gate_m: 0.5
 
 calibration:
   alpha: 0.05
