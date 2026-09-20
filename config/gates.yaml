@@ -123,9 +123,11 @@ pipeline:
       # Closed synthetic rooms measure 0.94 to 1.00; a room with one wall
       # unobserved measures 0.68, so 0.80 separates them with margin.
 
-    # Which segmentation the lidar pipeline uses: cells (wall driven, default)
-    # or erosion (the original, kept so the fix-loop BEFORE run regenerates).
-    segmentation: cells
+    # Which segmentation the lidar pipeline uses. Fix loop 1 measured both:
+    # the wall-driven cell complex is not better on the repeatability gate and
+    # inflates footprint area, so erosion is the default and cells stays
+    # selectable. See fix_loop/POSTMORTEM.md.
+    segmentation: erosion
 
     room:
       grid_m: 0.02

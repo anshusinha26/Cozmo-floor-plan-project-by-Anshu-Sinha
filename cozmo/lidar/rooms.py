@@ -153,7 +153,10 @@ def polygon_from_faces(mask: np.ndarray, grid: "Grid", snap_x: np.ndarray, snap_
         merged = max(merged.geoms, key=lambda g: g.area)
     if merged.is_empty or merged.area <= 0:
         return None
-    ring = list(merged.exterior.simplify(1e-9).coords)[:-1]
+    # Collapse collinear vertices: the union leaves one at every cell line it
+    # crossed, so a single physical wall would otherwise be reported as many
+    # short edges, and the evaluation compares wall lengths.
+    ring = list(merged.simplify(0.001, preserve_topology=True).exterior.coords)[:-1]
     out: list[tuple[float, float]] = []
     for x, z in ring:
         if not out or abs(out[-1][0] - x) > 1e-9 or abs(out[-1][1] - z) > 1e-9:
@@ -295,6 +298,41 @@ def segment_rooms(cloud: Cloud, levels: Levels, frame: ManhattanFrame, faces: li
 
     rooms = [r for r in rooms if r.area_m2 >= 0.5]
     rooms.sort(key=lambda r: -r.area_m2)
+    # Perimeter support: the same honesty flag the cell method carries. A room
+    # whose outline is mostly not backed by an observed wall has been closed by
+    # the morphology, not measured, so it is reported as partially observed.
+    from cozmo.lidar.cells import _gaps_from_profile, build_support
+
+    try:
+        support = build_support(cloud, levels, frame, cfg)
+    except Exception:
+        support = None
+    for r in rooms:
+        if support is None:
+            continue
+        poly = np.array(r.polygon_frame)
+        total = supported = 0.0
+        n = len(poly)
+        for i in range(n):
+            a, b = poly[i], poly[(i + 1) % n]
+            length = float(np.linalg.norm(b - a))
+            if length < 1e-6:
+                continue
+            axis = 0 if abs(b[0] - a[0]) < abs(b[1] - a[1]) else 1
+            pos = float((a[axis] + b[axis]) / 2)
+            lo, hi = sorted((float(a[1 - axis]), float(b[1 - axis])))
+            prof = support.support_profile(axis, pos, lo, hi, cfg["cells"]["support_tol_m"])
+            share, _ = _gaps_from_profile(prof, support.cell)
+            total += length
+            supported += length * share
+        r.perimeter_support = float(supported / total) if total else 1.0
+        r.partially_observed = r.perimeter_support < cfg["cells"]["min_perimeter_support"]
+    n_partial = sum(1 for r in rooms if r.partially_observed)
+    if n_partial:
+        warnings.append(
+            f"{n_partial} of {len(rooms)} rooms have less than "
+            f"{cfg['cells']['min_perimeter_support']:.0%} of their outline backed by observed wall; "
+            "they are flagged partially observed and their intervals are widened")
     n_conn = 0
     for i, r in enumerate(rooms, start=1):
         if r.kind == "connector":
