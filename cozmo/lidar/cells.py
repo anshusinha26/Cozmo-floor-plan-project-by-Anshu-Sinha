@@ -294,6 +294,11 @@ def segment_rooms_cells(cloud: Cloud, levels: Levels, frame: ManhattanFrame, fac
             merged = max(merged.geoms, key=lambda g: g.area)
         if merged.is_empty or merged.area <= 0:
             continue
+        # The union leaves a vertex at every grid line it crossed, so one
+        # physical wall becomes dozens of collinear edges. Collapsing them
+        # matters beyond tidiness: the evaluation compares wall lengths, and a
+        # wall cut into different pieces by two captures can never agree.
+        merged = merged.simplify(0.001, preserve_topology=True)
         ring = [(float(x), float(z)) for x, z in merged.exterior.coords[:-1]]
         if len(ring) < 4:
             continue

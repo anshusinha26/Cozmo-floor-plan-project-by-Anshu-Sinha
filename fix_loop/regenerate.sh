@@ -9,6 +9,13 @@
 set -euo pipefail
 
 SIDE="${1:?usage: regenerate.sh before|after}"
+# BEFORE is the erosion segmentation, AFTER is the wall-driven cell complex.
+# Both run the same eval on the same captures, so the comparison is fair.
+case "$SIDE" in
+  before) SEG=erosion ;;
+  after)  SEG=cells ;;
+  *) echo "usage: regenerate.sh before|after" >&2; exit 2 ;;
+esac
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 OUT="$ROOT/fix_loop/$SIDE"
 RUN="$OUT/bench"
@@ -19,10 +26,12 @@ test -d data/sample || { echo "data/sample is missing; it is gitignored and must
 
 rm -rf "$RUN"
 mkdir -p "$OUT"
-"$PY" -m cozmo.cli bench --set benchmarks/captures.yaml --out "$RUN" --seed 0 2>"$OUT/bench.log" | tee "$OUT/bench.stdout"
+"$PY" -m cozmo.cli bench --set benchmarks/captures.yaml --out "$RUN" --seed 0 \
+  --segmentation "$SEG" 2>"$OUT/bench.log" | tee "$OUT/bench.stdout"
 
 {
   echo "side: $SIDE"
+  echo "segmentation: $SEG"
   echo "commit: $(git rev-parse HEAD)"
   echo "commit_subject: $(git log -1 --pretty=%s)"
   echo "dirty: $(test -n "$(git status --porcelain)" && echo true || echo false)"
