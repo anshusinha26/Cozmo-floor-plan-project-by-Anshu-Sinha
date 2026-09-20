@@ -55,10 +55,11 @@ MSG
   echo "  $URL"
   TMP="$(mktemp -d)"
   trap 'rm -rf "$TMP"' EXIT
+  # gdown 6 dropped --remaining-ok, so nothing version-specific is passed.
   if command -v gdown >/dev/null 2>&1; then
-    gdown --folder "$URL" -O "$TMP" --remaining-ok
+    gdown --folder "$URL" -O "$TMP"
   else
-    "$PY" -m gdown --folder "$URL" -O "$TMP" --remaining-ok
+    "$PY" -m gdown --folder "$URL" -O "$TMP"
   fi
 
   # Unpack any archives, then move every scan folder into data/sample.
