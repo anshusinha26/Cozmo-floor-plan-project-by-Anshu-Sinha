@@ -1,0 +1,678 @@
+{
+  "threshold": 0.15,
+  "cases": [
+    {
+      "name": "own/bedroom_2_repeat photos (staged: one water stain, one crack)",
+      "frames": 9,
+      "seconds": 10.651274919509888,
+      "expected": [
+        {
+          "class": "water_stain",
+          "wall": "B",
+          "extent_upper_bound_m2": 0.0624
+        },
+        {
+          "class": "crack",
+          "wall": "D",
+          "extent_upper_bound_m2": 0.0624
+        }
+      ],
+      "detections": 133,
+      "regions": 103,
+      "per_class": {
+        "water_stain": 22,
+        "peeling_paint": 18,
+        "crack": 10,
+        "mould": 4,
+        "missing_material": 26,
+        "burn_char": 7,
+        "hole_puncture": 16
+      },
+      "hits": [
+        "crack",
+        "water_stain"
+      ],
+      "misses": [],
+      "other_classes_reported": [
+        "burn_char",
+        "hole_puncture",
+        "missing_material",
+        "mould",
+        "peeling_paint"
+      ],
+      "all_extents_unbounded": true,
+      "warnings": [
+        "Damage regions were detected without metric depth, so their extent is unbounded: extent_m2 carries a nominal value with an interval spanning the plausible range and method unbounded_no_metric_depth. Do not read these as measured areas"
+      ],
+      "flags": [
+        {
+          "rule": "CD-05",
+          "text": "Any mould indicates a moisture source that is not visible at the surface"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-07",
+          "text": "Burn or char marks indicate heat damage that may extend into the substrate"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-05",
+          "text": "Any mould indicates a moisture source that is not visible at the surface"
+        },
+        {
+          "rule": "CD-07",
+          "text": "Burn or char marks indicate heat damage that may extend into the substrate"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-07",
+          "text": "Burn or char marks indicate heat damage that may extend into the substrate"
+        },
+        {
+          "rule": "CD-05",
+          "text": "Any mould indicates a moisture source that is not visible at the surface"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-07",
+          "text": "Burn or char marks indicate heat damage that may extend into the substrate"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-07",
+          "text": "Burn or char marks indicate heat damage that may extend into the substrate"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-07",
+          "text": "Burn or char marks indicate heat damage that may extend into the substrate"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-07",
+          "text": "Burn or char marks indicate heat damage that may extend into the substrate"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-05",
+          "text": "Any mould indicates a moisture source that is not visible at the surface"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        }
+      ],
+      "scope_items": [
+        {
+          "description": "Stain-block and repaint the affected wall area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Scrape back, prepare and repaint",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Stain-block and repaint the affected wall area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Rake out, fill and redecorate the cracked area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Treat with fungicidal wash, then seal and redecorate",
+          "quantity_m2": 0.5
+        },
+        {
+          "description": "Replace the missing material and make good",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Replace the missing material and make good",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Rake out, fill and redecorate the cracked area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Stain-block and repaint the affected wall area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Scrape back, prepare and repaint",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Scrape back, prepare and repaint",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Scrape back, prepare and repaint",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Rake out, fill and redecorate the cracked area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Cut out charred material, treat and make good",
+          "quantity_m2": 0.5
+        },
+        {
+          "description": "Replace the missing material and make good",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Treat with fungicidal wash, then seal and redecorate",
+          "quantity_m2": 0.5
+        },
+        {
+          "description": "Cut out charred material, treat and make good",
+          "quantity_m2": 0.5
+        },
+        {
+          "description": "Scrape back, prepare and repaint",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Stain-block and repaint the affected wall area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Replace the missing material and make good",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Cut out charred material, treat and make good",
+          "quantity_m2": 0.5
+        },
+        {
+          "description": "Treat with fungicidal wash, then seal and redecorate",
+          "quantity_m2": 0.5
+        },
+        {
+          "description": "Stain-block and repaint the affected wall area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Replace the missing material and make good",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Replace the missing material and make good",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Scrape back, prepare and repaint",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Cut out charred material, treat and make good",
+          "quantity_m2": 0.5
+        },
+        {
+          "description": "Cut out, patch and make good",
+          "quantity_m2": 0.5
+        },
+        {
+          "description": "Stain-block and repaint the affected wall area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Replace the missing material and make good",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Cut out, patch and make good",
+          "quantity_m2": 0.5
+        },
+        {
+          "description": "Replace the missing material and make good",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Scrape back, prepare and repaint",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Stain-block and repaint the affected wall area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Cut out, patch and make good",
+          "quantity_m2": 0.5
+        },
+        {
+          "description": "Replace the missing material and make good",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Stain-block and repaint the affected wall area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Rake out, fill and redecorate the cracked area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Replace the missing material and make good",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Cut out, patch and make good",
+          "quantity_m2": 0.5
+        },
+        {
+          "description": "Scrape back, prepare and repaint",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Stain-block and repaint the affected wall area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Cut out, patch and make good",
+          "quantity_m2": 0.5
+        },
+        {
+          "description": "Cut out, patch and make good",
+          "quantity_m2": 0.5
+        },
+        {
+          "description": "Replace the missing material and make good",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Cut out charred material, treat and make good",
+          "quantity_m2": 0.5
+        },
+        {
+          "description": "Scrape back, prepare and repaint",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Stain-block and repaint the affected wall area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Scrape back, prepare and repaint",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Cut out, patch and make good",
+          "quantity_m2": 0.5
+        },
+        {
+          "description": "Stain-block and repaint the affected wall area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Cut out, patch and make good",
+          "quantity_m2": 0.5
+        },
+        {
+          "description": "Replace the missing material and make good",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Stain-block and repaint the affected wall area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Scrape back, prepare and repaint",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Stain-block and repaint the affected wall area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Rake out, fill and redecorate the cracked area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Replace the missing material and make good",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Stain-block and repaint the affected wall area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Cut out, patch and make good",
+          "quantity_m2": 0.5
+        },
+        {
+          "description": "Stain-block and repaint the affected wall area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Cut out, patch and make good",
+          "quantity_m2": 0.5
+        },
+        {
+          "description": "Replace the missing material and make good",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Replace the missing material and make good",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Cut out charred material, treat and make good",
+          "quantity_m2": 0.5
+        },
+        {
+          "description": "Scrape back, prepare and repaint",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Scrape back, prepare and repaint",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Stain-block and repaint the affected wall area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Replace the missing material and make good",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Replace the missing material and make good",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Replace the missing material and make good",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Rake out, fill and redecorate the cracked area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Replace the missing material and make good",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Replace the missing material and make good",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Replace the missing material and make good",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Rake out, fill and redecorate the cracked area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Rake out, fill and redecorate the cracked area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Stain-block and repaint the affected wall area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Rake out, fill and redecorate the cracked area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Stain-block and repaint the affected wall area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Scrape back, prepare and repaint",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Stain-block and repaint the affected wall area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Replace the missing material and make good",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Scrape back, prepare and repaint",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Scrape back, prepare and repaint",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Stain-block and repaint the affected wall area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Cut out, patch and make good",
+          "quantity_m2": 0.5
+        },
+        {
+          "description": "Cut out, patch and make good",
+          "quantity_m2": 0.5
+        },
+        {
+          "description": "Cut out charred material, treat and make good",
+          "quantity_m2": 0.5
+        },
+        {
+          "description": "Cut out, patch and make good",
+          "quantity_m2": 0.5
+        },
+        {
+          "description": "Cut out, patch and make good",
+          "quantity_m2": 0.5
+        },
+        {
+          "description": "Replace the missing material and make good",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Cut out, patch and make good",
+          "quantity_m2": 0.5
+        },
+        {
+          "description": "Scrape back, prepare and repaint",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Scrape back, prepare and repaint",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Stain-block and repaint the affected wall area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Treat with fungicidal wash, then seal and redecorate",
+          "quantity_m2": 0.5
+        },
+        {
+          "description": "Cut out, patch and make good",
+          "quantity_m2": 0.5
+        },
+        {
+          "description": "Replace the missing material and make good",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Stain-block and repaint the affected wall area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Rake out, fill and redecorate the cracked area",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Replace the missing material and make good",
+          "quantity_m2": 0.375
+        },
+        {
+          "description": "Replace the missing material and make good",
+          "quantity_m2": 0.375
+        }
+      ]
+    },
+    {
+      "name": "data/sample/c7d28f72c6 (LiDAR, depth available, no known damage)",
+      "frames": 25,
+      "seconds": 43.65337872505188,
+      "expected": "none known; the glass shower screen is a known false-positive hazard",
+      "detections": 146,
+      "regions": 121,
+      "per_class": {
+        "missing_material": 61,
+        "mould": 10,
+        "water_stain": 26,
+        "hole_puncture": 13,
+        "peeling_paint": 4,
+        "crack": 5,
+        "burn_char": 2
+      },
+      "bounded_extents": 97,
+      "extent_range_m2": [
+        0.0014826622199439017,
+        2.580290541585923
+      ],
+      "warnings": [],
+      "flags": [
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-05",
+          "text": "Any mould indicates a moisture source that is not visible at the surface"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-05",
+          "text": "Any mould indicates a moisture source that is not visible at the surface"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        },
+        {
+          "rule": "CD-08",
+          "text": "Missing material exposes the substrate, which may be damaged behind the surface"
+        }
+      ]
+    }
+  ]
+}
