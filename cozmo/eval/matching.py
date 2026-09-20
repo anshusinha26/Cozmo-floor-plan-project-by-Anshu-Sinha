@@ -34,22 +34,15 @@ class Assignment:
     total_error: float
 
 
-def cyclic_wall_assignment(pred_lengths: list[float], truth_lengths: list[float]) -> Assignment:
-    """Best cyclic alignment of two wall lists by total absolute length error.
-
-    When counts differ, a run of min(n_pred, n_truth) consecutive walls is
-    aligned in each list and the rest are left unmatched. That handles an
-    extra or missing wall at one place in the loop, which is the common case
-    (a merged or split wall); scattered mismatches are reported as unmatched
-    rather than guessed at. Ties resolve to the first candidate in iteration
-    order, so the result is deterministic.
-    """
+def _candidate_assignments(pred_lengths: list[float], truth_lengths: list[float]):
     n_p, n_t = len(pred_lengths), len(truth_lengths)
     k = min(n_p, n_t)
     if k == 0:
-        return Assignment([], False, 0, 0, 0.0)
-    best: Assignment | None = None
-    for rev in (False, True):
+        yield Assignment([], False, 0, 0, 0.0)
+        return
+    # Reversed first: the contract makes truth clockwise and predictions CCW,
+    # so on a pure tie the reversed direction is the expected one.
+    for rev in (True, False):
         seq = list(reversed(pred_lengths)) if rev else list(pred_lengths)
         idx = list(reversed(range(n_p))) if rev else list(range(n_p))
         for rp in range(n_p):
@@ -61,10 +54,36 @@ def cyclic_wall_assignment(pred_lengths: list[float], truth_lengths: list[float]
                     ti = (rt + i) % n_t
                     pairs.append((idx[pi], ti))
                     err += abs(seq[pi] - truth_lengths[ti])
-                if best is None or err < best.total_error - 1e-12:
-                    best = Assignment(pairs, rev, rp, rt, err)
-    assert best is not None
-    return best
+                yield Assignment(pairs, rev, rp, rt, err)
+
+
+def cyclic_wall_assignment(
+    pred_lengths: list[float],
+    truth_lengths: list[float],
+    tie_break=None,
+    tol: float = 1e-9,
+) -> Assignment:
+    """Best cyclic alignment of two wall lists by total absolute length error.
+
+    When counts differ, a run of min(n_pred, n_truth) consecutive walls is
+    aligned in each list and the rest are left unmatched. That handles an
+    extra or missing wall at one place in the loop, which is the common case
+    (a merged or split wall); scattered mismatches are reported as unmatched
+    rather than guessed at.
+
+    Symmetric rooms (a rectangle has two zero-error directions and two
+    zero-error rotations) cannot be resolved by lengths alone. Among
+    assignments within ``tol`` of the minimum error, ``tie_break(assignment)``
+    picks the winner (lower is better); ``match_room`` uses opening positions
+    for this. Without a tie breaker the first candidate wins, and candidates
+    are generated reversed-first, so the result is deterministic.
+    """
+    cands = list(_candidate_assignments(pred_lengths, truth_lengths))
+    best_err = min(c.total_error for c in cands)
+    near = [c for c in cands if c.total_error <= best_err + tol]
+    if tie_break is None or len(near) == 1:
+        return near[0]
+    return min(near, key=tie_break)
 
 
 @dataclass
@@ -102,29 +121,18 @@ def _centre(offset: float, width: float) -> float:
     return offset + width / 2.0
 
 
-def match_room(pred: Room, truth: GTRoom, opening_gate_m: float = DEFAULT_OPENING_GATE_M) -> RoomMatch:
-    rm = RoomMatch(room_id=truth.id)
-    a = cyclic_wall_assignment([w.length_m.value for w in pred.walls], [w.length_m for w in truth.walls])
-    rm.reversed = a.reversed
-    rm.total_length_error_m = a.total_error
-    pred_by_idx = {i: w for i, w in enumerate(pred.walls)}
-    truth_by_idx = {i: w for i, w in enumerate(truth.walls)}
-    pred_to_truth: dict[str, str] = {}
-    for pi, ti in a.pairs:
-        pw, tw = pred_by_idx[pi], truth_by_idx[ti]
-        rm.wall_pairs.append(WallPair(tw.id, pw.id, tw.length_m, pw.length_m))
-        pred_to_truth[pw.id] = tw.id
-    matched_truth = {p.truth_id for p in rm.wall_pairs}
-    rm.unmatched_truth_walls = [w.id for w in truth.walls if w.id not in matched_truth]
-    rm.unmatched_pred_walls = [w.id for w in pred.walls if w.id not in pred_to_truth]
+def _match_openings(pred: Room, truth: GTRoom, a: Assignment, gate: float):
+    """Greedy nearest-centre matching of openings on walls paired by ``a``.
 
-    # Openings: compare centre positions in the truth wall's direction. If the
-    # matched direction is reversed, a predicted centre c on a wall of length L
-    # sits at L - c in the truth frame.
+    Centres are compared in the truth wall's direction. If the matched
+    direction is reversed, a predicted centre c on a wall of length L sits at
+    L - c in the truth frame. Returns (pairs, missed truth ids, phantom pred ids).
+    """
+    pred_to_truth = {pred.walls[pi].id: truth.walls[ti].id for pi, ti in a.pairs}
     pred_len = {w.id: w.length_m.value for w in pred.walls}
-    candidates: list[tuple[float, str, str]] = []
     truth_openings = {o.id: o for o in truth.openings}
     pred_openings = {o.id: o for o in pred.openings}
+    candidates: list[tuple[float, str, str]] = []
     for po in pred.openings:
         tw_id = pred_to_truth.get(po.wall_id)
         if tw_id is None:
@@ -136,20 +144,44 @@ def match_room(pred: Room, truth: GTRoom, opening_gate_m: float = DEFAULT_OPENIN
             if to.wall_id != tw_id:
                 continue
             d = abs(c - _centre(to.offset_along_wall_m, to.width_m))
-            if d <= opening_gate_m:
+            if d <= gate:
                 candidates.append((d, po.id, to.id))
     candidates.sort()
     used_p: set[str] = set()
     used_t: set[str] = set()
+    pairs: list[OpeningPair] = []
     for d, pid, tid in candidates:
         if pid in used_p or tid in used_t:
             continue
         used_p.add(pid)
         used_t.add(tid)
         to = truth_openings[tid]
-        rm.opening_pairs.append(OpeningPair(tid, pid, to.wall_id, to, pred_openings[pid], d))
-    rm.missed_openings = [o.id for o in truth.openings if o.id not in used_t]
-    rm.phantom_openings = [o.id for o in pred.openings if o.id not in used_p]
+        pairs.append(OpeningPair(tid, pid, to.wall_id, to, pred_openings[pid], d))
+    missed = [o.id for o in truth.openings if o.id not in used_t]
+    phantom = [o.id for o in pred.openings if o.id not in used_p]
+    return pairs, missed, phantom
+
+
+def match_room(pred: Room, truth: GTRoom, opening_gate_m: float = DEFAULT_OPENING_GATE_M) -> RoomMatch:
+    rm = RoomMatch(room_id=truth.id)
+
+    def tie_break(a: Assignment):
+        pairs, _, _ = _match_openings(pred, truth, a, opening_gate_m)
+        return (-len(pairs), sum(p.centre_distance_m for p in pairs), not a.reversed, a.rot_pred, a.rot_truth)
+
+    a = cyclic_wall_assignment(
+        [w.length_m.value for w in pred.walls], [w.length_m for w in truth.walls], tie_break=tie_break
+    )
+    rm.reversed = a.reversed
+    rm.total_length_error_m = a.total_error
+    for pi, ti in a.pairs:
+        pw, tw = pred.walls[pi], truth.walls[ti]
+        rm.wall_pairs.append(WallPair(tw.id, pw.id, tw.length_m, pw.length_m))
+    matched_truth = {p.truth_id for p in rm.wall_pairs}
+    matched_pred = {p.pred_id for p in rm.wall_pairs}
+    rm.unmatched_truth_walls = [w.id for w in truth.walls if w.id not in matched_truth]
+    rm.unmatched_pred_walls = [w.id for w in pred.walls if w.id not in matched_pred]
+    rm.opening_pairs, rm.missed_openings, rm.phantom_openings = _match_openings(pred, truth, a, opening_gate_m)
     return rm
 
 
