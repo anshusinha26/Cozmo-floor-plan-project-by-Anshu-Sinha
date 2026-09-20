@@ -40,7 +40,7 @@ exists yet, so every accuracy row is scored on the stub only.
 | Capture protocol (how to film each tier) | docs/capture_protocol.md | one-page protocol, three routes, each ending in the exact command | done |
 | Device matrix (phones tested per tier) | docs/device_matrix.md, benchmarks/captures.yaml device field | matrix document, device recorded per capture | done |
 | Reproduction bundle (inputs, config, seed, manifest, outputs) | scripts/regenerate_all.sh, scripts/fetch_weights.sh, scripts/fetch_sample_data.sh, cozmo/io/manifest.py | one command rebuilds every reported number; run_manifest.json carries hashes, versions and commit | done |
-| Technical report | docs/STATUS_main.md, fix_loop/POSTMORTEM.md, docs/damage_eval/README.md | running status plus the two measured write-ups | partial: no single bound report yet |
+| Technical report | docs/technical_report.md, scripts/build_report.sh | one bound document, 6 rendered pages, every number traced to a file and a regenerating script | done |
 | Raw data (captures and tape measurements) | data/sample/ (gitignored), benchmarks/captures.yaml | three iPhone LiDAR scans registered with truth null | partial: captures exist, tape measurements do not |
 | Mirrors, glass, wet-look and low-light coverage | cozmo/damage/filters.py, docs/damage_eval/README.md | glass and mirror returns handled by the geometry and multi-view filters; measured on the scan with the shower screen | partial: handled and measured for damage, no scene-condition flags in the registry |
 
@@ -91,3 +91,6 @@ exists yet, so every accuracy row is scored on the stub only.
 | Device matrix | docs/device_matrix.md | capture hardware by processing hardware by tier | done; video and photo accuracy cells marked pending, never invented |
 | README, install to first run under 15 minutes | README.md | quickstart, licences, AI disclosure | done |
 | Reproduction bundle | scripts/regenerate_all.sh and the two fetch scripts | rebuilds every reported number | done |
+| Sample data fetch | scripts/fetch_sample_data.sh | defaults to the assessor-supplied Drive folder, unpacks into data/sample/<scan_id>/ and verifies the Stray Scanner layout | done |
+| MapAnything rejection evidence | docs/experiments/mapanything/result.json | 0.70x depth scale over three runs, smeared top-down density | done |
+| Report renderer | scripts/build_report.sh, scripts/md_to_pdf.py | PDF via pandoc when present, reportlab fallback otherwise, fails if over 6 pages | done |

@@ -1,0 +1,43 @@
+{
+  "experiment": "MapAnything image-only inference on a Stray Scanner capture",
+  "question": "Does MapAnything run on this Mac, and how wrong is its metric scale?",
+  "model": "facebook/map-anything-apache",
+  "capture": "data/sample/c00a170fe1",
+  "machine": "Apple M1 Max, 32 GB, macOS; MPS, no operator fallback",
+  "verdict": "rejected for the video tier",
+  "runs": [
+    {
+      "n_frames": 20,
+      "device": "mps",
+      "seconds": 20.9,
+      "peak_rss_gb": 7.4,
+      "peak_mps_gb": 8.8,
+      "depth_ratio_mean": 0.7122,
+      "depth_ratio_sd": 0.0932,
+      "path_length_ratio": 2.485,
+      "path_bbox_ratio": 0.889
+    },
+    {
+      "n_frames": 40,
+      "device": "mps",
+      "seconds": 42.2,
+      "peak_rss_gb": 10.3,
+      "peak_mps_gb": 12.3,
+      "depth_ratio_mean": 0.704,
+      "depth_ratio_sd": 0.1286,
+      "path_length_ratio": 2.64,
+      "path_bbox_ratio": 0.808
+    },
+    {
+      "n_frames": 80,
+      "device": "mps",
+      "seconds": 141.0,
+      "peak_rss_gb": 10.3,
+      "peak_mps_gb": 16.3,
+      "depth_ratio_mean": 0.7088,
+      "depth_ratio_sd": 0.0938,
+      "path_length_ratio": 3.948,
+      "path_bbox_ratio": 1.303
+    }
+  ]
+}

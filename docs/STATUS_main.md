@@ -279,3 +279,47 @@ rather than bound into one document, and the compliance matrix says so.
 folder; it refuses with instructions rather than failing silently.
 
 Tests: 168 passing.
+
+## Task 7: data URL and the bound technical report
+
+Done.
+
+* `scripts/fetch_sample_data.sh` now defaults `COZMO_DATA_URL` to the
+  assessor-supplied Drive folder and is still overridable. It downloads with
+  gdown, unpacks any archives, installs each scan as
+  `data/sample/<scan_id>/`, and then verifies the Stray Scanner layout: it
+  checks `rgb.mp4`, `odometry.csv`, `depth/` and `confidence/` exist and that
+  the depth and confidence frame counts match, naming what is missing if not.
+  On the present data it reports 1a8384c3f6 5251 frames, c00a170fe1 1715,
+  c7d28f72c6 9745.
+* `docs/technical_report.md`: one bound document, **6 rendered pages against a
+  hard limit of 6**. Sections in the required order: architecture; tiers and
+  devices; drift; error budget; calibration; the fix loop; known failure
+  modes.
+* Every number in it was checked against the file it comes from by a script
+  written for the purpose. Two did not trace and were corrected rather than
+  kept: an example wall interval that came from a run made with the
+  non-default segmentation, and a polygon-edge disagreement quoted as 76.1 cm
+  while its cited file says 97.5 cm. The report now reads 2.4% median interval
+  width and a longest wall of 4.186 m plus or minus 8.3 cm, both from the
+  default-segmentation run, and 97.5 cm against 1.9 cm for the edge-versus-face
+  contrast.
+* Items written as PENDING with what they wait on: video and photo tier
+  accuracy (loop 2 after-run and the photo tier), empirical interval coverage
+  for every tier (predictions for the hand-measured rooms), and the
+  head-to-head "ours" column. No placeholder numbers anywhere.
+* MapAnything's rejection is now evidenced inside the repository at
+  `docs/experiments/mapanything/result.json`, so the report cites a file
+  rather than a memory: depth ratio 0.712, 0.704 and 0.709 across three runs,
+  with the smeared top-down density image beside it.
+* `scripts/build_report.sh` renders to PDF, preferring pandoc with a LaTeX
+  engine, then pandoc with wkhtmltopdf, then a reportlab fallback that needs
+  no system tools (`scripts/md_to_pdf.py`). It prints the page count and
+  **fails if the render exceeds 6 pages**, so the limit cannot drift.
+
+Failures and open items: pandoc is not installed on this machine, so the
+shipped PDF was produced by the reportlab fallback. It is plain but complete,
+and a reader with pandoc will get a better-looking document from the same
+source. The technical report row in the compliance matrix is now `done`.
+
+Tests: 168 passing.
