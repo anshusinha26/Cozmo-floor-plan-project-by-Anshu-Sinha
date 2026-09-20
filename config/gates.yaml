@@ -142,7 +142,9 @@ pipeline:
       min_span_m: 0.20          # below this camera span the fit cannot pin a scale at all
       max_rms_m: 0.12           # alignment residual allowed on each side of a bridge
       max_rms_frac: 0.25        # or this share of the overlap's camera span, whichever is larger
-      max_scale_disagreement: 0.15
+      max_scale_disagreement: 0.15   # floor for the scale agreement gate
+      scale_sem_sigmas: 2.0     # the gate widens to this many sigma of the two chunks'
+                                # own measured scale errors when those exceed the floor
       time_box_s: 5400.0
     dense:
       max_keyframes: 80
@@ -183,8 +185,9 @@ pipeline:
       min_supported_share: 0.25
     room:
       grid_m: 0.03
-      erode_m: 0.5
-      min_area_m2: 1.5
+      erode_m: 0.4              # LiDAR uses 0.5; this tier's free space is thinner because
+                                # only part of the floor is ever reconstructed
+      min_area_m2: 1.0
       min_constriction_m: 0.62
       wall_min_top_m: 1.5
       snap_m: 0.22              # LiDAR uses 0.15; matches the wider face tolerance

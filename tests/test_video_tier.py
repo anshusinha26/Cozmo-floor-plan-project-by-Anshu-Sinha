@@ -373,3 +373,25 @@ def test_a_chunk_transform_moves_the_fused_points_with_it():
     a = build.fuse({0: (np.eye(3), np.zeros(3))}, voxel_m=0.01)
     b = build.fuse({0: (np.eye(3), shift)}, voxel_m=0.01)
     assert np.allclose(np.sort(b.points, axis=0) - np.sort(a.points, axis=0), shift, atol=1e-3)
+
+
+def test_the_scale_gate_widens_to_the_chunks_own_measured_error():
+    """A chunk whose scale is known to 12% cannot be held to a 15% agreement."""
+    from cozmo.pipeline.video.bridge import scale_standard_error
+    from cozmo.pipeline.video.sfm import SfmChunk
+
+    def chunk(ratios):
+        c = SfmChunk(index=0, names=[], times_s=np.zeros(0), cam_from_world=np.zeros((0, 4, 4)),
+                     obs_uv=np.zeros((0, 2)), obs_z=np.zeros(0), obs_off=np.array([0]),
+                     xyz=np.zeros((0, 3)), focal_px=1.0, cam_params=np.zeros(4), cam_wh=(1, 1),
+                     mean_reproj_err_px=0.0)
+        c.scale_frame_ratios = np.array(ratios)
+        c.scale_m_per_unit = float(np.median(ratios))
+        return c
+
+    tight = chunk([0.200, 0.201, 0.199, 0.200, 0.202, 0.198] * 2)
+    loose = chunk([0.20, 0.28, 0.14, 0.31, 0.11, 0.22] * 2)
+    assert scale_standard_error(tight) < 0.01
+    assert scale_standard_error(loose) > 0.08
+    # A chunk with no scale frames yet must not claim a spurious precision.
+    assert scale_standard_error(chunk([0.2])) == 0.0

@@ -56,6 +56,7 @@ class BridgeAttempt:
     rms_b_m: float | None = None
     scale_ratio: float | None = None
     seconds: float | None = None
+    scale_tolerance: float | None = None
 
 
 @dataclass
@@ -83,6 +84,7 @@ class BridgeResult:
                               "rms_a_m": None if a.rms_a_m is None else round(a.rms_a_m, 4),
                               "rms_b_m": None if a.rms_b_m is None else round(a.rms_b_m, 4),
                               "scale_ratio": None if a.scale_ratio is None else round(a.scale_ratio, 4),
+                              "scale_tolerance": None if a.scale_tolerance is None else round(a.scale_tolerance, 4),
                               "seconds": None if a.seconds is None else round(a.seconds, 1)}
                              for a in self.attempts],
                 "dropped": self.dropped}
@@ -106,6 +108,24 @@ def umeyama(X: np.ndarray, Y: np.ndarray) -> Sim3:
     t = my - s * R @ mx
     resid = (s * (R @ X.T)).T + t - Y
     return Sim3(s=s, R=R, t=t, rms_m=float(np.sqrt((resid ** 2).sum(1).mean())), n=len(X))
+
+
+def scale_standard_error(chunk: SfmChunk) -> float:
+    """Relative standard error of this chunk's metric scale, from its own frames.
+
+    The scale is the median of per-frame ratios, so its standard error is about
+    1.25 sigma over the square root of the frame count, with sigma taken
+    robustly. This is what makes the scale-agreement gate honest: a chunk whose
+    scale is known only to 12% cannot be asked to agree with its neighbour to 15%.
+    """
+    r = chunk.scale_frame_ratios
+    if r is None or len(r) < 2:
+        return 0.0
+    med = float(np.median(r))
+    if med <= 0:
+        return 0.0
+    spread = float(1.4826 * np.median(np.abs(r - med)) / med)
+    return float(1.2533 * spread / np.sqrt(len(r)))
 
 
 def metric_centres(chunk: SfmChunk, idx: np.ndarray) -> np.ndarray:
@@ -182,7 +202,8 @@ def _overlap_indices(chunk_a: SfmChunk, chunk_b: SfmChunk, k: int,
 def try_bridge(chunk_a: SfmChunk, chunk_b: SfmChunk, frames: FrameSet, oracle: MapAnythingOracle,
                overlap_frames: int = 4, max_rms_m: float = 0.12, max_rms_frac: float = 0.25,
                max_scale_disagreement: float = 0.15, overlap_window_s: float = 2.0,
-               min_span_m: float = 0.20) -> tuple[BridgeAttempt, tuple[np.ndarray, np.ndarray] | None]:
+               min_span_m: float = 0.20, scale_sem_sigmas: float = 2.0
+               ) -> tuple[BridgeAttempt, tuple[np.ndarray, np.ndarray] | None]:
     """One neighbouring pair. Returns the attempt record and, if accepted, (R, t) taking b into a."""
     t0 = time.perf_counter()
     ia, ib = _overlap_indices(chunk_a, chunk_b, overlap_frames, overlap_window_s)
@@ -223,18 +244,25 @@ def try_bridge(chunk_a: SfmChunk, chunk_b: SfmChunk, frames: FrameSet, oracle: M
                              f"alignment residual {fit_a.rms_m:.3f} m and {fit_b.rms_m:.3f} m "
                              f"against {tol_a:.3f} and {tol_b:.3f} allowed",
                              fit_a.rms_m, fit_b.rms_m, ratio, secs), None
-    if not np.isfinite(ratio) or abs(ratio - 1.0) > max_scale_disagreement:
+    # The gate is the configured floor, or two sigma of the two chunks' own
+    # measured scale errors, whichever is looser. Holding a pair to 15% when
+    # each side's scale is only known to 12% rejects bridges for being inside
+    # their own noise.
+    sem = float(np.hypot(scale_standard_error(chunk_a), scale_standard_error(chunk_b)))
+    tol_scale = max(max_scale_disagreement, scale_sem_sigmas * sem)
+    if not np.isfinite(ratio) or abs(ratio - 1.0) > tol_scale:
         return BridgeAttempt(chunk_a.index, chunk_b.index, False,
-                             f"implied scales disagree by {abs(ratio - 1.0):.1%}, "
-                             f"over the {max_scale_disagreement:.0%} allowed",
-                             fit_a.rms_m, fit_b.rms_m, ratio, secs), None
+                             f"implied scales disagree by {abs(ratio - 1.0):.1%}, over the "
+                             f"{tol_scale:.0%} allowed ({max_scale_disagreement:.0%} floor, "
+                             f"{scale_sem_sigmas:.0f} sigma of the chunks' own {sem:.1%})",
+                             fit_a.rms_m, fit_b.rms_m, ratio, secs, tol_scale), None
 
     # Compose, dropping the residual scale: both sides are already in metres
     # through their own chunk, so the chunk-to-chunk transform must be rigid.
     R = fit_a.R @ fit_b.R.T
     t = fit_a.t - R @ fit_b.t
     return BridgeAttempt(chunk_a.index, chunk_b.index, True, "accepted",
-                         fit_a.rms_m, fit_b.rms_m, ratio, secs), (R, t)
+                         fit_a.rms_m, fit_b.rms_m, ratio, secs, tol_scale), (R, t)
 
 
 def _largest_group(n: int, edges: list[tuple[int, int]], weights: list[int]) -> list[int]:
@@ -259,7 +287,8 @@ def _largest_group(n: int, edges: list[tuple[int, int]], weights: list[int]) -> 
 def bridge_chunks(chunks: list[SfmChunk], frames: FrameSet, device: str, overlap_frames: int = 4,
                   max_rms_m: float = 0.12, max_rms_frac: float = 0.25,
                   max_scale_disagreement: float = 0.15, overlap_window_s: float = 2.0,
-                  min_span_m: float = 0.20, time_box_s: float = 5400.0) -> BridgeResult:
+                  min_span_m: float = 0.20, scale_sem_sigmas: float = 2.0,
+                  time_box_s: float = 5400.0) -> BridgeResult:
     """Bridge every neighbouring pair, then keep the largest connected group.
 
     ``time_box_s`` is a hard stop. If it expires the result is whatever has been
@@ -285,7 +314,7 @@ def bridge_chunks(chunks: list[SfmChunk], frames: FrameSet, device: str, overlap
             break
         attempt, tf = try_bridge(chunks[i], chunks[i + 1], frames, oracle, overlap_frames,
                                  max_rms_m, max_rms_frac, max_scale_disagreement,
-                                 overlap_window_s, min_span_m)
+                                 overlap_window_s, min_span_m, scale_sem_sigmas)
         attempts.append(attempt)
         log.info("bridge %d-%d: %s", attempt.a, attempt.b,
                  "accepted" if attempt.accepted else f"rejected, {attempt.reason}")

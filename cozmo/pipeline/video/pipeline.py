@@ -105,7 +105,7 @@ class VideoPipeline(Pipeline):
                 max_rms_m=bcfg["max_rms_m"], max_rms_frac=bcfg["max_rms_frac"],
                 max_scale_disagreement=bcfg["max_scale_disagreement"],
                 overlap_window_s=bcfg["overlap_window_s"], min_span_m=bcfg["min_span_m"],
-                time_box_s=bcfg["time_box_s"])
+                scale_sem_sigmas=bcfg["scale_sem_sigmas"], time_box_s=bcfg["time_box_s"])
         if br.timed_out:
             warnings.append("Chunk bridging hit its time box; the plan uses only what was bridged "
                             "before the stop")
