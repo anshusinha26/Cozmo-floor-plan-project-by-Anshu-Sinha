@@ -1,0 +1,735 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cozmo.ai/schema/plan.schema.json",
+  "title": "Plan",
+  "version": "1.0.0",
+  "description": "Cozmo floor plan output contract. Every dimension is a Measurement with a confidence interval.",
+  "$defs": {
+    "Adjacency": {
+      "additionalProperties": false,
+      "properties": {
+        "room_a": {
+          "title": "Room A",
+          "type": "string"
+        },
+        "room_b": {
+          "title": "Room B",
+          "type": "string"
+        },
+        "via_opening_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Via Opening Id"
+        }
+      },
+      "required": [
+        "room_a",
+        "room_b"
+      ],
+      "title": "Adjacency",
+      "type": "object"
+    },
+    "Capture": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "tier": {
+          "enum": [
+            "photo",
+            "video",
+            "lidar"
+          ],
+          "title": "Tier",
+          "type": "string"
+        },
+        "device": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Device"
+        },
+        "captured_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Captured At"
+        },
+        "input_manifest_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Input Manifest Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "tier",
+        "input_manifest_sha256"
+      ],
+      "title": "Capture",
+      "type": "object"
+    },
+    "ConcealedDamageFlag": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "surface_id": {
+          "title": "Surface Id",
+          "type": "string"
+        },
+        "rule_id": {
+          "title": "Rule Id",
+          "type": "string"
+        },
+        "rule_text": {
+          "title": "Rule Text",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "confidence": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "surface_id",
+        "rule_id",
+        "rule_text",
+        "confidence"
+      ],
+      "title": "ConcealedDamageFlag",
+      "type": "object"
+    },
+    "DamageClass": {
+      "description": "The single place damage classes are defined. Extend here only.",
+      "enum": [
+        "water_stain",
+        "mould",
+        "crack",
+        "hole_puncture",
+        "burn_char",
+        "missing_material",
+        "peeling_paint"
+      ],
+      "title": "DamageClass",
+      "type": "string"
+    },
+    "DamageRegion": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "surface_id": {
+          "title": "Surface Id",
+          "type": "string"
+        },
+        "damage_class": {
+          "$ref": "#/$defs/DamageClass"
+        },
+        "extent_m2": {
+          "$ref": "#/$defs/Measurement"
+        },
+        "polygon": {
+          "description": "Surface-local metres",
+          "items": {
+            "maxItems": 2,
+            "minItems": 2,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array"
+          },
+          "title": "Polygon",
+          "type": "array"
+        },
+        "confidence": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "surface_id",
+        "damage_class",
+        "extent_m2",
+        "polygon",
+        "confidence"
+      ],
+      "title": "DamageRegion",
+      "type": "object"
+    },
+    "Measurement": {
+      "additionalProperties": false,
+      "description": "A value with a calibrated confidence interval.\n\n``ci_low <= value <= ci_high`` is enforced so an interval can never exclude\nits own point estimate. ``ci_level`` is the nominal coverage of the\ninterval; the evaluation harness compares it to empirical coverage.",
+      "properties": {
+        "value": {
+          "title": "Value",
+          "type": "number"
+        },
+        "ci_low": {
+          "title": "Ci Low",
+          "type": "number"
+        },
+        "ci_high": {
+          "title": "Ci High",
+          "type": "number"
+        },
+        "unit": {
+          "enum": [
+            "m",
+            "m2",
+            "deg"
+          ],
+          "title": "Unit",
+          "type": "string"
+        },
+        "method": {
+          "description": "How the value was obtained, e.g. scale_from_door_prior",
+          "title": "Method",
+          "type": "string"
+        },
+        "ci_level": {
+          "default": 0.95,
+          "exclusiveMaximum": 1.0,
+          "exclusiveMinimum": 0.0,
+          "title": "Ci Level",
+          "type": "number"
+        }
+      },
+      "required": [
+        "value",
+        "ci_low",
+        "ci_high",
+        "unit",
+        "method"
+      ],
+      "title": "Measurement",
+      "type": "object"
+    },
+    "Opening": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "door",
+            "window",
+            "pass_through"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "wall_id": {
+          "title": "Wall Id",
+          "type": "string"
+        },
+        "offset_along_wall_m": {
+          "$ref": "#/$defs/Measurement"
+        },
+        "width_m": {
+          "$ref": "#/$defs/Measurement"
+        },
+        "height_m": {
+          "$ref": "#/$defs/Measurement"
+        },
+        "sill_height_m": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Measurement"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "detection_confidence": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Detection Confidence",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "wall_id",
+        "offset_along_wall_m",
+        "width_m",
+        "height_m",
+        "detection_confidence"
+      ],
+      "title": "Opening",
+      "type": "object"
+    },
+    "Placement": {
+      "additionalProperties": false,
+      "description": "Rigid transform placing a room-local polygon into the stitched frame.\n\n``theta_deg`` is a Measurement, not a float, because it is a dimension and\nstitching rotation error propagates into footprint error.",
+      "properties": {
+        "room_id": {
+          "title": "Room Id",
+          "type": "string"
+        },
+        "tx": {
+          "title": "Tx",
+          "type": "number"
+        },
+        "ty": {
+          "title": "Ty",
+          "type": "number"
+        },
+        "theta_deg": {
+          "$ref": "#/$defs/Measurement"
+        }
+      },
+      "required": [
+        "room_id",
+        "tx",
+        "ty",
+        "theta_deg"
+      ],
+      "title": "Placement",
+      "type": "object"
+    },
+    "Renders": {
+      "additionalProperties": false,
+      "properties": {
+        "plan_png": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Plan Png"
+        },
+        "plan_svg": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Plan Svg"
+        }
+      },
+      "title": "Renders",
+      "type": "object"
+    },
+    "Room": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "polygon": {
+          "description": "Metres, room-local frame, counter-clockwise",
+          "items": {
+            "maxItems": 2,
+            "minItems": 2,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array"
+          },
+          "title": "Polygon",
+          "type": "array"
+        },
+        "walls": {
+          "items": {
+            "$ref": "#/$defs/Wall"
+          },
+          "title": "Walls",
+          "type": "array"
+        },
+        "ceiling_height_m": {
+          "$ref": "#/$defs/Measurement"
+        },
+        "floor_area_m2": {
+          "$ref": "#/$defs/Measurement"
+        },
+        "openings": {
+          "items": {
+            "$ref": "#/$defs/Opening"
+          },
+          "title": "Openings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "polygon",
+        "walls",
+        "ceiling_height_m",
+        "floor_area_m2"
+      ],
+      "title": "Room",
+      "type": "object"
+    },
+    "RunInfo": {
+      "additionalProperties": false,
+      "description": "Deterministic provenance only.\n\nWall-clock fields (started_at, duration_s, stage_timings_s) live in\nrun_manifest.json, not here, so that plan.json is byte-identical across\nruns with the same input, config and seed. Provenance that is stable\nacross such runs stays in the plan.",
+      "properties": {
+        "pipeline_version": {
+          "title": "Pipeline Version",
+          "type": "string"
+        },
+        "git_commit": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{7,40}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Git Commit"
+        },
+        "config_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Config Sha256",
+          "type": "string"
+        },
+        "seed": {
+          "title": "Seed",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "pipeline_version",
+        "config_sha256",
+        "seed"
+      ],
+      "title": "RunInfo",
+      "type": "object"
+    },
+    "ScopeItem": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "surface_id": {
+          "title": "Surface Id",
+          "type": "string"
+        },
+        "damage_region_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Damage Region Ids",
+          "type": "array"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "quantity": {
+          "$ref": "#/$defs/Measurement"
+        },
+        "basis": {
+          "title": "Basis",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "surface_id",
+        "description",
+        "quantity",
+        "basis"
+      ],
+      "title": "ScopeItem",
+      "type": "object"
+    },
+    "StitchedPlan": {
+      "additionalProperties": false,
+      "properties": {
+        "placements": {
+          "items": {
+            "$ref": "#/$defs/Placement"
+          },
+          "title": "Placements",
+          "type": "array"
+        },
+        "footprint_polygon": {
+          "items": {
+            "maxItems": 2,
+            "minItems": 2,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array"
+          },
+          "title": "Footprint Polygon",
+          "type": "array"
+        },
+        "footprint_area_m2": {
+          "$ref": "#/$defs/Measurement"
+        },
+        "overlap_area_m2": {
+          "$ref": "#/$defs/Measurement"
+        }
+      },
+      "required": [
+        "placements",
+        "footprint_polygon",
+        "footprint_area_m2",
+        "overlap_area_m2"
+      ],
+      "title": "StitchedPlan",
+      "type": "object"
+    },
+    "Surface": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "room_id": {
+          "title": "Room Id",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "wall",
+            "floor",
+            "ceiling"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "wall_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Wall Id"
+        },
+        "area_m2": {
+          "$ref": "#/$defs/Measurement"
+        }
+      },
+      "required": [
+        "id",
+        "room_id",
+        "type",
+        "area_m2"
+      ],
+      "title": "Surface",
+      "type": "object"
+    },
+    "Wall": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "start": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Start",
+          "type": "array"
+        },
+        "end": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "End",
+          "type": "array"
+        },
+        "length_m": {
+          "$ref": "#/$defs/Measurement"
+        },
+        "height_m": {
+          "$ref": "#/$defs/Measurement"
+        }
+      },
+      "required": [
+        "id",
+        "start",
+        "end",
+        "length_m",
+        "height_m"
+      ],
+      "title": "Wall",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "capture": {
+      "$ref": "#/$defs/Capture"
+    },
+    "run": {
+      "$ref": "#/$defs/RunInfo"
+    },
+    "rooms": {
+      "items": {
+        "$ref": "#/$defs/Room"
+      },
+      "title": "Rooms",
+      "type": "array"
+    },
+    "adjacency": {
+      "items": {
+        "$ref": "#/$defs/Adjacency"
+      },
+      "title": "Adjacency",
+      "type": "array"
+    },
+    "stitched_plan": {
+      "$ref": "#/$defs/StitchedPlan"
+    },
+    "surfaces": {
+      "items": {
+        "$ref": "#/$defs/Surface"
+      },
+      "title": "Surfaces",
+      "type": "array"
+    },
+    "damage_regions": {
+      "items": {
+        "$ref": "#/$defs/DamageRegion"
+      },
+      "title": "Damage Regions",
+      "type": "array"
+    },
+    "concealed_damage_flags": {
+      "items": {
+        "$ref": "#/$defs/ConcealedDamageFlag"
+      },
+      "title": "Concealed Damage Flags",
+      "type": "array"
+    },
+    "scope_items": {
+      "items": {
+        "$ref": "#/$defs/ScopeItem"
+      },
+      "title": "Scope Items",
+      "type": "array"
+    },
+    "assumptions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Assumptions",
+      "type": "array"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    },
+    "renders": {
+      "$ref": "#/$defs/Renders"
+    }
+  },
+  "required": [
+    "capture",
+    "run",
+    "rooms",
+    "stitched_plan"
+  ],
+  "type": "object"
+}

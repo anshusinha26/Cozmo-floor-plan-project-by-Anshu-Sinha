@@ -1,0 +1,68 @@
+# Evaluation gate thresholds and matching tolerances.
+#
+# Loaded by `cozmo eval` and `cozmo bench`; also passed to `cozmo run` so its
+# resolved content is hashed into run_manifest.json (config_sha256).
+# Units are metres unless the key says otherwise. Fractions are 0..1.
+
+config_version: 1
+
+gates:
+  # |pred - truth| <= tolerance_m on at least min_pass_fraction of openings.
+  # Denominator is matched + missed + phantom; a missed or phantom opening
+  # counts as a failure, never dropped.
+  opening_width:
+    tolerance_m: 0.02
+    min_pass_fraction: 0.85
+
+  # Per-room absolute error, plus spread (max - min) across captures of the
+  # same space_id when it appears more than once.
+  ceiling_height:
+    tolerance_m: 0.015
+    spread_tolerance_m: 0.01
+
+  # Labels: ok | repeatable_but_biased | unrepeatable.
+  # spread >  small_spread_m                          -> unrepeatable
+  # spread <= small_spread_m and |mean err| > biased_mean_m -> repeatable_but_biased
+  ceiling_height_diagnosis:
+    small_spread_m: 0.01
+    biased_mean_m: 0.015
+
+  # Two captures of one space_id at one tier agree per wall within
+  # max(abs_tolerance_m, rel_tolerance * length).
+  repeatability:
+    abs_tolerance_m: 0.01
+    rel_tolerance: 0.005
+
+  # Wall length error budget per input tier.
+  wall_length_tier:
+    photo:
+      rel_tolerance: 0.08
+    video:
+      rel_tolerance: 0.03
+    lidar:
+      # PROVISIONAL: to be confirmed once the LiDAR path is validated on
+      # public ARKitScenes data. Passes if within max(abs, rel * length).
+      abs_tolerance_m: 0.02
+      rel_tolerance: 0.01
+      status: PROVISIONAL
+
+  footprint:
+    rel_tolerance: 0.08
+
+  # Predicted adjacency graph must equal ground truth; no tunable threshold.
+  stitch_adjacency: {}
+
+  # Total pairwise intersection area of placed room polygons.
+  stitch_overlap:
+    max_overlap_m2: 0.05
+
+# Entity matching tolerances used before any error is computed.
+# DEFAULT values, chosen to be loose enough not to hide a bad wall as
+# "unmatched"; to be confirmed against real captures.
+matching:
+  wall_midpoint_gate_m: 0.5
+  wall_angle_gate_deg: 15.0
+  opening_offset_gate_m: 0.3
+
+calibration:
+  alpha: 0.05
