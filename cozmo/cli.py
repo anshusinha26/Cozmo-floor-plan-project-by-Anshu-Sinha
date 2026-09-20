@@ -355,7 +355,9 @@ def bench(
     if not set_path.exists():
         _fail(f"registry not found: {set_path}")
     registry = load_registry(set_path)
-    base = set_path.resolve().parent.parent  # registry paths are relative to the repo root
+    # Registry paths are relative to the repo root. A registry kept elsewhere
+    # (a test fixture, a copy) still resolves against the repo it describes.
+    base = Path(__file__).resolve().parent.parent
     resolve = lambda p: Path(p) if Path(p).is_absolute() else base / p  # noqa: E731
 
     manifests: dict[str, dict[str, Any]] = {}

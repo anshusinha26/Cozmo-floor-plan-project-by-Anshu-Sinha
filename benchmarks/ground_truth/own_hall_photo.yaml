@@ -1,0 +1,29 @@
+# Hand-measured ground truth. Tape readings in centimetres, taken to the
+# nearest inch, so truth_uncertainty_m is 2.54 cm / 2 = 0.013 m and the
+# coverage check widens the truth by that much before asking whether a
+# predicted interval covers it.
+#
+# Walls are listed clockwise starting from wall A, the wall holding the door.
+capture_id: own_hall_photo
+space_id: own_hall
+tier: photo
+device: "Redmi Note 13, Android"
+measured_with: "tape, cm to the nearest inch"
+measured_on: 2026-09-20
+truth_uncertainty_m: 0.013
+rooms:
+  # The hall is an irregular open-plan connector: it includes the corridor and
+  # the laundry, joined by wide gaps with no doors. There is no tape-measurable
+  # wall run, so score_walls is false and it is scored on ceiling height,
+  # openings and adjacency only. The staircase room and the portico were not
+  # captured, so they are not rooms here; only the doors to them are.
+  - id: hall
+    label: Hall, corridor and laundry
+    ceiling_height_m: 2.9718
+    score_walls: false
+    walls: []
+    notes: open-plan connector, no wall run measured
+    openings:
+      - {id: door_staircase, type: door, wall_id: A, offset_along_wall_m: 0.0, width_m: 0.9144, height_m: 1.9812}
+      - {id: door_portico, type: door, wall_id: B, offset_along_wall_m: 0.0, width_m: 1.1684, height_m: 1.9812}
+      - {id: door_bedroom_2, type: door, wall_id: F, offset_along_wall_m: 0.0, width_m: 0.9144, height_m: 1.9812}

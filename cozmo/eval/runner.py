@@ -35,6 +35,7 @@ GATE_NAMES = [
 def evaluate_capture(plan: Plan, truth: GroundTruth, cfg: dict[str, Any]) -> dict[str, Any]:
     """Per-capture matching, error tables and calibration items (not yet gated)."""
     tier = plan.capture.tier
+    tu = truth.truth_uncertainty_m
     match: MatchResult = match_plan(plan, truth, cfg)
     pred_rooms = {r.id: r for r in plan.rooms}
     items: list[CalItem] = []
@@ -48,7 +49,7 @@ def evaluate_capture(plan: Plan, truth: GroundTruth, cfg: dict[str, Any]) -> dic
     for rm in match.rooms:
         pr = pred_rooms[rm.room_id]
         tr = truth.room(rm.room_id)
-        items.append(CalItem(tier, "ceiling_height", pr.ceiling_height_m, tr.ceiling_height_m))
+        items.append(CalItem(tier, "ceiling_height", pr.ceiling_height_m, tr.ceiling_height_m, tu))
         ceiling_rows.append({"capture_id": plan.capture.id, "space_id": truth.space_id, "room_id": rm.room_id,
                              "pred": pr.ceiling_height_m.value, "truth": tr.ceiling_height_m})
         row = {"room_id": rm.room_id,
@@ -59,11 +60,11 @@ def evaluate_capture(plan: Plan, truth: GroundTruth, cfg: dict[str, Any]) -> dic
                "walls_unmatched_truth": rm.unmatched_truth_walls, "walls_unmatched_pred": rm.unmatched_pred_walls,
                "wall_order_reversed": rm.reversed}
         if tr.floor_area_m2 is not None:
-            items.append(CalItem(tier, "floor_area", pr.floor_area_m2, tr.floor_area_m2))
+            items.append(CalItem(tier, "floor_area", pr.floor_area_m2, tr.floor_area_m2, tu))
             row["floor_area_abs_error"] = abs(pr.floor_area_m2.value - tr.floor_area_m2)
         rooms_table.append(row)
         for wp in rm.wall_pairs:
-            items.append(CalItem(tier, "wall_length", wp.pred_length, wp.truth_length_m))
+            items.append(CalItem(tier, "wall_length", wp.pred_length, wp.truth_length_m, tu))
             wall_rows.append({"capture_id": plan.capture.id, "room_id": rm.room_id, "wall_id": wp.truth_id,
                               "pred": wp.pred_length.value, "truth": wp.truth_length_m, "tier": tier})
             repeat_walls[(rm.room_id, wp.truth_id)] = wp.pred_length.value
@@ -72,12 +73,16 @@ def evaluate_capture(plan: Plan, truth: GroundTruth, cfg: dict[str, Any]) -> dic
                                 "ci_low": wp.pred_length.ci_low, "ci_high": wp.pred_length.ci_high,
                                 "abs_error": abs(wp.pred_length.value - wp.truth_length_m)})
         for op in rm.opening_pairs:
-            items.append(CalItem(tier, "opening_width", op.pred.width_m, op.truth.width_m))
-            items.append(CalItem(tier, "opening_height", op.pred.height_m, op.truth.height_m))
+            if op.truth.width_m is None or op.truth.height_m is None:
+                continue  # present_unmeasured: nothing to score against
+            items.append(CalItem(tier, "opening_width", op.pred.width_m, op.truth.width_m, tu))
+            items.append(CalItem(tier, "opening_height", op.pred.height_m, op.truth.height_m, tu))
+            measured = op.truth.width_m is not None
             openings_table.append({"room_id": rm.room_id, "truth_opening": op.truth_id, "pred_opening": op.pred_id,
                                    "wall_id": op.truth_wall_id, "centre_distance_m": op.centre_distance_m,
+                                   "measured": measured,
                                    "width_truth": op.truth.width_m, "width_pred": op.pred.width_m.value,
-                                   "width_abs_error": abs(op.pred.width_m.value - op.truth.width_m),
+                                   "width_abs_error": abs(op.pred.width_m.value - op.truth.width_m) if measured else None,
                                    "height_truth": op.truth.height_m, "height_pred": op.pred.height_m.value})
 
     fp_truth = truth.footprint_area()
@@ -103,12 +108,16 @@ def evaluate_capture(plan: Plan, truth: GroundTruth, cfg: dict[str, Any]) -> dic
         "overlap_m2_geometric": G.pairwise_overlap_area(plan),
         "overlap_m2_claimed": plan.stitched_plan.overlap_area_m2.value,
         "_gate_inputs": {
-            "opening_matched": [(op.pred.width_m.value, op.truth.width_m) for op in match.all_opening_pairs()],
+            # Openings marked present_unmeasured are neither hits nor phantoms:
+            # there is no tape reading to be right or wrong about.
+            "opening_matched": [(op.pred.width_m.value, op.truth.width_m)
+                                for op in match.all_opening_pairs() if op.truth.width_m is not None],
             "opening_missed": counts["openings"]["missed"],
             "opening_phantom": counts["openings"]["phantom"],
             "ceiling_rows": ceiling_rows,
             "wall_rows": wall_rows,
             "walls_unmatched_truth": counts["walls"]["unmatched_truth"],
+            "truth_uncertainty_m": tu,
             "walls_unmatched_pred": counts["walls"]["unmatched_pred"],
             "repeat": {"capture_id": plan.capture.id, "space_id": truth.space_id, "tier": tier, "walls": repeat_walls},
         },

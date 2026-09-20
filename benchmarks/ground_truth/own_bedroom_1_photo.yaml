@@ -1,0 +1,28 @@
+# Hand-measured ground truth. Tape readings in centimetres, taken to the
+# nearest inch, so truth_uncertainty_m is 2.54 cm / 2 = 0.013 m and the
+# coverage check widens the truth by that much before asking whether a
+# predicted interval covers it.
+#
+# Walls are listed clockwise starting from wall A, the wall holding the door.
+capture_id: own_bedroom_1_photo
+space_id: own_bedroom_1
+tier: photo
+device: "Redmi Note 13, Android"
+measured_with: "tape, cm to the nearest inch"
+measured_on: 2026-09-20
+truth_uncertainty_m: 0.013
+rooms:
+  - id: bedroom_1
+    ceiling_height_m: 2.9718
+    walls:
+      - {id: A, length_m: 3.6576}
+      - {id: B, length_m: 3.9116}
+      - {id: C, length_m: 3.6576}
+      - {id: D, length_m: 3.9116}
+    openings:
+      # tape gives 274.32 cm from the right corner; offset here is from wall A's start
+      - {id: door_hall, type: door, wall_id: A, offset_along_wall_m: 0.0, width_m: 0.9144, height_m: 1.9812}
+      # Window present on wall C, not measured: a prediction here is neither a hit nor a phantom.
+      - {id: window_c, type: window, wall_id: C, present_unmeasured: true}
+      # Window present on wall D, not measured: a prediction here is neither a hit nor a phantom.
+      - {id: window_d, type: window, wall_id: D, present_unmeasured: true}

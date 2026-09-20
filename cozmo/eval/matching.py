@@ -111,6 +111,7 @@ class RoomMatch:
     unmatched_truth_walls: list[str] = field(default_factory=list)
     unmatched_pred_walls: list[str] = field(default_factory=list)
     reversed: bool = False
+    scored_walls: bool = True
     total_length_error_m: float = 0.0
     opening_pairs: list[OpeningPair] = field(default_factory=list)
     missed_openings: list[str] = field(default_factory=list)
@@ -164,6 +165,16 @@ def _match_openings(pred: Room, truth: GTRoom, a: Assignment, gate: float):
 
 def match_room(pred: Room, truth: GTRoom, opening_gate_m: float = DEFAULT_OPENING_GATE_M) -> RoomMatch:
     rm = RoomMatch(room_id=truth.id)
+    if not truth.score_walls:
+        # An open-plan room has no tape-measurable wall run. Its walls are not
+        # scored at all, rather than scored against nothing, so openings still
+        # count but wall lengths do not.
+        rm.scored_walls = False
+        rm.opening_pairs, rm.missed_openings, rm.phantom_openings = _match_openings(
+            pred, truth, Assignment([], False, 0, 0, 0.0), opening_gate_m)
+        rm.missed_openings = [o for o in rm.missed_openings
+                              if not next(x.present_unmeasured for x in truth.openings if x.id == o)]
+        return rm
 
     def tie_break(a: Assignment):
         pairs, _, _ = _match_openings(pred, truth, a, opening_gate_m)
@@ -182,6 +193,10 @@ def match_room(pred: Room, truth: GTRoom, opening_gate_m: float = DEFAULT_OPENIN
     rm.unmatched_truth_walls = [w.id for w in truth.walls if w.id not in matched_truth]
     rm.unmatched_pred_walls = [w.id for w in pred.walls if w.id not in matched_pred]
     rm.opening_pairs, rm.missed_openings, rm.phantom_openings = _match_openings(pred, truth, a, opening_gate_m)
+    # A truth opening marked present_unmeasured cannot be missed: nobody
+    # measured it, so its absence from the prediction proves nothing.
+    unmeasured = {o.id for o in truth.openings if o.present_unmeasured}
+    rm.missed_openings = [o for o in rm.missed_openings if o not in unmeasured]
     return rm
 
 
@@ -256,7 +271,7 @@ def match_plan(plan: Plan, truth: GroundTruth, cfg: dict[str, Any] | None = None
         pr = pred_rooms.get(tr.id)
         if pr is None:
             res.missing_rooms.append(tr.id)
-            res.missed_openings_in_missing_rooms += [o.id for o in tr.openings]
+            res.missed_openings_in_missing_rooms += [o.id for o in tr.openings if not o.present_unmeasured]
             res.unmatched_truth_walls_in_missing_rooms += len(tr.walls)
             continue
         res.rooms.append(match_room(pr, tr, gate))

@@ -15,7 +15,7 @@ from typing import Literal
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from cozmo.contracts.models import OpeningType, Tier
+from cozmo.contracts.models import DamageClass, OpeningType, Tier
 
 
 class _Strict(BaseModel):
@@ -28,21 +28,46 @@ class GTWall(_Strict):
 
 
 class GTOpening(_Strict):
+    """A measured opening, or a marker that one exists but was not measured.
+
+    ``present_unmeasured`` marks an opening known to be there with no tape
+    reading. A prediction matching it is neither a hit nor a phantom: scoring
+    it either way would be inventing a result. Such an entry carries no
+    dimensions.
+    """
+
     id: str
     type: OpeningType
     wall_id: str
-    offset_along_wall_m: float = Field(ge=0, description="From the wall start to the opening's leading edge")
-    width_m: float = Field(gt=0)
-    height_m: float = Field(gt=0)
+    present_unmeasured: bool = False
+    offset_along_wall_m: float | None = Field(default=None, ge=0,
+                                              description="From the wall start to the opening's leading edge")
+    width_m: float | None = Field(default=None, gt=0)
+    height_m: float | None = Field(default=None, gt=0)
     sill_height_m: float | None = None
+
+    @model_validator(mode="after")
+    def _measured_or_marked(self) -> "GTOpening":
+        measured = self.width_m is not None and self.height_m is not None and self.offset_along_wall_m is not None
+        if self.present_unmeasured and measured:
+            raise ValueError(f"opening {self.id}: present_unmeasured entries carry no dimensions")
+        if not self.present_unmeasured and not measured:
+            raise ValueError(
+                f"opening {self.id}: needs offset, width and height, or present_unmeasured: true")
+        return self
 
 
 class GTRoom(_Strict):
     id: str
     ceiling_height_m: float = Field(gt=0)
     floor_area_m2: float | None = Field(default=None, gt=0)
-    walls: list[GTWall] = Field(description="Clockwise, starting from the wall with the main door")
+    walls: list[GTWall] = Field(default_factory=list,
+                                description="Clockwise, starting from the wall with the main door")
     openings: list[GTOpening] = Field(default_factory=list)
+    score_walls: bool = Field(default=True,
+                              description="False for irregular open-plan spaces with no tape-measurable wall run")
+    label: str | None = None
+    notes: str | None = None
 
     @model_validator(mode="after")
     def _refs(self) -> "GTRoom":
@@ -50,12 +75,41 @@ class GTRoom(_Strict):
         if len(set(wall_ids)) != len(wall_ids):
             raise ValueError(f"room {self.id}: duplicate wall ids")
         for o in self.openings:
-            if o.wall_id not in wall_ids:
-                raise ValueError(f"room {self.id}: opening {o.id} has wall_id {o.wall_id!r} not in walls")
+            if o.wall_id in wall_ids:
+                continue
+            if not self.score_walls:
+                # An open-plan room has no measured wall run, but its doors are
+                # still on a named side. The label locates the door for a human;
+                # nothing scores against it.
+                continue
+            raise ValueError(f"room {self.id}: opening {o.id} has wall_id {o.wall_id!r} not in walls")
         return self
 
     def opening_ids(self) -> list[str]:
         return [o.id for o in self.openings]
+
+    def measured_openings(self) -> list[GTOpening]:
+        return [o for o in self.openings if not o.present_unmeasured]
+
+    def unmeasured_openings(self) -> list[GTOpening]:
+        return [o for o in self.openings if o.present_unmeasured]
+
+
+class GTDamage(_Strict):
+    """A known damage instance, for scoring the detector.
+
+    ``extent_m2_upper_bound`` is what it says: a staged A4 sheet bounds the
+    mark it stands for, it is not the mark's area. A predicted extent at or
+    below the bound is consistent; a larger one is not.
+    """
+
+    id: str
+    wall_id: str | None = None
+    room_id: str | None = None
+    damage_class: DamageClass
+    extent_m2_upper_bound: float | None = Field(default=None, gt=0)
+    staged: bool = False
+    notes: str | None = None
 
 
 class GTAdjacency(_Strict):
@@ -71,8 +125,14 @@ class GroundTruth(_Strict):
     device: str
     measured_with: str
     measured_on: date
+    truth_uncertainty_m: float = Field(
+        default=0.0, ge=0.0,
+        description="Half width of the tape reading's own uncertainty. Added to a predicted "
+                    "interval before the coverage check, because a truth known only to the "
+                    "nearest inch cannot decide whether a tight interval covers it.")
     rooms: list[GTRoom]
     adjacency: list[GTAdjacency] = Field(default_factory=list)
+    damage: list[GTDamage] = Field(default_factory=list)
     footprint_area_m2: float | None = Field(
         default=None, gt=0, description="If absent, the sum of room floor areas is used"
     )

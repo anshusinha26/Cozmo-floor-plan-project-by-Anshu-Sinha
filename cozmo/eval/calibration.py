@@ -23,6 +23,18 @@ class CalItem:
     quantity: str  # wall_length, ceiling_height, opening_width, opening_height, floor_area, footprint_area, ...
     pred: Measurement
     truth: float
+    truth_uncertainty: float = 0.0
+
+    def covered(self) -> bool:
+        """Does the stated interval cover the truth, allowing for the tape's own error?
+
+        A reading taken to the nearest inch is only known to about 1.3 cm, so a
+        prediction that misses it by less than that has not been shown wrong.
+        Counting it as a miss would penalise a pipeline for being more precise
+        than the reference.
+        """
+        u = max(self.truth_uncertainty, 0.0)
+        return self.pred.ci_high >= self.truth - u and self.pred.ci_low <= self.truth + u
 
 
 def _median_width_by_quantity(items: list[CalItem]) -> dict[str, float]:
@@ -38,11 +50,9 @@ def summarize(items: list[CalItem], median_width: dict[str, float] | None = None
         return {"n": 0, "coverage": None, "mean_width_pct": None, "outside": 0, "confident_garbage": 0,
                 "nominal_level": None}
     med = median_width or _median_width_by_quantity(items)
-    inside = sum(1 for it in items if it.pred.contains(it.truth))
+    inside = sum(1 for it in items if it.covered())
     outside = len(items) - inside
-    garbage = sum(
-        1 for it in items if not it.pred.contains(it.truth) and it.pred.width < med[it.quantity]
-    )
+    garbage = sum(1 for it in items if not it.covered() and it.pred.width < med[it.quantity])
     pct = [it.pred.width / abs(it.pred.value) * 100.0 for it in items if it.pred.value]
     return {
         "n": len(items),
@@ -51,6 +61,7 @@ def summarize(items: list[CalItem], median_width: dict[str, float] | None = None
         "outside": outside,
         "confident_garbage": garbage,
         "nominal_level": sorted({it.pred.ci_level for it in items}),
+        "truth_uncertainty_m": sorted({round(it.truth_uncertainty, 4) for it in items}),
     }
 
 

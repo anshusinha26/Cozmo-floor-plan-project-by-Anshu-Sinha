@@ -64,8 +64,21 @@ def test_eval_fails_when_no_truth_matches_capture(tmp_path):
 
 
 def test_bench_runs_registry_and_writes_benchmark_md(tmp_path):
+    """Uses a two-capture fixture registry, not the real one.
+
+    The real registry carries LiDAR scans and the hand-measured captures, so
+    running it here would make the unit suite depend on gitignored data and
+    take minutes. `cozmo bench` on the real registry is exercised by the fix
+    loop's regenerate script.
+    """
+    import yaml
+
+    reg = yaml.safe_load((REPO / "benchmarks" / "captures.yaml").read_text())
+    reg["captures"] = [c for c in reg["captures"] if c["capture_id"].startswith("EXAMPLE")]
+    set_path = tmp_path / "captures.yaml"
+    set_path.write_text(yaml.safe_dump(reg))
     out = tmp_path / "bench"
-    r = runner.invoke(app, ["bench", "--set", str(REPO / "benchmarks" / "captures.yaml"), "--out", str(out)])
+    r = runner.invoke(app, ["bench", "--set", str(set_path), "--out", str(out)])
     assert r.exit_code == 0, r.output
     md = (out / "benchmark.md").read_text()
     assert (out / "runs" / "EXAMPLE" / "plan.json").exists()

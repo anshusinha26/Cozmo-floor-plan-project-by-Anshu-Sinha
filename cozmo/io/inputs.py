@@ -1,9 +1,12 @@
 """Input convention for `cozmo run`.
 
-* photo: a directory with one subfolder per room (the room id), each holding
-  2 or more images (jpg, jpeg, png, heic).
-* video and lidar: ONE Stray Scanner scan folder covering the whole property
-  (see :mod:`cozmo.io.stray`); the pipeline segments rooms itself.
+* photo: a directory of 2 or more images, which is one room named after the
+  folder, or a directory of such folders, which is several rooms.
+* video: a directory holding exactly one clip, which is one room, or a
+  directory of such folders. A Stray Scanner scan folder also counts, and
+  there only rgb.mp4 is readable.
+* lidar: ONE Stray Scanner scan folder covering the whole property (see
+  :mod:`cozmo.io.stray`); the pipeline segments rooms itself.
 
 Tier isolation: the video tier may open only rgb.mp4, the lidar tier may read
 everything, the photo tier only image files. ``InputSpec.files`` is the set a
@@ -20,6 +23,7 @@ from pathlib import Path
 from cozmo.io.stray import StrayScan
 
 IMAGE_EXT = {".jpg", ".jpeg", ".png", ".heic"}
+VIDEO_EXT = {".mp4", ".mov", ".m4v"}
 
 
 class InputError(ValueError):
@@ -50,19 +54,34 @@ def looks_like_scan(root: Path) -> bool:
     return (root / "odometry.csv").is_file() or ((root / "depth").is_dir() and (root / "confidence").is_dir())
 
 
+def _images_in(folder: Path) -> list[Path]:
+    return _visible(p for p in folder.iterdir() if p.is_file() and p.suffix.lower() in IMAGE_EXT)
+
+
+def _clips_in(folder: Path) -> list[Path]:
+    return _visible(p for p in folder.iterdir() if p.is_file() and p.suffix.lower() in VIDEO_EXT)
+
+
 def _photo(root: Path) -> InputSpec:
     if not root.is_dir():
-        raise InputError(f"photo input must be a directory with one subfolder per room: {root}")
+        raise InputError(f"photo input must be a directory: {root}")
     if looks_like_scan(root):
         # Tier isolation: depth/ holds png files, so without this check the photo
         # tier would silently read LiDAR depth maps as if they were room photos.
         raise InputError(f"{root} is a scan folder; the photo tier may not read scan data")
+    own = _images_in(root)
+    if own:
+        # A folder of photos is one room, named after the folder.
+        if len(own) < 2:
+            raise InputError(f"room {root.name!r}: photo tier needs at least 2 images, found {len(own)}")
+        rooms = [RoomInput(root.name, own)]
+        return InputSpec("photo", root, own, rooms=rooms)
     subdirs = _visible(p for p in root.iterdir() if p.is_dir())
     if not subdirs:
-        raise InputError(f"no room subfolders under {root}")
+        raise InputError(f"no images and no room subfolders under {root}")
     rooms = []
     for d in subdirs:
-        imgs = _visible(p for p in d.iterdir() if p.is_file() and p.suffix.lower() in IMAGE_EXT)
+        imgs = _images_in(d)
         if len(imgs) < 2:
             raise InputError(f"room {d.name!r}: photo tier needs at least 2 images, found {len(imgs)}")
         rooms.append(RoomInput(d.name, imgs))
@@ -71,11 +90,27 @@ def _photo(root: Path) -> InputSpec:
 
 def _video(root: Path) -> InputSpec:
     if not root.is_dir():
-        raise InputError(f"video input must be a scan folder: {root}")
-    scan = StrayScan(root, "video")
-    if not scan.open("rgb.mp4").is_file():
-        raise InputError(f"video tier needs rgb.mp4 in {root}")
-    return InputSpec("video", root, scan.files())
+        raise InputError(f"video input must be a directory: {root}")
+    if looks_like_scan(root):
+        scan = StrayScan(root, "video")
+        if not scan.open("rgb.mp4").is_file():
+            raise InputError(f"video tier needs rgb.mp4 in {root}")
+        return InputSpec("video", root, scan.files())
+    clips = _clips_in(root)
+    if len(clips) == 1:
+        return InputSpec("video", root, clips, rooms=[RoomInput(root.name, clips)])
+    if len(clips) > 1:
+        raise InputError(f"room {root.name!r}: video tier needs exactly one clip, found {len(clips)}")
+    subdirs = _visible(p for p in root.iterdir() if p.is_dir())
+    if not subdirs:
+        raise InputError(f"video tier needs one clip or room subfolders in {root}")
+    rooms = []
+    for d in subdirs:
+        c = _clips_in(d)
+        if len(c) != 1:
+            raise InputError(f"room {d.name!r}: video tier needs exactly one clip, found {len(c)}")
+        rooms.append(RoomInput(d.name, c))
+    return InputSpec("video", root, [f for r in rooms for f in r.files], rooms=rooms)
 
 
 def _lidar(root: Path) -> InputSpec:

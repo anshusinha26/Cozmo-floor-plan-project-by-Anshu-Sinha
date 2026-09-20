@@ -1,0 +1,35 @@
+# Hand-measured ground truth. Tape readings in centimetres, taken to the
+# nearest inch, so truth_uncertainty_m is 2.54 cm / 2 = 0.013 m and the
+# coverage check widens the truth by that much before asking whether a
+# predicted interval covers it.
+#
+# Walls are listed clockwise starting from wall A, the wall holding the door.
+capture_id: own_bedroom_2_repeat_photo
+space_id: own_bedroom_2
+tier: photo
+device: "Redmi Note 13, Android"
+measured_with: "tape, cm to the nearest inch"
+measured_on: 2026-09-20
+truth_uncertainty_m: 0.013
+rooms:
+  - id: bedroom_2
+    ceiling_height_m: 2.9718
+    walls:
+      - {id: A, length_m: 3.8862}
+      - {id: B, length_m: 3.6322}
+      - {id: C, length_m: 3.8862}
+      - {id: D, length_m: 3.6322}
+    openings:
+      # tape gives 297.18 cm from the left corner, which is wall A's start
+      - {id: door_hall, type: door, wall_id: A, offset_along_wall_m: 2.9718, width_m: 0.9144, height_m: 1.9812}
+      # Window present on wall B, not measured: a prediction here is neither a hit nor a phantom.
+      - {id: window_b, type: window, wall_id: B, present_unmeasured: true}
+      # Window present on wall C, not measured: a prediction here is neither a hit nor a phantom.
+      - {id: window_c, type: window, wall_id: C, present_unmeasured: true}
+
+# bedroom_2_repeat only: staged damage. Each sheet is A4, 21.0 x 29.7 cm, so
+# 0.0624 m2, recorded as an upper bound on the damaged extent rather than the
+# extent itself: the sheet bounds the mark, it is not the mark.
+damage:
+  - {id: stain_b, wall_id: B, damage_class: water_stain, extent_m2_upper_bound: 0.0624, staged: true}
+  - {id: crack_d, wall_id: D, damage_class: crack, extent_m2_upper_bound: 0.0624, staged: true}
