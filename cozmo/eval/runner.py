@@ -208,12 +208,30 @@ def _cal_rows(table: dict[str, Any]) -> list[list[Any]]:
 def render_eval_md(result: dict[str, Any]) -> str:
     s = result["summary"]
     md = [f"# Evaluation report", "",
-          f"Captures: {result['n_captures']}. Gates passed: {s['n_passed']}/{s['n_gates']}. "
+          f"Captures: {result['n_captures']}. Gates passed: {s['n_passed']} of "
+          f"{s.get('n_evaluated', s['n_gates'])} evaluated ({s['n_gates']} defined). "
           f"Overall: {'PASS' if s['passed'] else 'FAIL'}. Ceiling diagnosis: **{s['ceiling_height_diagnosis']}**.", ""]
     if s["stub_output"]:
         md += ["**WARNING: at least one evaluated plan came from the STUB PIPELINE. These numbers say nothing about reconstruction quality.**", ""]
 
-    md += ["## Gates", ""]
+    if result.get("gates_by_tier"):
+        md += ["## Gates, per tier", ""]
+        for tier, gates in sorted(result["gates_by_tier"].items()):
+            caps = [c["capture_id"] for c in result["captures"] if c["tier"] == tier]
+            md += [f"### {tier}", "", f"Captures: {', '.join(caps)}.", "",
+                   "| gate | result | value | threshold | n | note |", "|---|---|---|---|---|---|"]
+            for g in gates:
+                note = g["detail"].get("note", "")
+                if g["name"] == "ceiling_height_diagnosis":
+                    note = f"label: {g['detail']['label']}" + (f"; {note}" if note else "")
+                md.append(f"| {g['name']} | {g['status']} | {_f(g['value'], 4)} | "
+                          f"{_f(g['threshold'], 4)} | {g['n']} | {note} |")
+            n_pass = sum(1 for g in gates if g["passed"])
+            n_eval = sum(1 for g in gates if g["evaluated"])
+            md += ["", f"{n_pass} of {n_eval} evaluated gates pass, "
+                       f"{len(gates) - n_eval} not evaluated.", ""]
+
+    md += ["## Gates, every capture together", ""]
     rows = []
     for g in result["gates"]:
         note = g["detail"].get("note", "")

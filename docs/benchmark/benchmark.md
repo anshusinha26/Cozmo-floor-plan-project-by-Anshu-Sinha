@@ -15,7 +15,7 @@ Video and photo plans cost about eight minutes a capture and were produced on th
 | own_bedroom_2_photo | photo | no plan available | None | n/a |  |
 | own_bedroom_2_repeat_photo | photo | no plan available | None | n/a |  |
 | own_kitchen_photo | photo | no plan available | None | n/a |  |
-| own_home_photo | photo | reused from the tier branch | True | 442 |  |
+| own_home_photo | photo | re-run here after a fix, see the note | True | 1391 |  |
 | own_hall_video | video | reused from the tier branch | True | 570 | room id renamed room_01 -> hall, geometry untouched |
 | own_bedroom_1_video | video | reused from the tier branch | True | 507 | room id renamed room_01 -> bedroom_1, geometry untouched |
 | own_bedroom_2_video | video | reused from the tier branch | True | 375 | room id renamed room_01 -> bedroom_2, geometry untouched |
@@ -23,9 +23,51 @@ Video and photo plans cost about eight minutes a capture and were produced on th
 | own_kitchen_video | video | reused from the tier branch | True | 326 | room id renamed room_01 -> kitchen, geometry untouched |
 | own_home_video | video | no plan available | None | n/a |  |
 
-## Gates
+## Gates, per tier
 
-One set of gates over every capture with ground truth. A gate covering more than one tier fails if any tier fails it.
+One table per tier. The brief asks for gates at all three tiers, and pooling them hides both: a tier with large errors and many walls swamps a tier with small ones, and the single number that comes out describes neither. A gate with nothing to score reads NOT EVALUATED with the reason, never PASS.
+
+### lidar tier
+
+**NOT EVALUATED**: no lidar capture has tape ground truth. The three supplied scans are of a property nobody measured, and no iPhone was available to scan the rooms that were measured.
+
+### video tier
+
+Captures: hall, bedroom_1, bedroom_2, bedroom_2_repeat, kitchen.
+
+| gate | result | value | threshold | n | note |
+|---|---|---|---|---|---|
+| opening_width | FAIL | 0 | 0.85 | 7 |  |
+| ceiling_height | FAIL | 0.6329 | 0.015 | 5 |  |
+| ceiling_height_diagnosis | FAIL | 0.6329 | 0.015 | 5 | label: repeatable_but_biased; spaces seen once have spread 0 by construction and cannot be labelled unrepeatable |
+| repeatability | FAIL | 250.4 | 1 | 4 |  |
+| wall_length_tier | FAIL | 45.82 | 1 | 16 |  |
+| footprint | NOT EVALUATED | 0 | 0.08 | 0 | no capture has a tape-measured footprint: the hall was not measured wall by wall, so the only multi-room property has no truth footprint to compare against |
+| stitch_adjacency | PASS | 0 | 0 | 5 |  |
+| stitch_overlap | PASS | 0 | 0.05 | 5 |  |
+
+**2 of 7 evaluated gates pass** (1 not evaluated).
+
+### photo tier
+
+Captures: own.
+
+| gate | result | value | threshold | n | note |
+|---|---|---|---|---|---|
+| opening_width | FAIL | 0 | 0.85 | 7 |  |
+| ceiling_height | FAIL | 0.9097 | 0.015 | 4 |  |
+| ceiling_height_diagnosis | FAIL | 0.9097 | 0.015 | 4 | label: repeatable_but_biased; spaces seen once have spread 0 by construction and cannot be labelled unrepeatable |
+| repeatability | NOT EVALUATED | 0 | 1 | 0 | no repeat captures of the same space at this tier |
+| wall_length_tier | FAIL | 4.871 | 1 | 12 |  |
+| footprint | NOT EVALUATED | 0 | 0.08 | 0 | no capture has a tape-measured footprint: the hall was not measured wall by wall, so the only multi-room property has no truth footprint to compare against |
+| stitch_adjacency | PASS | 0 | 0 | 1 |  |
+| stitch_overlap | PASS | 0 | 0.05 | 1 |  |
+
+**2 of 6 evaluated gates pass** (2 not evaluated).
+
+### Every capture together
+
+Kept for completeness. Read the per-tier tables above instead.
 
 | gate | result | value | threshold | n |
 |---|---|---|---|---|
@@ -34,16 +76,9 @@ One set of gates over every capture with ground truth. A gate covering more than
 | ceiling_height_diagnosis | FAIL | 0.9097 | 0.015 | 9 |
 | repeatability | FAIL | 250.4 | 1 | 4 |
 | wall_length_tier | FAIL | 45.82 | 1 | 28 |
-| footprint | PASS | 0 | 0.08 | 0 |
+| footprint | NOT EVALUATED | 0 | 0.08 | 0 |
 | stitch_adjacency | PASS | 0 | 0 | 6 |
-| stitch_overlap | FAIL | 28.01 | 0.05 | 6 |
-
-### Wall length by tier
-
-| tier | walls | within the tier budget | worst error |
-|---|---|---|---|
-| photo | 12 | 2 | 143.6 cm on bedroom_2 A |
-| video | 16 | 0 | 502.7 cm on bedroom_1 A |
+| stitch_overlap | PASS | 0 | 0.05 | 6 |
 
 ## Interval coverage
 
@@ -51,11 +86,11 @@ Coverage is the share of tape readings inside the stated 95% interval. Confident
 
 | group | n | coverage | mean width, % of value | outside | confident garbage |
 |---|---|---|---|---|---|
-| all | 37 | 0.81 | 252 | 7 | 7 |
-| photo | 16 | 0.56 | 47 | 7 | 7 |
+| all | 37 | 0.86 | 252 | 5 | 5 |
+| photo | 16 | 0.69 | 47 | 5 | 5 |
 | video | 21 | 1.00 | 409 | 0 | 0 |
 | photo/ceiling_height | 4 | 0.75 | 50 | 1 | 1 |
-| photo/wall_length | 12 | 0.50 | 45 | 6 | 6 |
+| photo/wall_length | 12 | 0.67 | 45 | 4 | 4 |
 | video/ceiling_height | 5 | 1.00 | 57 | 0 | 0 |
 | video/wall_length | 16 | 1.00 | 519 | 0 | 0 |
 
@@ -75,7 +110,7 @@ Walls seen in both: 0, median difference 0.0 cm. Registered footprint IoU 0.14.
 
 | capture | tier | seconds |
 |---|---|---|
-| own_home_photo | photo | 442 |
+| own_home_photo | photo | 1391 |
 | own_hall_video | video | 570 |
 | own_bedroom_1_video | video | 507 |
 | own_bedroom_2_video | video | 375 |

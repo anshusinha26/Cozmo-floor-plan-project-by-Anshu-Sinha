@@ -76,8 +76,8 @@
     "space_id": "own_home",
     "repeat_of": null,
     "repeat_kind": null,
-    "source": "reused from the tier branch",
-    "source_path": "fix_loop/loop2_video_scale/photo_originals",
+    "source": "re-run here after a fix, see the note",
+    "source_path": "/private/tmp/claude-501/-Users-anshusinha-Downloads-Cozmo-AI-Cozmo-floor-plan-project-by-Anshu-Sinha/ef0b0ba3-2667-4702-8791-a49bd451038b/scratchpad/photo_fixed",
     "recomputed": false,
     "plan_input_sha256": "d253b661f47ebf35cc45dc41356726a24dac56455a89e36c0394bdaae2971db6",
     "input_now": {
@@ -85,7 +85,7 @@
       "sha256": "d253b661f47ebf35cc45dc41356726a24dac56455a89e36c0394bdaae2971db6"
     },
     "input_hash_matches": true,
-    "duration_s": 441.852943,
+    "duration_s": 1390.926932,
     "pipeline": "photo",
     "plan_path": "/Users/anshusinha/Downloads/Cozmo-AI/Cozmo-floor-plan-project-by-Anshu-Sinha/docs/benchmark/runs/own_home_photo/plan.json",
     "rooms": [

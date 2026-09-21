@@ -1,8 +1,44 @@
 # Evaluation report
 
-Captures: 6. Gates passed: 2/8. Overall: FAIL. Ceiling diagnosis: **repeatable_but_biased**.
+Captures: 6. Gates passed: 2 of 7 evaluated (8 defined). Overall: FAIL. Ceiling diagnosis: **repeatable_but_biased**.
 
-## Gates
+## Gates, per tier
+
+### photo
+
+Captures: own.
+
+| gate | result | value | threshold | n | note |
+|---|---|---|---|---|---|
+| opening_width | FAIL | 0.0000 | 0.8500 | 7 |  |
+| ceiling_height | FAIL | 0.9097 | 0.0150 | 4 |  |
+| ceiling_height_diagnosis | FAIL | 0.9097 | 0.0150 | 4 | label: repeatable_but_biased; spaces seen once have spread 0 by construction and cannot be labelled unrepeatable |
+| repeatability | NOT EVALUATED | 0.0000 | 1.0000 | 0 | no repeat captures of the same space at this tier |
+| wall_length_tier | FAIL | 4.8709 | 1.0000 | 12 |  |
+| footprint | NOT EVALUATED | 0.0000 | 0.0800 | 0 | no capture has a tape-measured footprint: the hall was not measured wall by wall, so the only multi-room property has no truth footprint to compare against |
+| stitch_adjacency | PASS | 0.0000 | 0.0000 | 1 |  |
+| stitch_overlap | PASS | 0.0000 | 0.0500 | 1 |  |
+
+2 of 6 evaluated gates pass, 2 not evaluated.
+
+### video
+
+Captures: hall, bedroom_1, bedroom_2, bedroom_2_repeat, kitchen.
+
+| gate | result | value | threshold | n | note |
+|---|---|---|---|---|---|
+| opening_width | FAIL | 0.0000 | 0.8500 | 7 |  |
+| ceiling_height | FAIL | 0.6329 | 0.0150 | 5 |  |
+| ceiling_height_diagnosis | FAIL | 0.6329 | 0.0150 | 5 | label: repeatable_but_biased; spaces seen once have spread 0 by construction and cannot be labelled unrepeatable |
+| repeatability | FAIL | 250.4362 | 1.0000 | 4 |  |
+| wall_length_tier | FAIL | 45.8165 | 1.0000 | 16 |  |
+| footprint | NOT EVALUATED | 0.0000 | 0.0800 | 0 | no capture has a tape-measured footprint: the hall was not measured wall by wall, so the only multi-room property has no truth footprint to compare against |
+| stitch_adjacency | PASS | 0.0000 | 0.0000 | 5 |  |
+| stitch_overlap | PASS | 0.0000 | 0.0500 | 5 |  |
+
+2 of 7 evaluated gates pass, 1 not evaluated.
+
+## Gates, every capture together
 
 | gate | result | value | threshold | n | note |
 |---|---|---|---|---|---|
@@ -11,9 +47,9 @@ Captures: 6. Gates passed: 2/8. Overall: FAIL. Ceiling diagnosis: **repeatable_b
 | ceiling_height_diagnosis | FAIL | 0.9097 | 0.0150 | 9 | label: repeatable_but_biased; spaces seen once have spread 0 by construction and cannot be labelled unrepeatable |
 | repeatability | FAIL | 250.4362 | 1.0000 | 4 |  |
 | wall_length_tier | FAIL | 45.8165 | 1.0000 | 28 |  |
-| footprint | PASS | 0.0000 | 0.0800 | 0 | no footprint truth available; vacuous pass |
+| footprint | NOT EVALUATED | 0.0000 | 0.0800 | 0 | no capture has a tape-measured footprint: the hall was not measured wall by wall, so the only multi-room property has no truth footprint to compare against |
 | stitch_adjacency | PASS | 0.0000 | 0.0000 | 6 |  |
-| stitch_overlap | FAIL | 28.0053 | 0.0500 | 6 |  |
+| stitch_overlap | PASS | 0.0000 | 0.0500 | 6 |  |
 
 ## Matching counts
 
@@ -34,7 +70,7 @@ Captures: 6. Gates passed: 2/8. Overall: FAIL. Ceiling diagnosis: **repeatable_b
 |---|---|---|---|---|---|---|---|
 | hall | 2.672 | 2.972 | 0.300 | 53.983 | n/a | n/a | no |
 | bedroom_1 | 3.036 | 2.972 | 0.064 | 20.910 | n/a | n/a | yes |
-| bedroom_2 | 2.948 | 2.972 | 0.024 | 23.013 | n/a | n/a | yes |
+| bedroom_2 | 2.948 | 2.972 | 0.024 | 21.139 | n/a | n/a | yes |
 | kitchen | 2.062 | 2.972 | 0.910 | 13.196 | n/a | n/a | yes |
 
 Walls:
@@ -45,9 +81,9 @@ Walls:
 | bedroom_1 | B | w3 | 3.912 | 5.193 | 3.930 | 6.457 | 1.282 |
 | bedroom_1 | C | w2 | 3.658 | 4.026 | 3.047 | 5.006 | 0.369 |
 | bedroom_1 | D | w1 | 3.912 | 5.193 | 3.930 | 6.457 | 1.282 |
-| bedroom_2 | A | w4 | 3.886 | 5.323 | 4.028 | 6.617 | 1.436 |
+| bedroom_2 | A | w4 | 3.886 | 4.889 | 3.700 | 6.079 | 1.003 |
 | bedroom_2 | B | w3 | 3.632 | 4.324 | 3.271 | 5.376 | 0.691 |
-| bedroom_2 | C | w2 | 3.886 | 5.323 | 4.028 | 6.617 | 1.436 |
+| bedroom_2 | C | w2 | 3.886 | 4.889 | 3.700 | 6.079 | 1.003 |
 | bedroom_2 | D | w1 | 3.632 | 4.324 | 3.271 | 5.376 | 0.691 |
 | kitchen | B | w4 | 3.603 | 5.007 | 4.032 | 5.982 | 1.404 |
 | kitchen | C | w3 | 2.692 | 2.636 | 2.122 | 3.149 | 0.057 |
@@ -56,9 +92,9 @@ Walls:
 
 Missing rooms: none. Phantom rooms: none. Missed openings: ['door_staircase', 'door_portico', 'door_bedroom_2', 'door_hall', 'door_hall', 'door_hall']. Phantom openings: ['kitchen_d1'].
 
-Footprint: pred 111.102 m2, truth n/a m2 (sum of room floor areas). Room overlap (geometric): 28.005 m2.
+Footprint: pred 109.228 m2, truth n/a m2 (sum of room floor areas). Room overlap (geometric): 0.000 m2.
 
-Warnings: Skipped all (0 image(s), needs at least 2); Skipped home (0 image(s), needs at least 2); app_comparision was excluded by --exclude and is not treated as a room; bedroom_2_repeat is a repeat capture: it is measured and reported, but it is not placed in the property, because it is the same room as another; kitchen is attached wall to wall: no free door pair was available between it and hall; kitchen could not be placed clear of the other rooms within 6 m; its position is unreliable; bedroom_1: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall; bedroom_1: 1 of 4 room sides had no supported wall face (x+); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed; bedroom_1: Windows are not detected in this version; openings are doors and pass-throughs only; bedroom_1: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty; bedroom_2: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall; bedroom_2: 1 of 4 room sides had no supported wall face (z-); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed; bedroom_2: Windows are not detected in this version; openings are doors and pass-throughs only; bedroom_2: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty; hall: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall; hall: 2 of 4 room sides had no supported wall face (x-, z+); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed; hall: Windows are not detected in this version; openings are doors and pass-throughs only; hall: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty; kitchen: Walls were only reconstructed to about 1.87 m above the floor, so a face counts as a wall at 1.31 m rather than the usual 1.40 m. Wall heights and the ceiling are not measured from this capture; kitchen: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall; kitchen: Windows are not detected in this version; openings are doors and pass-throughs only; kitchen: room_01_o1: no lintel observed above the opening; height is a prior; kitchen: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty; footprint area is reported with an interval wider than the value itself (111.10 m2, plus or minus 152.05). It is an unreliable measurement: the reconstruction constrains it barely or not at all
+Warnings: Skipped all (0 image(s), needs at least 2); Skipped home (0 image(s), needs at least 2); app_comparision was excluded by --exclude and is not treated as a room; bedroom_2_repeat is a repeat capture: it is measured and reported, but it is not placed in the property, because it is the same room as another; kitchen is attached wall to wall: no free door pair was available between it and hall; kitchen could not be placed clear of the other rooms within 6 m; its position is unreliable; bedroom_1: 1 of 4 room sides had no supported wall face (x+); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed; bedroom_1: Windows are not detected in this version; openings are doors and pass-throughs only; bedroom_1: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty; bedroom_2: Dropped 3 wall face(s) with no observed floor on either side; a mirror or a window reflection reads as a wall from one side only; bedroom_2: 1 of 4 room sides had no supported wall face (z-); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed; bedroom_2: Windows are not detected in this version; openings are doors and pass-throughs only; bedroom_2: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty; hall: 2 of 4 room sides had no supported wall face (x-, z+); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed; hall: Windows are not detected in this version; openings are doors and pass-throughs only; hall: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty; kitchen: Walls were only reconstructed to about 1.87 m above the floor, so a face counts as a wall at 1.31 m rather than the usual 1.40 m. Wall heights and the ceiling are not measured from this capture; kitchen: Windows are not detected in this version; openings are doors and pass-throughs only; kitchen: own_o1: no lintel observed above the opening; height is a prior; kitchen: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty; footprint area is reported with an interval wider than the value itself (109.23 m2, plus or minus 149.49). It is an unreliable measurement: the reconstruction constrains it barely or not at all
 
 ### hall (video, video-0.1.0)
 
@@ -164,13 +200,13 @@ Overall:
 
 | group | n | coverage | mean width % of value | outside | confident garbage |
 |---|---|---|---|---|---|
-| all | 37 | 0.811 | 252.3 | 7 | 7 |
+| all | 37 | 0.865 | 252.3 | 5 | 5 |
 
 By tier:
 
 | group | n | coverage | mean width % of value | outside | confident garbage |
 |---|---|---|---|---|---|
-| photo | 16 | 0.562 | 46.6 | 7 | 7 |
+| photo | 16 | 0.688 | 46.6 | 5 | 5 |
 | video | 21 | 1.000 | 409.1 | 0 | 0 |
 
 By quantity:
@@ -178,14 +214,14 @@ By quantity:
 | group | n | coverage | mean width % of value | outside | confident garbage |
 |---|---|---|---|---|---|
 | ceiling_height | 9 | 0.889 | 53.9 | 1 | 1 |
-| wall_length | 28 | 0.786 | 316.1 | 6 | 6 |
+| wall_length | 28 | 0.857 | 316.1 | 4 | 4 |
 
 By tier and quantity:
 
 | group | n | coverage | mean width % of value | outside | confident garbage |
 |---|---|---|---|---|---|
 | photo/ceiling_height | 4 | 0.750 | 50.0 | 1 | 1 |
-| photo/wall_length | 12 | 0.500 | 45.4 | 6 | 6 |
+| photo/wall_length | 12 | 0.667 | 45.4 | 4 | 4 |
 | video/ceiling_height | 5 | 1.000 | 57.1 | 0 | 0 |
 | video/wall_length | 16 | 1.000 | 519.1 | 0 | 0 |
 

@@ -34,9 +34,15 @@ Adds the video tier, the photo tier and damage detection. These pull torch,
 COLMAP and several model checkpoints, so it is a much bigger install.
 
 ```bash
-uv sync --extra all              # torch, pycolmap, transformers and the rest
+uv sync --extra all              # about 45 seconds on a cold cache, 1.6 GB venv
 scripts/fetch_weights.sh         # about 7.3 GB of model weights, see below
 ```
+
+**The 15-minute target applies to the lidar path only.** The full profile
+downloads 1.6 GB of packages and 7.3 GB of weights, so the honest figure is
+dominated by your connection rather than by anything this repository does.
+Timed on a fast connection in `docs/rehearsal.md`. If you only want a plan
+from a LiDAR scan, Profile 1 is the whole story and needs none of this.
 
 Narrower extras exist if you only want one part: `--extra video` (also covers
 photo), `--extra photo`, `--extra damage`. `scripts/fetch_weights.sh video`

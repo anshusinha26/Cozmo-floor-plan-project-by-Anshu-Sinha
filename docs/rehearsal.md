@@ -42,22 +42,34 @@ It completed in 5.6 s, and the plan is **byte-identical** to the one produced
 with the network up. The 19.0 s in the table above is a cold first run:
 imports and the matplotlib font cache. Subsequent runs are about 5.6 s.
 
-## Damage detection, off the critical path
+## The full profile, everything installed
 
-Damage is optional and needs things reconstruction does not:
+Rehearsed the same way: fresh clone, cold uv cache, empty Hugging Face cache.
 
-| step | command | time |
-|---|---|---|
-| install extras | `uv sync --extra damage` | 0.9 s on a warm uv cache; torch is the bulk on a cold one |
-| fetch weights | `scripts/fetch_weights.sh` | not timed cleanly, see below |
+| step | command | time | size |
+|---|---|---|---|
+| 1. clone | `git clone` | 1.1 s | |
+| 2. install everything | `uv sync --extra all` | 44.0 s | 1.6 GB venv |
+| 3. fetch every weight | `scripts/fetch_weights.sh` | see below | see below |
 
-Measured sizes of what it fetches, from the local cache with symlinks
-followed: OWLv2 1.2 GB, SigLIP 1.5 GB, with the largest single file 620 MB.
-The cold-cache timing was attempted twice and neither attempt produced a
-clean number, so none is quoted. It is a 2.7 GB download and will take as
-long as that takes.
+**The 15-minute target applies to the lidar path only**, and the lidar path
+needs none of this. The full profile is dominated by two downloads, 1.6 GB of
+packages and the model weights, so the time you see is your connection rather
+than anything this repository does.
 
-**Reconstruction needs none of this.** No weights, no torch, no network.
+**The lidar tier needs no weights, no torch and no network.**
+
+### What the rehearsal broke in the full profile
+
+**The `all` extra could not be installed at all.** `depth-pro` pins
+`numpy<2` while `mapanything`, through `rerun-sdk`, needs `numpy>=2`, so
+resolution failed outright. depth-pro runs correctly on numpy 2 and the whole
+image path was developed and measured on 2.4.6 with both packages imported,
+so the pin is overridden in `[tool.uv]` with the reason written next to it.
+The two git-sourced packages also needed
+`tool.hatch.metadata.allow-direct-references`. Neither problem is visible
+without installing from a clean clone, because a working venv built up by
+hand hides both.
 
 ## What the rehearsal broke, and what was fixed
 

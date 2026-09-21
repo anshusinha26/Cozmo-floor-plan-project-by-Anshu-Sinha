@@ -32,6 +32,16 @@ BRANCH = Path("/Users/anshusinha/Downloads/Cozmo-AI/cozmo-video-tier")
 
 # Where a reusable plan lives, per capture. Paths are relative to the branch
 # worktree; the benchmark records the source of every plan it uses.
+# A local directory can stand in for a branch plan when something here had to
+# be re-run, for example after a fix to the stitcher. Set COZMO_REUSE_OVERRIDE
+# to a JSON object of capture id to directory.
+def _overrides() -> dict:
+    import os
+
+    raw = os.environ.get("COZMO_REUSE_OVERRIDE")
+    return json.loads(raw) if raw else {}
+
+
 REUSE = {
     "video": {
         "own_bedroom_1_video": "fix_loop/loop2_video_scale/after/runs/bedroom_1",
@@ -243,9 +253,16 @@ def main() -> int:
                   "space_id": cap.space_id, "repeat_of": cap.repeat_of,
                   "repeat_kind": cap.repeat_kind}
 
+        override = _overrides().get(cap.capture_id)
         reuse_rel = REUSE.get(cap.tier, {}).get(cap.capture_id)
-        if reuse_rel and (branch / reuse_rel / "plan.json").is_file():
+        if override and (Path(override) / "plan.json").is_file():
+            src_dir = Path(override)
+            reuse_rel = override
+        elif reuse_rel and (branch / reuse_rel / "plan.json").is_file():
             src_dir = branch / reuse_rel
+        else:
+            src_dir = None
+        if src_dir is not None:
             dest.mkdir(parents=True, exist_ok=True)
             for name in ("plan.json", "run_manifest.json", "plan.png", "drift_report.json"):
                 if (src_dir / name).is_file():
@@ -259,7 +276,8 @@ def main() -> int:
                     record["room_renamed"] = renamed
             state = input_state(cap, cap.tier)
             record.update({
-                "source": "reused from the tier branch",
+                "source": ("re-run here after a fix, see the note"
+                           if override else "reused from the tier branch"),
                 "source_path": str(reuse_rel),
                 "recomputed": False,
                 "plan_input_sha256": plan.capture.input_manifest_sha256,
