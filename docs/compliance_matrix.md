@@ -110,3 +110,5 @@ exists yet, so every accuracy row is scored on the stub only.
 | Gates reported per tier | cozmo/eval/runner.py, docs/benchmark/benchmark.md | one table per tier, plus a pooled table kept for completeness | done |
 | Empty gates read NOT EVALUATED | cozmo/eval/gates.py, tests/test_gates.py | status with the reason; an unevaluated gate can never count as a pass | done |
 | Full-profile install rehearsal | docs/rehearsal.md | clean clone, all extras, every weight, timed with measured sizes | done |
+| Photo focal regression, found and fixed | fix_loop/loop2_video_scale/photo_ablation.md | root cause: the model guessed a 464 px focal against a true 332 px; ablation table as evidence | done |
+| Photo stitcher placement fix | cozmo/pipeline/photo/merge.py, docs/benchmark/benchmark.md | identity placements, stitch_overlap 28.01 m2 to 0.0000 | done |

@@ -63,8 +63,20 @@ Weights, measured from a cold cache rather than estimated:
 | SigLIP | damage | 0.82 GB |
 | **total** | | **9.60 GB** |
 
-MapAnything is half the download on its own, and the video and photo tiers use
-it for one job: the relative pose across a chunk boundary.
+MapAnything is half the download on its own. The video tier uses it for one
+job, the relative pose across a chunk boundary; the photo tier uses it for the
+reconstruction itself.
+
+### Running a tier from the clean clone
+
+| step | command | time |
+|---|---|---|
+| 4. fetch sample data | `scripts/fetch_sample_data.sh` | 112 s |
+| 5. photo tier, one room | `cozmo run --input <room> --tier photo` | **78 s** |
+| 6. video tier, one clip | `cozmo run --input <room> --tier video` | see below |
+
+Both ran from the clean clone with no further setup, on 9 photographs and one
+50-second clip of the same bedroom.
 
 **The 15-minute target applies to the lidar path only**, and the lidar path
 needs none of this. The full profile is dominated by two downloads, 1.6 GB of
