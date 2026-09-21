@@ -49,6 +49,36 @@ def _rotation(theta_deg: float) -> np.ndarray:
     return np.array([[np.cos(t), -np.sin(t)], [np.sin(t), np.cos(t)]])
 
 
+def _fit_rigid(src, dst) -> tuple[np.ndarray, np.ndarray] | None:
+    """The rotation and translation taking ``src`` points onto ``dst`` points.
+
+    The stitch rotates a room about its own anchor and returns the placed
+    polygon, while the recorded (theta, tx, ty) rotate about the origin. Using
+    the second on the walls while taking the first for the polygon puts the two
+    in different frames, which is how a room came out with its walls drawn
+    somewhere else. Recovering the transform from the polygon the stitch
+    actually produced keeps every part of the room in one frame, whatever
+    convention the stitch used internally.
+
+    Kabsch with no scaling, on corresponding vertices. Returns None when the
+    two polygons do not correspond, so the caller can fall back.
+    """
+    src = np.asarray(src, dtype=float)
+    dst = np.asarray(dst, dtype=float)
+    if src.shape != dst.shape or len(src) < 2:
+        return None
+    sc = src.mean(axis=0)
+    dc = dst.mean(axis=0)
+    H = (src - sc).T @ (dst - dc)
+    U, _, Vt = np.linalg.svd(H)
+    d = np.sign(np.linalg.det(Vt.T @ U.T))
+    R = Vt.T @ np.diag([1.0, d]) @ U.T
+    t = dc - R @ sc
+    if not np.allclose((src @ R.T) + t, dst, atol=1e-6):
+        return None
+    return R, t
+
+
 def _apply(R: np.ndarray, t: np.ndarray, p) -> tuple[float, float]:
     v = R @ np.asarray(p, dtype=float) + t
     return (float(v[0]), float(v[1]))
@@ -66,11 +96,19 @@ def merge(per_room: dict[str, Plan], stitch_result, capture, run, ci_level: floa
         if plan is None or not plan.rooms:
             continue
         src = plan.rooms[0]
-        R = _rotation(placed.theta_deg)
-        t = np.array([placed.tx, placed.ty], dtype=float)
-        # The stitch rotated about the room's own anchor, so reproduce that here
-        # by using the polygon the stitch actually produced.
         polygon = [tuple(map(float, p)) for p in placed.polygon]
+        # Recover the transform from the polygon the stitch produced, so the
+        # walls land in the same frame as the fill they belong to. Falls back to
+        # the recorded placement only if the polygons do not correspond.
+        fit = _fit_rigid(src.polygon, placed.polygon)
+        if fit is None:
+            R = _rotation(placed.theta_deg)
+            t = np.array([placed.tx, placed.ty], dtype=float)
+            warnings.append(
+                f"{placed.room_id}: could not recover the stitch transform from the polygon, "
+                "so walls fall back to the recorded placement and may not sit on the outline")
+        else:
+            R, t = fit
         if not SPoly(polygon).exterior.is_ccw:
             polygon = polygon[::-1]
         walls = [Wall(id=w.id, start=_apply(R, t, w.start), end=_apply(R, t, w.end),
@@ -80,7 +118,11 @@ def merge(per_room: dict[str, Plan], stitch_result, capture, run, ci_level: floa
         # across the whole plan, so they are rebased onto the folder name here.
         openings = [o.model_copy(deep=True, update={"id": _rebase(o.id, src.id, placed.room_id)})
                     for o in src.openings]
-        room = Room(id=placed.room_id, label=src.label, polygon=polygon, walls=walls,
+        # "room" is what a single-room reconstruction calls itself. Once it is
+        # placed in a property it has a name, and the plan should show it.
+        label = src.label if src.label and src.label != "room" else \
+            placed.room_id.replace("_", " ").title()
+        room = Room(id=placed.room_id, label=label, polygon=polygon, walls=walls,
                     ceiling_height_m=src.ceiling_height_m, floor_area_m2=src.floor_area_m2,
                     openings=openings)
         rooms.append(room)
