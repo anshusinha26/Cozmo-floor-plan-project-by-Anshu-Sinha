@@ -170,6 +170,12 @@ pipeline:
       wall_min_top_floor_m: 0.9
       snap_m: 0.30
       unsupported_margin_m: 0.45
+      density_bin_m: 0.07        # fix loop 3: a side with no qualifying wall face falls back
+      density_min_points: 120     # to the outermost significant peak in the point density
+      density_min_share: 0.35     # along that axis, which is what a wall behind a curtain or
+      density_max_reach_m: 2.5    # a wardrobe looks like
+      density_inward_m: 1.0       # and starts this far inside the camera path, which
+                                  # is not a reliable inner bound: see fix loop 3
       allow_l_shape: true
     opening:
       band_low_m: 0.3
@@ -289,7 +295,13 @@ pipeline:
                                    # reconstructed, because this tier never sees a whole wall
       wall_min_top_floor_m: 0.9    # but never low enough for a table or a bed back
       snap_m: 0.22              # LiDAR uses 0.15; matches the wider face tolerance
-      unsupported_margin_m: 0.35  # single-room mode: how far past the camera path a side with
+      unsupported_margin_m: 0.35
+      density_bin_m: 0.06        # fix loop 3: a side with no qualifying wall face falls back
+      density_min_points: 120     # to the outermost significant peak in the point density
+      density_min_share: 0.35     # along that axis, which is what a wall behind a curtain or
+      density_max_reach_m: 2.5    # a wardrobe looks like
+      density_inward_m: 1.0       # and starts this far inside the camera path, which
+                                  # is not a reliable inner bound: see fix loop 3  # single-room mode: how far past the camera path a side with
                                   # no wall face is closed by the rectangle assumption
       allow_l_shape: true
     opening:

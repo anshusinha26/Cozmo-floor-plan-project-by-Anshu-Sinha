@@ -276,3 +276,78 @@ def test_angles_are_not_clamped_like_lengths():
     notes: list[str] = []
     m = Measurement(value=0.0, ci_low=-15.0, ci_high=15.0, unit="deg", method="t", ci_level=0.95)
     assert _clamp_measurement(m, "theta", notes).ci_low == -15.0
+
+
+# ------------------------------------ fix loop 3: the unanchored wall
+
+def _wall_points(axis_pos: dict, along=(0.0, 3.0), n=600, seed=0):
+    """Points forming dense planes at given positions along x."""
+    rng = np.random.default_rng(seed)
+    pts = []
+    for pos, count in axis_pos.items():
+        p = np.empty((count, 2))
+        p[:, 0] = pos + rng.normal(0, 0.01, count)
+        p[:, 1] = rng.uniform(*along, count)
+        pts.append(p)
+    return np.vstack(pts)
+
+
+def test_a_dense_band_anchors_a_side_the_face_test_rejected():
+    """A wall behind a curtain leaves no face that passes the strict test and a
+    perfectly good sheet of points where the wall is."""
+    from cozmo.pipeline.video.singleroom import density_side
+
+    cfg = CFG
+    wall = _wall_points({-1.8: 500})
+    path = np.column_stack([np.linspace(-1.2, 1.2, 40), np.linspace(0.5, 2.5, 40)])
+    found = density_side(wall, axis=0, direction=-1, path=path, cfg=cfg)
+    assert found is not None
+    pos, n = found
+    assert pos == pytest.approx(-1.8, abs=0.05)
+    assert n >= 120
+
+
+def test_a_wall_inside_the_camera_path_is_still_found():
+    """The camera path is not a reliable inner bound.
+
+    On bedroom_2 it ran 0.61 m past the room's own wall, so a search that
+    required the wall to lie beyond the path found nothing at all.
+    """
+    from cozmo.pipeline.video.singleroom import density_side
+
+    wall = _wall_points({-1.8: 500})
+    # The path overshoots the wall by 0.6 m, as the real reconstruction did.
+    path = np.column_stack([np.linspace(-2.4, 1.2, 40), np.linspace(0.5, 2.5, 40)])
+    found = density_side(wall, axis=0, direction=-1, path=path, cfg=CFG)
+    assert found is not None and found[0] == pytest.approx(-1.8, abs=0.05)
+
+
+def test_a_few_stray_points_do_not_become_a_wall():
+    """Points leaking through a doorway must not outvote the wall."""
+    from cozmo.pipeline.video.singleroom import density_side
+
+    wall = _wall_points({-1.8: 500, -3.0: 25})
+    path = np.column_stack([np.linspace(-1.2, 1.2, 40), np.linspace(0.5, 2.5, 40)])
+    pos, _ = density_side(wall, axis=0, direction=-1, path=path, cfg=CFG)
+    assert pos == pytest.approx(-1.8, abs=0.05)
+
+
+def test_nothing_is_invented_when_there_are_no_points():
+    from cozmo.pipeline.video.singleroom import density_side
+
+    path = np.column_stack([np.linspace(-1.2, 1.2, 40), np.linspace(0.5, 2.5, 40)])
+    assert density_side(np.zeros((0, 2)), 0, -1, path, CFG) is None
+    assert density_side(_wall_points({-1.8: 10}), 0, -1, path, CFG) is None
+
+
+def test_a_density_side_is_weaker_evidence_than_a_face():
+    """It counts half against the intervals, not nothing and not everything."""
+    from cozmo.pipeline.video.singleroom import Side, SingleRoomFit
+
+    sides = [Side(0, -1, 0.0, True, support="face"),
+             Side(0, 1, 4.0, True, support="density"),
+             Side(1, -1, 0.0, True, support="face"),
+             Side(1, 1, 3.0, False, support="camera_path")]
+    fit = SingleRoomFit([(0, 0), (4, 0), (4, 3), (0, 3)], sides, "rectangle")
+    assert fit.n_weak == 1
+    assert fit.unsupported_weight == pytest.approx(0.5 + 1.0)

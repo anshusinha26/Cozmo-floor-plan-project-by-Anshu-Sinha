@@ -1,0 +1,672 @@
+{
+  "capture_id": "own",
+  "tier": "photo",
+  "input": {
+    "root": "data/own",
+    "files": [
+      {
+        "path": "app_comparision/ar_plan_screenshot_bedroom1.jpeg",
+        "sha256": "b1bb989170918a63dedfedd83df1a2c414fcd585150b7615c4f6080bfbf66482",
+        "size_bytes": 61653
+      },
+      {
+        "path": "app_comparision/ar_plan_screenshot_bedroom1_kitchen.jpeg",
+        "sha256": "84e09ada157aa6c5a02520bf736203abcbe9b6f94fcd4a69e486091c606b5a47",
+        "size_bytes": 85012
+      },
+      {
+        "path": "app_comparision/ar_plan_screenshot_info.jpeg",
+        "sha256": "078e748c1de3d58e484e52a76a66cffec89e6421246070b1ba07631beef2c9f8",
+        "size_bytes": 78242
+      },
+      {
+        "path": "app_comparision/ar_plan_screenshot_kitchen.jpeg",
+        "sha256": "b53856ff9962e4bb6cd8cd4737600cd75211e8312169b1454667cfe18cf7bc82",
+        "size_bytes": 48804
+      },
+      {
+        "path": "bedroom_1/bedroom1_1.jpg",
+        "sha256": "fe0ac4cbfd12650226be37355a646cd110543ceee0d95ff5a35e501fcc213d71",
+        "size_bytes": 3638808
+      },
+      {
+        "path": "bedroom_1/bedroom1_2.jpg",
+        "sha256": "154ba0234de619dda4df30f3147c286d91d2bc0cc6f9e19fc5e7212db362f743",
+        "size_bytes": 3851824
+      },
+      {
+        "path": "bedroom_1/bedroom1_3.jpg",
+        "sha256": "885a17d366715ae34c25f5b3df73ecf0725b4dd0d4792ca24e947c6ecf3b9936",
+        "size_bytes": 3156971
+      },
+      {
+        "path": "bedroom_1/bedroom1_4.jpg",
+        "sha256": "c10ecf282a55e99f1cc305d5b5fdf9c99f6448328602383e0d46a400c3488d77",
+        "size_bytes": 3508616
+      },
+      {
+        "path": "bedroom_1/bedroom1_5.jpg",
+        "sha256": "5c339cd9370f6ce843685ced72fbe7283bec133ee8648df9158f89ff3cfea15a",
+        "size_bytes": 3315613
+      },
+      {
+        "path": "bedroom_1/bedroom1_6.jpg",
+        "sha256": "9f7680172f45a1b78b8d2d0c6cd7424f7a3055b5334f643a8c463a7625b2f609",
+        "size_bytes": 3911753
+      },
+      {
+        "path": "bedroom_1/bedroom1_7.jpg",
+        "sha256": "d8290c39e1f0e1861beb804b09a3af773db8931889c9374b0bf518bcdb286062",
+        "size_bytes": 3838691
+      },
+      {
+        "path": "bedroom_1/bedroom1_8.jpg",
+        "sha256": "42c81a5e9687cadde63dee63289702c1376908e118ab61d7dd7647e782027a0e",
+        "size_bytes": 2926758
+      },
+      {
+        "path": "bedroom_1/bedroom1_9.jpg",
+        "sha256": "0920ca813f34b2eef51f122e10117869e0a023b49322c16fea5603369d8cca06",
+        "size_bytes": 3616383
+      },
+      {
+        "path": "bedroom_2/IMG_20260920_123343611.jpg",
+        "sha256": "2081a4dabad966e13beb015c4bbff2ba3d154670d80e3b97fa65d2133ecfb8bc",
+        "size_bytes": 2964083
+      },
+      {
+        "path": "bedroom_2/IMG_20260920_123349442.jpg",
+        "sha256": "2224b121f5a056496d876a0c9dc115e8296e63b83bf45fc14f4f90cdba989f8e",
+        "size_bytes": 4202537
+      },
+      {
+        "path": "bedroom_2/bedroom2_1.jpg",
+        "sha256": "0ac756e2e03de48202c412f895056a9c6a635c86b17f5fa8f4776f26bcd5aac7",
+        "size_bytes": 3953789
+      },
+      {
+        "path": "bedroom_2/bedroom2_2.jpg",
+        "sha256": "e177cba5ff0c57084f8d9ad15707b431ce4eff687d4c19f45c1e679993056e2b",
+        "size_bytes": 3475563
+      },
+      {
+        "path": "bedroom_2/bedroom2_3.jpg",
+        "sha256": "18c42992e8351779cc8d90670139ca8333d47005562921df08ba25692aa69c4d",
+        "size_bytes": 3290656
+      },
+      {
+        "path": "bedroom_2/bedroom2_4.jpg",
+        "sha256": "1629e8aad72e5a55bc30b4c00000bee20a6b0a2644f28e6909293cb10cb6ddbd",
+        "size_bytes": 3599678
+      },
+      {
+        "path": "bedroom_2/bedroom2_5.jpg",
+        "sha256": "51100aee25df43b031dbaa0d726b634b2334e093ab7ba5c1fcbf03511b5cdd95",
+        "size_bytes": 3547724
+      },
+      {
+        "path": "bedroom_2/bedroom2_6.jpg",
+        "sha256": "ebfc0759ae3fa2e5813fe5e5ef00b1107146778e93c7c2d643cc524057b4ef0e",
+        "size_bytes": 3007364
+      },
+      {
+        "path": "bedroom_2/bedroom2_9.jpg",
+        "sha256": "0be689e50739733d2153d94149c8ad9916806e2d7ea2ec14a585152546c78bc8",
+        "size_bytes": 3643482
+      },
+      {
+        "path": "bedroom_2_repeat/bedroom2_repeat_1.jpg",
+        "sha256": "ca94b14301965057cb5107f9f305ba54a0f93b27e13ad16c476ce2dff87e602e",
+        "size_bytes": 9001508
+      },
+      {
+        "path": "bedroom_2_repeat/bedroom2_repeat_2.jpg",
+        "sha256": "118a88202041f3bd8498158abd0e5cc33c55ca4cde75373dd1a7f6045896512e",
+        "size_bytes": 8548617
+      },
+      {
+        "path": "bedroom_2_repeat/bedroom2_repeat_3.jpg",
+        "sha256": "f4dd6377f2a949976d2def96cc13e5b5d5b4ae0ccddef853c4d73b7584cfbb2b",
+        "size_bytes": 8366248
+      },
+      {
+        "path": "bedroom_2_repeat/bedroom2_repeat_4.jpg",
+        "sha256": "e0238b812fd0d8260bc8a1c45e7944f7fec9806f662a78a04525776e833829a9",
+        "size_bytes": 8488378
+      },
+      {
+        "path": "bedroom_2_repeat/bedroom2_repeat_5.jpg",
+        "sha256": "34ea19a09f391a581854e38c0557bcde2f1f5dfbc921001c289cfbb99d271019",
+        "size_bytes": 8461196
+      },
+      {
+        "path": "bedroom_2_repeat/bedroom2_repeat_6.jpg",
+        "sha256": "039fd924a58bcf3b312c2ab77f5d660c244114861005416c8cf372271c2a1ecc",
+        "size_bytes": 7371169
+      },
+      {
+        "path": "bedroom_2_repeat/bedroom2_repeat_7.jpg",
+        "sha256": "c0abea7f23a5999fbc1c6d0aed67c3104ccaac4ff8df7c59e7e06418390b4669",
+        "size_bytes": 7958000
+      },
+      {
+        "path": "bedroom_2_repeat/bedroom2_repeat_8.jpg",
+        "sha256": "9d2d78d391fc34975662c120a450859b0ec98263006c90f6f988e5206f47cfc4",
+        "size_bytes": 9384508
+      },
+      {
+        "path": "bedroom_2_repeat/bedroom2_repeat_9.jpg",
+        "sha256": "5f57e9a986a50bd4f2474c753014b96fa1d9812108bf91408043dc1c52598398",
+        "size_bytes": 8358556
+      },
+      {
+        "path": "hall/hall_1.jpg",
+        "sha256": "039c1ad61ced338f92e2ce0ac50d34f53cc9f9f63315cc8306cfabda5b6f15e1",
+        "size_bytes": 3087597
+      },
+      {
+        "path": "hall/hall_10.jpg",
+        "sha256": "63214bb980b992d20b710cf36fe67c0b0b01bdd6cbe50da1c8e7f9f981b7be63",
+        "size_bytes": 3177123
+      },
+      {
+        "path": "hall/hall_11.jpg",
+        "sha256": "1e6ba7ee49721252fa53b73ff2d0150e905b44382eb103aebea0bbcfbbe91598",
+        "size_bytes": 3255902
+      },
+      {
+        "path": "hall/hall_12.jpg",
+        "sha256": "8340bd6964782223a6b0ef1cf2cd592a668206c8b70efb0bb438623138991ebc",
+        "size_bytes": 3264793
+      },
+      {
+        "path": "hall/hall_13.jpg",
+        "sha256": "8ba8ef43d97a36dfd9e11e23b1850e97c4026376d4a53b6b1a1337c5d002a10e",
+        "size_bytes": 3650130
+      },
+      {
+        "path": "hall/hall_2.jpg",
+        "sha256": "4dc080f8ad1bdeeb38848ad59bbc6f53db623853b4b4097905e547e22d8e1334",
+        "size_bytes": 2865860
+      },
+      {
+        "path": "hall/hall_3.jpg",
+        "sha256": "63891869dcdd78a3132f09db04b4b7147a9b5ac94d740e4530ed4361bd013a34",
+        "size_bytes": 3098881
+      },
+      {
+        "path": "hall/hall_4.jpg",
+        "sha256": "1ad4973723ae7b2f86501a66bdf39c86cd303af46af0470dcf22e2f7e9f55a85",
+        "size_bytes": 2904599
+      },
+      {
+        "path": "hall/hall_5.jpg",
+        "sha256": "281dcca567e1a58562e50c4e37ed33ffdc5f07e3c4b6098130d7cd54a79a04c8",
+        "size_bytes": 2990221
+      },
+      {
+        "path": "hall/hall_6.jpg",
+        "sha256": "994cd551140a3313c0fa0e300ddf0ca26ca38bae376b449f015e73260b7062b8",
+        "size_bytes": 3097436
+      },
+      {
+        "path": "hall/hall_7.jpg",
+        "sha256": "0d7e3f55bc01b397afb9fcd8d88c6faa904cce3667f18b678f869cb145d8df60",
+        "size_bytes": 3562246
+      },
+      {
+        "path": "hall/hall_8.jpg",
+        "sha256": "5ac237de3d826a76b9992721ca4b76b3f601f37a233ff39b682fad2e10ad3082",
+        "size_bytes": 2827056
+      },
+      {
+        "path": "hall/hall_9.jpg",
+        "sha256": "08334f74d7866685aecfe8d2fd8eafe6607273d36ccadeb4287ed079983b759d",
+        "size_bytes": 3110915
+      },
+      {
+        "path": "kitchen/kitchen_1.jpg",
+        "sha256": "bd6754177260df7d0dfbbbbdc8910f1be05c2fb8ec02504cea4a54c852aaf9cb",
+        "size_bytes": 3959826
+      },
+      {
+        "path": "kitchen/kitchen_2.jpg",
+        "sha256": "fd3fb813bd2313c3296d36ebd245153300ec72844ce4a29456dcc067bb4948fc",
+        "size_bytes": 3787619
+      },
+      {
+        "path": "kitchen/kitchen_3.jpg",
+        "sha256": "ff71a665e35d6a3c5b7198809ed29e675659b5da6060ac6f66f69efc888ddd48",
+        "size_bytes": 3007895
+      },
+      {
+        "path": "kitchen/kitchen_4.jpg",
+        "sha256": "5cdf374ca08fbdff0195a3273838f329746a735665880423b36a41c23654c5eb",
+        "size_bytes": 3570134
+      },
+      {
+        "path": "kitchen/kitchen_5.jpg",
+        "sha256": "c4c9a1496ed92c635dadfcfe6a779c4ce49b300c49111a67c6c7a921a33dfb79",
+        "size_bytes": 3734101
+      },
+      {
+        "path": "kitchen/kitchen_6.jpg",
+        "sha256": "9157efd2a83ed9761fcb64a443580bea21ea1ad3f0034b27021a8bd65ba22d75",
+        "size_bytes": 3320269
+      },
+      {
+        "path": "kitchen/kitchen_7.jpg",
+        "sha256": "2325db9918836069f6cafc6fac5cc05e49de639d35f1198135b49de734939f37",
+        "size_bytes": 2757531
+      },
+      {
+        "path": "kitchen/kitchen_8.jpg",
+        "sha256": "99c6cb431a059293d57fd98e96b394c69db2aca7fe143aca84f885bd49f5f6a9",
+        "size_bytes": 3934270
+      },
+      {
+        "path": "kitchen/kitchen_9.jpg",
+        "sha256": "f725277145b914915df17bebdf5251cda045448712244ac55126ed716bec7dc2",
+        "size_bytes": 3155278
+      }
+    ],
+    "sha256": "d253b661f47ebf35cc45dc41356726a24dac56455a89e36c0394bdaae2971db6"
+  },
+  "config": {
+    "path": "config/gates.yaml",
+    "sha256": "2accc074e9b1b02d4ca4a52e7cb0fcdb2d0c1d595a3b39db190ef2fe6b592c41",
+    "resolved": {
+      "config_version": 1,
+      "gates": {
+        "opening_width": {
+          "tolerance_m": 0.02,
+          "min_pass_fraction": 0.85
+        },
+        "ceiling_height": {
+          "tolerance_m": 0.015,
+          "spread_tolerance_m": 0.01
+        },
+        "ceiling_height_diagnosis": {
+          "small_spread_m": 0.01,
+          "biased_mean_m": 0.015
+        },
+        "repeatability": {
+          "abs_tolerance_m": 0.01,
+          "rel_tolerance": 0.005
+        },
+        "wall_length_tier": {
+          "photo": {
+            "rel_tolerance": 0.08
+          },
+          "video": {
+            "rel_tolerance": 0.03
+          },
+          "lidar": {
+            "abs_tolerance_m": 0.02,
+            "rel_tolerance": 0.01,
+            "status": "PROVISIONAL"
+          }
+        },
+        "footprint": {
+          "rel_tolerance": 0.08
+        },
+        "stitch_adjacency": {},
+        "stitch_overlap": {
+          "max_overlap_m2": 0.05
+        }
+      },
+      "matching": {
+        "opening_offset_gate_m": 0.5
+      },
+      "calibration": {
+        "alpha": 0.05
+      },
+      "pipeline": {
+        "lidar": {
+          "frame_stride": 10,
+          "voxel_m": 0.02,
+          "min_depth_m": 0.2,
+          "max_depth_m": 4.5,
+          "vertical_normal_cos": 0.9,
+          "horizontal_normal_cos": 0.25,
+          "level": {
+            "hist_bin_m": 0.01,
+            "peak_min_fraction": 0.15,
+            "plane_band_m": 0.05,
+            "cell_m": 0.25,
+            "min_ceiling_coverage": 0.15,
+            "prior_height_m": [
+              2.2,
+              3.2
+            ]
+          },
+          "wall": {
+            "min_height_above_floor_m": 0.3,
+            "max_height_below_ceiling_m": 0.1,
+            "hist_bin_m": 0.02,
+            "peak_min_points": 150,
+            "peak_min_separation_m": 0.06,
+            "occupancy_bin_m": 0.05,
+            "min_run_m": 0.4,
+            "wall_min_top_m": 1.6,
+            "max_gap_m": 0.35
+          },
+          "room": {
+            "grid_m": 0.02,
+            "erode_m": 0.5,
+            "min_area_m2": 1.5,
+            "min_constriction_m": 0.62,
+            "wall_min_top_m": 1.6,
+            "snap_m": 0.15
+          },
+          "opening": {
+            "band_low_m": 0.3,
+            "band_high_m": 1.9,
+            "min_width_m": 0.6,
+            "max_width_m": 2.4,
+            "bin_m": 0.05
+          },
+          "drift": {
+            "chunk_s": 5.0,
+            "max_yaw_deg": 5.0,
+            "max_shift_m": 0.25
+          },
+          "uncertainty": {
+            "depth_scale_bias": 0.01,
+            "abs_floor_m": 0.01,
+            "ci_level": 0.95
+          }
+        },
+        "photo": {
+          "device": null,
+          "use_exif_focal": true,
+          "voxel_m": 0.03,
+          "pixel_stride": 2,
+          "vertical_normal_cos": 0.9,
+          "horizontal_normal_cos": 0.25,
+          "height_prior": {
+            "camera_height_m": 1.4,
+            "camera_height_sigma_m": 0.12
+          },
+          "gravity": {
+            "voxel_m": 0.05,
+            "max_tilt_deg": 30.0,
+            "band_m": 0.08
+          },
+          "openings": {
+            "enabled": true,
+            "detector": "owlv2",
+            "min_score": 0.2,
+            "max_photos": 8
+          },
+          "level": {
+            "hist_bin_m": 0.03,
+            "peak_min_fraction": 0.1,
+            "plane_band_m": 0.08,
+            "cell_m": 0.3,
+            "min_ceiling_coverage": 0.1,
+            "prior_height_m": [
+              2.2,
+              3.2
+            ]
+          },
+          "wall": {
+            "min_height_above_floor_m": 0.3,
+            "max_height_below_ceiling_m": 0.1,
+            "hist_bin_m": 0.06,
+            "peak_min_points": 120,
+            "peak_min_separation_m": 0.14,
+            "occupancy_bin_m": 0.06,
+            "min_run_m": 0.4,
+            "wall_min_top_m": 1.4,
+            "max_gap_m": 0.6
+          },
+          "ghost": {
+            "enabled": true,
+            "cell_m": 0.05,
+            "reach_m": 0.4,
+            "probe_offset_m": 0.25,
+            "min_supported_share": 0.2
+          },
+          "room": {
+            "grid_m": 0.04,
+            "erode_m": 0.4,
+            "min_area_m2": 1.0,
+            "min_constriction_m": 0.62,
+            "wall_min_top_m": 1.4,
+            "wall_min_top_fraction": 0.7,
+            "wall_min_top_floor_m": 0.9,
+            "snap_m": 0.3,
+            "unsupported_margin_m": 0.45,
+            "density_bin_m": 0.07,
+            "density_min_points": 120,
+            "density_min_share": 0.35,
+            "density_max_reach_m": 2.5,
+            "density_inward_m": 1.0,
+            "allow_l_shape": true
+          },
+          "opening": {
+            "band_low_m": 0.3,
+            "band_high_m": 1.9,
+            "min_width_m": 0.6,
+            "max_width_m": 2.4,
+            "bin_m": 0.05
+          },
+          "uncertainty": {
+            "systematic_scale_bias": 0.05,
+            "depth_scale_bias": 0.05,
+            "abs_floor_m": 0.05,
+            "min_coverage": 0.6,
+            "low_coverage_factor": 1.6,
+            "ci_level": 0.95,
+            "status": "PROVISIONAL"
+          }
+        },
+        "video": {
+          "device": null,
+          "voxel_m": 0.03,
+          "vertical_normal_cos": 0.9,
+          "horizontal_normal_cos": 0.25,
+          "frames": {
+            "target_fps": 10.0,
+            "long_side": 1280,
+            "max_frames": 600,
+            "drop_blur_fraction": 0.2,
+            "rotation": "auto"
+          },
+          "engine": "sfm",
+          "frames_engine": {
+            "n_frames": 16,
+            "max_frames": 24,
+            "min_gap_fraction": 0.4
+          },
+          "sfm": {
+            "overlap": 10,
+            "max_image_size": 1600,
+            "min_chunk_images": 15,
+            "deterministic": true,
+            "reuse_reconstruction": true
+          },
+          "scale": {
+            "max_frames": 12
+          },
+          "height_prior": {
+            "camera_height_m": 1.4,
+            "camera_height_sigma_m": 0.12
+          },
+          "bridge": {
+            "overlap_frames": 4,
+            "overlap_window_s": 2.0,
+            "min_span_m": 0.2,
+            "max_rms_m": 0.12,
+            "max_rms_frac": 0.25,
+            "max_scale_disagreement": 0.15,
+            "scale_sem_sigmas": 2.0,
+            "max_tilt_deg": 12.0,
+            "max_vertical_m": 0.35,
+            "time_box_s": 5400.0
+          },
+          "dense": {
+            "max_keyframes": 140,
+            "pixel_stride": 2,
+            "min_depth_m": 0.25,
+            "max_depth_m": 8.0,
+            "scale_tolerance": 0.08
+          },
+          "gravity": {
+            "voxel_m": 0.05,
+            "max_tilt_deg": 30.0,
+            "band_m": 0.08
+          },
+          "drift": {
+            "voxel_m": 0.06,
+            "max_yaw_deg": 6.0
+          },
+          "level": {
+            "hist_bin_m": 0.02,
+            "peak_min_fraction": 0.15,
+            "plane_band_m": 0.06,
+            "cell_m": 0.25,
+            "min_ceiling_coverage": 0.12,
+            "prior_height_m": [
+              2.2,
+              3.2
+            ]
+          },
+          "wall": {
+            "min_height_above_floor_m": 0.3,
+            "max_height_below_ceiling_m": 0.1,
+            "hist_bin_m": 0.04,
+            "peak_min_points": 150,
+            "peak_min_separation_m": 0.1,
+            "occupancy_bin_m": 0.05,
+            "min_run_m": 0.4,
+            "wall_min_top_m": 1.5,
+            "max_gap_m": 0.45
+          },
+          "ghost": {
+            "enabled": true,
+            "cell_m": 0.05,
+            "reach_m": 0.35,
+            "probe_offset_m": 0.25,
+            "min_supported_share": 0.25
+          },
+          "room": {
+            "grid_m": 0.03,
+            "erode_m": 0.4,
+            "min_area_m2": 1.0,
+            "min_constriction_m": 0.62,
+            "wall_min_top_m": 1.5,
+            "wall_min_top_fraction": 0.75,
+            "wall_min_top_floor_m": 0.9,
+            "snap_m": 0.22,
+            "unsupported_margin_m": 0.35,
+            "density_bin_m": 0.06,
+            "density_min_points": 120,
+            "density_min_share": 0.35,
+            "density_max_reach_m": 2.5,
+            "density_inward_m": 1.0,
+            "allow_l_shape": true
+          },
+          "opening": {
+            "band_low_m": 0.3,
+            "band_high_m": 1.9,
+            "min_width_m": 0.6,
+            "max_width_m": 2.4,
+            "bin_m": 0.05
+          },
+          "uncertainty": {
+            "systematic_scale_bias": 0.03,
+            "depth_scale_bias": 0.03,
+            "abs_floor_m": 0.03,
+            "min_coverage": 0.6,
+            "low_coverage_factor": 1.6,
+            "ci_level": 0.95,
+            "status": "PROVISIONAL"
+          }
+        }
+      },
+      "run": {
+        "pipeline": "photo",
+        "drift_correction": true,
+        "video_rotation": "auto",
+        "camera_height_m": null,
+        "single_room": "auto",
+        "connector": "hall",
+        "cache_root": null,
+        "exclude": [
+          "app_comparision"
+        ],
+        "repeat_rooms": [
+          "bedroom_2_repeat"
+        ],
+        "video_engine": "sfm"
+      }
+    }
+  },
+  "git": {
+    "commit": "51008cda1d3b656f7086cee75fdbd9fa433daacd",
+    "dirty": true
+  },
+  "seed": 0,
+  "pipeline": {
+    "name": "photo",
+    "version": "0.1.0",
+    "cozmo_version": "0.1.0"
+  },
+  "started_at": "2026-09-21T05:59:25.696334+00:00",
+  "finished_at": "2026-09-21T06:12:34.154539+00:00",
+  "duration_s": 788.458205,
+  "stage_timings_s": {
+    "room:bedroom_1": 172.6404970420117,
+    "room:bedroom_2": 147.9830160829879,
+    "room:bedroom_2_repeat": 139.87226399997598,
+    "room:hall": 152.27222191600595,
+    "room:kitchen": 174.03074616700178,
+    "stitch": 0.4335514999984298,
+    "assemble": 0.007933707995107397,
+    "render": 0.3725411249906756
+  },
+  "library_versions": {
+    "pydantic": "2.13.5",
+    "numpy": "2.4.6",
+    "shapely": "2.1.2",
+    "typer": "0.27.2",
+    "pyyaml": "6.0.3",
+    "jsonschema": "4.26.0",
+    "matplotlib": "3.11.2"
+  },
+  "python_version": "3.11.15",
+  "platform": "macOS-27.0-arm64-arm-64bit",
+  "outputs": {
+    "plan": "plan.json",
+    "plan_png": "plan.png",
+    "debug": [],
+    "drift_report": "drift_report.json"
+  },
+  "plan_sha256": "21d98ca7bdbbffed6a71ea22d2d763252d7ce2a72b3923e572dde841791dba57",
+  "n_rooms": 4,
+  "warnings": [
+    "Skipped all (0 image(s), needs at least 2)",
+    "Skipped home (0 image(s), needs at least 2)",
+    "app_comparision was excluded by --exclude and is not treated as a room",
+    "bedroom_2_repeat is a repeat capture: it is measured and reported, but it is not placed in the property, because it is the same room as another",
+    "kitchen is attached wall to wall: no free door pair was available between it and hall",
+    "bedroom_1: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall",
+    "bedroom_1: 1 of 4 room sides (x+) are set by a dense band of points rather than by a wall face that passed the strict test, which is what a wall behind a curtain or a wardrobe looks like. Their intervals are widened",
+    "bedroom_1: Windows are not detected in this version; openings are doors and pass-throughs only",
+    "bedroom_1: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty",
+    "bedroom_2: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall",
+    "bedroom_2: 1 of 4 room sides (z-) are set by a dense band of points rather than by a wall face that passed the strict test, which is what a wall behind a curtain or a wardrobe looks like. Their intervals are widened",
+    "bedroom_2: Windows are not detected in this version; openings are doors and pass-throughs only",
+    "bedroom_2: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty",
+    "hall: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall",
+    "hall: 1 of 4 room sides (z+) are set by a dense band of points rather than by a wall face that passed the strict test, which is what a wall behind a curtain or a wardrobe looks like. Their intervals are widened",
+    "hall: Windows are not detected in this version; openings are doors and pass-throughs only",
+    "hall: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty",
+    "kitchen: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall",
+    "kitchen: Windows are not detected in this version; openings are doors and pass-throughs only",
+    "kitchen: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty",
+    "footprint area is reported with an interval wider than the value itself (75.54 m2, plus or minus 94.69). It is an unreliable measurement: the reconstruction constrains it barely or not at all"
+  ]
+}
