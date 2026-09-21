@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import json
 import logging
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -153,9 +154,10 @@ class PhotoPipeline(Pipeline):
                   target_h: float, sigma: float, device: str, input_path: Path,
                   detector=None, ocfg: dict | None = None, openings_note: list | None = None,
                   tier: str = "photo", extra_warnings: list[str] | None = None):
+        work = Path(self.debug_dir) / "upright" if self.debug_dir else Path(tempfile.mkdtemp())
         rec = room_mod.reconstruct_room(rid, list(files), reconstructor,
                                         voxel_m=cfg["voxel_m"],
-                                        pixel_stride=cfg["pixel_stride"])
+                                        pixel_stride=cfg["pixel_stride"], work_dir=work)
         cloud = rec.cloud
         g = fit_floor(cloud.points, cloud.normals, rec.camera_up,
                       max_tilt_deg=cfg["gravity"]["max_tilt_deg"], seed=seed)
