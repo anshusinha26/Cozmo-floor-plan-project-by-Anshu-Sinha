@@ -18,6 +18,7 @@ longest free wall. Either way shapely enforces that no two rooms overlap.
 from __future__ import annotations
 
 import logging
+import math
 from dataclasses import dataclass, field
 
 import numpy as np
@@ -120,6 +121,55 @@ def _longest_edge(poly: SPoly) -> tuple[np.ndarray, np.ndarray]:
     return max(_edges(poly), key=lambda e: float(np.linalg.norm(e[1] - e[0])))
 
 
+SQUARE_ASSUMPTION = (
+    "Rooms are assumed square to each other: each room is rotated into its own Manhattan frame "
+    "before placement, so every room sits at a quarter turn to the connector. Each room was "
+    "reconstructed separately and carries a few degrees of its own yaw, which nothing in this "
+    "pipeline measures against the building. Lengths and areas are unchanged by the rotation"
+)
+
+
+def _own_yaw_deg(poly: SPoly) -> float:
+    """The polygon's own Manhattan yaw: how far its walls sit off the axes.
+
+    Length-weighted circular mean of the edge directions taken modulo 90
+    degrees, so the two orientations of a rectangular room reinforce rather
+    than cancel. Rotating a room by minus this angle squares it to the page
+    and changes no length or area, because it is a rigid rotation.
+    """
+    num = complex(0.0, 0.0)
+    total = 0.0
+    for a, b in _edges(poly):
+        v = b - a
+        length = float(np.hypot(v[0], v[1]))
+        if length < 1e-9:
+            continue
+        ang = math.atan2(v[1], v[0])
+        num += length * complex(math.cos(4 * ang), math.sin(4 * ang))
+        total += length
+    if total == 0.0 or abs(num) < 1e-12:
+        return 0.0
+    return float(math.degrees(math.atan2(num.imag, num.real)) / 4.0)
+
+
+def _square_up(poly: SPoly, doors: list[dict]) -> tuple[SPoly, list[dict]]:
+    """Rotate a room and its door centres into the room's own Manhattan frame."""
+    yaw = _own_yaw_deg(poly)
+    if abs(yaw) < 1e-9:
+        return poly, doors
+    origin = tuple(np.asarray(poly.centroid.coords[0]))
+    squared = shapely_rotate(poly, -yaw, origin=origin, use_radians=False)
+    c, s = math.cos(math.radians(-yaw)), math.sin(math.radians(-yaw))
+    ox, oy = origin
+    out = []
+    for d in doors:
+        x, y = float(d["centre"][0]) - ox, float(d["centre"][1]) - oy
+        moved = dict(d)
+        moved["centre"] = (c * x - s * y + ox, s * x + c * y + oy)
+        out.append(moved)
+    return squared, out
+
+
 def _snap_quarter(theta_deg: float) -> float:
     """Rooms in one property share a Manhattan frame, so turns are quarter turns."""
     return float(round(theta_deg / 90.0) * 90.0)
@@ -182,6 +232,17 @@ def stitch(rooms: dict[str, list[tuple[float, float]]], doors: dict[str, list[di
     for rid, p in polys.items():
         if not p.is_valid or p.area <= 0:
             raise ValueError(f"{rid}: room polygon is not a usable shape")
+    # Square every room to its own walls first. The placement search already
+    # snaps the turn between a room and the connector to a quarter turn, but
+    # that only holds the two square to each other if each is square in
+    # itself: otherwise every room keeps the few degrees of yaw its own
+    # reconstruction happened to end on, and the plan reads as a pile of
+    # tilted boxes. Rotation changes no length and no area.
+    doors = dict(doors)
+    for rid in list(polys):
+        polys[rid], squared_doors = _square_up(polys[rid], list(doors.get(rid, [])))
+        if squared_doors:
+            doors[rid] = squared_doors
     conn = polys[connector]
     occupied = conn
     placed: list[Placed] = [Placed(connector, 0.0, 0.0, 0.0,

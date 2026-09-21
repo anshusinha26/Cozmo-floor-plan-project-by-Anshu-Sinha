@@ -118,6 +118,7 @@ class PhotoPipeline(Pipeline):
             result = stitch_mod.stitch({k: polygons[k] for k in stitch_ids},
                                        {k: doors.get(k, []) for k in stitch_ids}, connector)
             assumptions.append(stitch_mod.STAR_ASSUMPTION)
+            assumptions.append(stitch_mod.SQUARE_ASSUMPTION)
         for note in spec.skipped:
             warnings.append(f"Skipped {note}")
         for rid in sorted(excluded):
