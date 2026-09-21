@@ -418,3 +418,98 @@ attempted twice and neither attempt produced a clean number, so
 measurement.
 
 Tests: 168 passing.
+
+## Task 9: merge, full benchmark, report filled
+
+Done. Two merges, the second taking the photo re-run on camera originals.
+
+### Stage A: merge
+
+Resolved per `docs/MERGE_PLAN.md`. Four conflicts, all unions, and the plan
+was right about which side should win each one. `inputs.py` took video-tier's
+forgiving photo scan with main's error text; `pipeline/__init__.py` took
+video-tier whole; `cli.py` and `fetch_weights.sh` took both sides.
+
+Extras declared: `damage`, `video`, `photo` and `all`. The README now has two
+install profiles, lidar-only (under three minutes to first plan) and
+everything. `scripts/fetch_weights.sh` covers all five checkpoints with
+measured sizes and can fetch either half.
+
+### Stage B: benchmark
+
+`scripts/benchmark_all.py`, output in `docs/benchmark/`. Video and photo plans
+are reused from the tier branch rather than recomputed; every plan records its
+source and whether its input still hashes the same. All six reused plans
+verify.
+
+| gate | result | value | threshold | n |
+|---|---|---|---|---|
+| opening_width | FAIL | 0 | 0.85 | 14 |
+| ceiling_height | FAIL | 0.9097 | 0.015 | 9 |
+| ceiling_height_diagnosis | FAIL | 0.9097 | 0.015 | 9 |
+| repeatability | FAIL | 250.4 | 1 | 4 |
+| wall_length_tier | FAIL | 45.82 | 1 | 28 |
+| footprint | PASS | 0 | 0.08 | 0 |
+| stitch_adjacency | PASS | 0 | 0 | 6 |
+| stitch_overlap | FAIL | 28.01 | 0.05 | 6 |
+
+| tier | walls | within tier budget | median error | worst |
+|---|---|---|---|---|
+| photo | 12 | 2 | 25.9% | 39.0% |
+| video | 16 | 0 | 32.9% | 137.4% |
+
+Interval coverage: photo 0.56 at 47% mean width with seven confident-garbage
+cases; video 1.00 at 409% mean width with none. Both are badly calibrated in
+opposite directions, and the video tier looks better only because its
+intervals are too wide to be wrong.
+
+Repeatability, same-device video pair (`bedroom_2` against
+`bedroom_2_repeat`): 0 of 8 wall rows within tolerance.
+
+Head to head against AR Plan 3D, 1.5 cm tie threshold:
+
+| tier | room | dimension | tape m | theirs m | their error cm | ours m | our error cm | closer |
+|---|---|---|---|---|---|---|---|---|
+| photo | bedroom_1 | short_pair | 3.658 | 3.410 | 24.8 | 4.026 | 36.9 | theirs |
+| photo | bedroom_1 | long_pair | 3.912 | 3.730 | 18.2 | 5.193 | 128.2 | theirs |
+| photo | kitchen | short_wall_1 | 2.692 | 2.750 | 5.8 | 2.636 | 5.7 | tie |
+| photo | kitchen | short_wall_2 | 2.692 | 2.700 | 0.8 | 2.636 | 5.7 | theirs |
+| photo | kitchen | long_wall_1 | 3.603 | 3.510 | 9.3 | 5.007 | 140.4 | theirs |
+| photo | kitchen | long_wall_2 | 3.603 | 3.790 | 18.7 | 5.007 | 140.4 | theirs |
+| video | bedroom_1 | short_pair | 3.658 | 3.410 | 24.8 | 5.935 | 227.8 | theirs |
+| video | bedroom_1 | long_pair | 3.912 | 3.730 | 18.2 | 4.578 | 66.6 | theirs |
+| video | kitchen | short_wall_1 | 2.692 | 2.750 | 5.8 | 1.806 | 88.7 | theirs |
+| video | kitchen | short_wall_2 | 2.692 | 2.700 | 0.8 | 1.806 | 88.7 | theirs |
+| video | kitchen | long_wall_1 | 3.603 | 3.510 | 9.3 | 3.162 | 44.1 | theirs |
+| video | kitchen | long_wall_2 | 3.603 | 3.790 | 18.7 | 3.162 | 44.1 | theirs |
+
+**Photo beats or ties on 17% of dimensions, video on 0%.** The rival app is
+better than both of our image tiers on these rooms.
+
+The brief asks for this comparison at the lidar tier, which was impossible: no
+iPhone was available, so there is no lidar scan of the rooms the rival
+measured, and the supplied lidar scans are of a different property with no
+tape at all.
+
+### Stage C: report
+
+Every PENDING replaced. Six rendered pages, enforced by
+`scripts/build_report.sh`, which fails over the limit. Three rounds of cutting
+were needed to fit the new material.
+
+**The finding that changed most between the two merges:** the photo tier
+scored 1.4% median wall error on compressed copies of the photographs and
+25.9% on the camera originals. The originals carry EXIF the copies had
+stripped, and reading the real focal length made the answer worse. Both runs
+are kept and the report says it is unexplained.
+
+### Failures and open items
+
+* Neither image tier is accurate enough to ship. Photo misses its 8% budget on
+  10 of 12 walls, video misses its 3% budget on all 16.
+* The photo tier's intervals are over-confident: 0.56 coverage against 0.95.
+* Repeatability fails at every tier.
+* Ceiling height fails at every tier, 2.4 to 91.0 cm against a 1.5 cm gate.
+* Two of eight gates pass.
+
+Tests: 213 passing.
