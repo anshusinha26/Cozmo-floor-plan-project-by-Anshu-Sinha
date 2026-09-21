@@ -151,3 +151,76 @@ def test_ids_are_rebased_so_two_rooms_do_not_collide():
     assert _rebase("odd_name", "room_01", "hall") == "hall_odd_name"
     # Only the first occurrence is rebased, so a wall id inside is left alone.
     assert _rebase("s_room_01_room_01", "room_01", "x") == "s_x_room_01"
+
+
+# ------------------------------------- EXIF intrinsics (V5 regression)
+
+def _fake_views(n=2, h=518, w=392):
+    class _Img:
+        device = "cpu"
+    return [{"img": _Img(), "true_shape": np.array([[h, w]])} for _ in range(n)]
+
+
+def test_the_exif_focal_is_scaled_to_the_working_tensor():
+    """MapAnything works at 392x518 whatever it is given, so a focal measured on
+    the full frame has to be scaled by the same factor the image was.
+
+    Left to guess, the model read 464 px where EXIF says 332, and a focal 39%
+    long stretches the reconstructed room sideways by 39%. That is the whole
+    bedroom_2 wall error.
+    """
+    from cozmo.pipeline.photo.room import MapAnythingReconstructor as MR
+
+    views = _fake_views()
+    MR._attach_intrinsics(views, focal_px=2617.0, upright_wh=(3072, 4096))
+    K = views[0]["intrinsics"][0].numpy()
+    assert K[0, 0] == pytest.approx(332.0, abs=3.0)
+    assert K[1, 1] == pytest.approx(K[0, 0])          # square pixels
+    assert (K[0, 2], K[1, 2]) == pytest.approx((392 / 2, 518 / 2))
+
+
+def test_passing_the_frame_size_the_wrong_way_round_is_detectable():
+    """EXIF gives the focal across the sensor's long side, and after the
+    orientation rotation that side is the image height.
+
+    The scale is averaged over both axes, which absorbs most of a swap because
+    the resize very nearly preserves the aspect ratio. It does not absorb all of
+    it, and the residue is the check: a swapped frame size must not silently
+    produce the same number.
+    """
+    from cozmo.pipeline.photo.room import MapAnythingReconstructor as MR
+
+    views = _fake_views()
+    MR._attach_intrinsics(views, focal_px=2617.0, upright_wh=(3072, 4096))
+    good = float(views[0]["intrinsics"][0].numpy()[0, 0])
+    swapped = _fake_views()
+    MR._attach_intrinsics(swapped, focal_px=2617.0, upright_wh=(4096, 3072))
+    wrong = float(swapped[0]["intrinsics"][0].numpy()[0, 0])
+    assert abs(wrong - good) > 5.0
+    # The right way round is the one that matches the geometry.
+    assert good == pytest.approx(2617.0 * 0.5 * (392 / 3072 + 518 / 4096), abs=0.5)
+
+
+def test_every_view_is_given_the_same_intrinsics():
+    from cozmo.pipeline.photo.room import MapAnythingReconstructor as MR
+
+    views = _fake_views(n=5)
+    MR._attach_intrinsics(views, focal_px=2617.0, upright_wh=(3072, 4096))
+    focals = {round(float(v["intrinsics"][0].numpy()[0, 0]), 4) for v in views}
+    assert len(focals) == 1
+
+
+def test_a_nokia_without_a_35mm_equivalent_gets_no_intrinsics():
+    """Only the 35 mm equivalent converts to pixels. A bare focal in millimetres
+    would need the sensor width, and guessing full frame for a phone is wrong by
+    about six times, which is worse than letting the model estimate."""
+    from pathlib import Path
+
+    from cozmo.pipeline.photo.room import exif_focal_px
+
+    nokia = Path("/Users/anshusinha/Downloads/Cozmo-AI/Cozmo-floor-plan-project-by-Anshu-Sinha"
+                 "/data/own/bedroom_2_repeat")
+    if not nokia.is_dir():
+        pytest.skip("capture data is not present")
+    shot = sorted(p for p in nokia.iterdir() if p.suffix.lower() in (".jpg", ".jpeg"))[0]
+    assert exif_focal_px(shot) is None

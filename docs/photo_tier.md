@@ -69,44 +69,55 @@ The same stitcher takes per-room **video** folders, so `--tier video` on a
 folder of room clips reconstructs each clip on its own and stitches the results.
 Each room's own plan is written beside its debug output.
 
-## Two photo sets, and which is the benchmark
+## Two photo sets, and the intrinsics bug they exposed
 
-The rooms were shot twice over. `data/own/` holds the **originals** straight off
-the phones: 4096x3072 on a Moto Edge 50 Neo for hall, bedroom_1, bedroom_2 and
-kitchen, 4032x3024 on a Nokia 8.1 for bedroom_2_repeat, all with EXIF make,
-model and a 35 mm equivalent focal length. `data/own_compressed/` holds what a
-messaging app did to three of those rooms: 1200x1600, EXIF stripped.
+The rooms were shot once and stored twice. `data/own/` holds the **originals**
+straight off the phones: 4096x3072 on a Moto Edge 50 Neo for hall, bedroom_1,
+bedroom_2 and kitchen, 4032x3024 on a Nokia 8.1 for bedroom_2_repeat, all with
+EXIF make, model and a 35 mm equivalent focal length. `data/own_compressed/`
+holds what a messaging app did to three of them: 1200x1600, EXIF stripped.
 
-The originals are the primary benchmark, because they are what a real capture
-looks like. The compressed set is kept and labelled as a robustness result: the
-same rooms after a messaging app has been through them.
+They are the **same photographs**. Matching them by a normalised 32x32
+correlation gives 1.000 for 9 of 9 shots in every room, so nothing here is about
+which pictures were taken.
 
-Two things came out of comparing them, and only one was expected.
+The originals scored worse, 3 of 12 within the gate against 8 of 12, and the
+reason was a real bug.
 
-**EXIF focal length was never being read.** It sits in the Exif sub-IFD, not the
-top level, and the reader only looked at the top level, so the Depth Pro second
-opinion has never run on any capture. Fixed. Only the 35 mm equivalent is used:
-a bare focal length in millimetres needs a sensor width to become pixels, and
-assuming a full frame sensor for a phone is wrong by about six times, which is
-worse than having no second opinion at all.
+**MapAnything was guessing the focal length, and guessing badly.** It works at a
+392x518 tensor whatever it is handed, and on the originals it estimated 464 px
+there. EXIF says 2617 px across the 4096 px side, which is 332 px in that
+tensor: the estimate was **39% too long**. A focal too long means the model
+believes it is seeing a narrower angle than it is, so it pushes the scene apart
+sideways by the same factor. That is the whole error: ceilings were right
+because the camera-height prior pins them, and walls were 33 to 47% long.
 
-**The compressed copies score better than the originals, and that is the
-result.** 8 of 12 quantities within the 8% gate on the messaging-app copies
-against 3 of 12 on the originals, with the same code, the same rooms and the
-same tape. It is the opposite of what was expected and it is not explained by
-either bug above: applying the orientation moved bedroom_2 by about 1%. The two
-sets are not the same photographs, only the same rooms, so the likely cause is
-which shots each set contains rather than the compression itself. Until that is
-pinned down, the honest statement is that this tier has reached 8 of 12 on one
-photo set and 3 of 12 on another, and nobody should quote the better number
-without the worse one.
+On the compressed copies it guessed 283 px, much nearer the truth, which is the
+only reason they scored better. The tier was being graded on how lucky the
+model's guess was.
 
-**EXIF orientation was never being applied.** Every original is Orientation 6, a
-quarter turn, and nothing applied it, so MapAnything reconstructed rooms lying on
-their side and the camera up vectors that set gravity pointed sideways with them.
-The compressed copies hid this, because the messaging app baked the rotation in.
-Fixed, and the plan reports how many photos needed turning. On its own it moved
-bedroom_2's walls by about 1%, so it was not what separated the two sets.
+So the focal is now handed to the model rather than guessed, scaled to the
+working tensor by the same factor the image was. On bedroom_2 that took the
+walls from 532.3 and 432.4 cm to 458.6 and 392.2, against a tape of 388.6 and
+363.2.
+
+Two supporting details, both checked and both wrong-able:
+
+* **The long side.** EXIF gives the focal across the sensor's long side, and
+  after the orientation rotation that side is the image height, not the width.
+  The scale is averaged over both axes, which is right because the resize very
+  nearly preserves the aspect ratio.
+* **Only the 35 mm equivalent is usable.** A bare focal in millimetres needs a
+  sensor width to become pixels. EXIF rarely carries it, and assuming a full
+  frame sensor for a phone is wrong by about six times. The Nokia has no 35 mm
+  equivalent, so it gets no intrinsics and the model estimates as before. That
+  is deliberate: a wrong focal is worse than an estimated one.
+
+**EXIF orientation was also never applied.** Every original is Orientation 6, a
+quarter turn, and nothing applied it, so rooms were reconstructed lying on their
+side with gravity pointing sideways. The compressed copies hid it by baking the
+rotation in. Fixed, though on its own it moved bedroom_2 by about 1%, so it was
+not what separated the two sets.
 
 ## Intervals and the gate
 

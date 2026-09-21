@@ -274,7 +274,7 @@
   },
   "config": {
     "path": "config/gates.yaml",
-    "sha256": "114c9900fdafcec376bdef90142a2d0b811a289f558892844006ef288e4216a0",
+    "sha256": "2ebdc49f5975104c4e27d3ff788de5eb474b08e06463598ee06e7ef0ae52f9ba",
     "resolved": {
       "config_version": 1,
       "gates": {
@@ -379,6 +379,7 @@
         },
         "photo": {
           "device": null,
+          "use_exif_focal": true,
           "voxel_m": 0.03,
           "pixel_stride": 2,
           "vertical_normal_cos": 0.9,
@@ -594,7 +595,7 @@
     }
   },
   "git": {
-    "commit": "22c6066caaec6ff83593e24a95d0f2dbd2cb76de",
+    "commit": "221f14235c3409894700da6f609bbe191d232a8e",
     "dirty": true
   },
   "seed": 0,
@@ -603,18 +604,18 @@
     "version": "0.1.0",
     "cozmo_version": "0.1.0"
   },
-  "started_at": "2026-09-21T04:33:13.529139+00:00",
-  "finished_at": "2026-09-21T04:40:35.382082+00:00",
-  "duration_s": 441.852943,
+  "started_at": "2026-09-21T05:04:10.469603+00:00",
+  "finished_at": "2026-09-21T05:21:01.640192+00:00",
+  "duration_s": 1011.170589,
   "stage_timings_s": {
-    "room:bedroom_1": 141.14066658299998,
-    "room:bedroom_2": 115.72286595901824,
-    "room:bedroom_2_repeat": 58.73963195900433,
-    "room:hall": 79.40510366699891,
-    "room:kitchen": 45.1123322089843,
-    "stitch": 0.7470824159972835,
-    "assemble": 0.00440908398013562,
-    "render": 0.2758007499796804
+    "room:bedroom_1": 337.7472471250221,
+    "room:bedroom_2": 260.8778864170017,
+    "room:bedroom_2_repeat": 268.93450150001445,
+    "room:hall": 94.66817729198374,
+    "room:kitchen": 44.9744132499909,
+    "stitch": 0.4272451249998994,
+    "assemble": 0.004530332982540131,
+    "render": 0.2822419999865815
   },
   "library_versions": {
     "pydantic": "2.13.5",
@@ -633,7 +634,7 @@
     "debug": [],
     "drift_report": "drift_report.json"
   },
-  "plan_sha256": "45a63c1fde145167403139e8f5f9c80230e4c2d293e618e38f54acde6a0015e8",
+  "plan_sha256": "7b7f31de1f85c53e3eb026576ca74ab28d8f24b1d139457f419700d61f1f2719",
   "n_rooms": 4,
   "warnings": [
     "Skipped all (0 image(s), needs at least 2)",
@@ -641,7 +642,6 @@
     "app_comparision was excluded by --exclude and is not treated as a room",
     "bedroom_2_repeat is a repeat capture: it is measured and reported, but it is not placed in the property, because it is the same room as another",
     "kitchen is attached wall to wall: no free door pair was available between it and hall",
-    "kitchen could not be placed clear of the other rooms within 6 m; its position is unreliable",
     "bedroom_1: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall",
     "bedroom_1: 1 of 4 room sides had no supported wall face (x+); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed",
     "bedroom_1: Windows are not detected in this version; openings are doors and pass-throughs only",
@@ -651,14 +651,12 @@
     "bedroom_2: Windows are not detected in this version; openings are doors and pass-throughs only",
     "bedroom_2: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty",
     "hall: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall",
-    "hall: 2 of 4 room sides had no supported wall face (x-, z+); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed",
+    "hall: 1 of 4 room sides had no supported wall face (z+); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed",
     "hall: Windows are not detected in this version; openings are doors and pass-throughs only",
     "hall: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty",
-    "kitchen: Walls were only reconstructed to about 1.87 m above the floor, so a face counts as a wall at 1.31 m rather than the usual 1.40 m. Wall heights and the ceiling are not measured from this capture",
     "kitchen: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall",
     "kitchen: Windows are not detected in this version; openings are doors and pass-throughs only",
-    "kitchen: room_01_o1: no lintel observed above the opening; height is a prior",
     "kitchen: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty",
-    "footprint area is reported with an interval wider than the value itself (111.10 m2, plus or minus 152.05). It is an unreliable measurement: the reconstruction constrains it barely or not at all"
+    "footprint area is reported with an interval wider than the value itself (89.93 m2, plus or minus 118.75). It is an unreliable measurement: the reconstruction constrains it barely or not at all"
   ]
 }
