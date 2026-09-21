@@ -144,3 +144,67 @@ def build_budget(scale_rows: list[dict], group: list[int], coverage: float, cfg:
         min_coverage=float(unc.get("min_coverage", MIN_COVERAGE)),
         low_coverage_factor=float(unc.get("low_coverage_factor", LOW_COVERAGE_FACTOR)),
         abs_floor_m=float(unc.get("abs_floor_m", ABS_FLOOR_M)), notes=notes)
+
+
+# --------------------------------------------------------------------------
+# Interval sanity
+# --------------------------------------------------------------------------
+
+MIN_POSITIVE_M = 0.01
+UNRELIABLE = ("{what} is reported with an interval wider than the value itself "
+              "({value:.2f} {unit}, plus or minus {half:.2f}). It is an unreliable measurement: "
+              "the reconstruction constrains it barely or not at all")
+
+
+def _clamp_measurement(m, what: str, warnings: list[str]):
+    """No length or area may have a negative bound, and a value swamped by its
+    own interval has to say so.
+
+    Fix loop 2 produced wall lengths reported as 318 cm with a lower bound of
+    minus 685. A negative wall is not a bound, it is a sign the interval machinery
+    was asked for a number it did not have, and printing it invites the reader to
+    average two nonsenses into a false sense of a range.
+    """
+    if m is None or m.unit not in ("m", "m2"):
+        return m
+    lo = max(m.ci_low, MIN_POSITIVE_M if m.value > 0 else 0.0)
+    hi = max(m.ci_high, lo)
+    half = (hi - lo) / 2
+    if half >= abs(m.value) and m.value > 0:
+        warnings.append(UNRELIABLE.format(what=what, value=m.value, unit=m.unit, half=half))
+    if lo == m.ci_low and hi == m.ci_high:
+        return m
+    return m.model_copy(update={"ci_low": lo, "ci_high": hi})
+
+
+def clamp_plan_intervals(plan, warnings: list[str]):
+    """Walk every measurement in a plan, clamp the impossible ones, warn on the
+    ones too wide to mean anything. Returns the plan with the warnings added."""
+    notes: list[str] = []
+    rooms = []
+    for room in plan.rooms:
+        walls = [w.model_copy(update={
+            "length_m": _clamp_measurement(w.length_m, f"{room.id} {w.id} length", notes),
+            "height_m": _clamp_measurement(w.height_m, f"{room.id} {w.id} height", notes)})
+            for w in room.walls]
+        openings = [o.model_copy(update={
+            "width_m": _clamp_measurement(o.width_m, f"{o.id} width", notes),
+            "height_m": _clamp_measurement(o.height_m, f"{o.id} height", notes),
+            "offset_along_wall_m": _clamp_measurement(o.offset_along_wall_m, f"{o.id} offset", notes)})
+            for o in room.openings]
+        rooms.append(room.model_copy(update={
+            "walls": walls, "openings": openings,
+            "ceiling_height_m": _clamp_measurement(room.ceiling_height_m,
+                                                   f"{room.id} ceiling height", notes),
+            "floor_area_m2": _clamp_measurement(room.floor_area_m2, f"{room.id} floor area", notes)}))
+    surfaces = [s.model_copy(update={"area_m2": _clamp_measurement(s.area_m2, f"{s.id} area", notes)})
+                for s in plan.surfaces]
+    st = plan.stitched_plan
+    stitched = st.model_copy(update={
+        "footprint_area_m2": _clamp_measurement(st.footprint_area_m2, "footprint area", notes),
+        "overlap_area_m2": st.overlap_area_m2})
+    seen: set[str] = set()
+    unique = [n for n in notes if not (n in seen or seen.add(n))]
+    return plan.model_copy(update={"rooms": rooms, "surfaces": surfaces,
+                                   "stitched_plan": stitched,
+                                   "warnings": list(plan.warnings) + list(warnings) + unique})

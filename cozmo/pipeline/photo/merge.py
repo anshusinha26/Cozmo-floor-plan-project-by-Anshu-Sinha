@@ -132,8 +132,10 @@ def merge(per_room: dict[str, Plan], stitch_result, capture, run, ci_level: floa
             if a not in merged_assumptions:
                 merged_assumptions.append(a)
 
+    from cozmo.pipeline.video.intervals import clamp_plan_intervals
+
     log.info("merged %d rooms into one property, footprint %.2f m2", len(rooms), area)
-    return Plan(capture=capture, run=run, rooms=rooms, adjacency=adjacency,
+    plan = Plan(capture=capture, run=run, rooms=rooms, adjacency=adjacency,
                 stitched_plan=stitched, surfaces=surfaces, damage_regions=[],
                 concealed_damage_flags=[], scope_items=[], assumptions=merged_assumptions,
                 warnings=merged_warnings, renders=Renders())

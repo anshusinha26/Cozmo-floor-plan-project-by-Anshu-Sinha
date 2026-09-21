@@ -57,6 +57,11 @@ class PhotoPipeline(Pipeline):
         spec = validate_input(Path(input_path), "photo")
         if not spec.rooms:
             raise ValueError("the photo tier needs one subfolder per room")
+        excluded = set(run_cfg.get("exclude") or [])
+        repeats = set(run_cfg.get("repeat_rooms") or [])
+        room_inputs = [r for r in spec.rooms if r.room_id not in excluded]
+        if not room_inputs:
+            raise ValueError(f"every room folder was excluded: {sorted(excluded)}")
 
         warnings: list[str] = []
         assumptions: list[str] = [
@@ -78,7 +83,7 @@ class PhotoPipeline(Pipeline):
         doors: dict[str, list[dict]] = {}
         areas: dict[str, float] = {}
 
-        for room_input in spec.rooms:
+        for room_input in room_inputs:
             rid = room_input.room_id
             with self.stage(f"room:{rid}"):
                 try:
@@ -101,20 +106,38 @@ class PhotoPipeline(Pipeline):
             raise ValueError("no room could be reconstructed from this capture")
 
         with self.stage("stitch"):
-            connector = stitch_mod.choose_connector(list(per_room), areas,
-                                                    run_cfg.get("connector"))
-            result = stitch_mod.stitch(polygons, doors, connector)
+            # A repeat capture is a second look at a room that is already in the
+            # property. Including it would put the same room in the plan twice,
+            # so it is reconstructed and reported but not placed.
+            stitch_ids = [r for r in per_room if r not in repeats]
+            if not stitch_ids:
+                raise ValueError("every reconstructed room was marked as a repeat")
+            connector = stitch_mod.choose_connector(
+                stitch_ids, {k: areas[k] for k in stitch_ids}, run_cfg.get("connector"))
+            result = stitch_mod.stitch({k: polygons[k] for k in stitch_ids},
+                                       {k: doors.get(k, []) for k in stitch_ids}, connector)
             assumptions.append(stitch_mod.STAR_ASSUMPTION)
+        for note in spec.skipped:
+            warnings.append(f"Skipped {note}")
+        for rid in sorted(excluded):
+            warnings.append(f"{rid} was excluded by --exclude and is not treated as a room")
+        for rid in sorted(repeats & set(per_room)):
+            warnings.append(f"{rid} is a repeat capture: it is measured and reported, but it is "
+                            f"not placed in the property, because it is the same room as another")
 
         capture, run = self.provenance(Path(input_path), tier, config, seed)
         with self.stage("assemble"):
-            plan = merge_mod.merge(per_room, result, capture, run,
-                                   cfg["uncertainty"]["ci_level"], warnings, assumptions)
+            plan = merge_mod.merge({k: v for k, v in per_room.items() if k in stitch_ids},
+                                   result, capture, run, cfg["uncertainty"]["ci_level"],
+                                   warnings, assumptions)
 
         if openings_note:
             warnings.append(f"Openings were not attempted at this tier: {openings_note[0]}. "
                             f"Doors and pass-throughs are absent from this plan, not confirmed absent")
         self.report = {"device": device, "rooms": rows, "stitch": result.summary(),
+                       "excluded": sorted(excluded), "repeat_rooms": sorted(repeats),
+                       "repeat_measurements": {k: _room_summary(per_room[k])
+                                               for k in sorted(repeats & set(per_room))},
                        "openings_note": openings_note[0] if openings_note else None,
                        "camera_height_m": target_h, "n_rooms": len(per_room)}
         self.drift_report = {"tier": "photo", "applied": False,
@@ -195,6 +218,25 @@ class PhotoPipeline(Pipeline):
                     openings_note.append(str(e))
                 row["doors"] = None
         return plan, row
+
+
+def _room_summary(plan) -> dict:
+    """A repeat room's measurements, kept out of the plan but not out of the report."""
+    r = plan.rooms[0]
+    return {"walls_m": sorted({round(w.length_m.value, 3) for w in r.walls}, reverse=True),
+            "ceiling_m": round(r.ceiling_height_m.value, 3),
+            "area_m2": round(r.floor_area_m2.value, 3)}
+
+
+def _write_drift_report(self, path: Path) -> Path:
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(self.drift_report or {}, indent=2, default=str) + "\n",
+                    encoding="utf-8")
+    return path
+
+
+PhotoPipeline.write_drift_report = _write_drift_report
 
 
 def _opening_centre(room, opening) -> tuple[float, float]:

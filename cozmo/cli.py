@@ -99,16 +99,22 @@ def _now() -> datetime:
     return datetime.now(timezone.utc)
 
 
+def _split(value: str | None) -> list[str]:
+    return [v.strip() for v in value.split(",") if v.strip()] if value else []
+
+
 def resolve_config(config_path: Path, drift_correction: bool, pipeline_name: str,
                    video_rotation: str = "auto", camera_height_m: float | None = None,
                    single_room: str = "auto", connector: str | None = None,
-                   cache_root: str | None = None) -> dict[str, Any]:
+                   cache_root: str | None = None, exclude: str | None = None,
+                   repeat_rooms: str | None = None) -> dict[str, Any]:
     """File config plus CLI overrides. This resolved dict is what gets hashed."""
     cfg = prov.load_config(config_path)
     cfg["run"] = {"pipeline": pipeline_name, "drift_correction": drift_correction,
                   "video_rotation": video_rotation, "camera_height_m": camera_height_m,
                   "single_room": single_room, "connector": connector,
-                  "cache_root": cache_root}
+                  "cache_root": cache_root,
+                  "exclude": _split(exclude), "repeat_rooms": _split(repeat_rooms)}
     return cfg
 
 
@@ -116,7 +122,8 @@ def execute_run(input_path: Path, tier: str, out: Path, config: Path, seed: int,
                 pipeline_name: str | None = None, debug: bool = True,
                 video_rotation: str = "auto", camera_height_m: float | None = None,
                 single_room: str = "auto", connector: str | None = None,
-                cache_root: str | None = None) -> dict[str, Any]:
+                cache_root: str | None = None, exclude: str | None = None,
+                repeat_rooms: str | None = None) -> dict[str, Any]:
     """Run one capture: validate input, run the pipeline, write plan.json, plan.png, run_manifest.json.
 
     Raises InputError / FileNotFoundError on bad input. Returns the manifest dict.
@@ -133,7 +140,7 @@ def execute_run(input_path: Path, tier: str, out: Path, config: Path, seed: int,
 
     name = pipeline_for(tier, pipeline_name)
     resolved = resolve_config(config, drift_correction, name, video_rotation, camera_height_m,
-                              single_room, connector, cache_root)
+                              single_room, connector, cache_root, exclude, repeat_rooms)
     config_hash = prov.config_sha256(resolved)
     input_manifest = prov.build_input_manifest(input_path, spec.files)
 
@@ -206,6 +213,12 @@ def run(
                                             help="Fit one room around the camera path instead of segmenting"),
     connector: str = typer.Option(None, "--connector",
                                   help="Room id that the other rooms attach to when stitching"),
+    exclude: str = typer.Option(None, "--exclude",
+                                help="Comma separated folder names that are not rooms, for example "
+                                     "a folder of screenshots"),
+    repeat_rooms: str = typer.Option(None, "--repeat", "--repeat-rooms",
+                                     help="Comma separated rooms that are repeat captures: "
+                                          "reconstructed and reported, left out of the stitch"),
     cache_root: str = typer.Option(None, "--cache-root",
                                    help="Share decoded frames and reconstructions between runs of "
                                         "the same capture, keyed by capture name"),
@@ -215,7 +228,8 @@ def run(
         manifest = execute_run(input_path, tier.value, out, config, seed, drift_correction == Switch.on,
                                pipeline_name=pipeline, video_rotation=video_rotation.value,
                                camera_height_m=camera_height_m, single_room=single_room.value,
-                               connector=connector, cache_root=cache_root)
+                               connector=connector, cache_root=cache_root, exclude=exclude,
+                               repeat_rooms=repeat_rooms)
     except (InputError, FileNotFoundError, RuntimeError, ValueError, KeyError) as e:
         _fail(str(e))
     typer.echo(f"wrote {out / 'plan.json'} ({manifest['n_rooms']} rooms), plan.png and run_manifest.json")

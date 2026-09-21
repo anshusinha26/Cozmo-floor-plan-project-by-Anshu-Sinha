@@ -36,7 +36,7 @@ from cozmo.lidar.openings import WINDOWS_NOT_ATTEMPTED, adjacency_from_openings,
 from cozmo.lidar.rooms import segment_rooms
 from cozmo.lidar.walls import ManhattanFrame, extract_faces, wall_points
 from cozmo.pipeline.lidar import MANHATTAN_ASSUMPTION, LidarPipeline
-from cozmo.pipeline.video.intervals import IntervalBudget
+from cozmo.pipeline.video.intervals import IntervalBudget, clamp_plan_intervals
 from cozmo.pipeline.video.singleroom import as_room_result, fit_single_room
 
 log = logging.getLogger(__name__)
@@ -225,6 +225,7 @@ def plan_from_cloud(points: np.ndarray, normals: np.ndarray, camera_path: np.nda
                                faces, rooms, openings, adjacency, cfg,
                                list(warnings) + [WINDOWS_NOT_ATTEMPTED],
                                list(assumptions) + [MANHATTAN_ASSUMPTION], drift_model)
+    plan = clamp_plan_intervals(plan, [])
     detail = {"n_cloud_points": int(len(points)), "n_wall_points": int(sel.sum()),
               "n_faces": len(faces), "n_ghost_faces": len(ghosts), "ghost_report": ghost_report,
               "wall_min_top_m": round(top, 3),

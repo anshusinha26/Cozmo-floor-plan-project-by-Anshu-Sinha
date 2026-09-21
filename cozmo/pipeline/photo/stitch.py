@@ -128,7 +128,14 @@ def _snap_quarter(theta_deg: float) -> float:
 def _place_one(room_poly: SPoly, room_edge, connector_poly: SPoly, connector_edge,
                room_anchor: np.ndarray, connector_anchor: np.ndarray, occupied: SPoly
                ) -> tuple[SPoly, float, np.ndarray, float]:
-    """Rotate the room to face the connector edge, align the anchors, then push clear."""
+    """Rotate the room to face the connector edge, align the anchors, then clear it.
+
+    Pushing straight out only separates a room from the connector. Two rooms
+    hung on the same wall still sit on top of each other, which is how six rooms
+    on one hall came out with 32 m2 of overlap against a gate of zero. So the
+    search slides along the wall as well as away from it, and takes the first
+    placement that touches nothing, nearest first.
+    """
     ra, rb = room_edge
     ca, cb = connector_edge
     n_room = _normal_of(room_poly, ra, rb)
@@ -142,17 +149,35 @@ def _place_one(room_poly: SPoly, room_edge, connector_poly: SPoly, connector_edg
     shift = connector_anchor - room_anchor
     placed = shapely_translate(rotated, xoff=shift[0], yoff=shift[1])
 
-    pushed = 0.0
-    while pushed < MAX_PUSH_M and placed.intersection(occupied).area > 1e-6:
-        placed = shapely_translate(placed, xoff=n_conn[0] * PUSH_STEP_M, yoff=n_conn[1] * PUSH_STEP_M)
-        pushed += PUSH_STEP_M
-    total = shift + n_conn * pushed
-    return placed, theta, total, pushed
+    tangent = np.array([-n_conn[1], n_conn[0]])
+    steps = int(MAX_PUSH_M / PUSH_STEP_M)
+    best = None
+    for out_k in range(steps + 1):
+        for lat_k in range(steps + 1):
+            for sign in ((1,) if lat_k == 0 else (1, -1)):
+                offset = n_conn * (out_k * PUSH_STEP_M) + tangent * (sign * lat_k * PUSH_STEP_M)
+                cand = shapely_translate(placed, xoff=offset[0], yoff=offset[1])
+                if cand.intersection(occupied).area <= 1e-9:
+                    best = (cand, offset, float(np.linalg.norm(offset)))
+                    break
+            if best:
+                break
+        if best:
+            break
+    if best is None:
+        return placed, theta, shift, MAX_PUSH_M
+    cand, offset, moved = best
+    return cand, theta, shift + offset, moved
 
 
 def stitch(rooms: dict[str, list[tuple[float, float]]], doors: dict[str, list[dict]],
            connector: str) -> StitchResult:
-    """Attach every room to the connector. ``doors`` maps room id to door centres."""
+    """Attach every room to the connector, with no two rooms overlapping.
+
+    ``doors`` maps room id to door centres. Zero overlap is asserted before the
+    result is returned, because the gate is zero and a plan that quietly
+    overlaps its own rooms is worse than one that refuses to be built.
+    """
     polys = {rid: SPoly(p) for rid, p in rooms.items()}
     for rid, p in polys.items():
         if not p.is_valid or p.area <= 0:
@@ -206,6 +231,9 @@ def stitch(rooms: dict[str, list[tuple[float, float]]], doors: dict[str, list[di
     for i in range(len(ids)):
         for j in range(i + 1, len(ids)):
             overlap += polys[ids[i]].intersection(polys[ids[j]]).area
+    if overlap > 1e-6:
+        raise ValueError(f"stitching left {overlap:.3f} m2 of overlap between rooms; the gate "
+                         f"requires zero and the placement search could not find room")
     merged = unary_union(list(polys.values()))
     outline = max(merged.geoms, key=lambda g: g.area) if merged.geom_type == "MultiPolygon" else merged
     ring = [(float(x), float(y)) for x, y in outline.exterior.coords[:-1]]

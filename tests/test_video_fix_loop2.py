@@ -231,3 +231,48 @@ def test_mapanything_is_stood_up_before_it_is_compared():
     R = gravity_align(poses)
     up_world = -poses[0, :3, 1]
     assert (R @ up_world)[1] == pytest.approx(1.0, abs=1e-6)
+
+
+# --------------------------------------------------------- interval sanity
+
+def test_a_length_can_never_be_reported_with_a_negative_bound():
+    from cozmo.contracts.models import Measurement
+    from cozmo.pipeline.video.intervals import _clamp_measurement
+
+    notes: list[str] = []
+    m = Measurement(value=3.186, ci_low=-6.853, ci_high=13.225, unit="m", method="t", ci_level=0.95)
+    out = _clamp_measurement(m, "w3 length", notes)
+    assert out.ci_low > 0
+    assert out.ci_high == pytest.approx(13.225)
+    assert any("unreliable measurement" in n for n in notes)
+
+
+def test_a_sound_interval_is_left_exactly_alone():
+    from cozmo.contracts.models import Measurement
+    from cozmo.pipeline.video.intervals import _clamp_measurement
+
+    notes: list[str] = []
+    m = Measurement(value=3.0, ci_low=2.9, ci_high=3.1, unit="m", method="t", ci_level=0.95)
+    out = _clamp_measurement(m, "w1", notes)
+    assert (out.ci_low, out.ci_high) == (2.9, 3.1)
+    assert notes == []
+
+
+def test_a_wide_but_positive_interval_still_warns():
+    from cozmo.contracts.models import Measurement
+    from cozmo.pipeline.video.intervals import _clamp_measurement
+
+    notes: list[str] = []
+    m = Measurement(value=2.0, ci_low=0.1, ci_high=6.0, unit="m", method="t", ci_level=0.95)
+    _clamp_measurement(m, "w2", notes)
+    assert any("unreliable" in n for n in notes)
+
+
+def test_angles_are_not_clamped_like_lengths():
+    """A placement angle may legitimately be negative."""
+    from cozmo.contracts.models import Measurement
+    from cozmo.pipeline.video.intervals import _clamp_measurement
+
+    notes: list[str] = []
+    m = Measurement(value=0.0, ci_low=-15.0, ci_high=15.0, unit="deg", method="t", ci_level=0.95)
+    assert _clamp_measurement(m, "theta", notes).ci_low == -15.0
