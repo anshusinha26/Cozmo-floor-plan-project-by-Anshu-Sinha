@@ -62,15 +62,35 @@ overlap) rather than dimensional. **Every lidar gate reads NOT EVALUATED**:
 the supplied scans are of a property nobody measured, and no iPhone was
 available to scan the rooms that were.
 
-One result deserves stating because it is counter-intuitive and was measured
-twice. The photo tier scored **1.4% median error on compressed copies** of the
-same photographs and **22.4% on the camera originals**
-(`fix_loop/loop2_video_scale/photo_tier_tape_compressed.md` against
-`photo_tier_tape_originals.md`). The originals carry EXIF the compressed
-copies had stripped, and the tier now reads the focal length from it. Reading
-the real focal length made the answer worse, which means the focal length the
-reconstruction was inferring for itself was closer to right than the one the
-camera reported. That is unexplained and is the first thing to chase.
+### A regression found by measuring, and its cause
+
+The photo tier first scored better on **compressed copies** of the photographs
+than on the **camera originals**, which is the wrong way round and was worth
+chasing rather than reporting as noise.
+
+The photographs are the same pictures: matched at correlation 1.000, 9 of 9 in
+every room. The cause was the focal length. MapAnything normalises everything
+to one tensor size and estimates a focal when it is not given one, and on the
+originals it guessed **464 px against a true 332 px**, a 39% error, implying a
+46 degree field of view where the camera has 76. Too long a focal pushes the
+scene apart sideways, while the camera-height prior pins the heights, which is
+exactly the signature seen: ceilings right, walls 33 to 47% long. The
+compressed copies scored better only because the guess landed nearer the truth
+on soft, low-resolution images.
+
+Ablation on `bedroom_2` (`fix_loop/loop2_video_scale/photo_ablation.md`),
+tape 388.6 and 363.2 cm:
+
+| configuration | walls cm | error |
+|---|---|---|
+| originals, model estimates the focal | 532.3, 432.4 | +46.6%, +11.3% |
+| downscaled to 1600 px | focal estimate unchanged at 464 px | no change |
+| **EXIF focal given to the reconstruction** | 458.6, 392.2 | **+26.3%, +0.9%** |
+
+Giving the model the focal is the fix, and downscaling changes nothing. The
+control is the Nokia 8.1, which writes a focal in millimetres but no 35 mm
+equivalent, so it gets no intrinsics and the model still guesses: it is the
+one camera whose rooms did not improve.
 
 **Stray Scanner format.** `rgb.mp4` 1920x1440 HEVC 60 fps stored rotated;
 `depth/` 256x192 uint16 millimetres; `confidence/` 0, 1, 2 with only 2 used;
@@ -101,22 +121,17 @@ one job it is good at, relative poses across a chunk seam.
 
 ### What the video tier actually does
 
-COLMAP structure from motion over frames sampled from the clip, run in
-**chunks** rather than over the whole walk: a 50-second sweep rarely
-registers as one reconstruction, and a chunk that fails then costs a few
-seconds of video instead of the room. Chunks are joined by **floor-plane
-bridging**, which aligns consecutive chunks on the floor they share and uses
-MapAnything only for the relative pose across the seam.
-
-**Scale comes from the camera-height prior**, not from a depth model: each
-chunk is scaled so its own camera sits 1.40 m above its own floor. Depth Pro
-runs as a **weak second opinion** and is used to sanity-check that scale, not
-to set it. The room is then fitted as a **single room around the camera
-path**, because segmenting free space out of a partly reconstructed floor
-either finds nothing or finds a fragment and calls it the room.
-
-Measured: median wall error 32.9% over 16 walls. Section 6 says why that is
-still far off, and what it is not caused by.
+COLMAP structure from motion over frames from the clip, in **chunks** rather
+than over the whole walk: a 50-second sweep rarely registers as one
+reconstruction, and a failed chunk then costs seconds of video instead of the
+room. Chunks join by **floor-plane bridging**, aligning on the floor they
+share, with MapAnything used only for the relative pose across the seam.
+**Scale comes from the camera-height prior**, each chunk scaled so its camera
+sits 1.40 m above its own floor, with Depth Pro as a **weak second opinion**
+that checks the scale rather than setting it. The room is fitted as a **single
+room around the camera path**, because segmenting free space out of a partly
+reconstructed floor finds either nothing or a fragment. Median wall error
+32.9% over 16 walls; section 6 says why.
 
 ---
 
@@ -294,62 +309,53 @@ and 143%. **Three of five falsifiers fired.**
 Two things the diagnosis missed:
 
 * **The prior only works when the floor plane is right.** A chunk that sees
-  almost no floor fits a plane that is not the floor, and the prior then
-  scales confidently to the wrong thing: two bridged chunks landed at 0.148
-  and 0.247 metres per SfM unit, a 67% disagreement, both set by the prior.
-  Repeatability got worse because the error stopped being a shared bias and
-  became random, and random errors do not cancel between captures.
+  almost no floor fits a plane that is not the floor, and the prior scales
+  confidently to it: two bridged chunks landed at 0.148 and 0.247 metres per
+  SfM unit, a 67% disagreement, both set by the prior. Repeatability got worse
+  because the error stopped being a shared bias and became random.
 * **The rooms were never measured at all.** A face counted as a wall only if
   it reached 1.5 m above the floor, **inherited from the lidar tier**. A phone
-  carried at 1.4 m and pointed level never reconstructs that high. On one clip
+  carried at 1.4 m and pointed level never reconstructs that high: on one clip
   all eight faces topped out between 0.72 and 1.46 m, none qualified, and the
-  room came back as the camera path in a box. It should have been found by
-  looking at what the room fitter was using before the fix was designed.
+  room came back as the camera path in a box.
 
 **Iteration 2 was declared, tried and rejected**: frames through the photo
 reconstruction were predicted to give 3 to 12% error and gave +69% then -36%.
 
 **The finding that matters most is not about scale.** Nine composed stills of
-`bedroom_2`, same height prior and same room fitter, gave walls within about
-1%. Fifty seconds of video of the same room gave 53% and 66%. **The difference
-is the capture, not the algorithm**, and `docs/capture_protocol.md` now
-recommends photographs over video for a phone without LiDAR.
+`bedroom_2` gave walls within about 1% where fifty seconds of video of the
+same room gave 53% and 66%, on the same prior and fitter. **The difference is
+the capture**, and the protocol now recommends photographs over video.
 
 ## 7. Known failure modes
 
 **Measured.**
 
-* **Neither image tier is accurate enough to ship.** Photo 22.4% median wall
-  error, video 32.9%, against tier budgets of 8% and 3%.
-* **The photo tier's intervals are over-confident**: 0.69 coverage against a
-  nominal 0.95, with five confident-garbage cases.
-* **Reading the true focal length from EXIF made the photo tier worse**,
-  1.4% to 22.4% median error. Unexplained, being chased.
-* **The photo stitcher recorded its transform twice**, once baked into the
-  geometry and once as a placement, so a consumer applying the contract put
-  every room on top of the others: 28.01 m2 of overlap against a 0.05 m2
-  gate, while the tier's own report said 0.0000. Found by the two disagreeing
-  and fixed; the gate passes at both tiers now.
-* **Cross-capture repeatability fails at every tier.** 0 of 153 rows on the
-  lidar pair, 0 of 8 on the same-device video pair.
-* **Ceiling height fails at every tier**, and is unavailable entirely on two
-  of three lidar scans.
-* **Damage precision on photos.** 8 to 15 false regions in a room with 2
+* **Neither image tier is accurate enough to ship**: photo 22.4% median wall
+  error, video 32.9%, against budgets of 8% and 3%. The photo tier's intervals
+  are over-confident too, 0.69 coverage against a nominal 0.95 with five
+  confident-garbage cases.
+* **The photo stitcher recorded its transform twice**, baked into the geometry
+  and again as a placement, so applying the contract put every room on the
+  others: 28.01 m2 overlap against a 0.05 m2 gate while the tier's own report
+  said 0.0000. Found by the two disagreeing, fixed, and now passing.
+* **Cross-capture repeatability fails at every tier**: 0 of 153 rows on the
+  lidar pair, 0 of 8 on the same-device video pair. **Ceiling height** fails
+  everywhere and is unavailable on two of three lidar scans.
+* **Damage precision on photos**: 8 to 15 false regions in a room with 2
   marks, from 63 before filtering; on lidar the same filters reach 0 from 106,
-  because two of the four need depth and poses.
-* **Cracks are the class most at risk**: the verifier that removes false
-  positives removes the crack at 0.20, so 0.15 ships. Room segmentation
-  over-segments: 11 rooms on a flat with perhaps 6 or 7.
+  because two of the four need depth and poses. Cracks are the class most at
+  risk, and room segmentation over-segments, 11 rooms on a flat with 6 or 7.
 
 **Hazards in the real captures** (`docs/hazards.md`, each with evidence).
 Glass and a wardrobe mirror return confident depth for a room that is not
 there; the damage filters handle them, reconstruction does not. A dog walked
-through one capture. Glossy tiles thicken the floor peak. Textureless walls
-give sparse returns, part of why coverage differs between two walks of one
-flat. An unobserved ceiling is the commonest cause of a wide interval and is
-purely a protocol problem.
+through one capture, glossy tiles thicken the floor peak, and textureless
+walls give sparse returns, part of why coverage differs between two walks of
+one flat. An unobserved ceiling is the commonest cause of a wide interval and
+is purely a protocol problem.
 
 **Assumptions that will break.** Manhattan: a curved or 45 degree wall appears
 as a missing face, the safer failure but still a failure. Image-tier scale
 depends on the phone being held near 1.4 m, and a capture at waist height is
-wrong by the ratio of heights with nothing able to detect it.
+wrong by the ratio, with nothing able to detect it.
