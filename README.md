@@ -1,5 +1,9 @@
 # Cozmo
 
+**Reviewing this? Start with [SUBMISSION.md](SUBMISSION.md)**: the eight
+deliverables with their paths, and a ten-line honest status of what works,
+what does not, and what was never evaluated.
+
 Turns a handheld phone capture of an interior into a dimensioned, stitched
 floor plan with damage annotations. Three input tiers (photo, video, LiDAR)
 share one output contract. Every reported dimension carries a confidence

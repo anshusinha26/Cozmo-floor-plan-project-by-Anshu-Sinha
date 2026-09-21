@@ -15,7 +15,7 @@ Video and photo plans cost about eight minutes a capture and were produced on th
 | own_bedroom_2_photo | photo | no plan available | None | n/a |  |
 | own_bedroom_2_repeat_photo | photo | no plan available | None | n/a |  |
 | own_kitchen_photo | photo | no plan available | None | n/a |  |
-| own_home_photo | photo | re-run here after a fix, see the note | True | 758 |  |
+| own_home_photo | photo | reused from the tier branch | True | 1011 |  |
 | own_hall_video | video | reused from the tier branch | True | 570 | room id renamed room_01 -> hall, geometry untouched |
 | own_bedroom_1_video | video | reused from the tier branch | True | 507 | room id renamed room_01 -> bedroom_1, geometry untouched |
 | own_bedroom_2_video | video | reused from the tier branch | True | 375 | room id renamed room_01 -> bedroom_2, geometry untouched |
@@ -61,9 +61,9 @@ Captures: own.
 | wall_length_tier | FAIL | 3.991 | 1 | 12 |  |
 | footprint | NOT EVALUATED | 0 | 0.08 | 0 | no capture has a tape-measured footprint: the hall was not measured wall by wall, so the only multi-room property has no truth footprint to compare against |
 | stitch_adjacency | PASS | 0 | 0 | 1 |  |
-| stitch_overlap | PASS | 0 | 0.05 | 1 |  |
+| stitch_overlap | FAIL | 24.76 | 0.05 | 1 |  |
 
-**2 of 6 evaluated gates pass** (2 not evaluated).
+**1 of 6 evaluated gates pass** (2 not evaluated).
 
 ### Every capture together
 
@@ -78,7 +78,14 @@ Kept for completeness. Read the per-tier tables above instead.
 | wall_length_tier | FAIL | 45.82 | 1 | 28 |
 | footprint | NOT EVALUATED | 0 | 0.08 | 0 |
 | stitch_adjacency | PASS | 0 | 0 | 6 |
-| stitch_overlap | PASS | 0 | 0.05 | 6 |
+| stitch_overlap | FAIL | 24.76 | 0.05 | 6 |
+
+### Two gaps worth stating plainly
+
+**Openings are not found at all.** The opening_width gate reads 0 of 7 within 2 cm at both image tiers, and the reason is not that the widths are wrong: it is that **no opening was matched**. Photo has 0 matched, 6 missed and 1 phantom; video has 0 matched and 7 missed. The gate is failing on absence.
+
+**The lidar tier is NOT EVALUATED on every gate**, for lack of tape ground truth: the supplied scans are of a property nobody measured, and no iPhone was available to scan the rooms that were. Its only evidence is cross-capture agreement, where two scans of one apartment place the same wall face within **1.9 cm** of each other while the room polygons built from those faces disagree by 97.5 cm (`fix_loop/evidence/evidence.json`). The geometry is sound; the partition into rooms is not.
+
 
 ## Interval coverage
 
@@ -110,7 +117,7 @@ Walls seen in both: 0, median difference 0.0 cm. Registered footprint IoU 0.14.
 
 | capture | tier | seconds |
 |---|---|---|
-| own_home_photo | photo | 758 |
+| own_home_photo | photo | 1011 |
 | own_hall_video | video | 570 |
 | own_bedroom_1_video | video | 507 |
 | own_bedroom_2_video | video | 375 |

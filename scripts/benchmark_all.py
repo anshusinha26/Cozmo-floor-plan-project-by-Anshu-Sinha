@@ -162,6 +162,19 @@ def render_report(result: dict, registry) -> str:
     for g in result["gates"]:
         md.append(f"| {g['name']} | {g['status']} | {g['value']:.4g} | {g['threshold']:.4g} | {g['n']} |")
 
+    md += ["", "### Two gaps worth stating plainly", "",
+           "**Openings are not found at all.** The opening_width gate reads 0 of 7 within "
+           "2 cm at both image tiers, and the reason is not that the widths are wrong: it "
+           "is that **no opening was matched**. Photo has 0 matched, 6 missed and 1 "
+           "phantom; video has 0 matched and 7 missed. The gate is failing on absence.", "",
+           "**The lidar tier is NOT EVALUATED on every gate**, for lack of tape ground "
+           "truth: the supplied scans are of a property nobody measured, and no iPhone was "
+           "available to scan the rooms that were. Its only evidence is cross-capture "
+           "agreement, where two scans of one apartment place the same wall face within "
+           "**1.9 cm** of each other while the room polygons built from those faces "
+           "disagree by 97.5 cm (`fix_loop/evidence/evidence.json`). The geometry is "
+           "sound; the partition into rooms is not.", ""]
+
     md += ["", "## Interval coverage", "",
            "Coverage is the share of tape readings inside the stated 95% interval. "
            "Confident garbage counts readings that fall outside an interval narrower than "

@@ -1,6 +1,6 @@
 # Evaluation report
 
-Captures: 6. Gates passed: 2 of 7 evaluated (8 defined). Overall: FAIL. Ceiling diagnosis: **repeatable_but_biased**.
+Captures: 6. Gates passed: 1 of 7 evaluated (8 defined). Overall: FAIL. Ceiling diagnosis: **repeatable_but_biased**.
 
 ## Gates, per tier
 
@@ -17,9 +17,9 @@ Captures: own.
 | wall_length_tier | FAIL | 3.9911 | 1.0000 | 12 |  |
 | footprint | NOT EVALUATED | 0.0000 | 0.0800 | 0 | no capture has a tape-measured footprint: the hall was not measured wall by wall, so the only multi-room property has no truth footprint to compare against |
 | stitch_adjacency | PASS | 0.0000 | 0.0000 | 1 |  |
-| stitch_overlap | PASS | 0.0000 | 0.0500 | 1 |  |
+| stitch_overlap | FAIL | 24.7647 | 0.0500 | 1 |  |
 
-2 of 6 evaluated gates pass, 2 not evaluated.
+1 of 6 evaluated gates pass, 2 not evaluated.
 
 ### video
 
@@ -49,7 +49,7 @@ Captures: hall, bedroom_1, bedroom_2, bedroom_2_repeat, kitchen.
 | wall_length_tier | FAIL | 45.8165 | 1.0000 | 28 |  |
 | footprint | NOT EVALUATED | 0.0000 | 0.0800 | 0 | no capture has a tape-measured footprint: the hall was not measured wall by wall, so the only multi-room property has no truth footprint to compare against |
 | stitch_adjacency | PASS | 0.0000 | 0.0000 | 6 |  |
-| stitch_overlap | PASS | 0.0000 | 0.0500 | 6 |  |
+| stitch_overlap | FAIL | 24.7647 | 0.0500 | 6 |  |
 
 ## Matching counts
 
@@ -92,9 +92,9 @@ Walls:
 
 Missing rooms: none. Phantom rooms: none. Missed openings: ['door_staircase', 'door_portico', 'door_bedroom_2', 'door_hall', 'door_hall', 'door_hall']. Phantom openings: ['kitchen_d1'].
 
-Footprint: pred 89.928 m2, truth n/a m2 (sum of room floor areas). Room overlap (geometric): 0.000 m2.
+Footprint: pred 89.928 m2, truth n/a m2 (sum of room floor areas). Room overlap (geometric): 24.765 m2.
 
-Warnings: Skipped all (0 image(s), needs at least 2); Skipped home (0 image(s), needs at least 2); app_comparision was excluded by --exclude and is not treated as a room; bedroom_2_repeat is a repeat capture: it is measured and reported, but it is not placed in the property, because it is the same room as another; kitchen is attached wall to wall: no free door pair was available between it and hall; bedroom_1: 1 of 4 room sides had no supported wall face (x+); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed; bedroom_1: Windows are not detected in this version; openings are doors and pass-throughs only; bedroom_1: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty; bedroom_2: 1 of 4 room sides had no supported wall face (z-); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed; bedroom_2: Windows are not detected in this version; openings are doors and pass-throughs only; bedroom_2: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty; hall: 1 of 4 room sides had no supported wall face (z+); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed; hall: Windows are not detected in this version; openings are doors and pass-throughs only; hall: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty; kitchen: Windows are not detected in this version; openings are doors and pass-throughs only; kitchen: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty; footprint area is reported with an interval wider than the value itself (89.93 m2, plus or minus 118.75). It is an unreliable measurement: the reconstruction constrains it barely or not at all
+Warnings: Skipped all (0 image(s), needs at least 2); Skipped home (0 image(s), needs at least 2); app_comparision was excluded by --exclude and is not treated as a room; bedroom_2_repeat is a repeat capture: it is measured and reported, but it is not placed in the property, because it is the same room as another; kitchen is attached wall to wall: no free door pair was available between it and hall; bedroom_1: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall; bedroom_1: 1 of 4 room sides had no supported wall face (x+); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed; bedroom_1: Windows are not detected in this version; openings are doors and pass-throughs only; bedroom_1: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty; bedroom_2: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall; bedroom_2: 1 of 4 room sides had no supported wall face (z-); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed; bedroom_2: Windows are not detected in this version; openings are doors and pass-throughs only; bedroom_2: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty; hall: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall; hall: 1 of 4 room sides had no supported wall face (z+); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed; hall: Windows are not detected in this version; openings are doors and pass-throughs only; hall: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty; kitchen: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall; kitchen: Windows are not detected in this version; openings are doors and pass-throughs only; kitchen: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty; footprint area is reported with an interval wider than the value itself (89.93 m2, plus or minus 118.75). It is an unreliable measurement: the reconstruction constrains it barely or not at all
 
 ### hall (video, video-0.1.0)
 

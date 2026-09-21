@@ -59,7 +59,9 @@ Gates are scored **per tier** (`docs/benchmark/benchmark.md`), because pooling
 lets a tier with large errors and many walls swamp one with few small ones. A
 gate with nothing to score reads NOT EVALUATED with its reason, never PASS.
 Photo passes 2 of 6 scorable gates and video 2 of 7, in both cases the
-structural ones (adjacency, overlap) rather than the dimensional ones. **Every lidar gate reads NOT EVALUATED**:
+structural ones (adjacency, overlap) rather than the dimensional ones. **The
+lidar tier's only evidence is cross-capture agreement**, 1.9 cm between wall
+faces two scans both saw. **Every lidar gate reads NOT EVALUATED**:
 the supplied scans are of a property nobody measured, and no iPhone was
 available to scan the rooms that were.
 
@@ -338,16 +340,20 @@ the capture**, and the protocol now recommends photographs over video.
   error, video 32.9%, against budgets of 8% and 3%. Photo intervals are close
   to calibrated at 0.88 coverage; two confident-garbage cases remain.
 * **The photo stitcher recorded its transform twice**, baked into the geometry
-  and again as a placement, so applying the contract put every room on the
-  others: 28.01 m2 overlap against a 0.05 m2 gate while the tier's own report
-  said 0.0000. Found by the two disagreeing, fixed, and now passing.
+  and again as a placement, so applying the contract stacked every room: 28.01
+  m2 overlap against a 0.05 m2 gate, while the tier's own report said 0.0000.
+  Found by the two disagreeing, fixed, now passing.
+* **Openings are not found.** 0 of 7 within 2 cm at both image tiers, and the
+  reason is absence rather than inaccuracy: **nothing matched at all**, 0
+  matched against 6 missed and 1 phantom at photo, 0 against 7 missed at
+  video.
 * **Cross-capture repeatability fails at every tier**: 0 of 153 rows on the
   lidar pair, 0 of 8 on the same-device video pair. **Ceiling height** fails
   everywhere and is unavailable on two of three lidar scans.
 * **Damage precision on photos**: 8 to 15 false regions in a room with 2
   marks, from 63 before filtering; on lidar the same filters reach 0 from 106,
-  because two of the four need depth and poses. Cracks are the class most at
-  risk, and room segmentation over-segments, 11 rooms on a flat with 6 or 7.
+  because two of the four need depth and poses. Cracks are most at risk, and
+  segmentation over-segments: 11 rooms on a flat with 6 or 7.
 
 **Hazards in the real captures** (`docs/hazards.md`, each with evidence).
 Glass and a wardrobe mirror return confident depth for a room that is not
