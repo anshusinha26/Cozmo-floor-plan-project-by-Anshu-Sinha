@@ -37,6 +37,13 @@ log = logging.getLogger(__name__)
 FOOTPRINT_WIDENING = 2.5
 
 
+def _rebase(ident: str, old_room: str, new_room: str) -> str:
+    """Rename an id that carries its room's name, keeping the rest intact."""
+    if old_room and old_room in ident:
+        return ident.replace(old_room, new_room, 1)
+    return f"{new_room}_{ident}"
+
+
 def _rotation(theta_deg: float) -> np.ndarray:
     t = np.radians(theta_deg)
     return np.array([[np.cos(t), -np.sin(t)], [np.sin(t), np.cos(t)]])
@@ -68,12 +75,18 @@ def merge(per_room: dict[str, Plan], stitch_result, capture, run, ci_level: floa
             polygon = polygon[::-1]
         walls = [Wall(id=w.id, start=_apply(R, t, w.start), end=_apply(R, t, w.end),
                       length_m=w.length_m, height_m=w.height_m) for w in src.walls]
+        # Every room was reconstructed on its own, so each one calls itself
+        # room_01 and names its surfaces and openings after that. Ids are unique
+        # across the whole plan, so they are rebased onto the folder name here.
+        openings = [o.model_copy(deep=True, update={"id": _rebase(o.id, src.id, placed.room_id)})
+                    for o in src.openings]
         room = Room(id=placed.room_id, label=src.label, polygon=polygon, walls=walls,
                     ceiling_height_m=src.ceiling_height_m, floor_area_m2=src.floor_area_m2,
-                    openings=[o.model_copy(deep=True) for o in src.openings])
+                    openings=openings)
         rooms.append(room)
-        for s in plan.surfaces:
-            surfaces.append(s.model_copy(update={"room_id": placed.room_id}))
+        for surf in plan.surfaces:
+            surfaces.append(surf.model_copy(update={
+                "room_id": placed.room_id, "id": _rebase(surf.id, src.id, placed.room_id)}))
         placements.append(Placement(
             room_id=placed.room_id, tx=float(placed.tx), ty=float(placed.ty),
             theta_deg=Measurement(value=float(placed.theta_deg),
@@ -103,7 +116,8 @@ def merge(per_room: dict[str, Plan], stitch_result, capture, run, ci_level: floa
 
     known = {r.id for r in rooms}
     opening_ids = {o.id for r in rooms for o in r.openings}
-    adjacency = [Adjacency(room_a=a, room_b=b, via_opening_id=v if v in opening_ids else None)
+    adjacency = [Adjacency(room_a=a, room_b=b,
+                           via_opening_id=v if v and v in opening_ids else None)
                  for a, b, v in stitch_result.adjacency if a in known and b in known]
 
     merged_warnings = list(warnings) + list(stitch_result.warnings)

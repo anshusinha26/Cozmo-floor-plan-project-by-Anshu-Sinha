@@ -138,3 +138,16 @@ def test_world_pointmap_normals_face_the_camera():
 
 def test_the_photo_tier_is_registered():
     assert pipeline_for("photo") == "photo"
+
+
+def test_ids_are_rebased_so_two_rooms_do_not_collide():
+    """Each room is reconstructed alone and calls itself room_01, so a property
+    built from six of them had six surfaces called s_room_01_w1 and the whole
+    plan failed contract validation at the very last step."""
+    from cozmo.pipeline.photo.merge import _rebase
+
+    assert _rebase("s_room_01_w1", "room_01", "kitchen") == "s_kitchen_w1"
+    assert _rebase("room_01_o2", "room_01", "hall") == "hall_o2"
+    assert _rebase("odd_name", "room_01", "hall") == "hall_odd_name"
+    # Only the first occurrence is rebased, so a wall id inside is left alone.
+    assert _rebase("s_room_01_room_01", "room_01", "x") == "s_x_room_01"
