@@ -41,7 +41,10 @@ REUSE = {
         "own_hall_video": "fix_loop/loop2_video_scale/after/runs/hall",
     },
     "photo": {
-        "own_home_photo": "runs/photo/own",
+        # The re-run on the camera originals, not the earlier run on the
+        # compressed copies. The originals are what is on disk now, so this is
+        # the plan whose input hash can be verified.
+        "own_home_photo": "fix_loop/loop2_video_scale/photo_originals",
     },
 }
 

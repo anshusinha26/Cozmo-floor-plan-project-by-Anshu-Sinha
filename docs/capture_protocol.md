@@ -4,11 +4,11 @@ Pick the route that matches your phone. Each one ends with the exact command
 to run.
 
 **If you do not have a LiDAR iPhone, take photos rather than video.** Measured
-on the same rooms: photographs give a median wall error of 1.4%, video gives
-32.9% (`docs/benchmark/eval.json`). Nine deliberate stills from the corners
-beat fifty seconds of walking, because a walk never holds a viewpoint long
-enough to measure a wall well. Route 3 is the recommended route for a phone
-without LiDAR; Route 2 is there because a clip is easier to collect.
+on the same rooms: photographs give a median wall error of 25.9%, video gives
+32.9% (`docs/benchmark/eval.json`). Both are too large to rely on today.
+Photographs are still the better of the two, because nine deliberate stills
+from the corners hold a viewpoint long enough to measure a wall and a walk
+does not. Route 3 is the recommended route for a phone without LiDAR.
 
 ---
 
@@ -103,8 +103,8 @@ flash off, lights on.
 2. Stand in a **corner and photograph the opposite corner**, with the **floor
    edge and the ceiling edge both visible** in the shot.
 3. Do that from **each corner you can reach**: between 2 and 8 photos per
-   room. **Nine photos per room is what the measured results above came
-   from**, and more is better than fewer.
+   room. **Nine photos per room is what the measured results came from**, and
+   more is better than fewer.
 4. **Stand still for each shot.** A sharp photo from a fixed position is worth
    more than several taken while moving; blur is what costs accuracy here.
 5. Take **one extra photo through each doorway**, standing in the doorway

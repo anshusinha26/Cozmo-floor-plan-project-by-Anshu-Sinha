@@ -27,7 +27,7 @@
     {
       "name": "ceiling_height",
       "passed": false,
-      "value": 0.8583765565933907,
+      "value": 0.9096503596325025,
       "threshold": 0.015,
       "n": 9,
       "detail": {
@@ -38,36 +38,36 @@
             "capture_id": "own",
             "space_id": "own_home",
             "room_id": "hall",
-            "pred": 3.0905815471599776,
+            "pred": 2.6719480935498634,
             "truth": 2.9718,
-            "abs_error_m": 0.11878154715997757,
+            "abs_error_m": 0.2998519064501366,
             "ok": false
           },
           {
             "capture_id": "own",
             "space_id": "own_home",
             "room_id": "bedroom_1",
-            "pred": 3.203348741862629,
+            "pred": 3.035796897637276,
             "truth": 2.9718,
-            "abs_error_m": 0.2315487418626292,
+            "abs_error_m": 0.063996897637276,
             "ok": false
           },
           {
             "capture_id": "own",
             "space_id": "own_home",
             "room_id": "bedroom_2",
-            "pred": 3.1630882911929317,
+            "pred": 2.9476298776039878,
             "truth": 2.9718,
-            "abs_error_m": 0.19128829119293167,
+            "abs_error_m": 0.02417012239601224,
             "ok": false
           },
           {
             "capture_id": "own",
             "space_id": "own_home",
             "room_id": "kitchen",
-            "pred": 2.1134234434066093,
+            "pred": 2.0621496403674975,
             "truth": 2.9718,
-            "abs_error_m": 0.8583765565933907,
+            "abs_error_m": 0.9096503596325025,
             "ok": false
           },
           {
@@ -133,7 +133,7 @@
     {
       "name": "ceiling_height_diagnosis",
       "passed": false,
-      "value": 0.8583765565933907,
+      "value": 0.9096503596325025,
       "threshold": 0.015,
       "n": 9,
       "detail": {
@@ -173,7 +173,7 @@
             "room_id": "bedroom_1",
             "n_captures": 1,
             "spread_m": 0.0,
-            "mean_error_m": 0.2315487418626292,
+            "mean_error_m": 0.063996897637276,
             "label": "repeatable_but_biased",
             "single_capture": true
           },
@@ -182,7 +182,7 @@
             "room_id": "bedroom_2",
             "n_captures": 1,
             "spread_m": 0.0,
-            "mean_error_m": 0.19128829119293167,
+            "mean_error_m": -0.02417012239601224,
             "label": "repeatable_but_biased",
             "single_capture": true
           },
@@ -191,7 +191,7 @@
             "room_id": "hall",
             "n_captures": 1,
             "spread_m": 0.0,
-            "mean_error_m": 0.11878154715997757,
+            "mean_error_m": -0.2998519064501366,
             "label": "repeatable_but_biased",
             "single_capture": true
           },
@@ -200,7 +200,7 @@
             "room_id": "kitchen",
             "n_captures": 1,
             "spread_m": 0.0,
-            "mean_error_m": -0.8583765565933907,
+            "mean_error_m": -0.9096503596325025,
             "label": "repeatable_but_biased",
             "single_capture": true
           },
@@ -314,14 +314,14 @@
             "capture_id": "own",
             "room_id": "bedroom_1",
             "wall_id": "A",
-            "pred": 3.678613185500765,
+            "pred": 4.026159155783308,
             "truth": 3.6576,
             "tier": "photo",
-            "abs_error_m": 0.02101318550076492,
-            "rel_error": 0.005745074776018405,
+            "abs_error_m": 0.3685591557833079,
+            "rel_error": 0.1007652984971861,
             "allowed_m": 0.292608,
-            "ratio": 0.07181343470023008,
-            "ok": true,
+            "ratio": 1.2595662312148264,
+            "ok": false,
             "budget": {
               "rel_tolerance": 0.08
             }
@@ -330,13 +330,13 @@
             "capture_id": "own",
             "room_id": "bedroom_1",
             "wall_id": "B",
-            "pred": 4.376531308549869,
+            "pred": 5.193414895207411,
             "truth": 3.9116,
             "tier": "photo",
-            "abs_error_m": 0.4649313085498692,
-            "rel_error": 0.11885962484657664,
+            "abs_error_m": 1.281814895207411,
+            "rel_error": 0.3276958010040421,
             "allowed_m": 0.312928,
-            "ratio": 1.485745310582208,
+            "ratio": 4.0961975125505266,
             "ok": false,
             "budget": {
               "rel_tolerance": 0.08
@@ -346,14 +346,14 @@
             "capture_id": "own",
             "room_id": "bedroom_1",
             "wall_id": "C",
-            "pred": 3.678613185500765,
+            "pred": 4.026159155783308,
             "truth": 3.6576,
             "tier": "photo",
-            "abs_error_m": 0.02101318550076492,
-            "rel_error": 0.005745074776018405,
+            "abs_error_m": 0.3685591557833079,
+            "rel_error": 0.1007652984971861,
             "allowed_m": 0.292608,
-            "ratio": 0.07181343470023008,
-            "ok": true,
+            "ratio": 1.2595662312148264,
+            "ok": false,
             "budget": {
               "rel_tolerance": 0.08
             }
@@ -362,62 +362,14 @@
             "capture_id": "own",
             "room_id": "bedroom_1",
             "wall_id": "D",
-            "pred": 4.376531308549869,
+            "pred": 5.193414895207411,
             "truth": 3.9116,
             "tier": "photo",
-            "abs_error_m": 0.4649313085498692,
-            "rel_error": 0.11885962484657664,
+            "abs_error_m": 1.281814895207411,
+            "rel_error": 0.3276958010040421,
             "allowed_m": 0.312928,
-            "ratio": 1.485745310582208,
+            "ratio": 4.0961975125505266,
             "ok": false,
-            "budget": {
-              "rel_tolerance": 0.08
-            }
-          },
-          {
-            "capture_id": "own",
-            "room_id": "bedroom_2",
-            "wall_id": "B",
-            "pred": 3.6679036847685507,
-            "truth": 3.6322,
-            "tier": "photo",
-            "abs_error_m": 0.03570368476855057,
-            "rel_error": 0.009829768396165015,
-            "allowed_m": 0.290576,
-            "ratio": 0.12287210495206269,
-            "ok": true,
-            "budget": {
-              "rel_tolerance": 0.08
-            }
-          },
-          {
-            "capture_id": "own",
-            "room_id": "bedroom_2",
-            "wall_id": "C",
-            "pred": 3.9300119553415387,
-            "truth": 3.8862,
-            "tier": "photo",
-            "abs_error_m": 0.04381195534153859,
-            "rel_error": 0.011273726350043381,
-            "allowed_m": 0.310896,
-            "ratio": 0.14092157937554226,
-            "ok": true,
-            "budget": {
-              "rel_tolerance": 0.08
-            }
-          },
-          {
-            "capture_id": "own",
-            "room_id": "bedroom_2",
-            "wall_id": "D",
-            "pred": 3.6679036847685507,
-            "truth": 3.6322,
-            "tier": "photo",
-            "abs_error_m": 0.03570368476855057,
-            "rel_error": 0.009829768396165015,
-            "allowed_m": 0.290576,
-            "ratio": 0.12287210495206269,
-            "ok": true,
             "budget": {
               "rel_tolerance": 0.08
             }
@@ -426,14 +378,62 @@
             "capture_id": "own",
             "room_id": "bedroom_2",
             "wall_id": "A",
-            "pred": 3.9300119553415387,
+            "pred": 5.322681653122929,
             "truth": 3.8862,
             "tier": "photo",
-            "abs_error_m": 0.04381195534153859,
-            "rel_error": 0.011273726350043381,
+            "abs_error_m": 1.4364816531229292,
+            "rel_error": 0.36963657380549875,
             "allowed_m": 0.310896,
-            "ratio": 0.14092157937554226,
-            "ok": true,
+            "ratio": 4.6204571725687344,
+            "ok": false,
+            "budget": {
+              "rel_tolerance": 0.08
+            }
+          },
+          {
+            "capture_id": "own",
+            "room_id": "bedroom_2",
+            "wall_id": "B",
+            "pred": 4.323547058528083,
+            "truth": 3.6322,
+            "tier": "photo",
+            "abs_error_m": 0.6913470585280832,
+            "rel_error": 0.19033837853864963,
+            "allowed_m": 0.290576,
+            "ratio": 2.3792297317331204,
+            "ok": false,
+            "budget": {
+              "rel_tolerance": 0.08
+            }
+          },
+          {
+            "capture_id": "own",
+            "room_id": "bedroom_2",
+            "wall_id": "C",
+            "pred": 5.322681653122929,
+            "truth": 3.8862,
+            "tier": "photo",
+            "abs_error_m": 1.4364816531229292,
+            "rel_error": 0.36963657380549875,
+            "allowed_m": 0.310896,
+            "ratio": 4.6204571725687344,
+            "ok": false,
+            "budget": {
+              "rel_tolerance": 0.08
+            }
+          },
+          {
+            "capture_id": "own",
+            "room_id": "bedroom_2",
+            "wall_id": "D",
+            "pred": 4.323547058528083,
+            "truth": 3.6322,
+            "tier": "photo",
+            "abs_error_m": 0.6913470585280832,
+            "rel_error": 0.19033837853864963,
+            "allowed_m": 0.290576,
+            "ratio": 2.3792297317331204,
+            "ok": false,
             "budget": {
               "rel_tolerance": 0.08
             }
@@ -442,13 +442,13 @@
             "capture_id": "own",
             "room_id": "kitchen",
             "wall_id": "B",
-            "pred": 4.37765628578795,
+            "pred": 5.006697178997099,
             "truth": 3.6028,
             "tier": "photo",
-            "abs_error_m": 0.77485628578795,
-            "rel_error": 0.21507058004550628,
+            "abs_error_m": 1.403897178997099,
+            "rel_error": 0.38966836321669235,
             "allowed_m": 0.288224,
-            "ratio": 2.6883822505688286,
+            "ratio": 4.870854540208654,
             "ok": false,
             "budget": {
               "rel_tolerance": 0.08
@@ -458,13 +458,13 @@
             "capture_id": "own",
             "room_id": "kitchen",
             "wall_id": "C",
-            "pred": 2.6485915558437156,
+            "pred": 2.635766705380513,
             "truth": 2.6924,
             "tier": "photo",
-            "abs_error_m": 0.04380844415628449,
-            "rel_error": 0.016271149961478416,
+            "abs_error_m": 0.056633294619487184,
+            "rel_error": 0.02103450253286554,
             "allowed_m": 0.21539200000000003,
-            "ratio": 0.2033893745184802,
+            "ratio": 0.26293128166081925,
             "ok": true,
             "budget": {
               "rel_tolerance": 0.08
@@ -474,13 +474,13 @@
             "capture_id": "own",
             "room_id": "kitchen",
             "wall_id": "D",
-            "pred": 4.37765628578795,
+            "pred": 5.006697178997099,
             "truth": 3.6028,
             "tier": "photo",
-            "abs_error_m": 0.77485628578795,
-            "rel_error": 0.21507058004550628,
+            "abs_error_m": 1.403897178997099,
+            "rel_error": 0.38966836321669235,
             "allowed_m": 0.288224,
-            "ratio": 2.6883822505688286,
+            "ratio": 4.870854540208654,
             "ok": false,
             "budget": {
               "rel_tolerance": 0.08
@@ -490,13 +490,13 @@
             "capture_id": "own",
             "room_id": "kitchen",
             "wall_id": "A",
-            "pred": 2.6485915558437156,
+            "pred": 2.635766705380513,
             "truth": 2.6924,
             "tier": "photo",
-            "abs_error_m": 0.04380844415628449,
-            "rel_error": 0.016271149961478416,
+            "abs_error_m": 0.056633294619487184,
+            "rel_error": 0.02103450253286554,
             "allowed_m": 0.21539200000000003,
-            "ratio": 0.2033893745184802,
+            "ratio": 0.26293128166081925,
             "ok": true,
             "budget": {
               "rel_tolerance": 0.08
@@ -837,14 +837,14 @@
     {
       "name": "stitch_overlap",
       "passed": false,
-      "value": 10.019104690756318,
+      "value": 28.005313725218336,
       "threshold": 0.05,
       "n": 6,
       "detail": {
         "per_capture": [
           {
             "capture_id": "own",
-            "overlap_m2": 10.019104690756318,
+            "overlap_m2": 28.005313725218336,
             "ok": false
           },
           {
@@ -887,22 +887,26 @@
         "Skipped home (0 image(s), needs at least 2)",
         "app_comparision was excluded by --exclude and is not treated as a room",
         "bedroom_2_repeat is a repeat capture: it is measured and reported, but it is not placed in the property, because it is the same room as another",
+        "kitchen is attached wall to wall: no free door pair was available between it and hall",
+        "kitchen could not be placed clear of the other rooms within 6 m; its position is unreliable",
         "bedroom_1: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall",
         "bedroom_1: 1 of 4 room sides had no supported wall face (x+); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed",
         "bedroom_1: Windows are not detected in this version; openings are doors and pass-throughs only",
         "bedroom_1: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty",
         "bedroom_2: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall",
+        "bedroom_2: 1 of 4 room sides had no supported wall face (z-); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed",
         "bedroom_2: Windows are not detected in this version; openings are doors and pass-throughs only",
         "bedroom_2: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty",
         "hall: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall",
-        "hall: 1 of 4 room sides had no supported wall face (z+); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed",
+        "hall: 2 of 4 room sides had no supported wall face (x-, z+); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed",
         "hall: Windows are not detected in this version; openings are doors and pass-throughs only",
         "hall: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty",
-        "kitchen: Walls were only reconstructed to about 1.91 m above the floor, so a face counts as a wall at 1.34 m rather than the usual 1.40 m. Wall heights and the ceiling are not measured from this capture",
+        "kitchen: Walls were only reconstructed to about 1.87 m above the floor, so a face counts as a wall at 1.31 m rather than the usual 1.40 m. Wall heights and the ceiling are not measured from this capture",
         "kitchen: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall",
         "kitchen: Windows are not detected in this version; openings are doors and pass-throughs only",
+        "kitchen: room_01_o1: no lintel observed above the opening; height is a prior",
         "kitchen: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty",
-        "footprint area is reported with an interval wider than the value itself (79.85 m2, plus or minus 102.11). It is an unreliable measurement: the reconstruction constrains it barely or not at all"
+        "footprint area is reported with an interval wider than the value itself (111.10 m2, plus or minus 152.05). It is an unreliable measurement: the reconstruction constrains it barely or not at all"
       ],
       "matching": {
         "counts": {
@@ -943,63 +947,63 @@
           {
             "room_id": "bedroom_1",
             "reversed": true,
-            "total_length_error_m": 0.9718889881012682,
+            "total_length_error_m": 3.300748101981438,
             "walls": [
               {
                 "truth_id": "A",
                 "pred_id": "w4",
                 "truth_m": 3.6576,
                 "pred": {
-                  "value": 3.678613185500765,
-                  "ci_low": 2.7838447382089395,
-                  "ci_high": 4.57338163279259,
+                  "value": 4.026159155783308,
+                  "ci_low": 3.0468056143230102,
+                  "ci_high": 5.0055126972436055,
                   "unit": "m",
                   "method": "wall_face_separation",
                   "ci_level": 0.95
                 },
-                "abs_error": 0.02101318550076492
+                "abs_error": 0.3685591557833079
               },
               {
                 "truth_id": "B",
                 "pred_id": "w3",
                 "truth_m": 3.9116,
                 "pred": {
-                  "value": 4.376531308549869,
-                  "ci_low": 3.312022991398228,
-                  "ci_high": 5.44103962570151,
+                  "value": 5.193414895207411,
+                  "ci_low": 3.930263433123508,
+                  "ci_high": 6.456566357291314,
                   "unit": "m",
                   "method": "wall_face_separation",
                   "ci_level": 0.95
                 },
-                "abs_error": 0.4649313085498692
+                "abs_error": 1.281814895207411
               },
               {
                 "truth_id": "C",
                 "pred_id": "w2",
                 "truth_m": 3.6576,
                 "pred": {
-                  "value": 3.678613185500765,
-                  "ci_low": 2.7838447382089395,
-                  "ci_high": 4.57338163279259,
+                  "value": 4.026159155783308,
+                  "ci_low": 3.0468056143230102,
+                  "ci_high": 5.0055126972436055,
                   "unit": "m",
                   "method": "wall_face_separation",
                   "ci_level": 0.95
                 },
-                "abs_error": 0.02101318550076492
+                "abs_error": 0.3685591557833079
               },
               {
                 "truth_id": "D",
                 "pred_id": "w1",
                 "truth_m": 3.9116,
                 "pred": {
-                  "value": 4.376531308549869,
-                  "ci_low": 3.312022991398228,
-                  "ci_high": 5.44103962570151,
+                  "value": 5.193414895207411,
+                  "ci_low": 3.930263433123508,
+                  "ci_high": 6.456566357291314,
                   "unit": "m",
                   "method": "wall_face_separation",
                   "ci_level": 0.95
                 },
-                "abs_error": 0.4649313085498692
+                "abs_error": 1.281814895207411
               }
             ],
             "unmatched_truth_walls": [],
@@ -1008,70 +1012,68 @@
             "missed_openings": [
               "door_hall"
             ],
-            "phantom_openings": [
-              "bedroom_1_o1"
-            ]
+            "phantom_openings": []
           },
           {
             "room_id": "bedroom_2",
             "reversed": true,
-            "total_length_error_m": 0.15903128022017832,
+            "total_length_error_m": 4.255657423302025,
             "walls": [
               {
-                "truth_id": "B",
+                "truth_id": "A",
                 "pred_id": "w4",
-                "truth_m": 3.6322,
+                "truth_m": 3.8862,
                 "pred": {
-                  "value": 3.6679036847685507,
-                  "ci_low": 2.954076378246503,
-                  "ci_high": 4.381730991290598,
+                  "value": 5.322681653122929,
+                  "ci_low": 4.028071264181348,
+                  "ci_high": 6.617292042064511,
                   "unit": "m",
                   "method": "wall_face_separation",
                   "ci_level": 0.95
                 },
-                "abs_error": 0.03570368476855057
+                "abs_error": 1.4364816531229292
+              },
+              {
+                "truth_id": "B",
+                "pred_id": "w3",
+                "truth_m": 3.6322,
+                "pred": {
+                  "value": 4.323547058528083,
+                  "ci_low": 3.2713909862239228,
+                  "ci_high": 5.375703130832244,
+                  "unit": "m",
+                  "method": "wall_face_separation",
+                  "ci_level": 0.95
+                },
+                "abs_error": 0.6913470585280832
               },
               {
                 "truth_id": "C",
-                "pred_id": "w3",
+                "pred_id": "w2",
                 "truth_m": 3.8862,
                 "pred": {
-                  "value": 3.9300119553415387,
-                  "ci_low": 3.165101066266664,
-                  "ci_high": 4.694922844416413,
+                  "value": 5.322681653122929,
+                  "ci_low": 4.028071264181348,
+                  "ci_high": 6.617292042064511,
                   "unit": "m",
                   "method": "wall_face_separation",
                   "ci_level": 0.95
                 },
-                "abs_error": 0.04381195534153859
+                "abs_error": 1.4364816531229292
               },
               {
                 "truth_id": "D",
-                "pred_id": "w2",
+                "pred_id": "w1",
                 "truth_m": 3.6322,
                 "pred": {
-                  "value": 3.6679036847685507,
-                  "ci_low": 2.954076378246503,
-                  "ci_high": 4.381730991290598,
+                  "value": 4.323547058528083,
+                  "ci_low": 3.2713909862239228,
+                  "ci_high": 5.375703130832244,
                   "unit": "m",
                   "method": "wall_face_separation",
                   "ci_level": 0.95
                 },
-                "abs_error": 0.03570368476855057
-              },
-              {
-                "truth_id": "A",
-                "pred_id": "w1",
-                "truth_m": 3.8862,
-                "pred": {
-                  "value": 3.9300119553415387,
-                  "ci_low": 3.165101066266664,
-                  "ci_high": 4.694922844416413,
-                  "unit": "m",
-                  "method": "wall_face_separation",
-                  "ci_level": 0.95
-                },
-                "abs_error": 0.04381195534153859
+                "abs_error": 0.6913470585280832
               }
             ],
             "unmatched_truth_walls": [],
@@ -1085,63 +1087,63 @@
           {
             "room_id": "kitchen",
             "reversed": true,
-            "total_length_error_m": 1.637329459888469,
+            "total_length_error_m": 2.9210609472331726,
             "walls": [
               {
                 "truth_id": "B",
                 "pred_id": "w4",
                 "truth_m": 3.6028,
                 "pred": {
-                  "value": 4.37765628578795,
-                  "ci_low": 3.5252071928931046,
-                  "ci_high": 5.230105378682795,
+                  "value": 5.006697178997099,
+                  "ci_low": 4.031671533798746,
+                  "ci_high": 5.981722824195452,
                   "unit": "m",
                   "method": "wall_face_separation",
                   "ci_level": 0.95
                 },
-                "abs_error": 0.77485628578795
+                "abs_error": 1.403897178997099
               },
               {
                 "truth_id": "C",
                 "pred_id": "w3",
                 "truth_m": 2.6924,
                 "pred": {
-                  "value": 2.6485915558437156,
-                  "ci_low": 2.1326332855493484,
-                  "ci_high": 3.164549826138083,
+                  "value": 2.635766705380513,
+                  "ci_low": 2.1224344660392718,
+                  "ci_high": 3.149098944721754,
                   "unit": "m",
                   "method": "wall_face_separation",
                   "ci_level": 0.95
                 },
-                "abs_error": 0.04380844415628449
+                "abs_error": 0.056633294619487184
               },
               {
                 "truth_id": "D",
                 "pred_id": "w2",
                 "truth_m": 3.6028,
                 "pred": {
-                  "value": 4.37765628578795,
-                  "ci_low": 3.5252071928931046,
-                  "ci_high": 5.230105378682795,
+                  "value": 5.006697178997099,
+                  "ci_low": 4.031671533798746,
+                  "ci_high": 5.981722824195452,
                   "unit": "m",
                   "method": "wall_face_separation",
                   "ci_level": 0.95
                 },
-                "abs_error": 0.77485628578795
+                "abs_error": 1.403897178997099
               },
               {
                 "truth_id": "A",
                 "pred_id": "w1",
                 "truth_m": 2.6924,
                 "pred": {
-                  "value": 2.6485915558437156,
-                  "ci_low": 2.1326332855493484,
-                  "ci_high": 3.164549826138083,
+                  "value": 2.635766705380513,
+                  "ci_low": 2.1224344660392718,
+                  "ci_high": 3.149098944721754,
                   "unit": "m",
                   "method": "wall_face_separation",
                   "ci_level": 0.95
                 },
-                "abs_error": 0.04380844415628449
+                "abs_error": 0.056633294619487184
               }
             ],
             "unmatched_truth_walls": [],
@@ -1150,17 +1152,19 @@
             "missed_openings": [
               "door_hall"
             ],
-            "phantom_openings": []
+            "phantom_openings": [
+              "kitchen_d1"
+            ]
           }
         ]
       },
       "rooms": [
         {
           "room_id": "hall",
-          "ceiling_pred": 3.0905815471599776,
+          "ceiling_pred": 2.6719480935498634,
           "ceiling_truth": 2.9718,
-          "ceiling_abs_error": 0.11878154715997757,
-          "floor_area_pred": 37.73821789144525,
+          "ceiling_abs_error": 0.2998519064501366,
+          "floor_area_pred": 53.98265512331248,
           "floor_area_truth": null,
           "floor_area_abs_error": null,
           "walls_matched": 0,
@@ -1170,10 +1174,10 @@
         },
         {
           "room_id": "bedroom_1",
-          "ceiling_pred": 3.203348741862629,
+          "ceiling_pred": 3.035796897637276,
           "ceiling_truth": 2.9718,
-          "ceiling_abs_error": 0.2315487418626292,
-          "floor_area_pred": 16.099565778388467,
+          "ceiling_abs_error": 0.063996897637276,
+          "floor_area_pred": 20.909514930120725,
           "floor_area_truth": null,
           "floor_area_abs_error": null,
           "walls_matched": 4,
@@ -1183,10 +1187,10 @@
         },
         {
           "room_id": "bedroom_2",
-          "ceiling_pred": 3.1630882911929317,
+          "ceiling_pred": 2.9476298776039878,
           "ceiling_truth": 2.9718,
-          "ceiling_abs_error": 0.19128829119293167,
-          "floor_area_pred": 14.414905332181688,
+          "ceiling_abs_error": 0.02417012239601224,
+          "floor_area_pred": 23.012864604841035,
           "floor_area_truth": null,
           "floor_area_abs_error": null,
           "walls_matched": 4,
@@ -1196,10 +1200,10 @@
         },
         {
           "room_id": "kitchen",
-          "ceiling_pred": 2.1134234434066093,
+          "ceiling_pred": 2.0621496403674975,
           "ceiling_truth": 2.9718,
-          "ceiling_abs_error": 0.8583765565933907,
-          "floor_area_pred": 11.594623472924127,
+          "ceiling_abs_error": 0.9096503596325025,
+          "floor_area_pred": 13.19648572832309,
           "floor_area_truth": null,
           "floor_area_abs_error": null,
           "walls_matched": 4,
@@ -1214,125 +1218,125 @@
           "truth_wall": "A",
           "pred_wall": "w4",
           "truth": 3.6576,
-          "pred": 3.678613185500765,
-          "ci_low": 2.7838447382089395,
-          "ci_high": 4.57338163279259,
-          "abs_error": 0.02101318550076492
+          "pred": 4.026159155783308,
+          "ci_low": 3.0468056143230102,
+          "ci_high": 5.0055126972436055,
+          "abs_error": 0.3685591557833079
         },
         {
           "room_id": "bedroom_1",
           "truth_wall": "B",
           "pred_wall": "w3",
           "truth": 3.9116,
-          "pred": 4.376531308549869,
-          "ci_low": 3.312022991398228,
-          "ci_high": 5.44103962570151,
-          "abs_error": 0.4649313085498692
+          "pred": 5.193414895207411,
+          "ci_low": 3.930263433123508,
+          "ci_high": 6.456566357291314,
+          "abs_error": 1.281814895207411
         },
         {
           "room_id": "bedroom_1",
           "truth_wall": "C",
           "pred_wall": "w2",
           "truth": 3.6576,
-          "pred": 3.678613185500765,
-          "ci_low": 2.7838447382089395,
-          "ci_high": 4.57338163279259,
-          "abs_error": 0.02101318550076492
+          "pred": 4.026159155783308,
+          "ci_low": 3.0468056143230102,
+          "ci_high": 5.0055126972436055,
+          "abs_error": 0.3685591557833079
         },
         {
           "room_id": "bedroom_1",
           "truth_wall": "D",
           "pred_wall": "w1",
           "truth": 3.9116,
-          "pred": 4.376531308549869,
-          "ci_low": 3.312022991398228,
-          "ci_high": 5.44103962570151,
-          "abs_error": 0.4649313085498692
-        },
-        {
-          "room_id": "bedroom_2",
-          "truth_wall": "B",
-          "pred_wall": "w4",
-          "truth": 3.6322,
-          "pred": 3.6679036847685507,
-          "ci_low": 2.954076378246503,
-          "ci_high": 4.381730991290598,
-          "abs_error": 0.03570368476855057
-        },
-        {
-          "room_id": "bedroom_2",
-          "truth_wall": "C",
-          "pred_wall": "w3",
-          "truth": 3.8862,
-          "pred": 3.9300119553415387,
-          "ci_low": 3.165101066266664,
-          "ci_high": 4.694922844416413,
-          "abs_error": 0.04381195534153859
-        },
-        {
-          "room_id": "bedroom_2",
-          "truth_wall": "D",
-          "pred_wall": "w2",
-          "truth": 3.6322,
-          "pred": 3.6679036847685507,
-          "ci_low": 2.954076378246503,
-          "ci_high": 4.381730991290598,
-          "abs_error": 0.03570368476855057
+          "pred": 5.193414895207411,
+          "ci_low": 3.930263433123508,
+          "ci_high": 6.456566357291314,
+          "abs_error": 1.281814895207411
         },
         {
           "room_id": "bedroom_2",
           "truth_wall": "A",
-          "pred_wall": "w1",
+          "pred_wall": "w4",
           "truth": 3.8862,
-          "pred": 3.9300119553415387,
-          "ci_low": 3.165101066266664,
-          "ci_high": 4.694922844416413,
-          "abs_error": 0.04381195534153859
+          "pred": 5.322681653122929,
+          "ci_low": 4.028071264181348,
+          "ci_high": 6.617292042064511,
+          "abs_error": 1.4364816531229292
+        },
+        {
+          "room_id": "bedroom_2",
+          "truth_wall": "B",
+          "pred_wall": "w3",
+          "truth": 3.6322,
+          "pred": 4.323547058528083,
+          "ci_low": 3.2713909862239228,
+          "ci_high": 5.375703130832244,
+          "abs_error": 0.6913470585280832
+        },
+        {
+          "room_id": "bedroom_2",
+          "truth_wall": "C",
+          "pred_wall": "w2",
+          "truth": 3.8862,
+          "pred": 5.322681653122929,
+          "ci_low": 4.028071264181348,
+          "ci_high": 6.617292042064511,
+          "abs_error": 1.4364816531229292
+        },
+        {
+          "room_id": "bedroom_2",
+          "truth_wall": "D",
+          "pred_wall": "w1",
+          "truth": 3.6322,
+          "pred": 4.323547058528083,
+          "ci_low": 3.2713909862239228,
+          "ci_high": 5.375703130832244,
+          "abs_error": 0.6913470585280832
         },
         {
           "room_id": "kitchen",
           "truth_wall": "B",
           "pred_wall": "w4",
           "truth": 3.6028,
-          "pred": 4.37765628578795,
-          "ci_low": 3.5252071928931046,
-          "ci_high": 5.230105378682795,
-          "abs_error": 0.77485628578795
+          "pred": 5.006697178997099,
+          "ci_low": 4.031671533798746,
+          "ci_high": 5.981722824195452,
+          "abs_error": 1.403897178997099
         },
         {
           "room_id": "kitchen",
           "truth_wall": "C",
           "pred_wall": "w3",
           "truth": 2.6924,
-          "pred": 2.6485915558437156,
-          "ci_low": 2.1326332855493484,
-          "ci_high": 3.164549826138083,
-          "abs_error": 0.04380844415628449
+          "pred": 2.635766705380513,
+          "ci_low": 2.1224344660392718,
+          "ci_high": 3.149098944721754,
+          "abs_error": 0.056633294619487184
         },
         {
           "room_id": "kitchen",
           "truth_wall": "D",
           "pred_wall": "w2",
           "truth": 3.6028,
-          "pred": 4.37765628578795,
-          "ci_low": 3.5252071928931046,
-          "ci_high": 5.230105378682795,
-          "abs_error": 0.77485628578795
+          "pred": 5.006697178997099,
+          "ci_low": 4.031671533798746,
+          "ci_high": 5.981722824195452,
+          "abs_error": 1.403897178997099
         },
         {
           "room_id": "kitchen",
           "truth_wall": "A",
           "pred_wall": "w1",
           "truth": 2.6924,
-          "pred": 2.6485915558437156,
-          "ci_low": 2.1326332855493484,
-          "ci_high": 3.164549826138083,
-          "abs_error": 0.04380844415628449
+          "pred": 2.635766705380513,
+          "ci_low": 2.1224344660392718,
+          "ci_high": 3.149098944721754,
+          "abs_error": 0.056633294619487184
         }
       ],
       "openings": [],
       "footprint": {
-        "pred": 79.84731247493954,
+        "pred": 111.10152038659733,
         "truth": null,
         "truth_source": "sum of room floor areas"
       },
@@ -1366,7 +1370,7 @@
           ]
         ]
       },
-      "overlap_m2_geometric": 10.019104690756318,
+      "overlap_m2_geometric": 28.005313725218336,
       "overlap_m2_claimed": 0.0
     },
     {
@@ -2209,10 +2213,10 @@
   "calibration": {
     "overall": {
       "n": 37,
-      "coverage": 0.972972972972973,
-      "mean_width_pct": 250.6199884788624,
-      "outside": 1,
-      "confident_garbage": 1,
+      "coverage": 0.8108108108108109,
+      "mean_width_pct": 252.31540427210535,
+      "outside": 7,
+      "confident_garbage": 7,
       "nominal_level": [
         0.95
       ],
@@ -2223,10 +2227,10 @@
     "by_tier": {
       "photo": {
         "n": 16,
-        "coverage": 0.9375,
-        "mean_width_pct": 42.651373892601505,
-        "outside": 1,
-        "confident_garbage": 1,
+        "coverage": 0.5625,
+        "mean_width_pct": 46.57202291447578,
+        "outside": 7,
+        "confident_garbage": 7,
         "nominal_level": [
           0.95
         ],
@@ -2252,7 +2256,7 @@
       "ceiling_height": {
         "n": 9,
         "coverage": 0.8888888888888888,
-        "mean_width_pct": 51.29727499411293,
+        "mean_width_pct": 53.94269996920827,
         "outside": 1,
         "confident_garbage": 1,
         "nominal_level": [
@@ -2264,10 +2268,10 @@
       },
       "wall_length": {
         "n": 28,
-        "coverage": 1.0,
-        "mean_width_pct": 314.688003527532,
-        "outside": 0,
-        "confident_garbage": 0,
+        "coverage": 0.7857142857142857,
+        "mean_width_pct": 316.078059226608,
+        "outside": 6,
+        "confident_garbage": 6,
         "nominal_level": [
           0.95
         ],
@@ -2280,7 +2284,7 @@
       "photo/ceiling_height": {
         "n": 4,
         "coverage": 0.75,
-        "mean_width_pct": 44.08088513742569,
+        "mean_width_pct": 50.03309133139021,
         "outside": 1,
         "confident_garbage": 1,
         "nominal_level": [
@@ -2292,10 +2296,10 @@
       },
       "photo/wall_length": {
         "n": 12,
-        "coverage": 1.0,
-        "mean_width_pct": 42.17487014432679,
-        "outside": 0,
-        "confident_garbage": 0,
+        "coverage": 0.5,
+        "mean_width_pct": 45.41833344217098,
+        "outside": 6,
+        "confident_garbage": 6,
         "nominal_level": [
           0.95
         ],
@@ -2332,7 +2336,7 @@
     },
     "median_width_by_quantity": {
       "ceiling_height": 1.0,
-      "wall_length": 3.407039270414984
+      "wall_length": 3.463234226508396
     }
   },
   "provenance": [
@@ -2414,15 +2418,15 @@
       "repeat_of": null,
       "repeat_kind": null,
       "source": "reused from the tier branch",
-      "source_path": "runs/photo/own",
+      "source_path": "fix_loop/loop2_video_scale/photo_originals",
       "recomputed": false,
-      "plan_input_sha256": "dab64f05a6f074187b4dfb87096c55b3f6bd366ff237bb2e8740a42272ac7003",
+      "plan_input_sha256": "d253b661f47ebf35cc45dc41356726a24dac56455a89e36c0394bdaae2971db6",
       "input_now": {
         "present": true,
-        "sha256": "0c88835dea1d1147ea129cc9d7e02c01b61249984220c51ab3c5f981ff2d88d6"
+        "sha256": "d253b661f47ebf35cc45dc41356726a24dac56455a89e36c0394bdaae2971db6"
       },
-      "input_hash_matches": false,
-      "duration_s": 76.995263,
+      "input_hash_matches": true,
+      "duration_s": 441.852943,
       "pipeline": "photo",
       "plan_path": "/Users/anshusinha/Downloads/Cozmo-AI/Cozmo-floor-plan-project-by-Anshu-Sinha/docs/benchmark/runs/own_home_photo/plan.json",
       "rooms": [
@@ -2642,11 +2646,11 @@
       "summary": {
         "n_dimensions": 6,
         "n_scored": 6,
-        "ours": 1,
+        "ours": 0,
         "tie": 1,
-        "theirs": 4,
+        "theirs": 5,
         "not_yet": 0,
-        "beat_or_tie_pct": 33.333333333333336,
+        "beat_or_tie_pct": 16.666666666666668,
         "tie_threshold_m": 0.015
       },
       "rows": [
@@ -2659,10 +2663,10 @@
           ],
           "tape_m": 3.6576,
           "rival_m": 3.41,
-          "ours_m": 3.678613185500765,
+          "ours_m": 4.026159155783308,
           "rival_error_m": 0.24759999999999982,
-          "our_error_m": 0.02101318550076492,
-          "verdict": "ours"
+          "our_error_m": 0.3685591557833079,
+          "verdict": "theirs"
         },
         {
           "room": "bedroom_1",
@@ -2673,9 +2677,9 @@
           ],
           "tape_m": 3.9116,
           "rival_m": 3.73,
-          "ours_m": 4.376531308549869,
+          "ours_m": 5.193414895207411,
           "rival_error_m": 0.18159999999999998,
-          "our_error_m": 0.4649313085498692,
+          "our_error_m": 1.281814895207411,
           "verdict": "theirs"
         },
         {
@@ -2686,9 +2690,9 @@
           ],
           "tape_m": 2.6924,
           "rival_m": 2.75,
-          "ours_m": 2.6485915558437156,
+          "ours_m": 2.635766705380513,
           "rival_error_m": 0.057599999999999874,
-          "our_error_m": 0.04380844415628449,
+          "our_error_m": 0.056633294619487184,
           "verdict": "tie"
         },
         {
@@ -2699,9 +2703,9 @@
           ],
           "tape_m": 2.6924,
           "rival_m": 2.7,
-          "ours_m": 2.6485915558437156,
+          "ours_m": 2.635766705380513,
           "rival_error_m": 0.007600000000000051,
-          "our_error_m": 0.04380844415628449,
+          "our_error_m": 0.056633294619487184,
           "verdict": "theirs"
         },
         {
@@ -2712,9 +2716,9 @@
           ],
           "tape_m": 3.6028,
           "rival_m": 3.51,
-          "ours_m": 4.37765628578795,
+          "ours_m": 5.006697178997099,
           "rival_error_m": 0.0928,
-          "our_error_m": 0.77485628578795,
+          "our_error_m": 1.403897178997099,
           "verdict": "theirs"
         },
         {
@@ -2725,9 +2729,9 @@
           ],
           "tape_m": 3.6028,
           "rival_m": 3.79,
-          "ours_m": 4.37765628578795,
+          "ours_m": 5.006697178997099,
           "rival_error_m": 0.18720000000000026,
-          "our_error_m": 0.77485628578795,
+          "our_error_m": 1.403897178997099,
           "verdict": "theirs"
         }
       ]

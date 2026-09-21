@@ -98,10 +98,13 @@ captures:
     device: "Moto Edge 50 Neo, Android"
     repeat_of: null
     multi_room: false
+  # The whole property as captured. The input is the capture folder itself:
+  # the photo tier names non-room subfolders and carries on, so the screenshot
+  # folder and the repeat capture do not need a separate layout.
   - capture_id: own_home_photo
     space_id: own_home
     tier: photo
-    input: data/own/home
+    input: data/own
     ground_truth: benchmarks/ground_truth/own_home_photo.yaml
     device: "Moto Edge 50 Neo, Android (all four rooms)"
     repeat_of: null

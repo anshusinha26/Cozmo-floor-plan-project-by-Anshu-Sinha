@@ -8,11 +8,11 @@ Not compared: magicplan. Offers no camera scan on Android, so there is nothing t
 
 | room | dimension | walls | tape m | theirs m | their error m | ours m | our error m | closer |
 |---|---|---|---|---|---|---|---|---|
-| bedroom_1 | short_pair | A, C | 3.658 | 3.410 | 0.248 | 3.679 | 0.021 | ours |
-| bedroom_1 | long_pair | B, D | 3.912 | 3.730 | 0.182 | 4.377 | 0.465 | theirs |
-| kitchen | short_wall_1 | A | 2.692 | 2.750 | 0.058 | 2.649 | 0.044 | tie |
-| kitchen | short_wall_2 | C | 2.692 | 2.700 | 0.008 | 2.649 | 0.044 | theirs |
-| kitchen | long_wall_1 | B | 3.603 | 3.510 | 0.093 | 4.378 | 0.775 | theirs |
-| kitchen | long_wall_2 | D | 3.603 | 3.790 | 0.187 | 4.378 | 0.775 | theirs |
+| bedroom_1 | short_pair | A, C | 3.658 | 3.410 | 0.248 | 4.026 | 0.369 | theirs |
+| bedroom_1 | long_pair | B, D | 3.912 | 3.730 | 0.182 | 5.193 | 1.282 | theirs |
+| kitchen | short_wall_1 | A | 2.692 | 2.750 | 0.058 | 2.636 | 0.057 | tie |
+| kitchen | short_wall_2 | C | 2.692 | 2.700 | 0.008 | 2.636 | 0.057 | theirs |
+| kitchen | long_wall_1 | B | 3.603 | 3.510 | 0.093 | 5.007 | 1.404 | theirs |
+| kitchen | long_wall_2 | D | 3.603 | 3.790 | 0.187 | 5.007 | 1.404 | theirs |
 
-Beat or tie: 33% of 6 scored dimensions (ours 1, tie 1, theirs 4).
+Beat or tie: 17% of 6 scored dimensions (ours 0, tie 1, theirs 5).
