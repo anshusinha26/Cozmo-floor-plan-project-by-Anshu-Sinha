@@ -276,3 +276,30 @@ def test_angles_are_not_clamped_like_lengths():
     notes: list[str] = []
     m = Measurement(value=0.0, ci_low=-15.0, ci_high=15.0, unit="deg", method="t", ci_level=0.95)
     assert _clamp_measurement(m, "theta", notes).ci_low == -15.0
+
+
+def test_an_unsupported_side_reaches_the_plan_as_a_partially_observed_room():
+    """The fit knows which side it guessed; the plan has to know too.
+
+    Without this the interval on a guessed side is as narrow as one measured
+    against two wall faces, the renderer draws it as a solid measured wall,
+    and nothing downstream can tell the difference. The warning text alone
+    does not reach any of them.
+    """
+    faces = [_face(0, 0.0, 0.0, 3.0), _face(1, 0.0, 0.0, 4.0), _face(1, 3.0, 0.0, 4.0)]
+    fit = fit_single_room(faces, _path(), CFG, margin_m=0.35)
+    assert fit.n_supported == 3
+    room = as_room_result(fit, ManhattanFrame(yaw=0.0, origin=np.zeros(2)), cell_m=0.05).rooms[0]
+    assert room.partially_observed is True
+    # Three of four sides are backed, but they are not equal lengths:
+    # the share is of outline length, not of side count.
+    assert room.perimeter_support == pytest.approx(0.778, abs=0.005)
+
+
+def test_a_fully_supported_room_is_not_flagged():
+    faces = [_face(0, 0.0, 0.0, 3.0), _face(0, 4.0, 0.0, 3.0),
+             _face(1, 0.0, 0.0, 4.0), _face(1, 3.0, 0.0, 4.0)]
+    fit = fit_single_room(faces, _path(), CFG)
+    room = as_room_result(fit, ManhattanFrame(yaw=0.0, origin=np.zeros(2)), cell_m=0.05).rooms[0]
+    assert room.partially_observed is False
+    assert room.perimeter_support == pytest.approx(1.0)

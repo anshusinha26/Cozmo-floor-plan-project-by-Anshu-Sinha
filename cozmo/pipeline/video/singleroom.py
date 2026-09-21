@@ -227,6 +227,29 @@ def _l_polygon(x0: float, x1: float, z0: float, z1: float, axis: int, direction:
     return None if flipped is None else [(b, a) for a, b in flipped]
 
 
+def _perimeter_support(fit: SingleRoomFit) -> float:
+    """Share of the outline's length that lies on an observed wall face.
+
+    A side with no face is closed at the camera path plus a margin, which is a
+    guess, not a measurement. Reporting the share that is not a guess is what
+    lets the plan builder widen those intervals and lets the renderer draw the
+    guessed sides differently. The fit's warning text reaches none of them.
+    """
+    poly = np.asarray(fit.polygon_frame, dtype=float)
+    backed_positions = [(s.axis, s.pos) for s in fit.sides if s.supported]
+    total = backed = 0.0
+    for a, b in zip(poly, np.roll(poly, -1, axis=0)):
+        length = float(np.hypot(b[0] - a[0], b[1] - a[1]))
+        if length < 1e-9:
+            continue
+        total += length
+        # An edge running along z holds x constant, so its face normal is x: axis 0.
+        axis = 0 if abs(b[0] - a[0]) < abs(b[1] - a[1]) else 1
+        if any(ax == axis and abs(pos - float(a[axis])) < 1e-6 for ax, pos in backed_positions):
+            backed += length
+    return float(backed / total) if total else 1.0
+
+
 def as_room_result(fit: SingleRoomFit, frame, cell_m: float = 0.03, room_id: str = "room_01",
                    label: str = "room") -> RoomResult:
     """Wrap the fit in the structure the plan backend expects."""
@@ -243,7 +266,10 @@ def as_room_result(fit: SingleRoomFit, frame, cell_m: float = 0.03, room_id: str
     mask = MplPath(poly).contains_points(centres).reshape(shape)
 
     world = [tuple(p) for p in frame.to_world(poly)]
+    support = _perimeter_support(fit)
     room = Room(id=room_id, label=label, kind="room", polygon_frame=[tuple(p) for p in poly],
-                polygon_world=world, area_m2=fit.area_m2, mask=mask)
+                polygon_world=world, area_m2=fit.area_m2, mask=mask,
+                partially_observed=fit.n_supported < len(fit.sides),
+                perimeter_support=support)
     return RoomResult(rooms=[room], grid=grid, free=mask, occupied=~mask,
                       labels=mask.astype(np.int32), warnings=list(fit.warnings))
