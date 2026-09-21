@@ -6,16 +6,16 @@ Rebuild with `scripts/benchmark_all.py`. Tape readings are centimetres to the ne
 
 Video and photo plans cost about eight minutes a capture and were produced on the tier branch. They are reused, not recomputed. The lidar tier is run here because it takes seconds.
 
+The EXAMPLE fixtures in `benchmarks/captures.yaml` are left out: they are placeholder files run through the stub pipeline, and nothing the stub produces belongs in a table of measured results.
+
 | capture | tier | plan | input hash matches | duration s | note |
 |---|---|---|---|---|---|
-| EXAMPLE | photo | no plan available | None | n/a |  |
-| EXAMPLE_REPEAT | photo | no plan available | None | n/a |  |
 | own_hall_photo | photo | no plan available | None | n/a |  |
 | own_bedroom_1_photo | photo | no plan available | None | n/a |  |
 | own_bedroom_2_photo | photo | no plan available | None | n/a |  |
 | own_bedroom_2_repeat_photo | photo | no plan available | None | n/a |  |
 | own_kitchen_photo | photo | no plan available | None | n/a |  |
-| own_home_photo | photo | reused from the tier branch | True | 1011 |  |
+| own_home_photo | photo | re-run here after a fix, see the note | True | 744 |  |
 | own_hall_video | video | reused from the tier branch | True | 570 | room id renamed room_01 -> hall, geometry untouched |
 | own_bedroom_1_video | video | reused from the tier branch | True | 507 | room id renamed room_01 -> bedroom_1, geometry untouched |
 | own_bedroom_2_video | video | reused from the tier branch | True | 375 | room id renamed room_01 -> bedroom_2, geometry untouched |
@@ -61,9 +61,9 @@ Captures: own.
 | wall_length_tier | FAIL | 3.991 | 1 | 12 |  |
 | footprint | NOT EVALUATED | 0 | 0.08 | 0 | no capture has a tape-measured footprint: the hall was not measured wall by wall, so the only multi-room property has no truth footprint to compare against |
 | stitch_adjacency | PASS | 0 | 0 | 1 |  |
-| stitch_overlap | FAIL | 24.76 | 0.05 | 1 |  |
+| stitch_overlap | PASS | 0 | 0.05 | 1 |  |
 
-**1 of 6 evaluated gates pass** (2 not evaluated).
+**2 of 6 evaluated gates pass** (2 not evaluated).
 
 ### Every capture together
 
@@ -78,7 +78,7 @@ Kept for completeness. Read the per-tier tables above instead.
 | wall_length_tier | FAIL | 45.82 | 1 | 28 |
 | footprint | NOT EVALUATED | 0 | 0.08 | 0 |
 | stitch_adjacency | PASS | 0 | 0 | 6 |
-| stitch_overlap | FAIL | 24.76 | 0.05 | 6 |
+| stitch_overlap | PASS | 0 | 0.05 | 6 |
 
 ### Two gaps worth stating plainly
 
@@ -93,11 +93,11 @@ Coverage is the share of tape readings inside the stated 95% interval. Confident
 
 | group | n | coverage | mean width, % of value | outside | confident garbage |
 |---|---|---|---|---|---|
-| all | 37 | 0.95 | 252 | 2 | 2 |
-| photo | 16 | 0.88 | 46 | 2 | 2 |
+| all | 37 | 0.95 | 262 | 2 | 2 |
+| photo | 16 | 0.88 | 70 | 2 | 2 |
 | video | 21 | 1.00 | 409 | 0 | 0 |
 | photo/ceiling_height | 4 | 1.00 | 47 | 0 | 0 |
-| photo/wall_length | 12 | 0.83 | 45 | 2 | 2 |
+| photo/wall_length | 12 | 0.83 | 78 | 2 | 2 |
 | video/ceiling_height | 5 | 1.00 | 57 | 0 | 0 |
 | video/wall_length | 16 | 1.00 | 519 | 0 | 0 |
 
@@ -117,7 +117,7 @@ Walls seen in both: 0, median difference 0.0 cm. Registered footprint IoU 0.14.
 
 | capture | tier | seconds |
 |---|---|---|
-| own_home_photo | photo | 1011 |
+| own_home_photo | photo | 744 |
 | own_hall_video | video | 570 |
 | own_bedroom_1_video | video | 507 |
 | own_bedroom_2_video | video | 375 |

@@ -1,6 +1,6 @@
 # Evaluation report
 
-Captures: 6. Gates passed: 1 of 7 evaluated (8 defined). Overall: FAIL. Ceiling diagnosis: **repeatable_but_biased**.
+Captures: 6. Gates passed: 2 of 7 evaluated (8 defined). Overall: FAIL. Ceiling diagnosis: **repeatable_but_biased**.
 
 ## Gates, per tier
 
@@ -17,9 +17,9 @@ Captures: own.
 | wall_length_tier | FAIL | 3.9911 | 1.0000 | 12 |  |
 | footprint | NOT EVALUATED | 0.0000 | 0.0800 | 0 | no capture has a tape-measured footprint: the hall was not measured wall by wall, so the only multi-room property has no truth footprint to compare against |
 | stitch_adjacency | PASS | 0.0000 | 0.0000 | 1 |  |
-| stitch_overlap | FAIL | 24.7647 | 0.0500 | 1 |  |
+| stitch_overlap | PASS | 0.0000 | 0.0500 | 1 |  |
 
-1 of 6 evaluated gates pass, 2 not evaluated.
+2 of 6 evaluated gates pass, 2 not evaluated.
 
 ### video
 
@@ -49,7 +49,7 @@ Captures: hall, bedroom_1, bedroom_2, bedroom_2_repeat, kitchen.
 | wall_length_tier | FAIL | 45.8165 | 1.0000 | 28 |  |
 | footprint | NOT EVALUATED | 0.0000 | 0.0800 | 0 | no capture has a tape-measured footprint: the hall was not measured wall by wall, so the only multi-room property has no truth footprint to compare against |
 | stitch_adjacency | PASS | 0.0000 | 0.0000 | 6 |  |
-| stitch_overlap | FAIL | 24.7647 | 0.0500 | 6 |  |
+| stitch_overlap | PASS | 0.0000 | 0.0500 | 6 |  |
 
 ## Matching counts
 
@@ -77,14 +77,14 @@ Walls:
 
 | room | truth wall | pred wall | truth m | pred m | ci low | ci high | abs err |
 |---|---|---|---|---|---|---|---|
-| bedroom_1 | A | w4 | 3.658 | 3.637 | 2.752 | 4.521 | 0.021 |
-| bedroom_1 | B | w3 | 3.912 | 4.729 | 3.579 | 5.880 | 0.818 |
-| bedroom_1 | C | w2 | 3.658 | 3.637 | 2.752 | 4.521 | 0.021 |
-| bedroom_1 | D | w1 | 3.912 | 4.729 | 3.579 | 5.880 | 0.818 |
-| bedroom_2 | A | w4 | 3.886 | 4.586 | 3.470 | 5.701 | 0.700 |
-| bedroom_2 | B | w3 | 3.632 | 3.922 | 2.968 | 4.876 | 0.290 |
-| bedroom_2 | C | w2 | 3.886 | 4.586 | 3.470 | 5.701 | 0.700 |
-| bedroom_2 | D | w1 | 3.632 | 3.922 | 2.968 | 4.876 | 0.290 |
+| bedroom_1 | A | w4 | 3.658 | 3.637 | 1.868 | 5.406 | 0.021 |
+| bedroom_1 | B | w3 | 3.912 | 4.729 | 2.428 | 7.030 | 0.818 |
+| bedroom_1 | C | w2 | 3.658 | 3.637 | 1.868 | 5.406 | 0.021 |
+| bedroom_1 | D | w1 | 3.912 | 4.729 | 2.428 | 7.030 | 0.818 |
+| bedroom_2 | A | w4 | 3.886 | 4.586 | 2.355 | 6.817 | 0.700 |
+| bedroom_2 | B | w3 | 3.632 | 3.922 | 2.013 | 5.831 | 0.290 |
+| bedroom_2 | C | w2 | 3.886 | 4.586 | 2.355 | 6.817 | 0.700 |
+| bedroom_2 | D | w1 | 3.632 | 3.922 | 2.013 | 5.831 | 0.290 |
 | kitchen | B | w4 | 3.603 | 4.753 | 3.828 | 5.679 | 1.150 |
 | kitchen | C | w3 | 2.692 | 2.658 | 2.140 | 3.175 | 0.035 |
 | kitchen | D | w2 | 3.603 | 4.753 | 3.828 | 5.679 | 1.150 |
@@ -92,9 +92,9 @@ Walls:
 
 Missing rooms: none. Phantom rooms: none. Missed openings: ['door_staircase', 'door_portico', 'door_bedroom_2', 'door_hall', 'door_hall', 'door_hall']. Phantom openings: ['kitchen_d1'].
 
-Footprint: pred 89.928 m2, truth n/a m2 (sum of room floor areas). Room overlap (geometric): 24.765 m2.
+Footprint: pred 89.928 m2, truth n/a m2 (sum of room floor areas). Room overlap (geometric): 0.000 m2.
 
-Warnings: Skipped all (0 image(s), needs at least 2); Skipped home (0 image(s), needs at least 2); app_comparision was excluded by --exclude and is not treated as a room; bedroom_2_repeat is a repeat capture: it is measured and reported, but it is not placed in the property, because it is the same room as another; kitchen is attached wall to wall: no free door pair was available between it and hall; bedroom_1: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall; bedroom_1: 1 of 4 room sides had no supported wall face (x+); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed; bedroom_1: Windows are not detected in this version; openings are doors and pass-throughs only; bedroom_1: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty; bedroom_2: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall; bedroom_2: 1 of 4 room sides had no supported wall face (z-); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed; bedroom_2: Windows are not detected in this version; openings are doors and pass-throughs only; bedroom_2: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty; hall: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall; hall: 1 of 4 room sides had no supported wall face (z+); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed; hall: Windows are not detected in this version; openings are doors and pass-throughs only; hall: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty; kitchen: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall; kitchen: Windows are not detected in this version; openings are doors and pass-throughs only; kitchen: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty; footprint area is reported with an interval wider than the value itself (89.93 m2, plus or minus 118.75). It is an unreliable measurement: the reconstruction constrains it barely or not at all
+Warnings: Skipped all (0 image(s), needs at least 2); Skipped home (0 image(s), needs at least 2); app_comparision was excluded by --exclude and is not treated as a room; bedroom_2_repeat is a repeat capture: it is measured and reported, but it is not placed in the property, because it is the same room as another; kitchen is attached wall to wall: no free door pair was available between it and hall; bedroom_1: 1 of 4 room sides had no supported wall face (x+); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed; bedroom_1: Windows are not detected in this version; openings are doors and pass-throughs only; bedroom_1: own: only 78% of the outline is backed by observed wall; the room is partially observed and its intervals are widened; bedroom_1: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty; bedroom_1: own floor area is reported with an interval wider than the value itself (17.20 m2, plus or minus 20.43). It is an unreliable measurement: the reconstruction constrains it barely or not at all; bedroom_1: s_own_floor area is reported with an interval wider than the value itself (17.20 m2, plus or minus 20.43). It is an unreliable measurement: the reconstruction constrains it barely or not at all; bedroom_1: s_own_ceiling area is reported with an interval wider than the value itself (17.20 m2, plus or minus 20.43). It is an unreliable measurement: the reconstruction constrains it barely or not at all; bedroom_2: 1 of 4 room sides had no supported wall face (z-); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed; bedroom_2: Windows are not detected in this version; openings are doors and pass-throughs only; bedroom_2: own: only 77% of the outline is backed by observed wall; the room is partially observed and its intervals are widened; bedroom_2: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty; bedroom_2: own floor area is reported with an interval wider than the value itself (17.99 m2, plus or minus 21.37). It is an unreliable measurement: the reconstruction constrains it barely or not at all; bedroom_2: s_own_floor area is reported with an interval wider than the value itself (17.99 m2, plus or minus 21.37). It is an unreliable measurement: the reconstruction constrains it barely or not at all; bedroom_2: s_own_ceiling area is reported with an interval wider than the value itself (17.99 m2, plus or minus 21.37). It is an unreliable measurement: the reconstruction constrains it barely or not at all; hall: 1 of 4 room sides had no supported wall face (z+); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed; hall: Windows are not detected in this version; openings are doors and pass-throughs only; hall: own: only 76% of the outline is backed by observed wall; the room is partially observed and its intervals are widened; hall: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty; hall: own floor area is reported with an interval wider than the value itself (42.11 m2, plus or minus 50.01). It is an unreliable measurement: the reconstruction constrains it barely or not at all; hall: s_own_floor area is reported with an interval wider than the value itself (42.11 m2, plus or minus 50.01). It is an unreliable measurement: the reconstruction constrains it barely or not at all; hall: s_own_ceiling area is reported with an interval wider than the value itself (42.11 m2, plus or minus 50.01). It is an unreliable measurement: the reconstruction constrains it barely or not at all; kitchen: Windows are not detected in this version; openings are doors and pass-throughs only; kitchen: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty; hall floor area is reported with an interval wider than the value itself (42.11 m2, plus or minus 50.01). It is an unreliable measurement: the reconstruction constrains it barely or not at all; bedroom_1 floor area is reported with an interval wider than the value itself (17.20 m2, plus or minus 20.43). It is an unreliable measurement: the reconstruction constrains it barely or not at all; bedroom_2 floor area is reported with an interval wider than the value itself (17.99 m2, plus or minus 21.37). It is an unreliable measurement: the reconstruction constrains it barely or not at all; s_hall_floor area is reported with an interval wider than the value itself (42.11 m2, plus or minus 50.01). It is an unreliable measurement: the reconstruction constrains it barely or not at all; s_hall_ceiling area is reported with an interval wider than the value itself (42.11 m2, plus or minus 50.01). It is an unreliable measurement: the reconstruction constrains it barely or not at all; s_bedroom_1_floor area is reported with an interval wider than the value itself (17.20 m2, plus or minus 20.43). It is an unreliable measurement: the reconstruction constrains it barely or not at all; s_bedroom_1_ceiling area is reported with an interval wider than the value itself (17.20 m2, plus or minus 20.43). It is an unreliable measurement: the reconstruction constrains it barely or not at all; s_bedroom_2_floor area is reported with an interval wider than the value itself (17.99 m2, plus or minus 21.37). It is an unreliable measurement: the reconstruction constrains it barely or not at all; s_bedroom_2_ceiling area is reported with an interval wider than the value itself (17.99 m2, plus or minus 21.37). It is an unreliable measurement: the reconstruction constrains it barely or not at all; footprint area is reported with an interval wider than the value itself (89.93 m2, plus or minus 278.28). It is an unreliable measurement: the reconstruction constrains it barely or not at all
 
 ### hall (video, video-0.1.0)
 
@@ -200,13 +200,13 @@ Overall:
 
 | group | n | coverage | mean width % of value | outside | confident garbage |
 |---|---|---|---|---|---|
-| all | 37 | 0.946 | 251.9 | 2 | 2 |
+| all | 37 | 0.946 | 262.5 | 2 | 2 |
 
 By tier:
 
 | group | n | coverage | mean width % of value | outside | confident garbage |
 |---|---|---|---|---|---|
-| photo | 16 | 0.875 | 45.7 | 2 | 2 |
+| photo | 16 | 0.875 | 70.0 | 2 | 2 |
 | video | 21 | 1.000 | 409.1 | 0 | 0 |
 
 By quantity:
@@ -214,14 +214,14 @@ By quantity:
 | group | n | coverage | mean width % of value | outside | confident garbage |
 |---|---|---|---|---|---|
 | ceiling_height | 9 | 1.000 | 52.4 | 0 | 0 |
-| wall_length | 28 | 0.929 | 316.1 | 2 | 2 |
+| wall_length | 28 | 0.929 | 330.0 | 2 | 2 |
 
 By tier and quantity:
 
 | group | n | coverage | mean width % of value | outside | confident garbage |
 |---|---|---|---|---|---|
 | photo/ceiling_height | 4 | 1.000 | 46.6 | 0 | 0 |
-| photo/wall_length | 12 | 0.833 | 45.4 | 2 | 2 |
+| photo/wall_length | 12 | 0.833 | 77.9 | 2 | 2 |
 | video/ceiling_height | 5 | 1.000 | 57.1 | 0 | 0 |
 | video/wall_length | 16 | 1.000 | 519.1 | 0 | 0 |
 

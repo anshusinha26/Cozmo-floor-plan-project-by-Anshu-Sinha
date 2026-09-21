@@ -125,7 +125,7 @@ rebuilt by `scripts/benchmark_all.py`.
 
 | tier | median wall error | budget | gates passed | interval coverage |
 |---|---|---|---|---|
-| photo | **13.0%**, 6 of 12 walls inside the budget | 8% | 1 of 6 evaluated | 0.88, mean width 46% of value |
+| photo | **13.0%**, 6 of 12 walls inside the budget | 8% | 2 of 6 evaluated | 0.88, mean width 70% of value |
 | video | **32.9%** | 3% | 2 of 7 evaluated | 1.00, mean width 409% of value |
 | lidar | no number exists | 2 cm or 1%, provisional | 0 of 8, all NOT EVALUATED | not evaluated |
 

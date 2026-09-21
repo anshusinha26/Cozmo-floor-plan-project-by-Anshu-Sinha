@@ -3,7 +3,7 @@
   "n_captures": 6,
   "summary": {
     "passed": false,
-    "n_passed": 1,
+    "n_passed": 2,
     "n_evaluated": 7,
     "n_gates": 8,
     "ceiling_height_diagnosis": "repeatable_but_biased",
@@ -851,18 +851,18 @@
     },
     {
       "name": "stitch_overlap",
-      "passed": false,
+      "passed": true,
       "evaluated": true,
-      "status": "FAIL",
-      "value": 24.764748520222476,
+      "status": "PASS",
+      "value": 0.0,
       "threshold": 0.05,
       "n": 6,
       "detail": {
         "per_capture": [
           {
             "capture_id": "own",
-            "overlap_m2": 24.764748520222476,
-            "ok": false
+            "overlap_m2": 0.0,
+            "ok": true
           },
           {
             "capture_id": "hall",
@@ -1289,18 +1289,18 @@
       },
       {
         "name": "stitch_overlap",
-        "passed": false,
+        "passed": true,
         "evaluated": true,
-        "status": "FAIL",
-        "value": 24.764748520222476,
+        "status": "PASS",
+        "value": 0.0,
         "threshold": 0.05,
         "n": 1,
         "detail": {
           "per_capture": [
             {
               "capture_id": "own",
-              "overlap_m2": 24.764748520222476,
-              "ok": false
+              "overlap_m2": 0.0,
+              "ok": true
             }
           ]
         }
@@ -1932,22 +1932,39 @@
         "app_comparision was excluded by --exclude and is not treated as a room",
         "bedroom_2_repeat is a repeat capture: it is measured and reported, but it is not placed in the property, because it is the same room as another",
         "kitchen is attached wall to wall: no free door pair was available between it and hall",
-        "bedroom_1: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall",
         "bedroom_1: 1 of 4 room sides had no supported wall face (x+); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed",
         "bedroom_1: Windows are not detected in this version; openings are doors and pass-throughs only",
+        "bedroom_1: own: only 78% of the outline is backed by observed wall; the room is partially observed and its intervals are widened",
         "bedroom_1: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty",
-        "bedroom_2: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall",
+        "bedroom_1: own floor area is reported with an interval wider than the value itself (17.20 m2, plus or minus 20.43). It is an unreliable measurement: the reconstruction constrains it barely or not at all",
+        "bedroom_1: s_own_floor area is reported with an interval wider than the value itself (17.20 m2, plus or minus 20.43). It is an unreliable measurement: the reconstruction constrains it barely or not at all",
+        "bedroom_1: s_own_ceiling area is reported with an interval wider than the value itself (17.20 m2, plus or minus 20.43). It is an unreliable measurement: the reconstruction constrains it barely or not at all",
         "bedroom_2: 1 of 4 room sides had no supported wall face (z-); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed",
         "bedroom_2: Windows are not detected in this version; openings are doors and pass-throughs only",
+        "bedroom_2: own: only 77% of the outline is backed by observed wall; the room is partially observed and its intervals are widened",
         "bedroom_2: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty",
-        "hall: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall",
+        "bedroom_2: own floor area is reported with an interval wider than the value itself (17.99 m2, plus or minus 21.37). It is an unreliable measurement: the reconstruction constrains it barely or not at all",
+        "bedroom_2: s_own_floor area is reported with an interval wider than the value itself (17.99 m2, plus or minus 21.37). It is an unreliable measurement: the reconstruction constrains it barely or not at all",
+        "bedroom_2: s_own_ceiling area is reported with an interval wider than the value itself (17.99 m2, plus or minus 21.37). It is an unreliable measurement: the reconstruction constrains it barely or not at all",
         "hall: 1 of 4 room sides had no supported wall face (z+); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed",
         "hall: Windows are not detected in this version; openings are doors and pass-throughs only",
+        "hall: own: only 76% of the outline is backed by observed wall; the room is partially observed and its intervals are widened",
         "hall: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty",
-        "kitchen: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall",
+        "hall: own floor area is reported with an interval wider than the value itself (42.11 m2, plus or minus 50.01). It is an unreliable measurement: the reconstruction constrains it barely or not at all",
+        "hall: s_own_floor area is reported with an interval wider than the value itself (42.11 m2, plus or minus 50.01). It is an unreliable measurement: the reconstruction constrains it barely or not at all",
+        "hall: s_own_ceiling area is reported with an interval wider than the value itself (42.11 m2, plus or minus 50.01). It is an unreliable measurement: the reconstruction constrains it barely or not at all",
         "kitchen: Windows are not detected in this version; openings are doors and pass-throughs only",
         "kitchen: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty",
-        "footprint area is reported with an interval wider than the value itself (89.93 m2, plus or minus 118.75). It is an unreliable measurement: the reconstruction constrains it barely or not at all"
+        "hall floor area is reported with an interval wider than the value itself (42.11 m2, plus or minus 50.01). It is an unreliable measurement: the reconstruction constrains it barely or not at all",
+        "bedroom_1 floor area is reported with an interval wider than the value itself (17.20 m2, plus or minus 20.43). It is an unreliable measurement: the reconstruction constrains it barely or not at all",
+        "bedroom_2 floor area is reported with an interval wider than the value itself (17.99 m2, plus or minus 21.37). It is an unreliable measurement: the reconstruction constrains it barely or not at all",
+        "s_hall_floor area is reported with an interval wider than the value itself (42.11 m2, plus or minus 50.01). It is an unreliable measurement: the reconstruction constrains it barely or not at all",
+        "s_hall_ceiling area is reported with an interval wider than the value itself (42.11 m2, plus or minus 50.01). It is an unreliable measurement: the reconstruction constrains it barely or not at all",
+        "s_bedroom_1_floor area is reported with an interval wider than the value itself (17.20 m2, plus or minus 20.43). It is an unreliable measurement: the reconstruction constrains it barely or not at all",
+        "s_bedroom_1_ceiling area is reported with an interval wider than the value itself (17.20 m2, plus or minus 20.43). It is an unreliable measurement: the reconstruction constrains it barely or not at all",
+        "s_bedroom_2_floor area is reported with an interval wider than the value itself (17.99 m2, plus or minus 21.37). It is an unreliable measurement: the reconstruction constrains it barely or not at all",
+        "s_bedroom_2_ceiling area is reported with an interval wider than the value itself (17.99 m2, plus or minus 21.37). It is an unreliable measurement: the reconstruction constrains it barely or not at all",
+        "footprint area is reported with an interval wider than the value itself (89.93 m2, plus or minus 278.28). It is an unreliable measurement: the reconstruction constrains it barely or not at all"
       ],
       "matching": {
         "counts": {
@@ -1996,10 +2013,10 @@
                 "truth_m": 3.6576,
                 "pred": {
                   "value": 3.6365773860940465,
-                  "ci_low": 2.752067070692256,
-                  "ci_high": 4.521087701495837,
+                  "ci_low": 1.8675567552904653,
+                  "ci_high": 5.405598016897628,
                   "unit": "m",
-                  "method": "wall_face_separation",
+                  "method": "wall_face_separation+partially_observed",
                   "ci_level": 0.95
                 },
                 "abs_error": 0.021022613905953502
@@ -2010,10 +2027,10 @@
                 "truth_m": 3.9116,
                 "pred": {
                   "value": 4.72913730931581,
-                  "ci_low": 3.5787649700983986,
-                  "ci_high": 5.8795096485332214,
+                  "ci_low": 2.428392630880987,
+                  "ci_high": 7.029881987750633,
                   "unit": "m",
-                  "method": "wall_face_separation",
+                  "method": "wall_face_separation+partially_observed",
                   "ci_level": 0.95
                 },
                 "abs_error": 0.81753730931581
@@ -2024,10 +2041,10 @@
                 "truth_m": 3.6576,
                 "pred": {
                   "value": 3.6365773860940465,
-                  "ci_low": 2.752067070692256,
-                  "ci_high": 4.521087701495837,
+                  "ci_low": 1.8675567552904653,
+                  "ci_high": 5.405598016897628,
                   "unit": "m",
-                  "method": "wall_face_separation",
+                  "method": "wall_face_separation+partially_observed",
                   "ci_level": 0.95
                 },
                 "abs_error": 0.021022613905953502
@@ -2038,10 +2055,10 @@
                 "truth_m": 3.9116,
                 "pred": {
                   "value": 4.72913730931581,
-                  "ci_low": 3.5787649700983986,
-                  "ci_high": 5.8795096485332214,
+                  "ci_low": 2.428392630880987,
+                  "ci_high": 7.029881987750633,
                   "unit": "m",
-                  "method": "wall_face_separation",
+                  "method": "wall_face_separation+partially_observed",
                   "ci_level": 0.95
                 },
                 "abs_error": 0.81753730931581
@@ -2066,10 +2083,10 @@
                 "truth_m": 3.8862,
                 "pred": {
                   "value": 4.585847574705669,
-                  "ci_low": 3.4704869657737243,
-                  "ci_high": 5.701208183637614,
+                  "ci_low": 2.3551263568417795,
+                  "ci_high": 6.816568792569559,
                   "unit": "m",
-                  "method": "wall_face_separation",
+                  "method": "wall_face_separation+partially_observed",
                   "ci_level": 0.95
                 },
                 "abs_error": 0.699647574705669
@@ -2080,10 +2097,10 @@
                 "truth_m": 3.6322,
                 "pred": {
                   "value": 3.9219230400388208,
-                  "ci_low": 2.9676166619864754,
-                  "ci_high": 4.876229418091166,
+                  "ci_low": 2.0133102839341306,
+                  "ci_high": 5.830535796143511,
                   "unit": "m",
-                  "method": "wall_face_separation",
+                  "method": "wall_face_separation+partially_observed",
                   "ci_level": 0.95
                 },
                 "abs_error": 0.28972304003882066
@@ -2094,10 +2111,10 @@
                 "truth_m": 3.8862,
                 "pred": {
                   "value": 4.585847574705669,
-                  "ci_low": 3.4704869657737243,
-                  "ci_high": 5.701208183637614,
+                  "ci_low": 2.3551263568417795,
+                  "ci_high": 6.816568792569559,
                   "unit": "m",
-                  "method": "wall_face_separation",
+                  "method": "wall_face_separation+partially_observed",
                   "ci_level": 0.95
                 },
                 "abs_error": 0.699647574705669
@@ -2108,10 +2125,10 @@
                 "truth_m": 3.6322,
                 "pred": {
                   "value": 3.9219230400388208,
-                  "ci_low": 2.9676166619864754,
-                  "ci_high": 4.876229418091166,
+                  "ci_low": 2.0133102839341306,
+                  "ci_high": 5.830535796143511,
                   "unit": "m",
-                  "method": "wall_face_separation",
+                  "method": "wall_face_separation+partially_observed",
                   "ci_level": 0.95
                 },
                 "abs_error": 0.28972304003882066
@@ -2260,8 +2277,8 @@
           "pred_wall": "w4",
           "truth": 3.6576,
           "pred": 3.6365773860940465,
-          "ci_low": 2.752067070692256,
-          "ci_high": 4.521087701495837,
+          "ci_low": 1.8675567552904653,
+          "ci_high": 5.405598016897628,
           "abs_error": 0.021022613905953502
         },
         {
@@ -2270,8 +2287,8 @@
           "pred_wall": "w3",
           "truth": 3.9116,
           "pred": 4.72913730931581,
-          "ci_low": 3.5787649700983986,
-          "ci_high": 5.8795096485332214,
+          "ci_low": 2.428392630880987,
+          "ci_high": 7.029881987750633,
           "abs_error": 0.81753730931581
         },
         {
@@ -2280,8 +2297,8 @@
           "pred_wall": "w2",
           "truth": 3.6576,
           "pred": 3.6365773860940465,
-          "ci_low": 2.752067070692256,
-          "ci_high": 4.521087701495837,
+          "ci_low": 1.8675567552904653,
+          "ci_high": 5.405598016897628,
           "abs_error": 0.021022613905953502
         },
         {
@@ -2290,8 +2307,8 @@
           "pred_wall": "w1",
           "truth": 3.9116,
           "pred": 4.72913730931581,
-          "ci_low": 3.5787649700983986,
-          "ci_high": 5.8795096485332214,
+          "ci_low": 2.428392630880987,
+          "ci_high": 7.029881987750633,
           "abs_error": 0.81753730931581
         },
         {
@@ -2300,8 +2317,8 @@
           "pred_wall": "w4",
           "truth": 3.8862,
           "pred": 4.585847574705669,
-          "ci_low": 3.4704869657737243,
-          "ci_high": 5.701208183637614,
+          "ci_low": 2.3551263568417795,
+          "ci_high": 6.816568792569559,
           "abs_error": 0.699647574705669
         },
         {
@@ -2310,8 +2327,8 @@
           "pred_wall": "w3",
           "truth": 3.6322,
           "pred": 3.9219230400388208,
-          "ci_low": 2.9676166619864754,
-          "ci_high": 4.876229418091166,
+          "ci_low": 2.0133102839341306,
+          "ci_high": 5.830535796143511,
           "abs_error": 0.28972304003882066
         },
         {
@@ -2320,8 +2337,8 @@
           "pred_wall": "w2",
           "truth": 3.8862,
           "pred": 4.585847574705669,
-          "ci_low": 3.4704869657737243,
-          "ci_high": 5.701208183637614,
+          "ci_low": 2.3551263568417795,
+          "ci_high": 6.816568792569559,
           "abs_error": 0.699647574705669
         },
         {
@@ -2330,8 +2347,8 @@
           "pred_wall": "w1",
           "truth": 3.6322,
           "pred": 3.9219230400388208,
-          "ci_low": 2.9676166619864754,
-          "ci_high": 4.876229418091166,
+          "ci_low": 2.0133102839341306,
+          "ci_high": 5.830535796143511,
           "abs_error": 0.28972304003882066
         },
         {
@@ -2411,7 +2428,7 @@
           ]
         ]
       },
-      "overlap_m2_geometric": 24.764748520222476,
+      "overlap_m2_geometric": 0.0,
       "overlap_m2_claimed": 0.0
     },
     {
@@ -3255,7 +3272,7 @@
     "overall": {
       "n": 37,
       "coverage": 0.9459459459459459,
-      "mean_width_pct": 251.94026691924233,
+      "mean_width_pct": 262.4594259420126,
       "outside": 2,
       "confident_garbage": 2,
       "nominal_level": [
@@ -3269,7 +3286,7 @@
       "photo": {
         "n": 16,
         "coverage": 0.875,
-        "mean_width_pct": 45.70451778598007,
+        "mean_width_pct": 70.03007302613632,
         "outside": 2,
         "confident_garbage": 2,
         "nominal_level": [
@@ -3310,7 +3327,7 @@
       "wall_length": {
         "n": 28,
         "coverage": 0.9285714285714286,
-        "mean_width_pct": 316.07765213876854,
+        "mean_width_pct": 329.9779694188578,
         "outside": 2,
         "confident_garbage": 2,
         "nominal_level": [
@@ -3338,7 +3355,7 @@
       "photo/wall_length": {
         "n": 12,
         "coverage": 0.8333333333333334,
-        "mean_width_pct": 45.41738357054558,
+        "mean_width_pct": 77.85145722408726,
         "outside": 2,
         "confident_garbage": 2,
         "nominal_level": [
@@ -3377,30 +3394,10 @@
     },
     "median_width_by_quantity": {
       "ceiling_height": 1.1667255279054087,
-      "wall_length": 3.407039270414984
+      "wall_length": 4.531465896298712
     }
   },
   "provenance": [
-    {
-      "capture_id": "EXAMPLE",
-      "tier": "photo",
-      "device": null,
-      "space_id": "example_flat",
-      "repeat_of": null,
-      "repeat_kind": null,
-      "source": "no plan available",
-      "recomputed": false
-    },
-    {
-      "capture_id": "EXAMPLE_REPEAT",
-      "tier": "photo",
-      "device": null,
-      "space_id": "example_flat",
-      "repeat_of": "EXAMPLE",
-      "repeat_kind": null,
-      "source": "no plan available",
-      "recomputed": false
-    },
     {
       "capture_id": "own_hall_photo",
       "tier": "photo",
@@ -3458,8 +3455,8 @@
       "space_id": "own_home",
       "repeat_of": null,
       "repeat_kind": null,
-      "source": "reused from the tier branch",
-      "source_path": "fix_loop/loop2_video_scale/photo_originals",
+      "source": "re-run here after a fix, see the note",
+      "source_path": "<outside the repository>/photo_v5",
       "recomputed": false,
       "plan_input_sha256": "d253b661f47ebf35cc45dc41356726a24dac56455a89e36c0394bdaae2971db6",
       "input_now": {
@@ -3467,7 +3464,7 @@
         "sha256": "d253b661f47ebf35cc45dc41356726a24dac56455a89e36c0394bdaae2971db6"
       },
       "input_hash_matches": true,
-      "duration_s": 1011.170589,
+      "duration_s": 744.147429,
       "pipeline": "photo",
       "plan_path": "/Users/anshusinha/Downloads/Cozmo-AI/Cozmo-floor-plan-project-by-Anshu-Sinha/docs/benchmark/runs/own_home_photo/plan.json",
       "rooms": [

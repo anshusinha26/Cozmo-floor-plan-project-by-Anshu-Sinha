@@ -104,6 +104,22 @@ def _f(v, nd=2, suffix=""):
     return "n/a" if v is None else f"{v:.{nd}f}{suffix}"
 
 
+def _portable(path) -> str:
+    """A source path safe to commit.
+
+    An override plan is usually re-run into a scratch directory outside the
+    repository, and writing that absolute path into provenance.json leaks one
+    machine's layout into a file everyone reads. Inside the repo the path is
+    made relative; outside it, only the leaf survives, which is enough to
+    match against a rerun and carries nothing about the machine.
+    """
+    p = Path(path)
+    try:
+        return str(p.resolve().relative_to(ROOT))
+    except ValueError:
+        return f"<outside the repository>/{p.name}"
+
+
 def render_report(result: dict, registry) -> str:
     md = ["# Benchmark: every capture with ground truth", "",
           "Rebuild with `scripts/benchmark_all.py`. Tape readings are centimetres to the "
@@ -114,6 +130,9 @@ def render_report(result: dict, registry) -> str:
            "Video and photo plans cost about eight minutes a capture and were produced on "
            "the tier branch. They are reused, not recomputed. The lidar tier is run here "
            "because it takes seconds.", "",
+           "The EXAMPLE fixtures in `benchmarks/captures.yaml` are left out: they are "
+           "placeholder files run through the stub pipeline, and nothing the stub "
+           "produces belongs in a table of measured results.", "",
            "| capture | tier | plan | input hash matches | duration s | note |",
            "|---|---|---|---|---|---|"]
     for r in result["provenance"]:
@@ -258,6 +277,12 @@ def main() -> int:
     for cap in registry.captures:
         if cap.ground_truth is None:
             continue
+        # The stub emits a fixed shape with no reconstruction behind it, and
+        # the EXAMPLE fixtures are placeholder files. A row naming a capture
+        # reads as a result even when its plan cell is empty, so the published
+        # benchmark leaves them out entirely rather than listing them as gaps.
+        if getattr(cap, "pipeline", None) == "stub":
+            continue
         gt_path = ROOT / cap.ground_truth
         if not gt_path.is_file():
             continue
@@ -291,7 +316,7 @@ def main() -> int:
             record.update({
                 "source": ("re-run here after a fix, see the note"
                            if override else "reused from the tier branch"),
-                "source_path": str(reuse_rel),
+                "source_path": _portable(reuse_rel),
                 "recomputed": False,
                 "plan_input_sha256": plan.capture.input_manifest_sha256,
                 "input_now": state,

@@ -691,4 +691,4 @@ measured but is **not wired into `cozmo run`**. It is reached through
 empty damage list and a warning saying so. Now stated in the README and the
 compliance matrix rather than implied away.
 
-Tests: 279 passing.
+Tests: 280 passing.

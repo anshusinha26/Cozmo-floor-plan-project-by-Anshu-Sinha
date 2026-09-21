@@ -15,7 +15,7 @@
    gate fails on absence, not on width.
 6. **Repeatability fails everywhere** it can be measured, including a
    same-device video pair.
-7. **Intervals are honest at the photo tier** (0.88 coverage, 46% mean width)
+7. **Intervals are honest at the photo tier** (0.88 coverage, 70% mean width)
    and vacuous at the video tier (1.00 coverage, 409% mean width).
 8. **A rival consumer app beats both image tiers** on 4 of 6 shared
    dimensions; our photo tier wins 2.

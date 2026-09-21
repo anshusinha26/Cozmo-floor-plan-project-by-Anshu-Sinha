@@ -72,3 +72,19 @@ def test_loop1_snapshots_do_not_leak_into_the_benchmark_directory() -> None:
     if not docs.is_dir():
         pytest.skip("docs/benchmark/runs is not present in this checkout")
     assert not {d.name for d in docs.iterdir() if d.is_dir()} & {"EXAMPLE", "EXAMPLE_REPEAT"}
+
+
+def test_the_benchmark_report_does_not_list_the_stub_fixtures() -> None:
+    """A row naming a capture reads as a result, even when its plan cell is empty.
+
+    The EXAMPLE fixtures are placeholder files with a stub pipeline behind
+    them. Listing them in the published benchmark invites a reader to count
+    them among the captures the tiers were measured on.
+    """
+    report = ROOT / "docs" / "benchmark" / "benchmark.md"
+    if not report.is_file():
+        pytest.skip("docs/benchmark/benchmark.md is not present in this checkout")
+    # Prose may name them to explain the exclusion; a table row may not, because
+    # a row is read as a capture the tiers were scored on.
+    rows = [ln for ln in report.read_text(encoding="utf-8").splitlines() if ln.startswith("|")]
+    assert [ln for ln in rows if "EXAMPLE" in ln] == []
