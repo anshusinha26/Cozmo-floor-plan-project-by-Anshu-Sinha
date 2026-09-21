@@ -631,8 +631,8 @@
     }
   },
   "git": {
-    "commit": "99ac3a9dfc6080bdcbc8512436d688899eb07a9a",
-    "dirty": true
+    "commit": "93c19467522284306807ab9a81f82d0077fea72c",
+    "dirty": false
   },
   "seed": 0,
   "pipeline": {
@@ -640,19 +640,19 @@
     "version": "0.1.0",
     "cozmo_version": "0.1.0"
   },
-  "started_at": "2026-09-21T09:25:12.198192+00:00",
-  "finished_at": "2026-09-21T09:52:37.765503+00:00",
-  "duration_s": 1645.567311,
+  "started_at": "2026-09-21T10:05:53.514332+00:00",
+  "finished_at": "2026-09-21T10:14:08.905521+00:00",
+  "duration_s": 495.391189,
   "stage_timings_s": {
-    "room:bedroom_1": 67.59123845901922,
-    "room:bedroom_2": 36.3851366659801,
-    "room:bedroom_2_repeat": 29.396221959003014,
-    "room:hall": 78.58641520800302,
-    "room:kitchen": 90.49707779099117,
-    "stitch": 0.0032834169978741556,
-    "assemble": 0.002295666985446587,
-    "damage": 44.9180093749892,
-    "render": 0.1539272080117371
+    "room:bedroom_1": 124.45481995801674,
+    "room:bedroom_2": 88.09346766601084,
+    "room:bedroom_2_repeat": 79.78151283299667,
+    "room:hall": 101.8042800000112,
+    "room:kitchen": 100.57968720799545,
+    "stitch": 0.004351667012088001,
+    "assemble": 0.0023435830080416054,
+    "damage": 37.58559137501288,
+    "render": 0.15758854101295583
   },
   "library_versions": {
     "pydantic": "2.13.5",
@@ -671,7 +671,7 @@
     "debug": [],
     "drift_report": "drift_report.json"
   },
-  "plan_sha256": "cecd521d122191eeb887e9b293bb3cc04fd6e6b4768d7ee1ce2411b77e1a6447",
+  "plan_sha256": "3cf304a741905d39ed7b1bc204ec82311166bbd867516624147f2d9137844e12",
   "n_rooms": 4,
   "warnings": [
     "Skipped all (0 image(s), needs at least 2)",
@@ -688,6 +688,7 @@
     "kitchen: Windows are not detected in this version; openings are doors and pass-throughs only",
     "footprint area is reported with an interval wider than the value itself (75.54 m2, plus or minus 94.69). It is an unreliable measurement: the reconstruction constrains it barely or not at all",
     "Damage regions were detected without metric depth, so their extent is unbounded: extent_m2 carries a nominal value with an interval spanning the plausible range and method unbounded_no_metric_depth. Do not read these as measured areas",
+    "Damage regions in this plan are attached to a wall of the room each photo came from by fallback, not by measurement: without depth the mark cannot be placed on a specific wall, so it is recorded against that room's first wall surface",
     "Without metric depth the same mark seen in several photos cannot be merged, so damage_regions counts detections per photo and over-counts the marks present. Read the count as an upper bound, not as a number of defects"
   ]
 }

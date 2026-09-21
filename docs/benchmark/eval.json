@@ -1941,6 +1941,7 @@
         "kitchen: Windows are not detected in this version; openings are doors and pass-throughs only",
         "footprint area is reported with an interval wider than the value itself (75.54 m2, plus or minus 94.69). It is an unreliable measurement: the reconstruction constrains it barely or not at all",
         "Damage regions were detected without metric depth, so their extent is unbounded: extent_m2 carries a nominal value with an interval spanning the plausible range and method unbounded_no_metric_depth. Do not read these as measured areas",
+        "Damage regions in this plan are attached to a wall of the room each photo came from by fallback, not by measurement: without depth the mark cannot be placed on a specific wall, so it is recorded against that room's first wall surface",
         "Without metric depth the same mark seen in several photos cannot be merged, so damage_regions counts detections per photo and over-counts the marks present. Read the count as an upper bound, not as a number of defects"
       ],
       "matching": {
@@ -3433,7 +3434,7 @@
       "repeat_of": null,
       "repeat_kind": null,
       "source": "re-run here after a fix, see the note",
-      "source_path": "<outside the repository>/photo_v8",
+      "source_path": "<outside the repository>/photo_v9",
       "recomputed": false,
       "plan_input_sha256": "d253b661f47ebf35cc45dc41356726a24dac56455a89e36c0394bdaae2971db6",
       "input_now": {
@@ -3441,7 +3442,7 @@
         "sha256": "d253b661f47ebf35cc45dc41356726a24dac56455a89e36c0394bdaae2971db6"
       },
       "input_hash_matches": true,
-      "duration_s": 1645.567311,
+      "duration_s": 495.391189,
       "pipeline": "photo",
       "plan_path": "/Users/anshusinha/Downloads/Cozmo-AI/Cozmo-floor-plan-project-by-Anshu-Sinha/docs/benchmark/runs/own_home_photo/plan.json",
       "rooms": [
