@@ -28,16 +28,15 @@ tier has a point cloud with poses, the rest is shared: `cozmo/lidar/levels.py`
 **Provenance.** `run` writes `plan.json`, `plan.png`, `run_manifest.json`,
 `drift_report.json` and `debug/`. The manifest holds a SHA-256 of every input
 file the tier may read, the resolved config and its hash, the git commit, the
-seed, stage timings and library versions. The plan holds no wall-clock field,
-so the same input, config and seed give a byte-identical `plan.json`. That is
-also how a reused plan is checked: the benchmark re-hashes the input and says
-whether it still matches.
+seed, stage timings and library versions. No wall-clock field reaches the
+plan, so the same input, config and seed give a byte-identical `plan.json`,
+which is also how the benchmark checks a reused plan.
 
-**Tier isolation is enforced in code.** Every file access goes through
-`StrayScan.open`, which raises on a file the tier may not read: the video tier
-sees only `rgb.mp4`, and the photo tier is refused a scan folder outright
-because `depth/` holds png files that would otherwise pass as room photos. The
-manifest hashes only permitted files (`tests/test_stray.py`).
+**Tier isolation is enforced in code**, not convention: every access goes
+through `StrayScan.open`, which raises on a file the tier may not read. The
+video tier sees only `rgb.mp4`, and the photo tier is refused a scan folder
+because `depth/` holds png files that would pass as room photos. The manifest
+hashes only permitted files (`tests/test_stray.py`).
 
 ---
 
@@ -355,15 +354,14 @@ the capture**, and the protocol now recommends photographs over video.
   because two of the four need depth and poses. Cracks are most at risk, and
   segmentation over-segments: 11 rooms on a flat with 6 or 7.
 
-**Hazards in the real captures** (`docs/hazards.md`, each with evidence).
+**Hazards in the real captures**, each with evidence in `docs/hazards.md`.
 Glass and a wardrobe mirror return confident depth for a room that is not
-there; the damage filters handle them, reconstruction does not. A dog walked
-through one capture, glossy tiles thicken the floor peak, and textureless
-walls give sparse returns, part of why coverage differs between two walks of
-one flat. An unobserved ceiling is the commonest cause of a wide interval and
-is purely a protocol problem.
+there, and while the damage filters handle them, reconstruction does not. A
+dog walked through one capture, glossy tiles thicken the floor peak, and
+textureless walls give sparse returns. An unobserved ceiling is the commonest
+cause of a wide interval and is purely a protocol problem.
 
-**Assumptions that will break.** Manhattan: a curved or 45 degree wall appears
-as a missing face, the safer failure but still a failure. Image-tier scale
-depends on the phone being held near 1.4 m, and a capture at waist height is
-wrong by the ratio, with nothing able to detect it.
+**Assumptions that will break.** Manhattan: a curved wall appears as a missing
+face, the safer failure but still a failure. Image-tier scale depends on the
+phone being held near 1.4 m, and a capture at waist height is wrong by the
+ratio with nothing able to detect it.
