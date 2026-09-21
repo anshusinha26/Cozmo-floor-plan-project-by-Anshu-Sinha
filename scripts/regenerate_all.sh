@@ -53,7 +53,11 @@ step "Benchmark: every capture with ground truth, all tiers"
 echo "wrote docs/benchmark/"
 
 step "Head to head against AR Plan 3D"
-"$PY" scripts/head_to_head.py --out docs/head_to_head.md >/dev/null
+# Reads the eval written by the previous step: our wall ids are per-run
+# inventions, so the only way to line one up with a rival dimension naming
+# truth walls is through the eval's own wall matching.
+"$PY" scripts/head_to_head.py --eval docs/benchmark/eval.json --tier photo \
+    --out docs/head_to_head.md >/dev/null
 echo "wrote docs/head_to_head.md"
 
 if [ "$QUICK" = "--quick" ]; then
