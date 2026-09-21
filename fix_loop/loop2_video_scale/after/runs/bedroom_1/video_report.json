@@ -1,0 +1,619 @@
+{
+  "video": {
+    "video": "data/own/bedroom_1/bedroom1_loop.mp4",
+    "decoded": 441,
+    "kept": 353,
+    "dropped_blur": 88,
+    "fps_used": 10.0,
+    "frame_wh": [
+      1280,
+      720
+    ],
+    "rotation": "auto",
+    "duration_s": 44.1,
+    "source_wh": [
+      3840,
+      2160
+    ],
+    "source_fps": 30.0,
+    "codec": "h264",
+    "rotation_tag": null
+  },
+  "sfm": {
+    "n_images": 353,
+    "n_models_found": 11,
+    "model_sizes": [
+      120,
+      74,
+      29,
+      17,
+      17,
+      16,
+      16,
+      15,
+      13,
+      11,
+      10
+    ],
+    "chunks_kept": 8,
+    "registered_images": 304,
+    "registered_fraction": 0.8612,
+    "chunk_sizes": [
+      17,
+      17,
+      16,
+      29,
+      16,
+      120,
+      15,
+      74
+    ],
+    "focal_px": [
+      879.24,
+      870.87,
+      1044.58,
+      996.19,
+      1016.62,
+      1061.15,
+      1250.95,
+      998.07
+    ],
+    "mean_reproj_err_px": [
+      0.5713,
+      0.7905,
+      0.7451,
+      0.9495,
+      0.8888,
+      0.9698,
+      0.7837,
+      0.6755
+    ],
+    "timings_s": {
+      "extract": 29.19,
+      "match": 17.93,
+      "mapping": 31.35,
+      "subprocess_wall": 0.0,
+      "reused": true
+    }
+  },
+  "scale": [
+    {
+      "chunk": 0,
+      "n_images": 17,
+      "n_scale_frames": 12,
+      "focal_px": 879.24,
+      "scale_m_per_unit": 0.00905,
+      "scale_rel_spread": 0.1784,
+      "scale_rel_sem": 0.0646,
+      "ratio_min": 0.00649,
+      "ratio_max": 0.011506,
+      "sec_per_frame": 3.359
+    },
+    {
+      "chunk": 1,
+      "n_images": 17,
+      "n_scale_frames": 12,
+      "focal_px": 870.87,
+      "scale_m_per_unit": 0.023419,
+      "scale_rel_spread": 0.3312,
+      "scale_rel_sem": 0.1198,
+      "ratio_min": 0.013288,
+      "ratio_max": 0.031366,
+      "sec_per_frame": 3.324
+    },
+    {
+      "chunk": 2,
+      "n_images": 16,
+      "n_scale_frames": 12,
+      "focal_px": 1044.58,
+      "scale_m_per_unit": 0.11321,
+      "scale_rel_spread": 0.1586,
+      "scale_rel_sem": 0.0574,
+      "ratio_min": 0.083982,
+      "ratio_max": 0.192826,
+      "sec_per_frame": 3.386
+    },
+    {
+      "chunk": 3,
+      "n_images": 29,
+      "n_scale_frames": 12,
+      "focal_px": 996.19,
+      "scale_m_per_unit": 0.018186,
+      "scale_rel_spread": 0.321,
+      "scale_rel_sem": 0.1161,
+      "ratio_min": 0.013743,
+      "ratio_max": 0.027507,
+      "sec_per_frame": 3.475
+    },
+    {
+      "chunk": 4,
+      "n_images": 16,
+      "n_scale_frames": 12,
+      "focal_px": 1016.62,
+      "scale_m_per_unit": 0.19305,
+      "scale_rel_spread": 0.8106,
+      "scale_rel_sem": 0.2933,
+      "ratio_min": 0.071356,
+      "ratio_max": 1.276529,
+      "sec_per_frame": 3.585
+    },
+    {
+      "chunk": 5,
+      "n_images": 120,
+      "n_scale_frames": 12,
+      "focal_px": 1061.15,
+      "scale_m_per_unit": 0.207487,
+      "scale_rel_spread": 0.6219,
+      "scale_rel_sem": 0.225,
+      "ratio_min": 0.110092,
+      "ratio_max": 1.30376,
+      "sec_per_frame": 3.7
+    },
+    {
+      "chunk": 6,
+      "n_images": 15,
+      "n_scale_frames": 12,
+      "focal_px": 1250.95,
+      "scale_m_per_unit": 0.117208,
+      "scale_rel_spread": 0.2723,
+      "scale_rel_sem": 0.0985,
+      "ratio_min": 0.077807,
+      "ratio_max": 0.176017,
+      "sec_per_frame": 3.779
+    },
+    {
+      "chunk": 7,
+      "n_images": 74,
+      "n_scale_frames": 12,
+      "focal_px": 998.07,
+      "scale_m_per_unit": 0.242073,
+      "scale_rel_spread": 0.2251,
+      "scale_rel_sem": 0.0814,
+      "ratio_min": 0.176778,
+      "ratio_max": 1.002879,
+      "sec_per_frame": 3.821
+    }
+  ],
+  "height_prior": {
+    "target_m": 1.4,
+    "rows": [
+      {
+        "chunk": 0,
+        "depth_pro": 0.00905,
+        "height_prior": 0.019652,
+        "chosen": 0.019652,
+        "method": "camera_height_prior",
+        "floor_inlier_fraction": 0.964,
+        "n_cameras": 17,
+        "disagreement": 1.1714
+      },
+      {
+        "chunk": 1,
+        "depth_pro": 0.023419,
+        "height_prior": 0.023033,
+        "chosen": 0.023033,
+        "method": "camera_height_prior",
+        "floor_inlier_fraction": 0.236,
+        "n_cameras": 17,
+        "disagreement": 0.0165
+      },
+      {
+        "chunk": 2,
+        "depth_pro": 0.11321,
+        "height_prior": 0.215767,
+        "chosen": 0.215767,
+        "method": "camera_height_prior",
+        "floor_inlier_fraction": 0.628,
+        "n_cameras": 16,
+        "disagreement": 0.9059
+      },
+      {
+        "chunk": 3,
+        "depth_pro": 0.018186,
+        "height_prior": 0.082876,
+        "chosen": 0.082876,
+        "method": "camera_height_prior",
+        "floor_inlier_fraction": 1.0,
+        "n_cameras": 29,
+        "disagreement": 3.557
+      },
+      {
+        "chunk": 4,
+        "depth_pro": 0.19305,
+        "height_prior": 0.52523,
+        "chosen": 0.52523,
+        "method": "camera_height_prior",
+        "floor_inlier_fraction": 0.2,
+        "n_cameras": 16,
+        "disagreement": 1.7207
+      },
+      {
+        "chunk": 5,
+        "depth_pro": 0.207487,
+        "height_prior": 0.179296,
+        "chosen": 0.179296,
+        "method": "camera_height_prior",
+        "floor_inlier_fraction": 0.435,
+        "n_cameras": 120,
+        "disagreement": 0.1359
+      },
+      {
+        "chunk": 6,
+        "depth_pro": 0.117208,
+        "height_prior": 0.091103,
+        "chosen": 0.091103,
+        "method": "camera_height_prior",
+        "floor_inlier_fraction": 0.585,
+        "n_cameras": 15,
+        "disagreement": 0.2227
+      },
+      {
+        "chunk": 7,
+        "depth_pro": 0.242073,
+        "height_prior": 0.141869,
+        "chosen": 0.141869,
+        "method": "camera_height_prior",
+        "floor_inlier_fraction": 0.543,
+        "n_cameras": 74,
+        "disagreement": 0.4139
+      }
+    ],
+    "measured_heights_m": [
+      0.645,
+      1.423,
+      0.735,
+      0.307,
+      0.515,
+      1.62,
+      1.801,
+      2.389
+    ],
+    "median_disagreement": 0.6599
+  },
+  "scale_solve": {
+    "chunks": [
+      3,
+      4,
+      5
+    ],
+    "scales": {
+      "3": 0.096926,
+      "4": 0.261414,
+      "5": 0.292358
+    },
+    "n_constraints": 8,
+    "residuals_relative": {
+      "height_prior": 0.5023,
+      "depth_pro": 0.409,
+      "bridge": 1.6952
+    },
+    "note": ""
+  },
+  "bridge": {
+    "group": [
+      3,
+      4,
+      5
+    ],
+    "n_bridges_tried": 7,
+    "n_accepted": 2,
+    "n_rejected": 5,
+    "timed_out": false,
+    "note": "",
+    "attempts": [
+      {
+        "a": 0,
+        "b": 1,
+        "accepted": false,
+        "reason": "overlap cameras span only 0.17 m on the floor, under the 0.20 m a fit needs to pin a turn",
+        "rms_a_m": null,
+        "rms_b_m": null,
+        "scale_ratio": null,
+        "scale_tolerance": null,
+        "seconds": 37.8
+      },
+      {
+        "a": 1,
+        "b": 2,
+        "accepted": false,
+        "reason": "overlap cameras span only 0.17 m on the floor, under the 0.20 m a fit needs to pin a turn",
+        "rms_a_m": null,
+        "rms_b_m": null,
+        "scale_ratio": null,
+        "scale_tolerance": null,
+        "seconds": 4.2
+      },
+      {
+        "a": 2,
+        "b": 3,
+        "accepted": false,
+        "reason": "floor-plane alignment residual 0.027 m and 0.137 m against 0.191 and 0.133 allowed",
+        "rms_a_m": 0.027,
+        "rms_b_m": 0.1374,
+        "scale_ratio": 1.8584,
+        "scale_tolerance": null,
+        "seconds": 3.6
+      },
+      {
+        "a": 3,
+        "b": 4,
+        "accepted": true,
+        "reason": "accepted on yaw +19.7 degrees, residuals 0.057 and 0.386 m, implied scales differ by 75%",
+        "rms_a_m": 0.0573,
+        "rms_b_m": 0.3859,
+        "scale_ratio": 0.2481,
+        "scale_tolerance": null,
+        "seconds": 4.0
+      },
+      {
+        "a": 4,
+        "b": 5,
+        "accepted": true,
+        "reason": "accepted on yaw -66.6 degrees, residuals 0.145 and 0.084 m, implied scales differ by 1202%",
+        "rms_a_m": 0.1452,
+        "rms_b_m": 0.0837,
+        "scale_ratio": 13.0171,
+        "scale_tolerance": null,
+        "seconds": 3.9
+      },
+      {
+        "a": 5,
+        "b": 6,
+        "accepted": false,
+        "reason": "the two chunks put their cameras 0.86 m apart in height, over the 0.35 m allowed, so they are not on one floor",
+        "rms_a_m": 0.0234,
+        "rms_b_m": 0.0733,
+        "scale_ratio": 0.6229,
+        "scale_tolerance": null,
+        "seconds": 3.9
+      },
+      {
+        "a": 6,
+        "b": 7,
+        "accepted": false,
+        "reason": "floor-plane alignment residual 0.212 m and 0.042 m against 0.178 and 0.120 allowed",
+        "rms_a_m": 0.2117,
+        "rms_b_m": 0.0418,
+        "scale_ratio": 4.181,
+        "scale_tolerance": null,
+        "seconds": 3.8
+      }
+    ],
+    "dropped": [
+      {
+        "chunk": 0,
+        "n_images": 17,
+        "share_of_registered_frames": 0.0559,
+        "share_of_video": 0.0385,
+        "time_span_s": [
+          0.0,
+          1.9
+        ]
+      },
+      {
+        "chunk": 1,
+        "n_images": 17,
+        "share_of_registered_frames": 0.0559,
+        "share_of_video": 0.0385,
+        "time_span_s": [
+          2.8,
+          4.4
+        ]
+      },
+      {
+        "chunk": 2,
+        "n_images": 16,
+        "share_of_registered_frames": 0.0526,
+        "share_of_video": 0.0363,
+        "time_span_s": [
+          7.0,
+          10.0
+        ]
+      },
+      {
+        "chunk": 6,
+        "n_images": 15,
+        "share_of_registered_frames": 0.0493,
+        "share_of_video": 0.034,
+        "time_span_s": [
+          31.5,
+          32.9
+        ]
+      },
+      {
+        "chunk": 7,
+        "n_images": 74,
+        "share_of_registered_frames": 0.2434,
+        "share_of_video": 0.1678,
+        "time_span_s": [
+          34.3,
+          42.2
+        ]
+      }
+    ]
+  },
+  "dense": {
+    "keyframes": 139,
+    "per_chunk": [
+      {
+        "chunk": 0,
+        "keyframes": 8,
+        "scale_median": 1.9134,
+        "n_scale_clamped": 4,
+        "chunk_scale_m_per_unit": 0.00905
+      },
+      {
+        "chunk": 1,
+        "keyframes": 8,
+        "scale_median": 1.4692,
+        "n_scale_clamped": 6,
+        "chunk_scale_m_per_unit": 0.023419
+      },
+      {
+        "chunk": 2,
+        "keyframes": 7,
+        "scale_median": 1.0456,
+        "n_scale_clamped": 5,
+        "chunk_scale_m_per_unit": 0.11321
+      },
+      {
+        "chunk": 3,
+        "keyframes": 13,
+        "scale_median": 1.6622,
+        "n_scale_clamped": 9,
+        "chunk_scale_m_per_unit": 0.018186
+      },
+      {
+        "chunk": 4,
+        "keyframes": 7,
+        "scale_median": 5.297,
+        "n_scale_clamped": 5,
+        "chunk_scale_m_per_unit": 0.19305
+      },
+      {
+        "chunk": 5,
+        "keyframes": 55,
+        "scale_median": 1.8253,
+        "n_scale_clamped": 44,
+        "chunk_scale_m_per_unit": 0.207487
+      },
+      {
+        "chunk": 6,
+        "keyframes": 7,
+        "scale_median": 1.2413,
+        "n_scale_clamped": 4,
+        "chunk_scale_m_per_unit": 0.117208
+      },
+      {
+        "chunk": 7,
+        "keyframes": 34,
+        "scale_median": 1.9789,
+        "n_scale_clamped": 30,
+        "chunk_scale_m_per_unit": 0.242073
+      }
+    ],
+    "pixel_stride": 2,
+    "scale_at_fit": {
+      "0": 0.00905,
+      "1": 0.023419,
+      "2": 0.11321,
+      "3": 0.018186,
+      "4": 0.19305,
+      "5": 0.207487,
+      "6": 0.117208,
+      "7": 0.242073
+    },
+    "sec_per_frame": 0.526,
+    "cached_depth_mb": 64.1,
+    "points_before_voxel": 15344082,
+    "voxels": 1080238
+  },
+  "coverage": {
+    "group_chunks": [
+      3,
+      4,
+      5
+    ],
+    "frames_in_group": 165,
+    "frames_decoded": 441,
+    "frames_kept": 353,
+    "share_of_kept_frames": 0.4674,
+    "share_of_video": 0.3741
+  },
+  "device": "mps",
+  "interval_budget": {
+    "systematic": 0.03,
+    "height_prior": 0.6599,
+    "scale_sem": 0.2125,
+    "unsupported_sides": 0,
+    "chunk_spread": 0.1109,
+    "coverage": 0.4674,
+    "min_coverage": 0.6,
+    "widened": true,
+    "widening_factor": 1.6,
+    "effective_depth_scale_bias": 1.0718,
+    "abs_floor_m": 0.048
+  },
+  "single_room": true,
+  "geometry": {
+    "n_cloud_points": 1080238,
+    "n_wall_points": 360758,
+    "n_faces": 66,
+    "n_ghost_faces": 0,
+    "ghost_report": {
+      "available": false,
+      "note": "cozmo.lidar.ghosts is not in this build"
+    },
+    "wall_min_top_m": 1.5,
+    "manhattan_yaw_deg": 40.406,
+    "floor_height_m": -0.9019,
+    "camera_height_above_floor_m": 2.26,
+    "camera_height_plausible": false,
+    "n_rooms": 1,
+    "n_openings": 0,
+    "interval_budget": {
+      "systematic": 0.03,
+      "height_prior": 0.6599,
+      "scale_sem": 0.2125,
+      "unsupported_sides": 2,
+      "chunk_spread": 0.1109,
+      "coverage": 0.4674,
+      "min_coverage": 0.6,
+      "widened": true,
+      "widening_factor": 2.4,
+      "effective_depth_scale_bias": 1.6076,
+      "abs_floor_m": 0.072
+    },
+    "single_room": {
+      "shape": "l_shape",
+      "n_supported_sides": 2,
+      "area_m2": 95.244,
+      "sides": [
+        {
+          "axis": 0,
+          "direction": -1,
+          "pos": -4.742,
+          "supported": false,
+          "face_length_m": 0.0,
+          "n_points": 0
+        },
+        {
+          "axis": 0,
+          "direction": 1,
+          "pos": 9.303,
+          "supported": true,
+          "face_length_m": 1.923,
+          "n_points": 2434
+        },
+        {
+          "axis": 1,
+          "direction": -1,
+          "pos": -2.803,
+          "supported": true,
+          "face_length_m": 11.786,
+          "n_points": 25078
+        },
+        {
+          "axis": 1,
+          "direction": 1,
+          "pos": 6.353,
+          "supported": false,
+          "face_length_m": 0.0,
+          "n_points": 0
+        }
+      ]
+    }
+  },
+  "stage_timings_s": {
+    "frames": 6.260760375007521,
+    "sfm": 0.00997904100222513,
+    "scale": 352.29762683299487,
+    "dense_prefit": 77.95100125001045,
+    "level": 0.7687137910106685,
+    "bridge": 61.15491891599959,
+    "scale_solve": 0.00037545801023952663,
+    "drift": 1.7444507920008618,
+    "fuse": 3.8450214590120595,
+    "assemble": 0.576392000017222
+  }
+}

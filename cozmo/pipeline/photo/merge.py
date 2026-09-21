@@ -139,3 +139,4 @@ def merge(per_room: dict[str, Plan], stitch_result, capture, run, ci_level: floa
                 stitched_plan=stitched, surfaces=surfaces, damage_regions=[],
                 concealed_damage_flags=[], scope_items=[], assumptions=merged_assumptions,
                 warnings=merged_warnings, renders=Renders())
+    return clamp_plan_intervals(plan, [])

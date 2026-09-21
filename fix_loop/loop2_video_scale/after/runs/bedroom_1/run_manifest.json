@@ -1,0 +1,393 @@
+{
+  "capture_id": "bedroom_1",
+  "tier": "video",
+  "input": {
+    "root": "data/own/bedroom_1",
+    "files": [
+      {
+        "path": "bedroom1_loop.mp4",
+        "sha256": "4072d48cb488c38499c7ef6e16b32214647134bbef1b7bad42a1fb66a77edf93",
+        "size_bytes": 234238112
+      }
+    ],
+    "sha256": "42699d210dc980b1b64985c65fccecc4cd718d77fa6087df7662c5a0608412e9"
+  },
+  "config": {
+    "path": "config/gates.yaml",
+    "sha256": "8e3b03ddd5de2cb926d796eb47b474fbe61cd851790f84b8be5a8c184d48b316",
+    "resolved": {
+      "config_version": 1,
+      "gates": {
+        "opening_width": {
+          "tolerance_m": 0.02,
+          "min_pass_fraction": 0.85
+        },
+        "ceiling_height": {
+          "tolerance_m": 0.015,
+          "spread_tolerance_m": 0.01
+        },
+        "ceiling_height_diagnosis": {
+          "small_spread_m": 0.01,
+          "biased_mean_m": 0.015
+        },
+        "repeatability": {
+          "abs_tolerance_m": 0.01,
+          "rel_tolerance": 0.005
+        },
+        "wall_length_tier": {
+          "photo": {
+            "rel_tolerance": 0.08
+          },
+          "video": {
+            "rel_tolerance": 0.03
+          },
+          "lidar": {
+            "abs_tolerance_m": 0.02,
+            "rel_tolerance": 0.01,
+            "status": "PROVISIONAL"
+          }
+        },
+        "footprint": {
+          "rel_tolerance": 0.08
+        },
+        "stitch_adjacency": {},
+        "stitch_overlap": {
+          "max_overlap_m2": 0.05
+        }
+      },
+      "matching": {
+        "opening_offset_gate_m": 0.5
+      },
+      "calibration": {
+        "alpha": 0.05
+      },
+      "pipeline": {
+        "lidar": {
+          "frame_stride": 10,
+          "voxel_m": 0.02,
+          "min_depth_m": 0.2,
+          "max_depth_m": 4.5,
+          "vertical_normal_cos": 0.9,
+          "horizontal_normal_cos": 0.25,
+          "level": {
+            "hist_bin_m": 0.01,
+            "peak_min_fraction": 0.15,
+            "plane_band_m": 0.05,
+            "cell_m": 0.25,
+            "min_ceiling_coverage": 0.15,
+            "prior_height_m": [
+              2.2,
+              3.2
+            ]
+          },
+          "wall": {
+            "min_height_above_floor_m": 0.3,
+            "max_height_below_ceiling_m": 0.1,
+            "hist_bin_m": 0.02,
+            "peak_min_points": 150,
+            "peak_min_separation_m": 0.06,
+            "occupancy_bin_m": 0.05,
+            "min_run_m": 0.4,
+            "wall_min_top_m": 1.6,
+            "max_gap_m": 0.35
+          },
+          "room": {
+            "grid_m": 0.02,
+            "erode_m": 0.5,
+            "min_area_m2": 1.5,
+            "min_constriction_m": 0.62,
+            "wall_min_top_m": 1.6,
+            "snap_m": 0.15
+          },
+          "opening": {
+            "band_low_m": 0.3,
+            "band_high_m": 1.9,
+            "min_width_m": 0.6,
+            "max_width_m": 2.4,
+            "bin_m": 0.05
+          },
+          "drift": {
+            "chunk_s": 5.0,
+            "max_yaw_deg": 5.0,
+            "max_shift_m": 0.25
+          },
+          "uncertainty": {
+            "depth_scale_bias": 0.01,
+            "abs_floor_m": 0.01,
+            "ci_level": 0.95
+          }
+        },
+        "photo": {
+          "device": null,
+          "voxel_m": 0.03,
+          "pixel_stride": 2,
+          "vertical_normal_cos": 0.9,
+          "horizontal_normal_cos": 0.25,
+          "height_prior": {
+            "camera_height_m": 1.4,
+            "camera_height_sigma_m": 0.12
+          },
+          "gravity": {
+            "voxel_m": 0.05,
+            "max_tilt_deg": 30.0,
+            "band_m": 0.08
+          },
+          "openings": {
+            "enabled": true,
+            "detector": "owlv2",
+            "min_score": 0.2,
+            "max_photos": 8
+          },
+          "level": {
+            "hist_bin_m": 0.03,
+            "peak_min_fraction": 0.1,
+            "plane_band_m": 0.08,
+            "cell_m": 0.3,
+            "min_ceiling_coverage": 0.1,
+            "prior_height_m": [
+              2.2,
+              3.2
+            ]
+          },
+          "wall": {
+            "min_height_above_floor_m": 0.3,
+            "max_height_below_ceiling_m": 0.1,
+            "hist_bin_m": 0.06,
+            "peak_min_points": 120,
+            "peak_min_separation_m": 0.14,
+            "occupancy_bin_m": 0.06,
+            "min_run_m": 0.4,
+            "wall_min_top_m": 1.4,
+            "max_gap_m": 0.6
+          },
+          "ghost": {
+            "enabled": true,
+            "cell_m": 0.05,
+            "reach_m": 0.4,
+            "probe_offset_m": 0.25,
+            "min_supported_share": 0.2
+          },
+          "room": {
+            "grid_m": 0.04,
+            "erode_m": 0.4,
+            "min_area_m2": 1.0,
+            "min_constriction_m": 0.62,
+            "wall_min_top_m": 1.4,
+            "wall_min_top_fraction": 0.7,
+            "wall_min_top_floor_m": 0.9,
+            "snap_m": 0.3,
+            "unsupported_margin_m": 0.45,
+            "allow_l_shape": true
+          },
+          "opening": {
+            "band_low_m": 0.3,
+            "band_high_m": 1.9,
+            "min_width_m": 0.6,
+            "max_width_m": 2.4,
+            "bin_m": 0.05
+          },
+          "uncertainty": {
+            "systematic_scale_bias": 0.05,
+            "depth_scale_bias": 0.05,
+            "abs_floor_m": 0.05,
+            "min_coverage": 0.6,
+            "low_coverage_factor": 1.6,
+            "ci_level": 0.95,
+            "status": "PROVISIONAL"
+          }
+        },
+        "video": {
+          "device": null,
+          "voxel_m": 0.03,
+          "vertical_normal_cos": 0.9,
+          "horizontal_normal_cos": 0.25,
+          "frames": {
+            "target_fps": 10.0,
+            "long_side": 1280,
+            "max_frames": 600,
+            "drop_blur_fraction": 0.2,
+            "rotation": "auto"
+          },
+          "sfm": {
+            "overlap": 10,
+            "max_image_size": 1600,
+            "min_chunk_images": 15,
+            "deterministic": true,
+            "reuse_reconstruction": true
+          },
+          "scale": {
+            "max_frames": 12
+          },
+          "height_prior": {
+            "camera_height_m": 1.4,
+            "camera_height_sigma_m": 0.12
+          },
+          "bridge": {
+            "overlap_frames": 4,
+            "overlap_window_s": 2.0,
+            "min_span_m": 0.2,
+            "max_rms_m": 0.12,
+            "max_rms_frac": 0.25,
+            "max_scale_disagreement": 0.15,
+            "scale_sem_sigmas": 2.0,
+            "max_tilt_deg": 12.0,
+            "max_vertical_m": 0.35,
+            "time_box_s": 5400.0
+          },
+          "dense": {
+            "max_keyframes": 140,
+            "pixel_stride": 2,
+            "min_depth_m": 0.25,
+            "max_depth_m": 8.0,
+            "scale_tolerance": 0.08
+          },
+          "gravity": {
+            "voxel_m": 0.05,
+            "max_tilt_deg": 30.0,
+            "band_m": 0.08
+          },
+          "drift": {
+            "voxel_m": 0.06,
+            "max_yaw_deg": 6.0
+          },
+          "level": {
+            "hist_bin_m": 0.02,
+            "peak_min_fraction": 0.15,
+            "plane_band_m": 0.06,
+            "cell_m": 0.25,
+            "min_ceiling_coverage": 0.12,
+            "prior_height_m": [
+              2.2,
+              3.2
+            ]
+          },
+          "wall": {
+            "min_height_above_floor_m": 0.3,
+            "max_height_below_ceiling_m": 0.1,
+            "hist_bin_m": 0.04,
+            "peak_min_points": 150,
+            "peak_min_separation_m": 0.1,
+            "occupancy_bin_m": 0.05,
+            "min_run_m": 0.4,
+            "wall_min_top_m": 1.5,
+            "max_gap_m": 0.45
+          },
+          "ghost": {
+            "enabled": true,
+            "cell_m": 0.05,
+            "reach_m": 0.35,
+            "probe_offset_m": 0.25,
+            "min_supported_share": 0.25
+          },
+          "room": {
+            "grid_m": 0.03,
+            "erode_m": 0.4,
+            "min_area_m2": 1.0,
+            "min_constriction_m": 0.62,
+            "wall_min_top_m": 1.5,
+            "wall_min_top_fraction": 0.75,
+            "wall_min_top_floor_m": 0.9,
+            "snap_m": 0.22,
+            "unsupported_margin_m": 0.35,
+            "allow_l_shape": true
+          },
+          "opening": {
+            "band_low_m": 0.3,
+            "band_high_m": 1.9,
+            "min_width_m": 0.6,
+            "max_width_m": 2.4,
+            "bin_m": 0.05
+          },
+          "uncertainty": {
+            "systematic_scale_bias": 0.03,
+            "depth_scale_bias": 0.03,
+            "abs_floor_m": 0.03,
+            "min_coverage": 0.6,
+            "low_coverage_factor": 1.6,
+            "ci_level": 0.95,
+            "status": "PROVISIONAL"
+          }
+        }
+      },
+      "run": {
+        "pipeline": "video",
+        "drift_correction": true,
+        "video_rotation": "auto",
+        "camera_height_m": null,
+        "single_room": "auto",
+        "connector": null,
+        "cache_root": "runs/.cache"
+      }
+    }
+  },
+  "git": {
+    "commit": "31803d332c97cb8245afddb55ddfe5b7494d6784",
+    "dirty": true
+  },
+  "seed": 0,
+  "pipeline": {
+    "name": "video",
+    "version": "0.1.0",
+    "cozmo_version": "0.1.0"
+  },
+  "started_at": "2026-09-20T21:52:49.034987+00:00",
+  "finished_at": "2026-09-20T22:01:15.586389+00:00",
+  "duration_s": 506.551402,
+  "stage_timings_s": {
+    "frames": 6.260760375007521,
+    "sfm": 0.00997904100222513,
+    "scale": 352.29762683299487,
+    "dense_prefit": 77.95100125001045,
+    "level": 0.7687137910106685,
+    "bridge": 61.15491891599959,
+    "scale_solve": 0.00037545801023952663,
+    "drift": 1.7444507920008618,
+    "fuse": 3.8450214590120595,
+    "assemble": 0.576392000017222,
+    "debug": 0.304705875023501,
+    "render": 0.05942858397611417
+  },
+  "library_versions": {
+    "pydantic": "2.13.5",
+    "numpy": "2.4.6",
+    "shapely": "2.1.2",
+    "typer": "0.27.2",
+    "pyyaml": "6.0.3",
+    "jsonschema": "4.26.0",
+    "matplotlib": "3.11.2"
+  },
+  "python_version": "3.11.15",
+  "platform": "macOS-27.0-arm64-arm-64bit",
+  "outputs": {
+    "plan": "plan.json",
+    "plan_png": "plan.png",
+    "debug": [
+      "density.png",
+      "wall_faces.png",
+      "room_masks.png",
+      "openings.png"
+    ],
+    "drift_report": "drift_report.json"
+  },
+  "plan_sha256": "28a0640015c24e53a0fb5b8c968738a3ab2d62b91688c3f7839297bd67918d0a",
+  "n_rooms": 1,
+  "warnings": [
+    "Chunk 0 (17 frames, 4% of the video) could not be bridged to the main group and was dropped",
+    "Chunk 1 (17 frames, 4% of the video) could not be bridged to the main group and was dropped",
+    "Chunk 2 (16 frames, 4% of the video) could not be bridged to the main group and was dropped",
+    "Chunk 6 (15 frames, 3% of the video) could not be bridged to the main group and was dropped",
+    "Chunk 7 (74 frames, 17% of the video) could not be bridged to the main group and was dropped",
+    "Monocular depth disagreed with itself across frames on this capture: the weighted standard error of the per-chunk scale is 21.2%, which is carried into every interval",
+    "The camera-height prior and the monocular depth scale disagree by 66% on this capture; the wider of that and the prior's own uncertainty sets the scale term in every interval",
+    "Only 47% of the video reached the output, under the 60% this tier expects; every interval is widened by 1.6x and the plan should be read as a fragment",
+    "Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall",
+    "The reconstruction puts the camera 2.26 m above its own floor, outside the 1.1 to 1.8 m a hand-held phone can be. Every length in this plan is likely off by about 1.6x, because the metric scale comes from a monocular depth model and nothing here measured a distance directly",
+    "2 of 4 room sides had no supported wall face (x-, z+); they are closed at the camera path plus 0.35 m by the rectangle assumption and the room is only partially observed",
+    "Windows are not detected in this version; openings are doors and pass-throughs only",
+    "Ceiling not observed over enough of the floor (coverage 2% < 12%); ceiling height is a prior interval, not a measurement",
+    "2 of 4 room sides had no supported wall face (x-, z+); they are closed at the camera path plus 0.35 m by the rectangle assumption and the room is only partially observed",
+    "room_01: Ceiling not observed over enough of the floor (coverage 2% < 12%); ceiling height is a prior interval, not a measurement",
+    "Drift correction rejected some chunk estimates: ['yaw beyond the limit']",
+    "Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty"
+  ]
+}

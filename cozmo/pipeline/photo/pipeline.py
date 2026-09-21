@@ -221,10 +221,22 @@ class PhotoPipeline(Pipeline):
 
 
 def _room_summary(plan) -> dict:
-    """A repeat room's measurements, kept out of the plan but not out of the report."""
+    """A repeat room's measurements, kept out of the plan but not out of the report.
+
+    Intervals travel with the values: a repeat room is scored against tape like
+    any other, so reporting it without its interval would make it look either
+    better or worse than it is.
+    """
     r = plan.rooms[0]
-    return {"walls_m": sorted({round(w.length_m.value, 3) for w in r.walls}, reverse=True),
-            "ceiling_m": round(r.ceiling_height_m.value, 3),
+    seen: dict[float, dict] = {}
+    for w in r.walls:
+        key = round(w.length_m.value, 3)
+        seen.setdefault(key, {"value": key, "ci_low": round(w.length_m.ci_low, 3),
+                              "ci_high": round(w.length_m.ci_high, 3)})
+    return {"walls_m": sorted(seen.values(), key=lambda d: -d["value"]),
+            "ceiling_m": {"value": round(r.ceiling_height_m.value, 3),
+                          "ci_low": round(r.ceiling_height_m.ci_low, 3),
+                          "ci_high": round(r.ceiling_height_m.ci_high, 3)},
             "area_m2": round(r.floor_area_m2.value, 3)}
 
 

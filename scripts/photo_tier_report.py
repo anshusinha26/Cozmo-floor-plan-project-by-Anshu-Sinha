@@ -71,9 +71,11 @@ def main(argv: list[str]) -> int:
         c = r["ceiling_height_m"]
         ceilings[r["id"]] = (c["value"] * 100, c["ci_low"] * 100, c["ci_high"] * 100)
     for rid, meas in (report.get("repeat_measurements") or {}).items():
-        walls_cm[rid] = sorted({round(v * 100, 1) for v in meas["walls_m"]}, reverse=True)
-        ci[rid] = [(0.0, 0.0)] * len(walls_cm[rid])
-        ceilings[rid] = (meas["ceiling_m"] * 100, 0.0, 0.0)
+        walls = meas["walls_m"]
+        walls_cm[rid] = [round(w["value"] * 100, 1) for w in walls]
+        ci[rid] = [(w["ci_low"] * 100, w["ci_high"] * 100) for w in walls]
+        c = meas["ceiling_m"]
+        ceilings[rid] = (c["value"] * 100, c["ci_low"] * 100, c["ci_high"] * 100)
 
     print("## Photo tier against tape\n")
     print(f"Gate {GATE:.0%}. Tape good to about plus or minus {TAPE_PRECISION_CM} cm.\n")

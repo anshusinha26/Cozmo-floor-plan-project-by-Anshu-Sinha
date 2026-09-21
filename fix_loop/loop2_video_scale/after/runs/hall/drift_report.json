@@ -1,0 +1,96 @@
+{
+  "tier": "video",
+  "yaw_snap": {
+    "applied": true,
+    "max_yaw_deg": 6.0,
+    "per_chunk": [
+      {
+        "chunk": 5,
+        "n_wall_points": 419,
+        "yaw_delta_deg": 27.122,
+        "rejected": "yaw beyond the limit"
+      },
+      {
+        "chunk": 6,
+        "n_wall_points": 1302,
+        "yaw_delta_deg": -1.715,
+        "rejected": null
+      }
+    ],
+    "global_yaw_deg": 77.537
+  },
+  "applied": true,
+  "model": {
+    "method": "manhattan_yaw_snap_per_sfm_chunk",
+    "applied": true,
+    "n_chunks": 2,
+    "n_corrected": 1,
+    "yaw_deg": {
+      "mean": 1.715,
+      "max": 1.715
+    },
+    "rejected": [
+      "yaw beyond the limit"
+    ],
+    "note": ""
+  },
+  "gravity": {
+    "method": "per_chunk_floor_plane_before_bridging",
+    "chunks": [
+      {
+        "chunk": 0,
+        "method": "depth_pro_only_no_floor_plane",
+        "floor_inliers": 0.543,
+        "camera_height_m": 0.637
+      },
+      {
+        "chunk": 1,
+        "method": "depth_pro_only_no_floor_plane",
+        "floor_inliers": 0.274,
+        "camera_height_m": 1.431
+      },
+      {
+        "chunk": 2,
+        "method": "camera_height_prior",
+        "floor_inliers": 0.245,
+        "camera_height_m": 1.35
+      },
+      {
+        "chunk": 3,
+        "method": "camera_height_prior",
+        "floor_inliers": 1.0,
+        "camera_height_m": 1.49
+      },
+      {
+        "chunk": 4,
+        "method": "depth_pro_only_no_floor_plane",
+        "floor_inliers": 0.518,
+        "camera_height_m": 0.985
+      },
+      {
+        "chunk": 5,
+        "method": "depth_pro_only_no_floor_plane",
+        "floor_inliers": 0.371,
+        "camera_height_m": 0.565
+      },
+      {
+        "chunk": 6,
+        "method": "camera_height_prior",
+        "floor_inliers": 0.378,
+        "camera_height_m": 1.213
+      },
+      {
+        "chunk": 7,
+        "method": "depth_pro_only_no_floor_plane",
+        "floor_inliers": 0.167,
+        "camera_height_m": 1.077
+      },
+      {
+        "chunk": 8,
+        "method": "depth_pro_only_no_floor_plane",
+        "floor_inliers": 0.424,
+        "camera_height_m": 0.288
+      }
+    ]
+  }
+}
