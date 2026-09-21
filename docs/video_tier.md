@@ -159,6 +159,22 @@ do to this tier. Today the budget uses the per-frame standard error plus the
 spread of chunk scales within the accepted group, which is closer to the truth
 than the per-frame term alone but still not the bridge measurement.
 
+## One clip per room
+
+The tier reconstructs **one clip as one room**. A folder of per-room clips is
+reconstructed room by room and stitched, the same way the photo tier handles a
+property. A single clip that walks through several rooms is reconstructed as one
+space, and the plan says so in its warnings.
+
+`--video-engine` picks how the geometry is built:
+
+* `sfm` (default): COLMAP, chunked, bridged, as described above.
+* `frames`: a spread of sharp frames through the photo tier's reconstruction.
+  Forty seconds against five minutes, and measured to be unstable: on one room,
+  16 frames gave walls 69% long and 24 frames gave them 36% short. Kept as a
+  fast preview, rejected as the accurate path, with the evidence in
+  `fix_loop/loop2_video_scale/after_iter2/RESULT.md`.
+
 ## Known limits
 
 * **Monocular metric scale is the weak link on close-range captures.** The

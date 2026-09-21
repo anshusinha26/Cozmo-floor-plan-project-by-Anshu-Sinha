@@ -202,6 +202,12 @@ pipeline:
       max_frames: 600           # fps is lowered until a clip fits this
       drop_blur_fraction: 0.20
       rotation: auto            # ffmpeg applies the container tag; --video-rotation overrides
+    engine: sfm               # frames or sfm. Iteration 2 measured the frames engine and
+                              # rejected it: see fix_loop/loop2_video_scale/after_iter2/
+    frames_engine:
+      n_frames: 16            # sharp frames spread across the clip
+      max_frames: 24
+      min_gap_fraction: 0.4   # a window's pick may not sit next to the previous one's
     sfm:
       overlap: 10
       max_image_size: 1600

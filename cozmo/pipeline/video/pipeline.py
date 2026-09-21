@@ -103,6 +103,11 @@ class VideoPipeline(Pipeline):
                                     long_side=fcfg["long_side"], max_frames=fcfg["max_frames"],
                                     rotation=rotation, drop_blur_frac=fcfg["drop_blur_fraction"])
 
+        engine = str(run_cfg.get("video_engine") or cfg.get("engine", "sfm"))
+        if engine == "frames":
+            return self._frames_engine(fs, Path(input_path), tier, config, seed, device,
+                                       warnings, assumptions, single_room)
+
         with self.stage("sfm"):
             scfg = cfg["sfm"]
             result = sfm_mod.run_sfm(fs.dir, work / "sfm",
@@ -273,6 +278,57 @@ class VideoPipeline(Pipeline):
         return plan
 
     # ------------------------------------------------------------------
+    def _frames_engine(self, fs, input_path: Path, tier: Tier, config: dict[str, Any], seed: int,
+                       device: str, warnings: list[str], assumptions: list[str],
+                       single_room: bool) -> Plan:
+        """Reconstruct the clip the way the photo tier reconstructs a room.
+
+        Declared in the fix loop 2 addendum before it was written: on the same
+        rooms the photo engine reached about 1% where SfM reached 53%, with the
+        same scale cue and the same room fitter, so the geometry engine was the
+        limit rather than the scale.
+        """
+        from cozmo.pipeline.photo import room as room_mod
+        from cozmo.pipeline.photo.pipeline import PhotoPipeline
+        from cozmo.pipeline.video import frames_engine
+
+        ecfg = config["pipeline"]["video"]["frames_engine"]
+        pcfg = config["pipeline"]["photo"]
+        run_cfg = config.get("run", {})
+        target_h = float(run_cfg.get("camera_height_m") or pcfg["height_prior"]["camera_height_m"])
+        sigma = float(pcfg["height_prior"]["camera_height_sigma_m"])
+
+        with self.stage("select_frames"):
+            picks = frames_engine.select_spread_frames(
+                fs.blur_scores, n=ecfg["n_frames"], max_frames=ecfg["max_frames"],
+                min_gap_fraction=ecfg["min_gap_fraction"])
+            files = [fs.path(fs.names[i]) for i in picks]
+        if not single_room:
+            warnings.append(frames_engine.WHOLE_PROPERTY_WARNING)
+        assumptions.append(
+            f"The clip was reconstructed from {len(files)} frames spread across it, chosen for "
+            f"sharpness, through the same engine the photo tier uses. Only the video file was read")
+
+        builder = PhotoPipeline()
+        builder.input_manifest_sha256 = self.input_manifest_sha256
+        reconstructor = room_mod.MapAnythingReconstructor(device)
+        with self.stage("reconstruct"):
+            plan, row = builder._one_room(
+                Path(input_path).name, files, reconstructor, pcfg, config, seed, target_h, sigma,
+                device, input_path, tier=tier, extra_warnings=warnings)
+        for st, val in builder.stage_timings_s.items():
+            self.stage_timings_s.setdefault(f"reconstruct:{st}", val)
+        self.drift_report = {"tier": "video", "engine": "frames", "applied": False,
+                             "note": "the frames engine has no trajectory to drift"}
+        self.report = {"engine": "frames", "video": fs.summary(), "device": device,
+                       "frames_used": [fs.names[i] for i in picks], "room": row,
+                       "camera_height_m": target_h, "single_room": single_room}
+        if self.debug_dir is not None:
+            self._write_report()
+        log.info("frames engine: %d room(s) from %d frames of %d kept, %.1f s",
+                 len(plan.rooms), len(files), len(fs), sum(self.stage_timings_s.values()))
+        return plan.model_copy(update={"assumptions": list(plan.assumptions) + assumptions})
+
     def _write_report(self) -> None:
         Path(self.debug_dir).mkdir(parents=True, exist_ok=True)
         (Path(self.debug_dir) / "video_report.json").write_text(

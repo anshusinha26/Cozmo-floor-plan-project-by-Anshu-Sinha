@@ -159,14 +159,17 @@ def plan_from_cloud(points: np.ndarray, normals: np.ndarray, camera_path: np.nda
                     camera_times: np.ndarray, n_frames_used: int, input_path: Path, tier: Tier,
                     config: dict[str, Any], seed: int, pipeline, budget: IntervalBudget,
                     drift_model, warnings: list[str], assumptions: list[str],
-                    single_room: bool = False) -> PlanBuild:
+                    single_room: bool = False, tier_cfg: dict | None = None) -> PlanBuild:
     """Points, normals and a camera path to a Plan, through the LiDAR backend.
 
     ``budget`` carries this tier's interval widening; it is applied by editing
     the uncertainty block of the config the backend reads, so every interval in
     the plan, lengths, areas and openings alike, comes out of one place.
     """
-    cfg = copy.deepcopy(config["pipeline"]["video"])
+    # ``config`` is what gets hashed into provenance, so it is never edited.
+    # ``tier_cfg`` lets a caller reconstruct with another tier's parameters, which
+    # is how the frames engine runs the photo tier's settings over a clip.
+    cfg = copy.deepcopy(tier_cfg if tier_cfg is not None else config["pipeline"]["video"])
     cfg["uncertainty"] = budget.apply(cfg["uncertainty"])
 
     cloud = Cloud(points=points, normals=normals,

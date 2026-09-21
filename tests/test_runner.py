@@ -93,7 +93,9 @@ def test_bench_handles_captures_without_ground_truth(tmp_path):
 
     reg = {"captures": [{"capture_id": "EXAMPLE", "space_id": "example_flat", "tier": "photo",
                          "input": "benchmarks/captures/EXAMPLE",
-                         "ground_truth": None, "repeat_of": None, "multi_room": True}]}
+                         "ground_truth": None, "repeat_of": None, "multi_room": True,
+                             # placeholder files, not photographs: pin the stub
+                             "pipeline": "stub"}]}
     path = REPO / "benchmarks" / "_tmp_registry.yaml"
     path.write_text(yaml.safe_dump(reg))
     try:

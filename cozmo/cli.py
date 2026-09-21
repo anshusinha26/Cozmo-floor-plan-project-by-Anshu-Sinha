@@ -56,6 +56,14 @@ class Switch(str, Enum):
     off = "off"
 
 
+class VideoEngineOpt(str, Enum):
+    """How the clip's geometry is built. `frames` runs the photo tier's
+    reconstruction on frames taken from the clip; `sfm` runs COLMAP."""
+
+    frames = "frames"
+    sfm = "sfm"
+
+
 class RoomModeOpt(str, Enum):
     """A per-room clip has one room in it; a property walk does not."""
 
@@ -107,14 +115,15 @@ def resolve_config(config_path: Path, drift_correction: bool, pipeline_name: str
                    video_rotation: str = "auto", camera_height_m: float | None = None,
                    single_room: str = "auto", connector: str | None = None,
                    cache_root: str | None = None, exclude: str | None = None,
-                   repeat_rooms: str | None = None) -> dict[str, Any]:
+                   repeat_rooms: str | None = None, video_engine: str = "sfm") -> dict[str, Any]:
     """File config plus CLI overrides. This resolved dict is what gets hashed."""
     cfg = prov.load_config(config_path)
     cfg["run"] = {"pipeline": pipeline_name, "drift_correction": drift_correction,
                   "video_rotation": video_rotation, "camera_height_m": camera_height_m,
                   "single_room": single_room, "connector": connector,
                   "cache_root": cache_root,
-                  "exclude": _split(exclude), "repeat_rooms": _split(repeat_rooms)}
+                  "exclude": _split(exclude), "repeat_rooms": _split(repeat_rooms),
+                  "video_engine": video_engine}
     return cfg
 
 
@@ -123,7 +132,7 @@ def execute_run(input_path: Path, tier: str, out: Path, config: Path, seed: int,
                 video_rotation: str = "auto", camera_height_m: float | None = None,
                 single_room: str = "auto", connector: str | None = None,
                 cache_root: str | None = None, exclude: str | None = None,
-                repeat_rooms: str | None = None) -> dict[str, Any]:
+                repeat_rooms: str | None = None, video_engine: str = "sfm") -> dict[str, Any]:
     """Run one capture: validate input, run the pipeline, write plan.json, plan.png, run_manifest.json.
 
     Raises InputError / FileNotFoundError on bad input. Returns the manifest dict.
@@ -140,7 +149,8 @@ def execute_run(input_path: Path, tier: str, out: Path, config: Path, seed: int,
 
     name = pipeline_for(tier, pipeline_name)
     resolved = resolve_config(config, drift_correction, name, video_rotation, camera_height_m,
-                              single_room, connector, cache_root, exclude, repeat_rooms)
+                              single_room, connector, cache_root, exclude, repeat_rooms,
+                              video_engine)
     config_hash = prov.config_sha256(resolved)
     input_manifest = prov.build_input_manifest(input_path, spec.files)
 
@@ -213,6 +223,9 @@ def run(
                                             help="Fit one room around the camera path instead of segmenting"),
     connector: str = typer.Option(None, "--connector",
                                   help="Room id that the other rooms attach to when stitching"),
+    video_engine: VideoEngineOpt = typer.Option(VideoEngineOpt.sfm, "--video-engine",
+                                                help="Video tier: build geometry from frames "
+                                                     "through the photo engine, or from COLMAP SfM"),
     exclude: str = typer.Option(None, "--exclude",
                                 help="Comma separated folder names that are not rooms, for example "
                                      "a folder of screenshots"),
@@ -229,7 +242,7 @@ def run(
                                pipeline_name=pipeline, video_rotation=video_rotation.value,
                                camera_height_m=camera_height_m, single_room=single_room.value,
                                connector=connector, cache_root=cache_root, exclude=exclude,
-                               repeat_rooms=repeat_rooms)
+                               repeat_rooms=repeat_rooms, video_engine=video_engine.value)
     except (InputError, FileNotFoundError, RuntimeError, ValueError, KeyError) as e:
         _fail(str(e))
     typer.echo(f"wrote {out / 'plan.json'} ({manifest['n_rooms']} rooms), plan.png and run_manifest.json")

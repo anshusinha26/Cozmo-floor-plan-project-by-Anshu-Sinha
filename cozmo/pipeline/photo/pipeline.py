@@ -151,7 +151,8 @@ class PhotoPipeline(Pipeline):
     # ------------------------------------------------------------------
     def _one_room(self, rid: str, files: list[Path], reconstructor, cfg, config, seed: int,
                   target_h: float, sigma: float, device: str, input_path: Path,
-                  detector=None, ocfg: dict | None = None, openings_note: list | None = None):
+                  detector=None, ocfg: dict | None = None, openings_note: list | None = None,
+                  tier: str = "photo", extra_warnings: list[str] | None = None):
         rec = room_mod.reconstruct_room(rid, list(files), reconstructor,
                                         voxel_m=cfg["voxel_m"],
                                         pixel_stride=cfg["pixel_stride"])
@@ -179,21 +180,21 @@ class PhotoPipeline(Pipeline):
         rec.scale_applied = s
         rec.measured_height_m = height
         rec.method = method
+        if extra_warnings:
+            warnings.extend(extra_warnings)
         budget = IntervalBudget(systematic=cfg["uncertainty"]["systematic_scale_bias"],
                                 height_prior=sigma / max(target_h, 1e-6),
                                 coverage=1.0,
                                 min_coverage=cfg["uncertainty"]["min_coverage"],
                                 low_coverage_factor=cfg["uncertainty"]["low_coverage_factor"],
                                 abs_floor_m=cfg["uncertainty"]["abs_floor_m"])
-        photo_config = dict(config)
-        photo_config["pipeline"] = dict(config["pipeline"])
-        photo_config["pipeline"]["video"] = cfg      # the adapter reads the video block
         built = plan_from_cloud(points, normals, path,
                                 np.arange(len(path), dtype=np.float64), len(files),
-                                Path(input_path), "photo", photo_config, seed, self, budget,
+                                Path(input_path), tier, config, seed, self, budget,
                                 YawSnapModel({"applied": False, "per_chunk": [],
                                               "note": "the photo tier has no trajectory to drift"}),
-                                warnings=warnings, assumptions=[], single_room=True)
+                                warnings=warnings, assumptions=[], single_room=True,
+                                tier_cfg=cfg)
         plan = built.plan
         row = rec.summary()
         row["fitted"] = built.detail.get("single_room")
