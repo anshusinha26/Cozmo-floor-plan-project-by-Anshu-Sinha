@@ -1,10 +1,29 @@
 # Evaluation report
 
-Captures: 2. Gates passed: 4/8. Overall: FAIL. Ceiling diagnosis: **repeatable_but_biased**.
+Captures: 2. Gates passed: 4 of 8 evaluated (8 defined). Overall: FAIL. Ceiling diagnosis: **repeatable_but_biased**.
 
 **WARNING: at least one evaluated plan came from the STUB PIPELINE. These numbers say nothing about reconstruction quality.**
 
-## Gates
+## Gates, per tier
+
+### photo
+
+Captures: EXAMPLE, EXAMPLE_REPEAT.
+
+| gate | result | value | threshold | n | note |
+|---|---|---|---|---|---|
+| opening_width | FAIL | 0.0000 | 0.8500 | 10 |  |
+| ceiling_height | FAIL | 0.2000 | 0.0150 | 4 |  |
+| ceiling_height_diagnosis | FAIL | 0.2000 | 0.0150 | 4 | label: repeatable_but_biased |
+| repeatability | PASS | 0.0000 | 1.0000 | 8 |  |
+| wall_length_tier | FAIL | 2.5000 | 1.0000 | 16 |  |
+| footprint | PASS | 0.0400 | 0.0800 | 2 |  |
+| stitch_adjacency | PASS | 0.0000 | 0.0000 | 2 |  |
+| stitch_overlap | PASS | 0.0000 | 0.0500 | 2 |  |
+
+4 of 8 evaluated gates pass, 0 not evaluated.
+
+## Gates, every capture together
 
 | gate | result | value | threshold | n | note |
 |---|---|---|---|---|---|

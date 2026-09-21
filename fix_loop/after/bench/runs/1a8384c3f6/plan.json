@@ -9,8 +9,8 @@
   },
   "run": {
     "pipeline_version": "lidar-0.1.0",
-    "git_commit": "10968b769f2f067ccfdf72c20038ce97ccf94230",
-    "config_sha256": "3a23a6e12bdb9d609bfc4c364a289d23f5eb3da7ac4b137821dfa1224d25b182",
+    "git_commit": "95cd8ead08248e27f4eee5d68e130b15a853fb01",
+    "config_sha256": "4abcd08848e0cabebcc7075a93a35f771511231dc86bed0a5f36b647e03da47f",
     "seed": 0
   },
   "rooms": [

@@ -1,0 +1,60 @@
+# Pinned capture registry for fix loop 1 (room segmentation).
+#
+# Loop 1 was run when only these five captures existed: the two synthetic
+# EXAMPLE fixtures and the three supplied LiDAR scans. The before/after
+# snapshots under fix_loop/ are evidence for a comparison made at that time,
+# so the registry they are regenerated from must not grow. Pointing
+# fix_loop/regenerate.sh at benchmarks/captures.yaml would sweep every capture
+# added since into a snapshot that never contained them, which would silently
+# rewrite the evidence. Later loops get their own pinned files.
+captures:
+  - capture_id: EXAMPLE
+    space_id: example_flat
+    tier: photo
+    input: benchmarks/captures/EXAMPLE
+    ground_truth: benchmarks/ground_truth/EXAMPLE.yaml
+    repeat_of: null
+    multi_room: true
+    # Synthetic fixture: the files are placeholders, not photographs.
+    pipeline: stub
+  - capture_id: EXAMPLE_REPEAT
+    space_id: example_flat
+    tier: photo
+    input: benchmarks/captures/EXAMPLE_REPEAT
+    ground_truth: benchmarks/ground_truth/EXAMPLE_REPEAT.yaml
+    repeat_of: EXAMPLE
+    multi_room: true
+    pipeline: stub
+  # iPhone LiDAR sample scans in Stray Scanner format. No tape ground truth
+  # exists for these yet, so bench reports outputs, runtime and
+  # self-consistency only. The two apartment scans are a repeat pair.
+  # c00a170fe1 is not one closed room: the path crosses two or three partly
+  # scanned spaces with unobserved sides. No scan has a ground-truth room count.
+  - capture_id: c00a170fe1
+    space_id: sample_partial_spaces
+    tier: lidar
+    input: data/sample/c00a170fe1
+    ground_truth: null
+    device: "iPhone with LiDAR, supplied scan; no EXIF available"
+    repeat_of: null
+    multi_room: false
+  - capture_id: 1a8384c3f6
+    space_id: sample_apartment
+    tier: lidar
+    input: data/sample/1a8384c3f6
+    ground_truth: null
+    device: "iPhone with LiDAR, supplied scan; no EXIF available"
+    repeat_of: null
+    multi_room: true
+  - capture_id: c7d28f72c6
+    space_id: sample_apartment
+    tier: lidar
+    input: data/sample/c7d28f72c6
+    ground_truth: null
+    device: "iPhone with LiDAR, supplied scan; no EXIF available"
+    repeat_of: 1a8384c3f6
+    # Not a valid repeat: the two scans cover different subsets of the flat,
+    # so their disagreement measures coverage, not repeatability. Reported as
+    # a coverage-mismatched pair with a secondary statistic, never as the gate.
+    repeat_kind: coverage_mismatched
+    multi_room: true

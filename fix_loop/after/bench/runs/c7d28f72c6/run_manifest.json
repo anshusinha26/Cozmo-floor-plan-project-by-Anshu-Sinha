@@ -97479,7 +97479,7 @@
   },
   "config": {
     "path": "config/gates.yaml",
-    "sha256": "3a23a6e12bdb9d609bfc4c364a289d23f5eb3da7ac4b137821dfa1224d25b182",
+    "sha256": "4abcd08848e0cabebcc7075a93a35f771511231dc86bed0a5f36b647e03da47f",
     "resolved": {
       "config_version": 1,
       "gates": {
@@ -97606,17 +97606,223 @@
             "abs_floor_m": 0.01,
             "ci_level": 0.95
           }
+        },
+        "photo": {
+          "device": null,
+          "use_exif_focal": true,
+          "voxel_m": 0.03,
+          "pixel_stride": 2,
+          "vertical_normal_cos": 0.9,
+          "horizontal_normal_cos": 0.25,
+          "height_prior": {
+            "camera_height_m": 1.4,
+            "camera_height_sigma_m": 0.12
+          },
+          "gravity": {
+            "voxel_m": 0.05,
+            "max_tilt_deg": 30.0,
+            "band_m": 0.08
+          },
+          "openings": {
+            "enabled": true,
+            "detector": "owlv2",
+            "min_score": 0.2,
+            "max_photos": 8
+          },
+          "level": {
+            "hist_bin_m": 0.03,
+            "peak_min_fraction": 0.1,
+            "plane_band_m": 0.08,
+            "cell_m": 0.3,
+            "min_ceiling_coverage": 0.1,
+            "prior_height_m": [
+              2.2,
+              3.2
+            ]
+          },
+          "wall": {
+            "min_height_above_floor_m": 0.3,
+            "max_height_below_ceiling_m": 0.1,
+            "hist_bin_m": 0.06,
+            "peak_min_points": 120,
+            "peak_min_separation_m": 0.14,
+            "occupancy_bin_m": 0.06,
+            "min_run_m": 0.4,
+            "wall_min_top_m": 1.4,
+            "max_gap_m": 0.6
+          },
+          "ghost": {
+            "enabled": true,
+            "cell_m": 0.05,
+            "reach_m": 0.4,
+            "probe_offset_m": 0.25,
+            "min_supported_share": 0.2
+          },
+          "room": {
+            "grid_m": 0.04,
+            "erode_m": 0.4,
+            "min_area_m2": 1.0,
+            "min_constriction_m": 0.62,
+            "wall_min_top_m": 1.4,
+            "wall_min_top_fraction": 0.7,
+            "wall_min_top_floor_m": 0.9,
+            "snap_m": 0.3,
+            "unsupported_margin_m": 0.45,
+            "allow_l_shape": true
+          },
+          "opening": {
+            "band_low_m": 0.3,
+            "band_high_m": 1.9,
+            "min_width_m": 0.6,
+            "max_width_m": 2.4,
+            "bin_m": 0.05
+          },
+          "uncertainty": {
+            "systematic_scale_bias": 0.05,
+            "depth_scale_bias": 0.05,
+            "abs_floor_m": 0.05,
+            "min_coverage": 0.6,
+            "low_coverage_factor": 1.6,
+            "ci_level": 0.95,
+            "status": "PROVISIONAL"
+          }
+        },
+        "video": {
+          "device": null,
+          "voxel_m": 0.03,
+          "vertical_normal_cos": 0.9,
+          "horizontal_normal_cos": 0.25,
+          "frames": {
+            "target_fps": 10.0,
+            "long_side": 1280,
+            "max_frames": 600,
+            "drop_blur_fraction": 0.2,
+            "rotation": "auto"
+          },
+          "engine": "sfm",
+          "frames_engine": {
+            "n_frames": 16,
+            "max_frames": 24,
+            "min_gap_fraction": 0.4
+          },
+          "sfm": {
+            "overlap": 10,
+            "max_image_size": 1600,
+            "min_chunk_images": 15,
+            "deterministic": true,
+            "reuse_reconstruction": true
+          },
+          "scale": {
+            "max_frames": 12
+          },
+          "height_prior": {
+            "camera_height_m": 1.4,
+            "camera_height_sigma_m": 0.12
+          },
+          "bridge": {
+            "overlap_frames": 4,
+            "overlap_window_s": 2.0,
+            "min_span_m": 0.2,
+            "max_rms_m": 0.12,
+            "max_rms_frac": 0.25,
+            "max_scale_disagreement": 0.15,
+            "scale_sem_sigmas": 2.0,
+            "max_tilt_deg": 12.0,
+            "max_vertical_m": 0.35,
+            "time_box_s": 5400.0
+          },
+          "dense": {
+            "max_keyframes": 140,
+            "pixel_stride": 2,
+            "min_depth_m": 0.25,
+            "max_depth_m": 8.0,
+            "scale_tolerance": 0.08
+          },
+          "gravity": {
+            "voxel_m": 0.05,
+            "max_tilt_deg": 30.0,
+            "band_m": 0.08
+          },
+          "drift": {
+            "voxel_m": 0.06,
+            "max_yaw_deg": 6.0
+          },
+          "level": {
+            "hist_bin_m": 0.02,
+            "peak_min_fraction": 0.15,
+            "plane_band_m": 0.06,
+            "cell_m": 0.25,
+            "min_ceiling_coverage": 0.12,
+            "prior_height_m": [
+              2.2,
+              3.2
+            ]
+          },
+          "wall": {
+            "min_height_above_floor_m": 0.3,
+            "max_height_below_ceiling_m": 0.1,
+            "hist_bin_m": 0.04,
+            "peak_min_points": 150,
+            "peak_min_separation_m": 0.1,
+            "occupancy_bin_m": 0.05,
+            "min_run_m": 0.4,
+            "wall_min_top_m": 1.5,
+            "max_gap_m": 0.45
+          },
+          "ghost": {
+            "enabled": true,
+            "cell_m": 0.05,
+            "reach_m": 0.35,
+            "probe_offset_m": 0.25,
+            "min_supported_share": 0.25
+          },
+          "room": {
+            "grid_m": 0.03,
+            "erode_m": 0.4,
+            "min_area_m2": 1.0,
+            "min_constriction_m": 0.62,
+            "wall_min_top_m": 1.5,
+            "wall_min_top_fraction": 0.75,
+            "wall_min_top_floor_m": 0.9,
+            "snap_m": 0.22,
+            "unsupported_margin_m": 0.35,
+            "allow_l_shape": true
+          },
+          "opening": {
+            "band_low_m": 0.3,
+            "band_high_m": 1.9,
+            "min_width_m": 0.6,
+            "max_width_m": 2.4,
+            "bin_m": 0.05
+          },
+          "uncertainty": {
+            "systematic_scale_bias": 0.03,
+            "depth_scale_bias": 0.03,
+            "abs_floor_m": 0.03,
+            "min_coverage": 0.6,
+            "low_coverage_factor": 1.6,
+            "ci_level": 0.95,
+            "status": "PROVISIONAL"
+          }
         }
       },
       "run": {
         "pipeline": "lidar",
         "drift_correction": true,
-        "segmentation": "cells"
+        "segmentation": "cells",
+        "video_rotation": "auto",
+        "camera_height_m": null,
+        "single_room": "auto",
+        "connector": null,
+        "cache_root": null,
+        "exclude": [],
+        "repeat_rooms": [],
+        "video_engine": "sfm"
       }
     }
   },
   "git": {
-    "commit": "10968b769f2f067ccfdf72c20038ce97ccf94230",
+    "commit": "95cd8ead08248e27f4eee5d68e130b15a853fb01",
     "dirty": true
   },
   "seed": 0,
@@ -97625,18 +97831,18 @@
     "version": "0.1.0",
     "cozmo_version": "0.1.0"
   },
-  "started_at": "2026-09-20T18:15:03.612524+00:00",
-  "finished_at": "2026-09-20T18:15:32.589625+00:00",
-  "duration_s": 28.977101,
+  "started_at": "2026-09-21T06:18:56.686538+00:00",
+  "finished_at": "2026-09-21T06:19:46.897406+00:00",
+  "duration_s": 50.210868,
   "stage_timings_s": {
-    "fuse_raw": 12.394952665985329,
-    "drift_estimate": 0.34163020801497623,
-    "fuse_corrected": 12.131185417005327,
-    "openings": 0.9915345420013182,
-    "drift_report": 1.7560376670153346,
-    "assemble": 0.8346008340013213,
-    "debug_images": 0.5050020000198856,
-    "render": 0.2472497080161702
+    "fuse_raw": 23.069884791999357,
+    "drift_estimate": 1.1259541249892209,
+    "fuse_corrected": 20.352031249989523,
+    "openings": 1.0870879580033943,
+    "drift_report": 2.1862140409939457,
+    "assemble": 1.044725041021593,
+    "debug_images": 1.2293398750189226,
+    "render": 0.3082897920103278
   },
   "library_versions": {
     "pydantic": "2.13.5",
@@ -97660,7 +97866,7 @@
     ],
     "drift_report": "drift_report.json"
   },
-  "plan_sha256": "1f2cbea573bff1b592fa44c7b4950a363904247266f18d82bf7e346082281f39",
+  "plan_sha256": "3c9b124f8e59e0698173af4dc5c2ab26aebe717de379fa947015c182699d51d8",
   "n_rooms": 9,
   "warnings": [
     "Windows are not detected in this version; openings are doors and pass-throughs only",

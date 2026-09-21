@@ -9,8 +9,8 @@
   },
   "run": {
     "pipeline_version": "lidar-0.1.0",
-    "git_commit": "4780b2e591445ec5b60bac908edf266deb42da53",
-    "config_sha256": "293de49f738a404c25e21a4cde08781e2f48130b9f040f74fad7052a3aec9f37",
+    "git_commit": "95cd8ead08248e27f4eee5d68e130b15a853fb01",
+    "config_sha256": "625c705bd112669b549295176846ff3b5ae60806f3f6082c805d8ee3174367f8",
     "seed": 0
   },
   "rooms": [
@@ -48,10 +48,10 @@
           ],
           "length_m": {
             "value": 2.969558,
-            "ci_low": 2.910279086821548,
-            "ci_high": 3.0288369131784525,
+            "ci_low": 2.8510001736430954,
+            "ci_high": 3.088115826356905,
             "unit": "m",
-            "method": "wall_face_separation",
+            "method": "wall_face_separation+partially_observed",
             "ci_level": 0.95
           },
           "height_m": {
@@ -75,10 +75,10 @@
           ],
           "length_m": {
             "value": 3.44,
-            "ci_low": 3.3718658718065733,
-            "ci_high": 3.5081341281934266,
+            "ci_low": 3.3037317436131466,
+            "ci_high": 3.5762682563868533,
             "unit": "m",
-            "method": "wall_face_separation",
+            "method": "wall_face_separation+partially_observed",
             "ci_level": 0.95
           },
           "height_m": {
@@ -102,10 +102,10 @@
           ],
           "length_m": {
             "value": 2.969558,
-            "ci_low": 2.910279086821548,
-            "ci_high": 3.0288369131784525,
+            "ci_low": 2.8510001736430954,
+            "ci_high": 3.088115826356905,
             "unit": "m",
-            "method": "wall_face_separation",
+            "method": "wall_face_separation+partially_observed",
             "ci_level": 0.95
           },
           "height_m": {
@@ -129,10 +129,10 @@
           ],
           "length_m": {
             "value": 3.44,
-            "ci_low": 3.3718658718065733,
-            "ci_high": 3.5081341281934266,
+            "ci_low": 3.3037317436131466,
+            "ci_high": 3.5762682563868533,
             "unit": "m",
-            "method": "wall_face_separation",
+            "method": "wall_face_separation+partially_observed",
             "ci_level": 0.95
           },
           "height_m": {
@@ -155,10 +155,10 @@
       },
       "floor_area_m2": {
         "value": 10.215279520000001,
-        "ci_low": 9.926893852149817,
-        "ci_high": 10.503665187850185,
+        "ci_low": 9.061736848599269,
+        "ci_high": 11.368822191400733,
         "unit": "m2",
-        "method": "polygon_from_wall_faces",
+        "method": "polygon_from_wall_faces+partially_observed",
         "ci_level": 0.95
       },
       "openings": []
@@ -197,10 +197,10 @@
           ],
           "length_m": {
             "value": 2.0895580000000002,
-            "ci_low": 2.044353542031667,
-            "ci_high": 2.1347624579683333,
+            "ci_low": 1.9991490840633341,
+            "ci_high": 2.1799669159366664,
             "unit": "m",
-            "method": "wall_face_separation",
+            "method": "wall_face_separation+partially_observed",
             "ci_level": 0.95
           },
           "height_m": {
@@ -224,10 +224,10 @@
           ],
           "length_m": {
             "value": 4.46,
-            "ci_low": 4.371295556001676,
-            "ci_high": 4.548704443998324,
+            "ci_low": 4.2825911120033515,
+            "ci_high": 4.637408887996648,
             "unit": "m",
-            "method": "wall_face_separation",
+            "method": "wall_face_separation+partially_observed",
             "ci_level": 0.95
           },
           "height_m": {
@@ -251,10 +251,10 @@
           ],
           "length_m": {
             "value": 2.0895580000000002,
-            "ci_low": 2.044353542031667,
-            "ci_high": 2.1347624579683333,
+            "ci_low": 1.9991490840633341,
+            "ci_high": 2.1799669159366664,
             "unit": "m",
-            "method": "wall_face_separation",
+            "method": "wall_face_separation+partially_observed",
             "ci_level": 0.95
           },
           "height_m": {
@@ -278,10 +278,10 @@
           ],
           "length_m": {
             "value": 4.46,
-            "ci_low": 4.371295556001676,
-            "ci_high": 4.548704443998324,
+            "ci_low": 4.2825911120033515,
+            "ci_high": 4.637408887996648,
             "unit": "m",
-            "method": "wall_face_separation",
+            "method": "wall_face_separation+partially_observed",
             "ci_level": 0.95
           },
           "height_m": {
@@ -304,10 +304,10 @@
       },
       "floor_area_m2": {
         "value": 9.319428680000001,
-        "ci_low": 9.034306421378108,
-        "ci_high": 9.604550938621895,
+        "ci_low": 8.178939645512429,
+        "ci_high": 10.459917714487574,
         "unit": "m2",
-        "method": "polygon_from_wall_faces",
+        "method": "polygon_from_wall_faces+partially_observed",
         "ci_level": 0.95
       },
       "openings": []
@@ -375,8 +375,8 @@
     ],
     "footprint_area_m2": {
       "value": 19.49291704,
-      "ci_low": 18.896543085714423,
-      "ci_high": 20.089290994285573,
+      "ci_low": 18.30016913142885,
+      "ci_high": 20.685664948571148,
       "unit": "m2",
       "method": "union_of_room_polygons",
       "ci_level": 0.95
@@ -398,8 +398,8 @@
       "wall_id": "w1",
       "area_m2": {
         "value": 8.0178066,
-        "ci_low": 6.524425984536166,
-        "ci_high": 9.511187215463833,
+        "ci_low": 6.49891337990533,
+        "ci_high": 9.53669982009467,
         "unit": "m2",
         "method": "wall_length_times_height",
         "ci_level": 0.95
@@ -412,8 +412,8 @@
       "wall_id": "w2",
       "area_m2": {
         "value": 9.288,
-        "ci_low": 7.55819016328213,
-        "ci_high": 11.01780983671787,
+        "ci_low": 7.529088892290569,
+        "ci_high": 11.046911107709432,
         "unit": "m2",
         "method": "wall_length_times_height",
         "ci_level": 0.95
@@ -426,8 +426,8 @@
       "wall_id": "w3",
       "area_m2": {
         "value": 8.0178066,
-        "ci_low": 6.524425984536166,
-        "ci_high": 9.511187215463833,
+        "ci_low": 6.49891337990533,
+        "ci_high": 9.53669982009467,
         "unit": "m2",
         "method": "wall_length_times_height",
         "ci_level": 0.95
@@ -440,8 +440,8 @@
       "wall_id": "w4",
       "area_m2": {
         "value": 9.288,
-        "ci_low": 7.55819016328213,
-        "ci_high": 11.01780983671787,
+        "ci_low": 7.529088892290569,
+        "ci_high": 11.046911107709432,
         "unit": "m2",
         "method": "wall_length_times_height",
         "ci_level": 0.95
@@ -454,10 +454,10 @@
       "wall_id": null,
       "area_m2": {
         "value": 10.215279520000001,
-        "ci_low": 9.926893852149817,
-        "ci_high": 10.503665187850185,
+        "ci_low": 9.061736848599269,
+        "ci_high": 11.368822191400733,
         "unit": "m2",
-        "method": "polygon_from_wall_faces",
+        "method": "polygon_from_wall_faces+partially_observed",
         "ci_level": 0.95
       }
     },
@@ -468,10 +468,10 @@
       "wall_id": null,
       "area_m2": {
         "value": 10.215279520000001,
-        "ci_low": 9.926893852149817,
-        "ci_high": 10.503665187850185,
+        "ci_low": 9.061736848599269,
+        "ci_high": 11.368822191400733,
         "unit": "m2",
-        "method": "polygon_from_wall_faces",
+        "method": "polygon_from_wall_faces+partially_observed",
         "ci_level": 0.95
       }
     },
@@ -482,8 +482,8 @@
       "wall_id": "w1",
       "area_m2": {
         "value": 5.641806600000001,
-        "ci_low": 4.589922643254611,
-        "ci_high": 6.69369055674539,
+        "ci_low": 4.568890034133695,
+        "ci_high": 6.714723165866307,
         "unit": "m2",
         "method": "wall_length_times_height",
         "ci_level": 0.95
@@ -496,8 +496,8 @@
       "wall_id": "w2",
       "area_m2": {
         "value": 12.042,
-        "ci_low": 9.799175618237793,
-        "ci_high": 14.284824381762206,
+        "ci_low": 9.761135069823705,
+        "ci_high": 14.322864930176294,
         "unit": "m2",
         "method": "wall_length_times_height",
         "ci_level": 0.95
@@ -510,8 +510,8 @@
       "wall_id": "w3",
       "area_m2": {
         "value": 5.641806600000001,
-        "ci_low": 4.589922643254611,
-        "ci_high": 6.69369055674539,
+        "ci_low": 4.568890034133695,
+        "ci_high": 6.714723165866307,
         "unit": "m2",
         "method": "wall_length_times_height",
         "ci_level": 0.95
@@ -524,8 +524,8 @@
       "wall_id": "w4",
       "area_m2": {
         "value": 12.042,
-        "ci_low": 9.799175618237793,
-        "ci_high": 14.284824381762206,
+        "ci_low": 9.761135069823705,
+        "ci_high": 14.322864930176294,
         "unit": "m2",
         "method": "wall_length_times_height",
         "ci_level": 0.95
@@ -538,10 +538,10 @@
       "wall_id": null,
       "area_m2": {
         "value": 9.319428680000001,
-        "ci_low": 9.034306421378108,
-        "ci_high": 9.604550938621895,
+        "ci_low": 8.178939645512429,
+        "ci_high": 10.459917714487574,
         "unit": "m2",
-        "method": "polygon_from_wall_faces",
+        "method": "polygon_from_wall_faces+partially_observed",
         "ci_level": 0.95
       }
     },
@@ -552,10 +552,10 @@
       "wall_id": null,
       "area_m2": {
         "value": 9.319428680000001,
-        "ci_low": 9.034306421378108,
-        "ci_high": 9.604550938621895,
+        "ci_low": 8.178939645512429,
+        "ci_high": 10.459917714487574,
         "unit": "m2",
-        "method": "polygon_from_wall_faces",
+        "method": "polygon_from_wall_faces+partially_observed",
         "ci_level": 0.95
       }
     }
@@ -572,8 +572,11 @@
     "Windows are not detected in this version; openings are doors and pass-throughs only",
     "Ceiling not observed over enough of the floor (coverage 0% < 15%); ceiling height is a prior interval, not a measurement",
     "Component 3 dropped: no valid rectilinear polygon",
+    "2 of 2 rooms have less than 80% of their outline backed by observed wall; they are flagged partially observed and their intervals are widened",
     "room_01: Ceiling not observed over enough of the floor (coverage 0% < 15%); ceiling height is a prior interval, not a measurement",
+    "room_01: only 71% of the outline is backed by observed wall; the room is partially observed and its intervals are widened",
     "room_02: Ceiling not observed over enough of the floor (coverage 0% < 15%); ceiling height is a prior interval, not a measurement",
+    "room_02: only 21% of the outline is backed by observed wall; the room is partially observed and its intervals are widened",
     "Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty"
   ],
   "renders": {

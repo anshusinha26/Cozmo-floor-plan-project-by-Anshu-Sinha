@@ -1,21 +1,21 @@
 {
   "drift_off": {
     "footprint_area_m2": 47.85886652943402,
-    "mean_wall_thickness_m": 0.03161541814939346,
+    "mean_wall_thickness_m": 0.032056176353746,
     "n_rooms": 9,
-    "n_wall_faces": 100,
+    "n_wall_faces": 97,
     "room_overlap_m2": 0.13029763340500117
   },
   "drift_on": {
-    "footprint_area_m2": 50.266417896544,
-    "mean_wall_thickness_m": 0.035336925524898644,
+    "footprint_area_m2": 50.274768457101,
+    "mean_wall_thickness_m": 0.035849062805983045,
     "n_rooms": 8,
-    "n_wall_faces": 101,
-    "room_overlap_m2": 0.013412352911999407
+    "n_wall_faces": 98,
+    "room_overlap_m2": 0.1328699226359976
   },
   "delta": {
-    "footprint_area_m2": 2.4075513671099813,
-    "mean_wall_thickness_m": 0.0037215073755051814
+    "footprint_area_m2": 2.4159019276669795,
+    "mean_wall_thickness_m": 0.0037928864522370417
   },
   "applied": true,
   "model": {
@@ -29,7 +29,7 @@
       "max": 0.017528736147198076
     },
     "shift_m": {
-      "mean": 0.017503453258839504,
+      "mean": 0.01777243659335463,
       "max": 0.027786637029962268
     },
     "rejected": []

@@ -8,11 +8,11 @@ Captures: 5. cozmo 0.1.0.
 
 | capture | space | tier | pipeline | repeat_of | multi_room | rooms | duration_s | stages (s) | plan sha256 |
 |---|---|---|---|---|---|---|---|---|---|
-| EXAMPLE | example_flat | photo | stub |  | True | 2 | 0.0 | provenance 0.02, hand_written_geometry 0.00, hand_written_stitch 0.00, hand_written_damage 0.00, render 0.14 | 3ff4c9a073b8 |
-| EXAMPLE_REPEAT | example_flat | photo | stub | EXAMPLE | True | 2 | 0.0 | provenance 0.02, hand_written_geometry 0.00, hand_written_stitch 0.00, hand_written_damage 0.00, render 0.06 | cd2423092752 |
-| c00a170fe1 | sample_partial_spaces | lidar | lidar |  | False | 2 | 6.8 | fuse_raw 2.72, drift_estimate 0.13, fuse_corrected 3.04, openings 0.02, drift_report 0.05, assemble 0.07, debug_images 0.74, render 0.13 | 35350cf6ef31 |
-| 1a8384c3f6 | sample_apartment | lidar | lidar |  | True | 8 | 14.8 | fuse_raw 6.72, drift_estimate 0.18, fuse_corrected 6.34, openings 0.27, drift_report 0.45, assemble 0.39, debug_images 0.41, render 0.16 | ed39f688351c |
-| c7d28f72c6 | sample_apartment | lidar | lidar | 1a8384c3f6 | True | 10 | 40.1 | fuse_raw 18.89, drift_estimate 0.62, fuse_corrected 16.19, openings 0.88, drift_report 2.00, assemble 0.98, debug_images 0.48, render 0.26 | f33d47c86fba |
+| EXAMPLE | example_flat | photo | stub |  | True | 2 | 0.0 | provenance 0.03, hand_written_geometry 0.00, hand_written_stitch 0.00, hand_written_damage 0.00, render 0.14 | aec79ed808e7 |
+| EXAMPLE_REPEAT | example_flat | photo | stub | EXAMPLE | True | 2 | 0.0 | provenance 0.02, hand_written_geometry 0.00, hand_written_stitch 0.00, hand_written_damage 0.00, render 0.07 | dd4833f86b40 |
+| c00a170fe1 | sample_partial_spaces | lidar | lidar |  | False | 2 | 9.8 | fuse_raw 5.33, drift_estimate 0.19, fuse_corrected 2.76, openings 0.01, drift_report 0.04, assemble 0.08, debug_images 1.41, render 0.13 | dae09b8e715e |
+| 1a8384c3f6 | sample_apartment | lidar | lidar |  | True | 8 | 20.2 | fuse_raw 10.50, drift_estimate 0.34, fuse_corrected 7.58, openings 0.36, drift_report 0.48, assemble 0.42, debug_images 0.51, render 0.16 | fcf2377add03 |
+| c7d28f72c6 | sample_apartment | lidar | lidar | 1a8384c3f6 | True | 11 | 38.3 | fuse_raw 15.68, drift_estimate 0.47, fuse_corrected 16.86, openings 0.95, drift_report 2.03, assemble 1.35, debug_images 0.82, render 0.19 | 879b3eab124c |
 
 ## Captures with no ground truth
 
@@ -20,29 +20,43 @@ Captures: 5. cozmo 0.1.0.
 
 | capture | tier | rooms | walls | openings | footprint m2 | sum of rooms m2 | room overlap m2 | rooms connected | ceiling from prior | duration_s |
 |---|---|---|---|---|---|---|---|---|---|---|
-| c00a170fe1 | lidar | 2 | 8 | 0 | 19.49 | 19.53 | 0.042 | no ['room_02'] | 2/2 | 6.8 |
-| 1a8384c3f6 | lidar | 8 | 56 | 6 | 50.27 | 47.96 | 0.013 | no ['room_02', 'room_04', 'room_05', 'room_06', 'room_08'] | 8/8 | 14.8 |
-| c7d28f72c6 | lidar | 10 | 76 | 15 | 46.89 | 44.75 | 0.272 | no ['connector_01', 'connector_02', 'room_02', 'room_03', 'room_04', 'room_05', 'room_06', 'room_07'] | 6/10 | 40.1 |
+| c00a170fe1 | lidar | 2 | 8 | 0 | 19.49 | 19.53 | 0.042 | no ['room_02'] | 2/2 | 9.8 |
+| 1a8384c3f6 | lidar | 8 | 56 | 6 | 50.27 | 48.44 | 0.133 | no ['room_02', 'room_04', 'room_05', 'room_06', 'room_08'] | 8/8 | 20.2 |
+| c7d28f72c6 | lidar | 11 | 86 | 16 | 46.89 | 44.74 | 0.403 | no ['connector_01', 'connector_02', 'connector_03', 'room_02', 'room_03', 'room_04', 'room_05', 'room_06', 'room_07'] | 6/11 | 38.3 |
 
 ### Repeat pair: 1a8384c3f6 and c7d28f72c6 (lidar)
 
-Registration: rotation 328.50887025548724 degrees, translation (-6.04, 0.14) m, footprint IoU 0.68.
+**NOT a valid repeat pair. The two captures cover different subsets of the building, so the strict gate number below measures coverage as much as repeatability. It is kept visible, and a secondary statistic over the walls both captures saw is reported beneath it.**
+
+Devices: iPhone with LiDAR, supplied scan; no EXIF available and iPhone with LiDAR, supplied scan; no EXIF available.
+
+Registration: rotation 328.5119525266558 degrees, translation (-6.04, 0.09) m, footprint IoU 0.68.
 
 Same space check: 6 of 8 rooms pair by polygon IoU. Verdict: **same space** (registered footprint IoU at least 0.5 and at least half the rooms pairing by polygon IoU). The gate below is scored either way; a weak verdict is itself evidence about the segmentation, not a reason to skip scoring.
 
 Agreement between two captures is repeatability, not accuracy. Both can be wrong together.
 
-Room matching: 8 rooms in 1a8384c3f6, 10 in c7d28f72c6, 6 matched at IoU >= 0.3 (IoU values [0.309, 0.521, 0.478, 0.603, 0.494, 0.344]). Unmatched: ['room_07', 'room_08'] and ['room_06', 'room_07', 'connector_02', 'connector_03'].
+Room matching: 8 rooms in 1a8384c3f6, 11 in c7d28f72c6, 6 matched at IoU >= 0.3 (IoU values [0.524, 0.481, 0.729, 0.501, 0.344, 0.605]). Unmatched: ['room_01', 'room_07'] and ['room_05', 'room_06', 'room_07', 'connector_03', 'connector_04'].
 
-Wall matching inside matched rooms: 20 paired by nearest parallel face within 0.3 m, 50 with no counterpart.
+Wall matching inside matched rooms: 25 paired by nearest parallel face within 0.3 m, 40 with no counterpart.
 
-Repeatability gate: FAIL on 112 wall rows, worst ratio inf against the allowed 1.0. Within tolerance: 0 of 112.
+Repeatability gate: FAIL on 117 wall rows, worst ratio inf against the allowed 1.0. Within tolerance: 0 of 117.
 
-Worst matched wall: room_03~room_01 w4~w7 2.371 m vs 0.207 m, difference 216.4 cm against 1.0 cm allowed.
+Worst matched wall: room_03~room_01 w4~w7 2.372 m vs 0.207 m, difference 216.5 cm against 1.0 cm allowed.
 
-Of the 20 matched wall pairs, 0 are within tolerance.
+Of the 25 matched wall pairs, 0 are within tolerance.
 
 Rows failing because a wall or room has no counterpart: 92.
+
+Secondary statistic, walls observed in both captures. **This is not the gate**: the gate scores every wall, including those only one capture saw, so that reporting fewer things cannot raise a score.
+
+| walls seen in both | median difference | within 5 cm | registered footprint IoU |
+|---|---|---|---|
+| 25 of 117 rows | 97.6 cm | 0 (0%) | 0.68 |
+
+Walls seen by only one capture are excluded here and included in the gate. Agreement on shared walls does not show the plans agree.
+
+At the wall-face level, below the polygon, the two captures place the same wall within a median of 1.9 cm. Face length with any counterpart: 1a8384c3f6 56%, c7d28f72c6 37%. The polygon edges disagree far more than the faces do, because the two captures cut the same wall into different edges. Source: fix_loop/evidence/evidence.json, regenerated by fix_loop/evidence_run.py.
 
 
 ## Gate summary (captures with ground truth)
@@ -62,11 +76,30 @@ Rows failing because a wall or room has no counterpart: 92.
 
 # Evaluation report
 
-Captures: 2. Gates passed: 4/8. Overall: FAIL. Ceiling diagnosis: **repeatable_but_biased**.
+Captures: 2. Gates passed: 4 of 8 evaluated (8 defined). Overall: FAIL. Ceiling diagnosis: **repeatable_but_biased**.
 
 **WARNING: at least one evaluated plan came from the STUB PIPELINE. These numbers say nothing about reconstruction quality.**
 
-## Gates
+## Gates, per tier
+
+### photo
+
+Captures: EXAMPLE, EXAMPLE_REPEAT.
+
+| gate | result | value | threshold | n | note |
+|---|---|---|---|---|---|
+| opening_width | FAIL | 0.0000 | 0.8500 | 10 |  |
+| ceiling_height | FAIL | 0.2000 | 0.0150 | 4 |  |
+| ceiling_height_diagnosis | FAIL | 0.2000 | 0.0150 | 4 | label: repeatable_but_biased |
+| repeatability | PASS | 0.0000 | 1.0000 | 8 |  |
+| wall_length_tier | FAIL | 2.5000 | 1.0000 | 16 |  |
+| footprint | PASS | 0.0400 | 0.0800 | 2 |  |
+| stitch_adjacency | PASS | 0.0000 | 0.0000 | 2 |  |
+| stitch_overlap | PASS | 0.0000 | 0.0500 | 2 |  |
+
+4 of 8 evaluated gates pass, 0 not evaluated.
+
+## Gates, every capture together
 
 | gate | result | value | threshold | n | note |
 |---|---|---|---|---|---|

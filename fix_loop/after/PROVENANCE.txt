@@ -1,8 +1,9 @@
 side: after
 segmentation: cells
-commit: 10968b769f2f067ccfdf72c20038ce97ccf94230
-commit_subject: feat(damage): add four precision filters and measure each one
+registry: fix_loop/captures_loop1.yaml
+commit: 95cd8ead08248e27f4eee5d68e130b15a853fb01
+commit_subject: docs: fit the report to six pages with the gap statements included
 dirty: true
-generated_at: 2026-09-20T18:15:36Z
+generated_at: 2026-09-21T06:19:48Z
 python: Python 3.11.15
-config_sha256: 2b1984124c8ac861912fcd227fafa8f82e5dbce8eecd0c09aa8da0f16b3ef88e
+config_sha256: 890051217f9823f1366de3864db7d9e0fc37d4ad5a35c0d1d13d1bdba8eaa882

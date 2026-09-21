@@ -5,27 +5,3 @@ WARNING cozmo.pipeline.stub: STUB PIPELINE: NOT A REAL RECONSTRUCTION (input=ben
 INFO cozmo.cli: input ok: scan folder with 3434 readable file(s) for tier lidar
 INFO cozmo.cli: input ok: scan folder with 10506 readable file(s) for tier lidar
 INFO cozmo.cli: input ok: scan folder with 19494 readable file(s) for tier lidar
-INFO cozmo.cli: input ok: 1 room folder(s): hall
-WARNING cozmo.pipeline.stub: STUB PIPELINE: NOT A REAL RECONSTRUCTION (input=data/own/hall, tier=photo, seed=0)
-INFO cozmo.cli: input ok: 1 room folder(s): bedroom_1
-WARNING cozmo.pipeline.stub: STUB PIPELINE: NOT A REAL RECONSTRUCTION (input=data/own/bedroom_1, tier=photo, seed=0)
-INFO cozmo.cli: input ok: 1 room folder(s): bedroom_2
-WARNING cozmo.pipeline.stub: STUB PIPELINE: NOT A REAL RECONSTRUCTION (input=data/own/bedroom_2, tier=photo, seed=0)
-INFO cozmo.cli: input ok: 1 room folder(s): bedroom_2_repeat
-WARNING cozmo.pipeline.stub: STUB PIPELINE: NOT A REAL RECONSTRUCTION (input=data/own/bedroom_2_repeat, tier=photo, seed=0)
-INFO cozmo.cli: input ok: 1 room folder(s): kitchen
-WARNING cozmo.pipeline.stub: STUB PIPELINE: NOT A REAL RECONSTRUCTION (input=data/own/kitchen, tier=photo, seed=0)
-INFO cozmo.cli: input ok: 4 room folder(s): bedroom_1, bedroom_2, hall, kitchen
-WARNING cozmo.pipeline.stub: STUB PIPELINE: NOT A REAL RECONSTRUCTION (input=data/own/home, tier=photo, seed=0)
-INFO cozmo.cli: input ok: 1 room folder(s): hall
-WARNING cozmo.pipeline.stub: STUB PIPELINE: NOT A REAL RECONSTRUCTION (input=data/own/hall, tier=video, seed=0)
-INFO cozmo.cli: input ok: 1 room folder(s): bedroom_1
-WARNING cozmo.pipeline.stub: STUB PIPELINE: NOT A REAL RECONSTRUCTION (input=data/own/bedroom_1, tier=video, seed=0)
-INFO cozmo.cli: input ok: 1 room folder(s): bedroom_2
-WARNING cozmo.pipeline.stub: STUB PIPELINE: NOT A REAL RECONSTRUCTION (input=data/own/bedroom_2, tier=video, seed=0)
-INFO cozmo.cli: input ok: 1 room folder(s): bedroom_2_repeat
-WARNING cozmo.pipeline.stub: STUB PIPELINE: NOT A REAL RECONSTRUCTION (input=data/own/bedroom_2_repeat, tier=video, seed=0)
-INFO cozmo.cli: input ok: 1 room folder(s): kitchen
-WARNING cozmo.pipeline.stub: STUB PIPELINE: NOT A REAL RECONSTRUCTION (input=data/own/kitchen, tier=video, seed=0)
-INFO cozmo.cli: input ok: 4 room folder(s): bedroom_1, bedroom_2, hall, kitchen
-WARNING cozmo.pipeline.stub: STUB PIPELINE: NOT A REAL RECONSTRUCTION (input=data/own/home, tier=video, seed=0)

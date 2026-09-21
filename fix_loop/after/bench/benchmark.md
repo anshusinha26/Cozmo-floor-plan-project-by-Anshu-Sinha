@@ -1,6 +1,6 @@
 # Benchmark report
 
-Captures: 17. cozmo 0.1.0.
+Captures: 5. cozmo 0.1.0.
 
 **WARNING: some plans came from the STUB PIPELINE. Their numbers describe the harness, not a reconstruction.**
 
@@ -8,23 +8,11 @@ Captures: 17. cozmo 0.1.0.
 
 | capture | space | tier | pipeline | repeat_of | multi_room | rooms | duration_s | stages (s) | plan sha256 |
 |---|---|---|---|---|---|---|---|---|---|
-| EXAMPLE | example_flat | photo | stub |  | True | 2 | 0.0 | provenance 0.01, hand_written_geometry 0.00, hand_written_stitch 0.00, hand_written_damage 0.00, render 0.10 | 48f77eba660f |
-| EXAMPLE_REPEAT | example_flat | photo | stub | EXAMPLE | True | 2 | 0.0 | provenance 0.01, hand_written_geometry 0.00, hand_written_stitch 0.00, hand_written_damage 0.00, render 0.06 | 67ac7f349e11 |
-| c00a170fe1 | sample_partial_spaces | lidar | lidar |  | False | 4 | 4.4 | fuse_raw 2.01, drift_estimate 0.06, fuse_corrected 1.95, openings 0.01, drift_report 0.03, assemble 0.08, debug_images 0.24, render 0.07 | 77d0a5e28c9e |
-| 1a8384c3f6 | sample_apartment | lidar | lidar |  | True | 6 | 14.0 | fuse_raw 6.35, drift_estimate 0.16, fuse_corrected 6.09, openings 0.28, drift_report 0.47, assemble 0.31, debug_images 0.38, render 0.15 | 5b2179073305 |
-| c7d28f72c6 | sample_apartment | lidar | lidar | 1a8384c3f6 | True | 9 | 29.0 | fuse_raw 12.39, drift_estimate 0.34, fuse_corrected 12.13, openings 0.99, drift_report 1.76, assemble 0.83, debug_images 0.51, render 0.25 | 1f2cbea573bf |
-| own_hall_photo | own_hall | photo | stub |  | False | 2 | 0.0 | provenance 0.02, hand_written_geometry 0.00, hand_written_stitch 0.00, hand_written_damage 0.00, render 0.05 | e0b7739d06c3 |
-| own_bedroom_1_photo | own_bedroom_1 | photo | stub |  | False | 2 | 0.0 | provenance 0.02, hand_written_geometry 0.00, hand_written_stitch 0.00, hand_written_damage 0.00, render 0.05 | e066eb4120f3 |
-| own_bedroom_2_photo | own_bedroom_2 | photo | stub |  | False | 2 | 0.0 | provenance 0.02, hand_written_geometry 0.00, hand_written_stitch 0.00, hand_written_damage 0.00, render 0.05 | 7ad3577bc2a5 |
-| own_bedroom_2_repeat_photo | own_bedroom_2 | photo | stub | own_bedroom_2_photo | False | 2 | 0.0 | provenance 0.02, hand_written_geometry 0.00, hand_written_stitch 0.00, hand_written_damage 0.00, render 0.05 | 0b835325bb86 |
-| own_kitchen_photo | own_kitchen | photo | stub |  | False | 2 | 0.0 | provenance 0.02, hand_written_geometry 0.00, hand_written_stitch 0.00, hand_written_damage 0.00, render 0.05 | b57c0769033a |
-| own_home_photo | own_home | photo | stub |  | True | 2 | 0.0 | provenance 0.02, hand_written_geometry 0.00, hand_written_stitch 0.00, hand_written_damage 0.00, render 0.05 | 66901facbc91 |
-| own_hall_video | own_hall | video | stub |  | False | 2 | 0.0 | provenance 0.02, hand_written_geometry 0.00, hand_written_stitch 0.00, hand_written_damage 0.00, render 0.05 | 6094300b46d2 |
-| own_bedroom_1_video | own_bedroom_1 | video | stub |  | False | 2 | 0.0 | provenance 0.02, hand_written_geometry 0.00, hand_written_stitch 0.00, hand_written_damage 0.00, render 0.06 | dd06b5345fea |
-| own_bedroom_2_video | own_bedroom_2 | video | stub |  | False | 2 | 0.0 | provenance 0.02, hand_written_geometry 0.00, hand_written_stitch 0.00, hand_written_damage 0.00, render 0.05 | 085d6ae4d523 |
-| own_bedroom_2_repeat_video | own_bedroom_2 | video | stub | own_bedroom_2_video | False | 2 | 0.0 | provenance 0.02, hand_written_geometry 0.00, hand_written_stitch 0.00, hand_written_damage 0.00, render 0.05 | 51c4082382f4 |
-| own_kitchen_video | own_kitchen | video | stub |  | False | 2 | 0.0 | provenance 0.02, hand_written_geometry 0.00, hand_written_stitch 0.00, hand_written_damage 0.00, render 0.05 | 81f061a0e86c |
-| own_home_video | own_home | video | stub |  | True | 2 | 0.0 | provenance 0.02, hand_written_geometry 0.00, hand_written_stitch 0.00, hand_written_damage 0.00, render 0.10 | 96d35721341f |
+| EXAMPLE | example_flat | photo | stub |  | True | 2 | 0.0 | provenance 0.01, hand_written_geometry 0.00, hand_written_stitch 0.00, hand_written_damage 0.00, render 0.12 | 5c3ff61615c1 |
+| EXAMPLE_REPEAT | example_flat | photo | stub | EXAMPLE | True | 2 | 0.0 | provenance 0.01, hand_written_geometry 0.00, hand_written_stitch 0.00, hand_written_damage 0.00, render 0.06 | 41a9ca567500 |
+| c00a170fe1 | sample_partial_spaces | lidar | lidar |  | False | 4 | 5.9 | fuse_raw 2.90, drift_estimate 0.09, fuse_corrected 2.21, openings 0.01, drift_report 0.03, assemble 0.09, debug_images 0.49, render 0.62 | 93fd4ed09848 |
+| 1a8384c3f6 | sample_apartment | lidar | lidar |  | True | 6 | 20.2 | fuse_raw 8.37, drift_estimate 0.40, fuse_corrected 9.42, openings 0.35, drift_report 0.70, assemble 0.52, debug_images 0.49, render 0.22 | af3249669eae |
+| c7d28f72c6 | sample_apartment | lidar | lidar | 1a8384c3f6 | True | 9 | 50.2 | fuse_raw 23.07, drift_estimate 1.13, fuse_corrected 20.35, openings 1.09, drift_report 2.19, assemble 1.04, debug_images 1.23, render 0.31 | 3c9b124f8e59 |
 
 ## Captures with no ground truth
 
@@ -32,9 +20,9 @@ Captures: 17. cozmo 0.1.0.
 
 | capture | tier | rooms | walls | openings | footprint m2 | sum of rooms m2 | room overlap m2 | rooms connected | ceiling from prior | duration_s |
 |---|---|---|---|---|---|---|---|---|---|---|
-| c00a170fe1 | lidar | 4 | 16 | 0 | 35.85 | 35.85 | 0.000 | no ['room_02', 'room_03', 'room_04'] | 4/4 | 4.4 |
-| 1a8384c3f6 | lidar | 6 | 60 | 6 | 86.59 | 84.04 | 0.000 | no ['connector_01', 'room_02', 'room_04', 'room_05'] | 6/6 | 14.0 |
-| c7d28f72c6 | lidar | 9 | 107 | 9 | 64.71 | 61.30 | 0.000 | no ['connector_01', 'connector_02', 'connector_03', 'connector_04', 'connector_05', 'room_02', 'room_03', 'room_04'] | 8/9 | 29.0 |
+| c00a170fe1 | lidar | 4 | 16 | 0 | 35.85 | 35.85 | 0.000 | no ['room_02', 'room_03', 'room_04'] | 4/4 | 5.9 |
+| 1a8384c3f6 | lidar | 6 | 60 | 6 | 86.59 | 84.04 | 0.000 | no ['connector_01', 'room_02', 'room_04', 'room_05'] | 6/6 | 20.2 |
+| c7d28f72c6 | lidar | 9 | 107 | 9 | 64.71 | 61.30 | 0.000 | no ['connector_01', 'connector_02', 'connector_03', 'connector_04', 'connector_05', 'room_02', 'room_03', 'room_04'] | 8/9 | 50.2 |
 
 ### Repeat pair: 1a8384c3f6 and c7d28f72c6 (lidar)
 
@@ -75,35 +63,54 @@ At the wall-face level, below the polygon, the two captures place the same wall 
 
 | gate | result | value | threshold | n |
 |---|---|---|---|---|
-| opening_width | FAIL | 0.0000 | 0.8500 | 60 |
-| ceiling_height | FAIL | 0.2718 | 0.0150 | 8 |
-| ceiling_height_diagnosis | FAIL | 0.2718 | 0.0150 | 8 |
+| opening_width | FAIL | 0.0000 | 0.8500 | 10 |
+| ceiling_height | FAIL | 0.2000 | 0.0150 | 4 |
+| ceiling_height_diagnosis | FAIL | 0.2000 | 0.0150 | 4 |
 | repeatability | PASS | 0.0000 | 1.0000 | 8 |
-| wall_length_tier | FAIL | 2.5000 | 1.0000 | 72 |
+| wall_length_tier | FAIL | 2.5000 | 1.0000 | 16 |
 | footprint | PASS | 0.0400 | 0.0800 | 2 |
-| stitch_adjacency | FAIL | 18.0000 | 0.0000 | 14 |
-| stitch_overlap | PASS | 0.0000 | 0.0500 | 14 |
+| stitch_adjacency | PASS | 0.0000 | 0.0000 | 2 |
+| stitch_overlap | PASS | 0.0000 | 0.0500 | 2 |
 
 ---
 
 # Evaluation report
 
-Captures: 14. Gates passed: 3/8. Overall: FAIL. Ceiling diagnosis: **repeatable_but_biased**.
+Captures: 2. Gates passed: 4 of 8 evaluated (8 defined). Overall: FAIL. Ceiling diagnosis: **repeatable_but_biased**.
 
 **WARNING: at least one evaluated plan came from the STUB PIPELINE. These numbers say nothing about reconstruction quality.**
 
-## Gates
+## Gates, per tier
+
+### photo
+
+Captures: EXAMPLE, EXAMPLE_REPEAT.
 
 | gate | result | value | threshold | n | note |
 |---|---|---|---|---|---|
-| opening_width | FAIL | 0.0000 | 0.8500 | 60 |  |
-| ceiling_height | FAIL | 0.2718 | 0.0150 | 8 |  |
-| ceiling_height_diagnosis | FAIL | 0.2718 | 0.0150 | 8 | label: repeatable_but_biased |
+| opening_width | FAIL | 0.0000 | 0.8500 | 10 |  |
+| ceiling_height | FAIL | 0.2000 | 0.0150 | 4 |  |
+| ceiling_height_diagnosis | FAIL | 0.2000 | 0.0150 | 4 | label: repeatable_but_biased |
 | repeatability | PASS | 0.0000 | 1.0000 | 8 |  |
-| wall_length_tier | FAIL | 2.5000 | 1.0000 | 72 |  |
+| wall_length_tier | FAIL | 2.5000 | 1.0000 | 16 |  |
 | footprint | PASS | 0.0400 | 0.0800 | 2 |  |
-| stitch_adjacency | FAIL | 18.0000 | 0.0000 | 14 |  |
-| stitch_overlap | PASS | 0.0000 | 0.0500 | 14 |  |
+| stitch_adjacency | PASS | 0.0000 | 0.0000 | 2 |  |
+| stitch_overlap | PASS | 0.0000 | 0.0500 | 2 |  |
+
+4 of 8 evaluated gates pass, 0 not evaluated.
+
+## Gates, every capture together
+
+| gate | result | value | threshold | n | note |
+|---|---|---|---|---|---|
+| opening_width | FAIL | 0.0000 | 0.8500 | 10 |  |
+| ceiling_height | FAIL | 0.2000 | 0.0150 | 4 |  |
+| ceiling_height_diagnosis | FAIL | 0.2000 | 0.0150 | 4 | label: repeatable_but_biased |
+| repeatability | PASS | 0.0000 | 1.0000 | 8 |  |
+| wall_length_tier | FAIL | 2.5000 | 1.0000 | 16 |  |
+| footprint | PASS | 0.0400 | 0.0800 | 2 |  |
+| stitch_adjacency | PASS | 0.0000 | 0.0000 | 2 |  |
+| stitch_overlap | PASS | 0.0000 | 0.0500 | 2 |  |
 
 ## Matching counts
 
@@ -111,18 +118,6 @@ Captures: 14. Gates passed: 3/8. Overall: FAIL. Ceiling diagnosis: **repeatable_
 |---|---|---|---|---|
 | EXAMPLE | photo | 2/0/0 | 8/0/0 | 0/3/2 |
 | EXAMPLE_REPEAT | photo | 2/0/0 | 8/0/0 | 0/3/2 |
-| hall | photo | 1/0/1 | 0/0/4 | 0/3/2 |
-| bedroom_1 | photo | 0/1/2 | 0/4/8 | 0/1/2 |
-| bedroom_2 | photo | 0/1/2 | 0/4/8 | 0/1/2 |
-| bedroom_2_repeat | photo | 0/1/2 | 0/4/8 | 0/1/2 |
-| kitchen | photo | 0/1/2 | 0/4/8 | 0/1/2 |
-| home | photo | 1/3/1 | 0/12/4 | 0/6/2 |
-| hall | video | 1/0/1 | 0/0/4 | 0/3/2 |
-| bedroom_1 | video | 0/1/2 | 0/4/8 | 0/1/2 |
-| bedroom_2 | video | 0/1/2 | 0/4/8 | 0/1/2 |
-| bedroom_2_repeat | video | 0/1/2 | 0/4/8 | 0/1/2 |
-| kitchen | video | 0/1/2 | 0/4/8 | 0/1/2 |
-| home | video | 1/3/1 | 0/12/4 | 0/6/2 |
 
 ## Per-room errors
 
@@ -178,142 +173,6 @@ Footprint: pred 22.080 m2, truth 23.000 m2 (sum of room floor areas). Room overl
 
 Warnings: STUB PIPELINE: NOT A REAL RECONSTRUCTION
 
-### hall (photo, stub-0.1.0)
-
-| room | ceiling pred | ceiling truth | abs err | floor area pred | floor area truth | abs err | wall order reversed |
-|---|---|---|---|---|---|---|---|
-| hall | 2.700 | 2.972 | 0.272 | 3.600 | n/a | n/a | no |
-
-Missing rooms: none. Phantom rooms: ['living']. Missed openings: ['door_staircase', 'door_portico', 'door_bedroom_2']. Phantom openings: none.
-
-Footprint: pred 22.080 m2, truth n/a m2 (sum of room floor areas). Room overlap (geometric): 0.000 m2.
-
-Warnings: STUB PIPELINE: NOT A REAL RECONSTRUCTION
-
-### bedroom_1 (photo, stub-0.1.0)
-
-| room | ceiling pred | ceiling truth | abs err | floor area pred | floor area truth | abs err | wall order reversed |
-|---|---|---|---|---|---|---|---|
-
-Missing rooms: ['bedroom_1']. Phantom rooms: ['living', 'hall']. Missed openings: none. Phantom openings: none.
-
-Footprint: pred 22.080 m2, truth n/a m2 (sum of room floor areas). Room overlap (geometric): 0.000 m2.
-
-Warnings: STUB PIPELINE: NOT A REAL RECONSTRUCTION
-
-### bedroom_2 (photo, stub-0.1.0)
-
-| room | ceiling pred | ceiling truth | abs err | floor area pred | floor area truth | abs err | wall order reversed |
-|---|---|---|---|---|---|---|---|
-
-Missing rooms: ['bedroom_2']. Phantom rooms: ['living', 'hall']. Missed openings: none. Phantom openings: none.
-
-Footprint: pred 22.080 m2, truth n/a m2 (sum of room floor areas). Room overlap (geometric): 0.000 m2.
-
-Warnings: STUB PIPELINE: NOT A REAL RECONSTRUCTION
-
-### bedroom_2_repeat (photo, stub-0.1.0)
-
-| room | ceiling pred | ceiling truth | abs err | floor area pred | floor area truth | abs err | wall order reversed |
-|---|---|---|---|---|---|---|---|
-
-Missing rooms: ['bedroom_2']. Phantom rooms: ['living', 'hall']. Missed openings: none. Phantom openings: none.
-
-Footprint: pred 22.080 m2, truth n/a m2 (sum of room floor areas). Room overlap (geometric): 0.000 m2.
-
-Warnings: STUB PIPELINE: NOT A REAL RECONSTRUCTION
-
-### kitchen (photo, stub-0.1.0)
-
-| room | ceiling pred | ceiling truth | abs err | floor area pred | floor area truth | abs err | wall order reversed |
-|---|---|---|---|---|---|---|---|
-
-Missing rooms: ['kitchen']. Phantom rooms: ['living', 'hall']. Missed openings: none. Phantom openings: none.
-
-Footprint: pred 22.080 m2, truth n/a m2 (sum of room floor areas). Room overlap (geometric): 0.000 m2.
-
-Warnings: STUB PIPELINE: NOT A REAL RECONSTRUCTION
-
-### home (photo, stub-0.1.0)
-
-| room | ceiling pred | ceiling truth | abs err | floor area pred | floor area truth | abs err | wall order reversed |
-|---|---|---|---|---|---|---|---|
-| hall | 2.700 | 2.972 | 0.272 | 3.600 | n/a | n/a | no |
-
-Missing rooms: ['bedroom_1', 'bedroom_2', 'kitchen']. Phantom rooms: ['living']. Missed openings: ['door_staircase', 'door_portico', 'door_bedroom_2']. Phantom openings: none.
-
-Footprint: pred 22.080 m2, truth n/a m2 (sum of room floor areas). Room overlap (geometric): 0.000 m2.
-
-Warnings: STUB PIPELINE: NOT A REAL RECONSTRUCTION
-
-### hall (video, stub-0.1.0)
-
-| room | ceiling pred | ceiling truth | abs err | floor area pred | floor area truth | abs err | wall order reversed |
-|---|---|---|---|---|---|---|---|
-| hall | 2.700 | 2.972 | 0.272 | 3.600 | n/a | n/a | no |
-
-Missing rooms: none. Phantom rooms: ['living']. Missed openings: ['door_staircase', 'door_portico', 'door_bedroom_2']. Phantom openings: none.
-
-Footprint: pred 22.080 m2, truth n/a m2 (sum of room floor areas). Room overlap (geometric): 0.000 m2.
-
-Warnings: STUB PIPELINE: NOT A REAL RECONSTRUCTION
-
-### bedroom_1 (video, stub-0.1.0)
-
-| room | ceiling pred | ceiling truth | abs err | floor area pred | floor area truth | abs err | wall order reversed |
-|---|---|---|---|---|---|---|---|
-
-Missing rooms: ['bedroom_1']. Phantom rooms: ['living', 'hall']. Missed openings: none. Phantom openings: none.
-
-Footprint: pred 22.080 m2, truth n/a m2 (sum of room floor areas). Room overlap (geometric): 0.000 m2.
-
-Warnings: STUB PIPELINE: NOT A REAL RECONSTRUCTION
-
-### bedroom_2 (video, stub-0.1.0)
-
-| room | ceiling pred | ceiling truth | abs err | floor area pred | floor area truth | abs err | wall order reversed |
-|---|---|---|---|---|---|---|---|
-
-Missing rooms: ['bedroom_2']. Phantom rooms: ['living', 'hall']. Missed openings: none. Phantom openings: none.
-
-Footprint: pred 22.080 m2, truth n/a m2 (sum of room floor areas). Room overlap (geometric): 0.000 m2.
-
-Warnings: STUB PIPELINE: NOT A REAL RECONSTRUCTION
-
-### bedroom_2_repeat (video, stub-0.1.0)
-
-| room | ceiling pred | ceiling truth | abs err | floor area pred | floor area truth | abs err | wall order reversed |
-|---|---|---|---|---|---|---|---|
-
-Missing rooms: ['bedroom_2']. Phantom rooms: ['living', 'hall']. Missed openings: none. Phantom openings: none.
-
-Footprint: pred 22.080 m2, truth n/a m2 (sum of room floor areas). Room overlap (geometric): 0.000 m2.
-
-Warnings: STUB PIPELINE: NOT A REAL RECONSTRUCTION
-
-### kitchen (video, stub-0.1.0)
-
-| room | ceiling pred | ceiling truth | abs err | floor area pred | floor area truth | abs err | wall order reversed |
-|---|---|---|---|---|---|---|---|
-
-Missing rooms: ['kitchen']. Phantom rooms: ['living', 'hall']. Missed openings: none. Phantom openings: none.
-
-Footprint: pred 22.080 m2, truth n/a m2 (sum of room floor areas). Room overlap (geometric): 0.000 m2.
-
-Warnings: STUB PIPELINE: NOT A REAL RECONSTRUCTION
-
-### home (video, stub-0.1.0)
-
-| room | ceiling pred | ceiling truth | abs err | floor area pred | floor area truth | abs err | wall order reversed |
-|---|---|---|---|---|---|---|---|
-| hall | 2.700 | 2.972 | 0.272 | 3.600 | n/a | n/a | no |
-
-Missing rooms: ['bedroom_1', 'bedroom_2', 'kitchen']. Phantom rooms: ['living']. Missed openings: ['door_staircase', 'door_portico', 'door_bedroom_2']. Phantom openings: none.
-
-Footprint: pred 22.080 m2, truth n/a m2 (sum of room floor areas). Room overlap (geometric): 0.000 m2.
-
-Warnings: STUB PIPELINE: NOT A REAL RECONSTRUCTION
-
 ## Calibration
 
 Coverage target is the nominal ci_level (0.95). Confident garbage = truth outside the interval and interval narrower than the per-quantity median width.
@@ -322,20 +181,19 @@ Overall:
 
 | group | n | coverage | mean width % of value | outside | confident garbage |
 |---|---|---|---|---|---|
-| all | 30 | 0.267 | 12.5 | 22 | 6 |
+| all | 26 | 0.308 | 13.3 | 18 | 6 |
 
 By tier:
 
 | group | n | coverage | mean width % of value | outside | confident garbage |
 |---|---|---|---|---|---|
-| photo | 28 | 0.286 | 12.9 | 20 | 6 |
-| video | 2 | 0.000 | 7.4 | 2 | 0 |
+| photo | 26 | 0.308 | 13.3 | 18 | 6 |
 
 By quantity:
 
 | group | n | coverage | mean width % of value | outside | confident garbage |
 |---|---|---|---|---|---|
-| ceiling_height | 8 | 0.000 | 7.4 | 8 | 0 |
+| ceiling_height | 4 | 0.000 | 7.4 | 4 | 0 |
 | floor_area | 4 | 0.500 | 20.0 | 2 | 2 |
 | footprint_area | 2 | 1.000 | 20.0 | 0 | 0 |
 | wall_length | 16 | 0.250 | 12.2 | 12 | 4 |
@@ -344,11 +202,10 @@ By tier and quantity:
 
 | group | n | coverage | mean width % of value | outside | confident garbage |
 |---|---|---|---|---|---|
-| photo/ceiling_height | 6 | 0.000 | 7.4 | 6 | 0 |
+| photo/ceiling_height | 4 | 0.000 | 7.4 | 4 | 0 |
 | photo/floor_area | 4 | 0.500 | 20.0 | 2 | 2 |
 | photo/footprint_area | 2 | 1.000 | 20.0 | 0 | 0 |
 | photo/wall_length | 16 | 0.250 | 12.2 | 12 | 4 |
-| video/ceiling_height | 2 | 0.000 | 7.4 | 2 | 0 |
 
 ## Repeatability
 
@@ -371,5 +228,3 @@ Worst case: EXAMPLE vs EXAMPLE_REPEAT hall/east diff 0.000 m against allowed 0.0
 |---|---|---|---|---|---|
 | example_flat | hall | 2 | 0.000 | 0.200 | repeatable_but_biased |
 | example_flat | living | 2 | 0.000 | 0.200 | repeatable_but_biased |
-| own_hall | hall | 2 | 0.000 | -0.272 | repeatable_but_biased |
-| own_home | hall | 2 | 0.000 | -0.272 | repeatable_but_biased |

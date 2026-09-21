@@ -52539,7 +52539,7 @@
   },
   "config": {
     "path": "config/gates.yaml",
-    "sha256": "293de49f738a404c25e21a4cde08781e2f48130b9f040f74fad7052a3aec9f37",
+    "sha256": "625c705bd112669b549295176846ff3b5ae60806f3f6082c805d8ee3174367f8",
     "resolved": {
       "config_version": 1,
       "gates": {
@@ -52616,6 +52616,31 @@
             "wall_min_top_m": 1.6,
             "max_gap_m": 0.35
           },
+          "ghost": {
+            "enabled": true,
+            "cell_m": 0.05,
+            "reach_m": 0.35,
+            "probe_offset_m": 0.25,
+            "min_supported_share": 0.25
+          },
+          "cells": {
+            "support_band_m": [
+              1.0,
+              1.6
+            ],
+            "support_cell_m": 0.05,
+            "support_tol_m": 0.12,
+            "min_support_share": 0.55,
+            "max_opening_m": 1.6,
+            "min_line_gap_m": 0.16,
+            "min_cell_area_m2": 0.06,
+            "min_observed_share": 0.25,
+            "observed_cell_m": 0.05,
+            "observed_reach_m": 0.35,
+            "min_keep_area_m2": 0.8,
+            "min_perimeter_support": 0.8
+          },
+          "segmentation": "erosion",
           "room": {
             "grid_m": 0.02,
             "erode_m": 0.5,
@@ -52641,16 +52666,223 @@
             "abs_floor_m": 0.01,
             "ci_level": 0.95
           }
+        },
+        "photo": {
+          "device": null,
+          "use_exif_focal": true,
+          "voxel_m": 0.03,
+          "pixel_stride": 2,
+          "vertical_normal_cos": 0.9,
+          "horizontal_normal_cos": 0.25,
+          "height_prior": {
+            "camera_height_m": 1.4,
+            "camera_height_sigma_m": 0.12
+          },
+          "gravity": {
+            "voxel_m": 0.05,
+            "max_tilt_deg": 30.0,
+            "band_m": 0.08
+          },
+          "openings": {
+            "enabled": true,
+            "detector": "owlv2",
+            "min_score": 0.2,
+            "max_photos": 8
+          },
+          "level": {
+            "hist_bin_m": 0.03,
+            "peak_min_fraction": 0.1,
+            "plane_band_m": 0.08,
+            "cell_m": 0.3,
+            "min_ceiling_coverage": 0.1,
+            "prior_height_m": [
+              2.2,
+              3.2
+            ]
+          },
+          "wall": {
+            "min_height_above_floor_m": 0.3,
+            "max_height_below_ceiling_m": 0.1,
+            "hist_bin_m": 0.06,
+            "peak_min_points": 120,
+            "peak_min_separation_m": 0.14,
+            "occupancy_bin_m": 0.06,
+            "min_run_m": 0.4,
+            "wall_min_top_m": 1.4,
+            "max_gap_m": 0.6
+          },
+          "ghost": {
+            "enabled": true,
+            "cell_m": 0.05,
+            "reach_m": 0.4,
+            "probe_offset_m": 0.25,
+            "min_supported_share": 0.2
+          },
+          "room": {
+            "grid_m": 0.04,
+            "erode_m": 0.4,
+            "min_area_m2": 1.0,
+            "min_constriction_m": 0.62,
+            "wall_min_top_m": 1.4,
+            "wall_min_top_fraction": 0.7,
+            "wall_min_top_floor_m": 0.9,
+            "snap_m": 0.3,
+            "unsupported_margin_m": 0.45,
+            "allow_l_shape": true
+          },
+          "opening": {
+            "band_low_m": 0.3,
+            "band_high_m": 1.9,
+            "min_width_m": 0.6,
+            "max_width_m": 2.4,
+            "bin_m": 0.05
+          },
+          "uncertainty": {
+            "systematic_scale_bias": 0.05,
+            "depth_scale_bias": 0.05,
+            "abs_floor_m": 0.05,
+            "min_coverage": 0.6,
+            "low_coverage_factor": 1.6,
+            "ci_level": 0.95,
+            "status": "PROVISIONAL"
+          }
+        },
+        "video": {
+          "device": null,
+          "voxel_m": 0.03,
+          "vertical_normal_cos": 0.9,
+          "horizontal_normal_cos": 0.25,
+          "frames": {
+            "target_fps": 10.0,
+            "long_side": 1280,
+            "max_frames": 600,
+            "drop_blur_fraction": 0.2,
+            "rotation": "auto"
+          },
+          "engine": "sfm",
+          "frames_engine": {
+            "n_frames": 16,
+            "max_frames": 24,
+            "min_gap_fraction": 0.4
+          },
+          "sfm": {
+            "overlap": 10,
+            "max_image_size": 1600,
+            "min_chunk_images": 15,
+            "deterministic": true,
+            "reuse_reconstruction": true
+          },
+          "scale": {
+            "max_frames": 12
+          },
+          "height_prior": {
+            "camera_height_m": 1.4,
+            "camera_height_sigma_m": 0.12
+          },
+          "bridge": {
+            "overlap_frames": 4,
+            "overlap_window_s": 2.0,
+            "min_span_m": 0.2,
+            "max_rms_m": 0.12,
+            "max_rms_frac": 0.25,
+            "max_scale_disagreement": 0.15,
+            "scale_sem_sigmas": 2.0,
+            "max_tilt_deg": 12.0,
+            "max_vertical_m": 0.35,
+            "time_box_s": 5400.0
+          },
+          "dense": {
+            "max_keyframes": 140,
+            "pixel_stride": 2,
+            "min_depth_m": 0.25,
+            "max_depth_m": 8.0,
+            "scale_tolerance": 0.08
+          },
+          "gravity": {
+            "voxel_m": 0.05,
+            "max_tilt_deg": 30.0,
+            "band_m": 0.08
+          },
+          "drift": {
+            "voxel_m": 0.06,
+            "max_yaw_deg": 6.0
+          },
+          "level": {
+            "hist_bin_m": 0.02,
+            "peak_min_fraction": 0.15,
+            "plane_band_m": 0.06,
+            "cell_m": 0.25,
+            "min_ceiling_coverage": 0.12,
+            "prior_height_m": [
+              2.2,
+              3.2
+            ]
+          },
+          "wall": {
+            "min_height_above_floor_m": 0.3,
+            "max_height_below_ceiling_m": 0.1,
+            "hist_bin_m": 0.04,
+            "peak_min_points": 150,
+            "peak_min_separation_m": 0.1,
+            "occupancy_bin_m": 0.05,
+            "min_run_m": 0.4,
+            "wall_min_top_m": 1.5,
+            "max_gap_m": 0.45
+          },
+          "ghost": {
+            "enabled": true,
+            "cell_m": 0.05,
+            "reach_m": 0.35,
+            "probe_offset_m": 0.25,
+            "min_supported_share": 0.25
+          },
+          "room": {
+            "grid_m": 0.03,
+            "erode_m": 0.4,
+            "min_area_m2": 1.0,
+            "min_constriction_m": 0.62,
+            "wall_min_top_m": 1.5,
+            "wall_min_top_fraction": 0.75,
+            "wall_min_top_floor_m": 0.9,
+            "snap_m": 0.22,
+            "unsupported_margin_m": 0.35,
+            "allow_l_shape": true
+          },
+          "opening": {
+            "band_low_m": 0.3,
+            "band_high_m": 1.9,
+            "min_width_m": 0.6,
+            "max_width_m": 2.4,
+            "bin_m": 0.05
+          },
+          "uncertainty": {
+            "systematic_scale_bias": 0.03,
+            "depth_scale_bias": 0.03,
+            "abs_floor_m": 0.03,
+            "min_coverage": 0.6,
+            "low_coverage_factor": 1.6,
+            "ci_level": 0.95,
+            "status": "PROVISIONAL"
+          }
         }
       },
       "run": {
         "pipeline": "lidar",
-        "drift_correction": true
+        "drift_correction": true,
+        "segmentation": "erosion",
+        "video_rotation": "auto",
+        "camera_height_m": null,
+        "single_room": "auto",
+        "connector": null,
+        "cache_root": null,
+        "exclude": [],
+        "repeat_rooms": [],
+        "video_engine": "sfm"
       }
     }
   },
   "git": {
-    "commit": "4780b2e591445ec5b60bac908edf266deb42da53",
+    "commit": "95cd8ead08248e27f4eee5d68e130b15a853fb01",
     "dirty": true
   },
   "seed": 0,
@@ -52659,18 +52891,18 @@
     "version": "0.1.0",
     "cozmo_version": "0.1.0"
   },
-  "started_at": "2026-09-20T05:26:00.331056+00:00",
-  "finished_at": "2026-09-20T05:26:15.117439+00:00",
-  "duration_s": 14.786383,
+  "started_at": "2026-09-21T06:17:08.173565+00:00",
+  "finished_at": "2026-09-21T06:17:28.392887+00:00",
+  "duration_s": 20.219322,
   "stage_timings_s": {
-    "fuse_raw": 6.7219519579957705,
-    "drift_estimate": 0.17995870797312818,
-    "fuse_corrected": 6.343445959006203,
-    "openings": 0.26814008300425485,
-    "drift_report": 0.44622366700787097,
-    "assemble": 0.38514891601516865,
-    "debug_images": 0.4106055829906836,
-    "render": 0.15772937500150874
+    "fuse_raw": 10.496716791996732,
+    "drift_estimate": 0.3435313749941997,
+    "fuse_corrected": 7.584104042005492,
+    "openings": 0.35776233300566673,
+    "drift_report": 0.48312950000399724,
+    "assemble": 0.41972924998844974,
+    "debug_images": 0.5100550829956774,
+    "render": 0.16392000002088025
   },
   "library_versions": {
     "pydantic": "2.13.5",
@@ -52694,25 +52926,33 @@
     ],
     "drift_report": "drift_report.json"
   },
-  "plan_sha256": "ed39f688351ce3174e070f37d1dc63f9692de1102c87c5a790384af3776f372c",
+  "plan_sha256": "fcf2377add037f06886e4db862356b8166b2764ecb1d0943ec06ed8b786c158c",
   "n_rooms": 8,
   "warnings": [
     "Windows are not detected in this version; openings are doors and pass-throughs only",
+    "Dropped 3 wall faces (2.0 m) with no observed floor on either side; these are glass, mirror or through-doorway returns outside the property",
     "Ceiling not observed over enough of the floor (coverage 0% < 15%); ceiling height is a prior interval, not a measurement",
+    "6 of 8 rooms have less than 80% of their outline backed by observed wall; they are flagged partially observed and their intervals are widened",
     "room_01: Ceiling not observed over enough of the floor (coverage 0% < 15%); ceiling height is a prior interval, not a measurement",
     "room_01_o1: no lintel observed above the opening; height is a prior",
     "room_01_o2: no lintel observed above the opening; height is a prior",
     "room_01_o3: no lintel observed above the opening; height is a prior",
     "room_01_o4: no lintel observed above the opening; height is a prior",
     "room_02: Ceiling not observed over enough of the floor (coverage 0% < 15%); ceiling height is a prior interval, not a measurement",
+    "room_02: only 53% of the outline is backed by observed wall; the room is partially observed and its intervals are widened",
     "room_03: Ceiling not observed over enough of the floor (coverage 0% < 15%); ceiling height is a prior interval, not a measurement",
+    "room_03: only 53% of the outline is backed by observed wall; the room is partially observed and its intervals are widened",
     "room_03_o1: no lintel observed above the opening; height is a prior",
     "room_04: Ceiling not observed over enough of the floor (coverage 0% < 15%); ceiling height is a prior interval, not a measurement",
+    "room_04: only 68% of the outline is backed by observed wall; the room is partially observed and its intervals are widened",
     "room_05: Ceiling not observed over enough of the floor (coverage 0% < 15%); ceiling height is a prior interval, not a measurement",
+    "room_05: only 69% of the outline is backed by observed wall; the room is partially observed and its intervals are widened",
     "room_06: Ceiling not observed over enough of the floor (coverage 0% < 15%); ceiling height is a prior interval, not a measurement",
     "room_07: Ceiling not observed over enough of the floor (coverage 0% < 15%); ceiling height is a prior interval, not a measurement",
+    "room_07: only 78% of the outline is backed by observed wall; the room is partially observed and its intervals are widened",
     "room_07_o1: no lintel observed above the opening; height is a prior",
     "room_08: Ceiling not observed over enough of the floor (coverage 0% < 15%); ceiling height is a prior interval, not a measurement",
+    "room_08: only 59% of the outline is backed by observed wall; the room is partially observed and its intervals are widened",
     "Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty"
   ]
 }

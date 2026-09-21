@@ -1,10 +1,16 @@
 #!/usr/bin/env bash
-# Regenerate one side of the fix loop from a clean checkout.
+# Regenerate one side of fix loop 1 (room segmentation) from a clean checkout.
 #
 #   fix_loop/regenerate.sh before    # or: after
 #
-# Runs the full benchmark, copies plans, manifests, eval output and debug
-# images into fix_loop/<side>/, and records the commit the run was made at.
+# Runs the loop's pinned capture registry, copies plans, manifests, eval
+# output and debug images into fix_loop/<side>/, and records the commit the
+# run was made at.
+#
+# The registry is fix_loop/captures_loop1.yaml, not benchmarks/captures.yaml,
+# because these snapshots are evidence for a comparison made when only those
+# five captures existed. Reading the live registry would sweep every capture
+# added since into a snapshot that never contained them.
 # Everything it needs is in the repo except data/sample, which is gitignored.
 set -euo pipefail
 
@@ -26,7 +32,8 @@ test -d data/sample || { echo "data/sample is missing; it is gitignored and must
 
 rm -rf "$RUN"
 mkdir -p "$OUT"
-"$PY" -m cozmo.cli bench --set benchmarks/captures.yaml --out "$RUN" --seed 0 \
+REGISTRY="$ROOT/fix_loop/captures_loop1.yaml"
+"$PY" -m cozmo.cli bench --set "$REGISTRY" --out "$RUN" --seed 0 \
   --segmentation "$SEG" 2>"$OUT/bench.log" | tee "$OUT/bench.stdout"
 
 # Logs are committed, so the machine they were produced on must not be.
@@ -39,6 +46,7 @@ done
 {
   echo "side: $SIDE"
   echo "segmentation: $SEG"
+  echo "registry: fix_loop/captures_loop1.yaml"
   echo "commit: $(git rev-parse HEAD)"
   echo "commit_subject: $(git log -1 --pretty=%s)"
   echo "dirty: $(test -n "$(git status --porcelain)" && echo true || echo false)"

@@ -9,8 +9,8 @@
   },
   "run": {
     "pipeline_version": "stub-0.1.0",
-    "git_commit": "10968b769f2f067ccfdf72c20038ce97ccf94230",
-    "config_sha256": "739380e84a7fa5e0c285cd6570db103dd946bad5dc46a28881cce6e2bbd6cd0e",
+    "git_commit": "95cd8ead08248e27f4eee5d68e130b15a853fb01",
+    "config_sha256": "48daffd5bc43e7f415a49bd4978260b8301c005bd7423fad633ca0849174bb29",
     "seed": 0
   },
   "rooms": [
