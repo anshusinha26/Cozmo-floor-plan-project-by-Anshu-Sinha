@@ -87,12 +87,21 @@ def merge(per_room: dict[str, Plan], stitch_result, capture, run, ci_level: floa
         for surf in plan.surfaces:
             surfaces.append(surf.model_copy(update={
                 "room_id": placed.room_id, "id": _rebase(surf.id, src.id, placed.room_id)}))
+        # The polygon and the walls above are already in the stitched frame:
+        # the rotation and translation have been applied to them. Recording the
+        # same transform again would make the placement a second application,
+        # and a consumer following the contract would move every room on top of
+        # the others. The placement is therefore the identity, exactly as the
+        # lidar tier emits it, and the transform that was applied is kept in the
+        # method string so nothing is lost. The interval on theta stays: where a
+        # room sits relative to the others really is uncertain by about 15
+        # degrees, and that is a property of the stitch, not of the frame.
         placements.append(Placement(
-            room_id=placed.room_id, tx=float(placed.tx), ty=float(placed.ty),
-            theta_deg=Measurement(value=float(placed.theta_deg),
-                                  ci_low=float(placed.theta_deg) - 15.0,
-                                  ci_high=float(placed.theta_deg) + 15.0, unit="deg",
-                                  method="star_layout_assumption_" + placed.attached_by,
+            room_id=placed.room_id, tx=0.0, ty=0.0,
+            theta_deg=Measurement(value=0.0, ci_low=-15.0, ci_high=15.0, unit="deg",
+                                  method=(f"star_layout_assumption_{placed.attached_by}"
+                                          f"_applied_theta_{float(placed.theta_deg):.1f}"
+                                          f"_tx_{float(placed.tx):.3f}_ty_{float(placed.ty):.3f}"),
                                   ci_level=ci_level)))
 
     if not rooms:

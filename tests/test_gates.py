@@ -88,9 +88,27 @@ def test_repeatability_boundaries():
     assert not r["passed"] and r["detail"]["worst"]["wall_id"] == "w1"
 
 
-def test_repeatability_with_no_pairs_is_vacuous_and_says_so():
+def test_a_gate_with_nothing_to_score_reads_not_evaluated():
+    """An empty gate is not a gate that passed.
+
+    Printing PASS beside n = 0 tells a reader something was checked when
+    nothing was, so the status is explicit and `passed` stays False.
+    """
     r = g.repeatability([], CFG)
-    assert r["passed"] and r["n"] == 0 and "no repeat" in r["detail"]["note"]
+    assert r["status"] == "NOT EVALUATED"
+    assert r["passed"] is False and r["evaluated"] is False and r["n"] == 0
+    assert "no repeat captures" in r["detail"]["note"]
+
+    f = g.footprint([], CFG)
+    assert f["status"] == "NOT EVALUATED" and f["passed"] is False
+    assert "hall was not measured" in f["detail"]["note"]
+
+
+def test_a_gate_with_data_still_reads_pass_or_fail():
+    r = g.repeatability([_rp(4.000, 4.020)], CFG)
+    assert r["status"] == "PASS" and r["passed"] and r["evaluated"]
+    r = g.repeatability([_rp(4.000, 4.5)], CFG)
+    assert r["status"] == "FAIL" and not r["passed"] and r["evaluated"]
 
 
 # wall_length_tier: photo 8%, video 3%, lidar max(2 cm, 1%)

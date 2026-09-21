@@ -115,26 +115,42 @@ def render_report(result: dict, registry) -> str:
         md.append(f"| {r['capture_id']} | {r['tier']} | {r.get('source', '')} | "
                   f"{r.get('input_hash_matches')} | {_f(r.get('duration_s'), 0)} | {note} |")
 
-    md += ["", "## Gates", "",
-           "One set of gates over every capture with ground truth. A gate covering more "
-           "than one tier fails if any tier fails it.", "",
+    md += ["", "## Gates, per tier", "",
+           "One table per tier. The brief asks for gates at all three tiers, and pooling "
+           "them hides both: a tier with large errors and many walls swamps a tier with "
+           "small ones, and the single number that comes out describes neither. A gate "
+           "with nothing to score reads NOT EVALUATED with the reason, never PASS.", ""]
+
+    tiers = result.get("tiers", [])
+    for tier in ["lidar", "video", "photo"]:
+        md += [f"### {tier} tier", ""]
+        gates = result.get("gates_by_tier", {}).get(tier)
+        if not gates:
+            reason = {"lidar": ("no lidar capture has tape ground truth. The three supplied "
+                                "scans are of a property nobody measured, and no iPhone was "
+                                "available to scan the rooms that were measured."),
+                      }.get(tier, "no capture at this tier has ground truth.")
+            md += [f"**NOT EVALUATED**: {reason}", ""]
+            continue
+        caps = [c["capture_id"] for c in result["captures"] if c["tier"] == tier]
+        md += [f"Captures: {', '.join(caps)}.", "",
+               "| gate | result | value | threshold | n | note |", "|---|---|---|---|---|---|"]
+        for g in gates:
+            note = g["detail"].get("note", "")
+            if g["name"] == "ceiling_height_diagnosis":
+                note = f"label: {g['detail']['label']}" + (f"; {note}" if note else "")
+            md.append(f"| {g['name']} | {g['status']} | {g['value']:.4g} | {g['threshold']:.4g} | "
+                      f"{g['n']} | {note} |")
+        n_pass = sum(1 for g in gates if g["passed"])
+        n_eval = sum(1 for g in gates if g["evaluated"])
+        md += ["", f"**{n_pass} of {n_eval} evaluated gates pass** "
+                   f"({len(gates) - n_eval} not evaluated).", ""]
+
+    md += ["### Every capture together", "",
+           "Kept for completeness. Read the per-tier tables above instead.", "",
            "| gate | result | value | threshold | n |", "|---|---|---|---|---|"]
     for g in result["gates"]:
-        md.append(f"| {g['name']} | {'PASS' if g['passed'] else 'FAIL'} | {g['value']:.4g} | "
-                  f"{g['threshold']:.4g} | {g['n']} |")
-
-    md += ["", "### Wall length by tier", "",
-           "| tier | walls | within the tier budget | worst error |", "|---|---|---|---|"]
-    wall_gate = next((g for g in result["gates"] if g["name"] == "wall_length_tier"), None)
-    if wall_gate:
-        by_tier: dict[str, list] = {}
-        for row in wall_gate["detail"]["per_wall"]:
-            by_tier.setdefault(row["tier"], []).append(row)
-        for tier, rows in sorted(by_tier.items()):
-            ok = sum(1 for r in rows if r["ok"])
-            worst = max(rows, key=lambda r: r["abs_error_m"])
-            md.append(f"| {tier} | {len(rows)} | {ok} | {worst['abs_error_m'] * 100:.1f} cm on "
-                      f"{worst['room_id']} {worst['wall_id']} |")
+        md.append(f"| {g['name']} | {g['status']} | {g['value']:.4g} | {g['threshold']:.4g} | {g['n']} |")
 
     md += ["", "## Interval coverage", "",
            "Coverage is the share of tape readings inside the stated 95% interval. "

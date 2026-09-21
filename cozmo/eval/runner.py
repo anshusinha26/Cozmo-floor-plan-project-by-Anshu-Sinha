@@ -125,8 +125,14 @@ def evaluate_capture(plan: Plan, truth: GroundTruth, cfg: dict[str, Any]) -> dic
     }
 
 
-def evaluate(pairs: list[tuple[Plan, GroundTruth]], cfg: dict[str, Any]) -> dict[str, Any]:
-    caps = [evaluate_capture(p, t, cfg) for p, t in pairs]
+def _gates_for(caps: list[dict[str, Any]], cfg: dict[str, Any]) -> list[dict[str, Any]]:
+    """Run every gate over one set of captures.
+
+    Called once per tier and once over everything. Per tier is what the brief
+    asks for and what a reader can act on: pooling lets a tier with large
+    errors and many walls swamp a tier with small ones, so the pooled table
+    says little about either.
+    """
     gi = [c["_gate_inputs"] for c in caps]
     opening_matched = [m for g in gi for m in g["opening_matched"]]
     gates = [
@@ -143,6 +149,15 @@ def evaluate(pairs: list[tuple[Plan, GroundTruth]], cfg: dict[str, Any]) -> dict
         G.stitch_overlap([{"capture_id": c["capture_id"], "overlap_m2": c["overlap_m2_geometric"]} for c in caps], cfg),
     ]
     assert [g["name"] for g in gates] == GATE_NAMES
+    return gates
+
+
+def evaluate(pairs: list[tuple[Plan, GroundTruth]], cfg: dict[str, Any]) -> dict[str, Any]:
+    caps = [evaluate_capture(p, t, cfg) for p, t in pairs]
+    gates = _gates_for(caps, cfg)
+    by_tier: dict[str, list[dict[str, Any]]] = {}
+    for tier in sorted({c["tier"] for c in caps}):
+        by_tier[tier] = _gates_for([c for c in caps if c["tier"] == tier], cfg)
     items = [it for c in caps for it in c["_cal_items"]]
     for c in caps:
         c.pop("_gate_inputs")
@@ -151,10 +166,14 @@ def evaluate(pairs: list[tuple[Plan, GroundTruth]], cfg: dict[str, Any]) -> dict
         "cozmo_version": __version__,
         "n_captures": len(caps),
         "summary": {"passed": all(g["passed"] for g in gates),
-                    "n_passed": sum(1 for g in gates if g["passed"]), "n_gates": len(gates),
+                    "n_passed": sum(1 for g in gates if g["passed"]),
+                    "n_evaluated": sum(1 for g in gates if g["evaluated"]),
+                    "n_gates": len(gates),
                     "ceiling_height_diagnosis": gates[2]["detail"]["label"],
                     "stub_output": any("STUB" in w.upper() for c in caps for w in c["warnings"])},
         "gates": gates,
+        "gates_by_tier": by_tier,
+        "tiers": sorted({c["tier"] for c in caps}),
         "captures": caps,
         "calibration": calibration_table(items),
     }
@@ -200,7 +219,7 @@ def render_eval_md(result: dict[str, Any]) -> str:
         note = g["detail"].get("note", "")
         if g["name"] == "ceiling_height_diagnosis":
             note = f"label: {g['detail']['label']}" + (f"; {note}" if note else "")
-        rows.append([g["name"], "PASS" if g["passed"] else "FAIL", _f(g["value"], 4), _f(g["threshold"], 4), g["n"], note])
+        rows.append([g["name"], g["status"], _f(g["value"], 4), _f(g["threshold"], 4), g["n"], note])
     md += [_table(["gate", "result", "value", "threshold", "n", "note"], rows), ""]
 
     md += ["## Matching counts", ""]

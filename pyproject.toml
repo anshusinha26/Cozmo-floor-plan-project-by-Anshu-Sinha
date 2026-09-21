@@ -64,9 +64,22 @@ dev = [
     "pypdf>=4.0",      # page-count check in scripts/build_report.sh
 ]
 
+[tool.uv]
+# depth-pro pins numpy<2 while mapanything, through rerun-sdk, needs numpy>=2,
+# so the two cannot be installed together as declared. depth-pro runs correctly
+# on numpy 2: the whole photo and video path was developed and measured on
+# numpy 2.4.6 with both packages imported. The pin is relaxed here rather than
+# pinning the project to numpy 1, which would hold back everything else.
+override-dependencies = ["numpy>=1.26"]
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+# The video extra installs depth-pro and mapanything from git: neither is on
+# PyPI, and both are pinned to a commit in uv.lock.
+allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["cozmo"]

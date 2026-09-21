@@ -32,7 +32,19 @@ EPS = 1e-9
 
 
 def _gate(name: str, passed: bool, value: float, threshold: float, n: int, detail: dict[str, Any]) -> dict[str, Any]:
-    return {"name": name, "passed": bool(passed), "value": float(value), "threshold": float(threshold), "n": int(n), "detail": detail}
+    """One gate result.
+
+    ``status`` is what a reader should believe: PASS, FAIL, or NOT EVALUATED
+    when there was nothing to score. A gate with no data is not a gate that
+    passed, and printing PASS beside n = 0 has told more than one reader that
+    something was checked when nothing was. ``passed`` stays for callers that
+    aggregate, and is False for an unevaluated gate so it can never lift a
+    summary count.
+    """
+    evaluated = int(n) > 0
+    return {"name": name, "passed": bool(passed) and evaluated, "evaluated": evaluated,
+            "status": ("PASS" if passed else "FAIL") if evaluated else "NOT EVALUATED",
+            "value": float(value), "threshold": float(threshold), "n": int(n), "detail": detail}
 
 
 def _cfg(cfg: dict[str, Any], gate: str) -> dict[str, Any]:
@@ -64,7 +76,7 @@ def opening_width(matched: list[tuple[float, float]], n_missed: int, n_phantom: 
         "errors_m": errors,
     }
     if n == 0:
-        detail["note"] = "no openings in truth or prediction; vacuous pass"
+        detail["note"] = "no openings in either the truth or the prediction"
     return _gate("opening_width", frac + EPS >= min_frac, frac, min_frac, n, detail)
 
 
@@ -109,7 +121,7 @@ def ceiling_height(rows: list[dict[str, Any]], cfg: dict[str, Any]) -> dict[str,
     passed = all(r["ok"] for r in per_room) and all(s["ok"] for s in spreads)
     detail = {"tolerance_m": tol, "spread_tolerance_m": spread_tol, "per_room": per_room, "spread": spreads}
     if not rows:
-        detail["note"] = "no matched rooms; vacuous pass"
+        detail["note"] = "no room matched between prediction and truth"
     return _gate("ceiling_height", passed, worst, tol, len(rows), detail)
 
 
@@ -185,7 +197,7 @@ def repeatability(pairs: list[dict[str, Any]], cfg: dict[str, Any]) -> dict[str,
     worst = max(table, key=lambda r: (r["ratio"], not r["ok"]), default=None)
     detail: dict[str, Any] = {"abs_tolerance_m": abs_tol, "rel_tolerance": rel_tol, "per_wall": table, "worst": worst}
     if not pairs:
-        detail["note"] = "no repeat captures of the same space and tier; vacuous pass"
+        detail["note"] = "no repeat captures of the same space at this tier"
     value = worst["ratio"] if worst else 0.0
     n_ok = sum(1 for r in table if r["ok"])
     detail["n_within_tolerance"] = n_ok
@@ -223,7 +235,7 @@ def wall_length_tier(rows: list[dict[str, Any]], n_unmatched_truth: int, n_unmat
     detail = {"per_wall": table, "unmatched_truth": n_unmatched_truth, "unmatched_pred": n_unmatched_pred,
               "budgets": _cfg(cfg, "wall_length_tier")}
     if not rows and n_unmatched_truth == 0:
-        detail["note"] = "no walls; vacuous pass"
+        detail["note"] = "no walls were scored at this tier"
     return _gate("wall_length_tier", passed, worst, 1.0, len(rows) + n_unmatched_truth, detail)
 
 
@@ -239,7 +251,9 @@ def footprint(rows: list[dict[str, Any]], cfg: dict[str, Any]) -> dict[str, Any]
     worst = max((r["rel_error"] for r in table), default=0.0)
     detail: dict[str, Any] = {"per_capture": table}
     if not rows:
-        detail["note"] = "no footprint truth available; vacuous pass"
+        detail["note"] = ("no capture has a tape-measured footprint: the hall was not "
+                          "measured wall by wall, so the only multi-room property has no "
+                          "truth footprint to compare against")
     return _gate("footprint", all(r["ok"] for r in table), worst, rel, len(table), detail)
 
 
