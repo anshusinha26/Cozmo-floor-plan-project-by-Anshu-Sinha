@@ -142,7 +142,8 @@ def _match_openings(pred: Room, truth: GTRoom, a: Assignment, gate: float):
         if a.reversed:
             c = pred_len[po.wall_id] - c
         for to in truth.openings:
-            if to.wall_id != tw_id:
+            if to.wall_id != tw_id or to.width_m is None or to.offset_along_wall_m is None:
+                # present_unmeasured: there is no position to match against.
                 continue
             d = abs(c - _centre(to.offset_along_wall_m, to.width_m))
             if d <= gate:
@@ -193,10 +194,18 @@ def match_room(pred: Room, truth: GTRoom, opening_gate_m: float = DEFAULT_OPENIN
     rm.unmatched_truth_walls = [w.id for w in truth.walls if w.id not in matched_truth]
     rm.unmatched_pred_walls = [w.id for w in pred.walls if w.id not in matched_pred]
     rm.opening_pairs, rm.missed_openings, rm.phantom_openings = _match_openings(pred, truth, a, opening_gate_m)
-    # A truth opening marked present_unmeasured cannot be missed: nobody
-    # measured it, so its absence from the prediction proves nothing.
+    # A truth opening marked present_unmeasured is neither a hit nor a phantom:
+    # nobody measured it, so its absence from the prediction proves nothing, and
+    # a prediction on the same wall cannot be called invented either.
     unmeasured = {o.id for o in truth.openings if o.present_unmeasured}
     rm.missed_openings = [o for o in rm.missed_openings if o not in unmeasured]
+    unmeasured_walls = {o.wall_id for o in truth.openings if o.present_unmeasured}
+    if unmeasured_walls:
+        pred_to_truth = {pred.walls[pi].id: truth.walls[ti].id for pi, ti in a.pairs}
+        by_id = {o.id: o for o in pred.openings}
+        rm.phantom_openings = [
+            oid for oid in rm.phantom_openings
+            if pred_to_truth.get(by_id[oid].wall_id) not in unmeasured_walls]
     return rm
 
 

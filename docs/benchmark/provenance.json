@@ -1,0 +1,228 @@
+[
+  {
+    "capture_id": "EXAMPLE",
+    "tier": "photo",
+    "device": null,
+    "space_id": "example_flat",
+    "repeat_of": null,
+    "repeat_kind": null,
+    "source": "no plan available",
+    "recomputed": false
+  },
+  {
+    "capture_id": "EXAMPLE_REPEAT",
+    "tier": "photo",
+    "device": null,
+    "space_id": "example_flat",
+    "repeat_of": "EXAMPLE",
+    "repeat_kind": null,
+    "source": "no plan available",
+    "recomputed": false
+  },
+  {
+    "capture_id": "own_hall_photo",
+    "tier": "photo",
+    "device": "Moto Edge 50 Neo, Android",
+    "space_id": "own_hall",
+    "repeat_of": null,
+    "repeat_kind": null,
+    "source": "no plan available",
+    "recomputed": false
+  },
+  {
+    "capture_id": "own_bedroom_1_photo",
+    "tier": "photo",
+    "device": "Moto Edge 50 Neo, Android",
+    "space_id": "own_bedroom_1",
+    "repeat_of": null,
+    "repeat_kind": null,
+    "source": "no plan available",
+    "recomputed": false
+  },
+  {
+    "capture_id": "own_bedroom_2_photo",
+    "tier": "photo",
+    "device": "Moto Edge 50 Neo, Android",
+    "space_id": "own_bedroom_2",
+    "repeat_of": null,
+    "repeat_kind": null,
+    "source": "no plan available",
+    "recomputed": false
+  },
+  {
+    "capture_id": "own_bedroom_2_repeat_photo",
+    "tier": "photo",
+    "device": "Nokia 8.1, Android",
+    "space_id": "own_bedroom_2",
+    "repeat_of": "own_bedroom_2_photo",
+    "repeat_kind": "cross_device_repeat",
+    "source": "no plan available",
+    "recomputed": false
+  },
+  {
+    "capture_id": "own_kitchen_photo",
+    "tier": "photo",
+    "device": "Moto Edge 50 Neo, Android",
+    "space_id": "own_kitchen",
+    "repeat_of": null,
+    "repeat_kind": null,
+    "source": "no plan available",
+    "recomputed": false
+  },
+  {
+    "capture_id": "own_home_photo",
+    "tier": "photo",
+    "device": "Moto Edge 50 Neo, Android (all four rooms)",
+    "space_id": "own_home",
+    "repeat_of": null,
+    "repeat_kind": null,
+    "source": "reused from the tier branch",
+    "source_path": "runs/photo/own",
+    "recomputed": false,
+    "plan_input_sha256": "dab64f05a6f074187b4dfb87096c55b3f6bd366ff237bb2e8740a42272ac7003",
+    "input_now": {
+      "present": true,
+      "sha256": "0c88835dea1d1147ea129cc9d7e02c01b61249984220c51ab3c5f981ff2d88d6"
+    },
+    "input_hash_matches": false,
+    "duration_s": 76.995263,
+    "pipeline": "photo",
+    "plan_path": "/Users/anshusinha/Downloads/Cozmo-AI/Cozmo-floor-plan-project-by-Anshu-Sinha/docs/benchmark/runs/own_home_photo/plan.json",
+    "rooms": [
+      "hall",
+      "bedroom_1",
+      "bedroom_2",
+      "kitchen"
+    ]
+  },
+  {
+    "capture_id": "own_hall_video",
+    "tier": "video",
+    "device": "Nokia 8.1, Android",
+    "space_id": "own_hall",
+    "repeat_of": null,
+    "repeat_kind": null,
+    "room_renamed": "room_01 -> hall",
+    "source": "reused from the tier branch",
+    "source_path": "fix_loop/loop2_video_scale/after/runs/hall",
+    "recomputed": false,
+    "plan_input_sha256": "f61d800d14e9642e282947bc40181ace96332f5809213e007dcac6dc37261d18",
+    "input_now": {
+      "present": true,
+      "sha256": "f61d800d14e9642e282947bc40181ace96332f5809213e007dcac6dc37261d18"
+    },
+    "input_hash_matches": true,
+    "duration_s": 569.587304,
+    "pipeline": "video",
+    "plan_path": "/Users/anshusinha/Downloads/Cozmo-AI/Cozmo-floor-plan-project-by-Anshu-Sinha/docs/benchmark/runs/own_hall_video/plan.json",
+    "rooms": [
+      "hall"
+    ]
+  },
+  {
+    "capture_id": "own_bedroom_1_video",
+    "tier": "video",
+    "device": "Nokia 8.1, Android",
+    "space_id": "own_bedroom_1",
+    "repeat_of": null,
+    "repeat_kind": null,
+    "room_renamed": "room_01 -> bedroom_1",
+    "source": "reused from the tier branch",
+    "source_path": "fix_loop/loop2_video_scale/after/runs/bedroom_1",
+    "recomputed": false,
+    "plan_input_sha256": "42699d210dc980b1b64985c65fccecc4cd718d77fa6087df7662c5a0608412e9",
+    "input_now": {
+      "present": true,
+      "sha256": "42699d210dc980b1b64985c65fccecc4cd718d77fa6087df7662c5a0608412e9"
+    },
+    "input_hash_matches": true,
+    "duration_s": 506.551402,
+    "pipeline": "video",
+    "plan_path": "/Users/anshusinha/Downloads/Cozmo-AI/Cozmo-floor-plan-project-by-Anshu-Sinha/docs/benchmark/runs/own_bedroom_1_video/plan.json",
+    "rooms": [
+      "bedroom_1"
+    ]
+  },
+  {
+    "capture_id": "own_bedroom_2_video",
+    "tier": "video",
+    "device": "Nokia 8.1, Android",
+    "space_id": "own_bedroom_2",
+    "repeat_of": null,
+    "repeat_kind": null,
+    "room_renamed": "room_01 -> bedroom_2",
+    "source": "reused from the tier branch",
+    "source_path": "fix_loop/loop2_video_scale/after/runs/bedroom_2",
+    "recomputed": false,
+    "plan_input_sha256": "de7ef73b6a2778a564d8d4d5c8877cf858767e22fb79aa4e0013a84c65000f77",
+    "input_now": {
+      "present": true,
+      "sha256": "de7ef73b6a2778a564d8d4d5c8877cf858767e22fb79aa4e0013a84c65000f77"
+    },
+    "input_hash_matches": true,
+    "duration_s": 374.753344,
+    "pipeline": "video",
+    "plan_path": "/Users/anshusinha/Downloads/Cozmo-AI/Cozmo-floor-plan-project-by-Anshu-Sinha/docs/benchmark/runs/own_bedroom_2_video/plan.json",
+    "rooms": [
+      "bedroom_2"
+    ]
+  },
+  {
+    "capture_id": "own_bedroom_2_repeat_video",
+    "tier": "video",
+    "device": "Nokia 8.1, Android",
+    "space_id": "own_bedroom_2",
+    "repeat_of": "own_bedroom_2_video",
+    "repeat_kind": "same_device_repeat",
+    "room_renamed": "room_01 -> bedroom_2",
+    "source": "reused from the tier branch",
+    "source_path": "fix_loop/loop2_video_scale/after/runs/bedroom_2_repeat",
+    "recomputed": false,
+    "plan_input_sha256": "ab40a0803f49caf4d226b2568b08d463b01b99429a3be4dc01c0f4d41b42e288",
+    "input_now": {
+      "present": true,
+      "sha256": "ab40a0803f49caf4d226b2568b08d463b01b99429a3be4dc01c0f4d41b42e288"
+    },
+    "input_hash_matches": true,
+    "duration_s": 317.826916,
+    "pipeline": "video",
+    "plan_path": "/Users/anshusinha/Downloads/Cozmo-AI/Cozmo-floor-plan-project-by-Anshu-Sinha/docs/benchmark/runs/own_bedroom_2_repeat_video/plan.json",
+    "rooms": [
+      "bedroom_2"
+    ]
+  },
+  {
+    "capture_id": "own_kitchen_video",
+    "tier": "video",
+    "device": "Nokia 8.1, Android",
+    "space_id": "own_kitchen",
+    "repeat_of": null,
+    "repeat_kind": null,
+    "room_renamed": "room_01 -> kitchen",
+    "source": "reused from the tier branch",
+    "source_path": "fix_loop/loop2_video_scale/after/runs/kitchen",
+    "recomputed": false,
+    "plan_input_sha256": "3084319a0037551052c5d6da32b683983420e5673131f931be83c7e4662056c8",
+    "input_now": {
+      "present": true,
+      "sha256": "3084319a0037551052c5d6da32b683983420e5673131f931be83c7e4662056c8"
+    },
+    "input_hash_matches": true,
+    "duration_s": 326.479087,
+    "pipeline": "video",
+    "plan_path": "/Users/anshusinha/Downloads/Cozmo-AI/Cozmo-floor-plan-project-by-Anshu-Sinha/docs/benchmark/runs/own_kitchen_video/plan.json",
+    "rooms": [
+      "kitchen"
+    ]
+  },
+  {
+    "capture_id": "own_home_video",
+    "tier": "video",
+    "device": "Nokia 8.1, Android",
+    "space_id": "own_home",
+    "repeat_of": null,
+    "repeat_kind": null,
+    "source": "no plan available",
+    "recomputed": false
+  }
+]

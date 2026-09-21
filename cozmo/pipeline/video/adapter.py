@@ -208,7 +208,11 @@ def plan_from_cloud(points: np.ndarray, normals: np.ndarray, camera_path: np.nda
         room_fit = fit_single_room(faces, path_frame, cfg,
                                    margin_m=cfg["room"].get("unsupported_margin_m", 0.35),
                                    allow_l=cfg["room"].get("allow_l_shape", True))
-        rooms = as_room_result(room_fit, frame, cell_m=cfg["room"]["grid_m"])
+        # Name the room after the capture folder, which the input convention
+        # already treats as the room id. Calling it room_01 makes it unmatchable
+        # against ground truth that names rooms after the rooms.
+        rooms = as_room_result(room_fit, frame, cell_m=cfg["room"]["grid_m"],
+                               room_id=Path(input_path).name or "room_01")
         warnings.extend(room_fit.warnings)
         assumptions.extend(room_fit.assumptions)
         budget = budget.with_unsupported_sides(4 - room_fit.n_supported)

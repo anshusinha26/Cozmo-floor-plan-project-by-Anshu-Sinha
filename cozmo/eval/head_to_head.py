@@ -70,21 +70,30 @@ def truth_for(room_id: str, walls: list[str], gt_dir: Path, tier: str = "photo")
     return float(sum(lengths) / len(lengths)) if lengths else None
 
 
-def ours_for(room_id: str, walls: list[str], plans: dict[str, Plan]) -> float | None:
-    """Our mean wall length for the same walls, once a plan exists for the room."""
-    plan = plans.get(room_id)
-    if plan is None:
-        return None
-    for room in plan.rooms:
-        if room.id != room_id:
+def ours_for(room_id: str, walls: list[str], matched: dict[tuple[str, str], float]) -> float | None:
+    """Our mean length for the same walls, keyed by the truth wall each of ours matched.
+
+    Our wall ids are per-run inventions (w1, w2), so a rival dimension naming
+    truth walls A and C can only be compared through the eval's own matching,
+    which pairs each predicted wall with the truth wall it lies on.
+    """
+    lengths = [matched[(room_id, w)] for w in walls if (room_id, w) in matched]
+    return float(sum(lengths) / len(lengths)) if lengths else None
+
+
+def matched_lengths(eval_result: dict[str, Any], tier: str) -> dict[tuple[str, str], float]:
+    """(room id, truth wall id) to our predicted length, from an eval result."""
+    out: dict[tuple[str, str], float] = {}
+    for cap in eval_result.get("captures", []):
+        if cap.get("tier") != tier:
             continue
-        lengths = [w.length_m.value for w in room.walls if w.id in walls]
-        if lengths:
-            return float(sum(lengths) / len(lengths))
-    return None
+        for w in cap.get("walls", []):
+            out[(w["room_id"], w["truth_wall"])] = float(w["pred"])
+    return out
 
 
-def build_rows(spec: dict[str, Any], gt_dir: Path, plans: dict[str, Plan] | None = None,
+def build_rows(spec: dict[str, Any], gt_dir: Path,
+               plans: dict[tuple[str, str], float] | None = None,
                tier: str = "photo") -> list[Row]:
     plans = plans or {}
     rows: list[Row] = []
