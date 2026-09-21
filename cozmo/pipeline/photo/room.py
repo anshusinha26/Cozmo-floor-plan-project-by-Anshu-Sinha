@@ -60,28 +60,76 @@ class RoomReconstruction:
 
 
 def exif_focal_px(path: Path) -> float | None:
-    """Focal length in pixels from EXIF, or None. Photos here often have none."""
+    """Focal length in pixels from EXIF, or None.
+
+    The number lives in the Exif sub-IFD, not the top level, which is why an
+    earlier version of this read nothing and the second opinion never ran.
+
+    Only the 35 mm equivalent is usable. A bare focal length in millimetres
+    needs the sensor width to become pixels, EXIF rarely carries it, and
+    assuming a full frame sensor for a phone is wrong by a factor of about six.
+    A wrong focal is worse than none here, because it would be fed to Depth Pro
+    as if it were known.
+    """
     try:
-        from PIL import Image, ExifTags
+        from PIL import ExifTags, Image
     except ImportError:  # pragma: no cover
         return None
     try:
         with Image.open(path) as im:
-            exif = im.getexif()
             width = im.width
+            exif = im.getexif()
             if not exif:
                 return None
             tags = {ExifTags.TAGS.get(k, k): v for k, v in exif.items()}
-            f_mm = tags.get("FocalLength")
+            try:
+                ifd = exif.get_ifd(0x8769)
+                tags.update({ExifTags.TAGS.get(k, k): v for k, v in ifd.items()})
+            except Exception:
+                pass
             f35 = tags.get("FocalLengthIn35mmFilm")
             if f35:
                 # 35 mm film is 36 mm wide, so focal in pixels is f35 / 36 * width.
                 return float(f35) / 36.0 * width
-            if f_mm:
-                return float(f_mm) / 36.0 * width
     except Exception:
         return None
     return None
+
+
+def upright_copies(paths: list[Path], work_dir: Path) -> tuple[list[Path], int]:
+    """Photographs rotated as EXIF says they should be, written to ``work_dir``.
+
+    A phone writes the sensor's own orientation and an Orientation tag saying
+    how to turn it. Every one of these captures is tag 6, a quarter turn, and
+    nothing downstream applies it: MapAnything reads the file as it sits on
+    disk, so it was reconstructing rooms lying on their side, and the camera up
+    vectors that set gravity pointed sideways with them.
+
+    The messaging-app copies hid this by baking the rotation in, which is why
+    they scored better than the originals until this was found.
+    """
+    from PIL import Image, ImageOps
+
+    work_dir.mkdir(parents=True, exist_ok=True)
+    out, rotated = [], 0
+    for i, src in enumerate(paths):
+        try:
+            with Image.open(src) as im:
+                tag = im.getexif().get(0x0112)
+                if not tag or tag == 1:
+                    out.append(src)
+                    continue
+                upright = ImageOps.exif_transpose(im)
+                dst = work_dir / f"{i:03d}_{src.stem}.jpg"
+                upright.convert("RGB").save(dst, quality=95)
+                out.append(dst)
+                rotated += 1
+        except Exception as e:
+            log.warning("could not read the orientation of %s: %s", src.name, e)
+            out.append(src)
+    if rotated:
+        log.info("applied the EXIF orientation to %d of %d photos", rotated, len(paths))
+    return out, rotated
 
 
 def normals_from_world_pointmap(P: np.ndarray, valid: np.ndarray, centre: np.ndarray,
@@ -158,11 +206,17 @@ class MapAnythingReconstructor:
 
 
 def reconstruct_room(room_id: str, paths: list[Path], reconstructor: MapAnythingReconstructor,
-                     voxel_m: float = 0.03, pixel_stride: int = 1) -> RoomReconstruction:
+                     voxel_m: float = 0.03, pixel_stride: int = 1,
+                     work_dir: Path | None = None) -> RoomReconstruction:
     """Photos in, a metric-in-MapAnything-units cloud out. Scaling happens after."""
     if len(paths) < 2:
         raise ValueError(f"{room_id}: the photo tier needs at least 2 images, got {len(paths)}")
     use = paths[:MAX_PHOTOS]
+    focal = exif_focal_px(use[0])
+    if work_dir is not None:
+        use, n_rotated = upright_copies(use, Path(work_dir) / room_id)
+    else:
+        n_rotated = 0
     preds = reconstructor.infer(use)
 
     grid = VoxelGrid(voxel_m)
@@ -195,10 +249,11 @@ def reconstruct_room(room_id: str, paths: list[Path], reconstructor: MapAnything
                   chunks=[])
     log.info("%s: %d photos, %d points, MapAnything focal %.0f px",
              room_id, len(use), len(pts), float(np.median(focals)))
+    log.info("%s: %d of %d photos needed the EXIF orientation applied", room_id, n_rotated, len(use))
     return RoomReconstruction(room_id=room_id, cloud=cloud, camera_path=path,
                               camera_up=np.array(ups), focal_px=focals, n_photos=len(use),
                               scale_applied=1.0, measured_height_m=float("nan"),
-                              exif_focal_px=exif_focal_px(use[0]), depth_pro_scale=None,
+                              exif_focal_px=focal, depth_pro_scale=None,
                               method="mapanything_unscaled",
                               views=[{"pts3d": p["pts3d"], "mask": p["mask"],
                                       "pose": p["pose"]} for p in preds], paths=list(use))

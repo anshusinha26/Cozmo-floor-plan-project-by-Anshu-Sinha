@@ -12,7 +12,21 @@ Final for this session. Worktree `../cozmo-video-tier`, **not merged**.
 
 ## Results against tape
 
-**Photo tier**, one folder of stills per room, gate 8%:
+**Photo tier**, two photo sets of the same five rooms, gate 8%. The originals
+are the primary benchmark; the messaging-app copies are a robustness result.
+The compressed set scores better, which was not expected:
+
+| set | within 8% | inside interval | Moto vs Nokia | footprint |
+|---|---|---|---|---|
+| originals, 4096x3072 with EXIF | **3 of 12** | 7 of 12 | -4.5%, -0.2% | 111.10 m2 |
+| messaging-app copies, 1200x1600 | **8 of 12** | 11 of 12 | +1.9%, +1.8% | 79.85 m2 |
+
+Both give adjacency 3 of 3 and zero overlap. The two sets are not the same
+photographs, only the same rooms, so this most likely says something about which
+shots each set holds rather than about compression. It is unresolved and it is
+not hidden.
+
+**Photo tier, compressed copies**, gate 8%:
 
 | room | quantity | tape cm | predicted cm | error |
 |---|---|---|---|---|

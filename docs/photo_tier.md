@@ -69,6 +69,45 @@ The same stitcher takes per-room **video** folders, so `--tier video` on a
 folder of room clips reconstructs each clip on its own and stitches the results.
 Each room's own plan is written beside its debug output.
 
+## Two photo sets, and which is the benchmark
+
+The rooms were shot twice over. `data/own/` holds the **originals** straight off
+the phones: 4096x3072 on a Moto Edge 50 Neo for hall, bedroom_1, bedroom_2 and
+kitchen, 4032x3024 on a Nokia 8.1 for bedroom_2_repeat, all with EXIF make,
+model and a 35 mm equivalent focal length. `data/own_compressed/` holds what a
+messaging app did to three of those rooms: 1200x1600, EXIF stripped.
+
+The originals are the primary benchmark, because they are what a real capture
+looks like. The compressed set is kept and labelled as a robustness result: the
+same rooms after a messaging app has been through them.
+
+Two things came out of comparing them, and only one was expected.
+
+**EXIF focal length was never being read.** It sits in the Exif sub-IFD, not the
+top level, and the reader only looked at the top level, so the Depth Pro second
+opinion has never run on any capture. Fixed. Only the 35 mm equivalent is used:
+a bare focal length in millimetres needs a sensor width to become pixels, and
+assuming a full frame sensor for a phone is wrong by about six times, which is
+worse than having no second opinion at all.
+
+**The compressed copies score better than the originals, and that is the
+result.** 8 of 12 quantities within the 8% gate on the messaging-app copies
+against 3 of 12 on the originals, with the same code, the same rooms and the
+same tape. It is the opposite of what was expected and it is not explained by
+either bug above: applying the orientation moved bedroom_2 by about 1%. The two
+sets are not the same photographs, only the same rooms, so the likely cause is
+which shots each set contains rather than the compression itself. Until that is
+pinned down, the honest statement is that this tier has reached 8 of 12 on one
+photo set and 3 of 12 on another, and nobody should quote the better number
+without the worse one.
+
+**EXIF orientation was never being applied.** Every original is Orientation 6, a
+quarter turn, and nothing applied it, so MapAnything reconstructed rooms lying on
+their side and the camera up vectors that set gravity pointed sideways with them.
+The compressed copies hid this, because the messaging app baked the rotation in.
+Fixed, and the plan reports how many photos needed turning. On its own it moved
+bedroom_2's walls by about 1%, so it was not what separated the two sets.
+
 ## Intervals and the gate
 
 The gate at this tier is 8%. The camera-height prior alone is 0.12 on 1.40,
