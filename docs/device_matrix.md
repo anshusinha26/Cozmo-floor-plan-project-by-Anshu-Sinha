@@ -35,7 +35,7 @@ back from the images; the ground-truth files state this.
 | tier | capture hardware | processing | wall length, median error | worst wall | ceiling height | interval coverage |
 |---|---|---|---|---|---|---|
 | lidar | iPhone or iPad with LiDAR | M1 Max, 4 to 28 s | **no tape ground truth exists**, see below | n/a | 3.06 to 3.08 m on the one scan that saw its ceiling | n/a |
-| photo | Moto Edge 50 Neo, Nokia 8.1 | M1 Max, 442 s for four rooms | **25.9%** over 12 walls | 39.0% | 2.4 to 91.0 cm error | 0.56 at 47% mean width |
+| photo | Moto Edge 50 Neo, Nokia 8.1 | M1 Max, 1378 s for four rooms | **22.4%** over 12 walls | 39.0% | 2.4 to 91.0 cm error | 0.69 at 47% mean width |
 | video | Nokia 8.1 | M1 Max, about 8 min a clip | **32.9%** over 16 walls | 137.4% | 27.2 to 63.3 cm error | 1.00 at 409% mean width |
 
 Neither image tier is accurate enough to ship. Photo is the better of the two
@@ -46,10 +46,10 @@ From `docs/benchmark/eval.json`, rebuilt by `scripts/benchmark_all.py`.
 **Read the coverage column with the width column.** The video tier covers
 every tape reading because its intervals average four times the value it
 reports: too wide to be wrong. The photo tier is the opposite, covering only
-0.56 against a nominal 0.95, with seven confident-garbage cases.
+0.69 against a nominal 0.95, with five confident-garbage cases.
 
 **The photo tier scored 1.4% median error on compressed copies of the same
-photographs and 25.9% on the camera originals.** The originals carry EXIF the
+photographs and 22.4% on the camera originals.** The originals carry EXIF the
 copies had stripped, and reading the real focal length made the answer worse.
 That is unexplained and is the first thing to chase. Both runs are kept:
 `fix_loop/loop2_video_scale/photo_tier_tape_compressed.md` and

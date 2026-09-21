@@ -15,10 +15,9 @@ One contract, one backend, three front ends.
 **The contract first.** `cozmo/contracts/models.py` defines the plan. No
 dimension is ever a bare number: every `*_m`, `*_m2` and `*_deg` field is a
 `Measurement` with `value`, `ci_low`, `ci_high`, `unit`, `method` and
-`ci_level`. A test walks emitted JSON and fails on any bare number.
-Referential integrity is checked at load, so a plan that parses has a
-consistent graph and the evaluator never repairs input before scoring it. The
-schema is generated from the models, so the two cannot drift.
+`ci_level`, and a test fails on any bare number in emitted JSON. Referential
+integrity is checked at load, so the evaluator never repairs input before
+scoring it. The schema is generated from the models.
 
 **The shared backend.** Tiers differ only in how they make geometry. Once a
 tier has a point cloud with poses, the rest is shared: `cozmo/lidar/levels.py`
@@ -30,14 +29,15 @@ tier has a point cloud with poses, the rest is shared: `cozmo/lidar/levels.py`
 `drift_report.json` and `debug/`. The manifest holds a SHA-256 of every input
 file the tier may read, the resolved config and its hash, the git commit, the
 seed, stage timings and library versions. The plan holds no wall-clock field,
-so the same input, config and seed give a byte-identical `plan.json`.
+so the same input, config and seed give a byte-identical `plan.json`. That is
+also how a reused plan is checked: the benchmark re-hashes the input and says
+whether it still matches.
 
-**Tier isolation is enforced in code, not by convention.** Every file access
-goes through `StrayScan.open`, which raises on a file the tier may not read:
-the video tier sees only `rgb.mp4`, the photo tier is refused a scan folder
-outright because `depth/` holds png files that would otherwise pass as room
-photos. The run manifest hashes only the permitted files, so provenance never
-touches data the tier could not have used (`tests/test_stray.py`).
+**Tier isolation is enforced in code.** Every file access goes through
+`StrayScan.open`, which raises on a file the tier may not read: the video tier
+sees only `rgb.mp4`, and the photo tier is refused a scan folder outright
+because `depth/` holds png files that would otherwise pass as room photos. The
+manifest hashes only permitted files (`tests/test_stray.py`).
 
 ---
 
@@ -46,7 +46,7 @@ touches data the tier could not have used (`tests/test_stray.py`).
 | tier | input | reconstruction | median wall error against tape |
 |---|---|---|---|
 | lidar | one Stray Scanner scan for the whole property | classical geometry, no trained model | no tape ground truth exists |
-| photo | 2 to 8 stills per room | MapAnything poses, camera-height scale, same backend | **25.9%**, worst 39.0% |
+| photo | 2 to 8 stills per room | MapAnything poses, camera-height scale, same backend | **22.4%**, worst 39.0% |
 | video | one clip per room | COLMAP SfM in chunks, camera-height scale, same backend | **32.9%**, worst 137.4% |
 
 Wall errors from `docs/benchmark/eval.json`, rebuilt by
@@ -54,9 +54,17 @@ Wall errors from `docs/benchmark/eval.json`, rebuilt by
 **Neither image tier is accurate enough to ship.** Two of 12 photo walls and
 none of 16 video walls fall inside their tier budget.
 
+Gates are scored **per tier** (`docs/benchmark/benchmark.md`), because pooling
+lets a tier with large errors and many walls swamp one with few small ones. A
+gate with nothing to score reads NOT EVALUATED with its reason, never PASS.
+Photo and video each pass 2 of 7 scorable gates, both structural (adjacency,
+overlap) rather than dimensional. **Every lidar gate reads NOT EVALUATED**:
+the supplied scans are of a property nobody measured, and no iPhone was
+available to scan the rooms that were.
+
 One result deserves stating because it is counter-intuitive and was measured
 twice. The photo tier scored **1.4% median error on compressed copies** of the
-same photographs and **25.9% on the camera originals**
+same photographs and **22.4% on the camera originals**
 (`fix_loop/loop2_video_scale/photo_tier_tape_compressed.md` against
 `photo_tier_tape_originals.md`). The originals carry EXIF the compressed
 copies had stripped, and the tier now reads the focal length from it. Reading
@@ -72,11 +80,10 @@ Getting it wrong is silent, so a regression test pins the floor of
 `c00a170fe1` at world y = -1.48 m within 2 cm (`tests/test_stray.py`).
 
 **Devices.** Nokia 8.1 shot every video loop and the `bedroom_2_repeat`
-stills; Moto Edge 50 Neo shot the other stills. EXIF make and model were
-stripped, so attribution is the operator's record and the files say so.
-**No iPhone was available for capture**: every lidar result comes from the
-three supplied scans, so the lidar capture route is written from the format
-and has not been walked through on our own device (`docs/device_matrix.md`).
+stills; Moto Edge 50 Neo shot the other stills. **No iPhone was available for
+capture**, so every lidar result comes from the three supplied scans and the
+lidar capture route has not been walked through on our own device
+(`docs/device_matrix.md`).
 
 **Runtime** on an M1 Max: lidar 4.0, 13.2 and 27.8 s for 1715, 5251 and 9745
 frames, against a 3 minute budget. Video is about 8 minutes a clip and photo
@@ -85,15 +92,12 @@ frames, against a 3 minute budget. Video is about 8 minutes a clip and photo
 ### Video tier: what was rejected and why
 
 **MapAnything was tested and rejected as a metric source**
-(`docs/experiments/mapanything/result.json`). Image-only inference on
-`c00a170fe1` at 20, 40 and 80 frames: the median ratio of predicted depth to
-lidar depth is 0.712, 0.704 and 0.709, standard deviation 0.09 to 0.13. A
-fixed correction would leave about 13% residual spread, so it is a systematic
-error with per-frame noise on top, not a calibration.
-
-Feeding it ARKit poses would likely have fixed the scale, and was refused: a
-video result obtained from lidar-derived poses measures the lidar tier. It is
-kept for one job it is good at, relative poses across a chunk seam.
+(`docs/experiments/mapanything/result.json`): the median ratio of predicted to
+lidar depth is 0.712, 0.704 and 0.709 across three runs, standard deviation
+0.09 to 0.13, so a fixed correction leaves about 13% spread. Feeding it ARKit
+poses would likely have fixed the scale and was refused, because a video
+result from lidar-derived poses measures the lidar tier. It is kept for the
+one job it is good at, relative poses across a chunk seam.
 
 ### What the video tier actually does
 
@@ -164,23 +168,18 @@ measurements. Systematic: a 1% depth scale bias scaling with length, plus a
 1 cm. On the lidar scans the median interval is 2.4% of length.
 
 **Ceiling height.** Per 25 cm cell, ceiling mean minus the floor plane
-beneath, reported as the median. Half width combines cell spread with the
-depth scale term. **The spread is deliberately not divided by the square root
-of the cell count**: cells are not independent samples, and sub-millimetre
-precision from a handheld scan is exactly the confident garbage the grading
-penalises. Under 15% ceiling coverage no number is invented: a 2.2 to 3.2 m
-prior with method `prior_no_ceiling_observed` and a warning. Two of three
-lidar scans take that path; the third measured 3.06 to 3.08 m across rooms.
+beneath, reported as the median. **The spread is deliberately not divided by
+the square root of the cell count**: cells are not independent samples, and
+sub-millimetre precision from a handheld scan is the confident garbage the
+grading penalises. Under 15% ceiling coverage no number is invented: a 2.2 to
+3.2 m prior with method `prior_no_ceiling_observed` and a warning. It is the
+weakest quantity at every tier: 2.4 to 91.0 cm error at photo and 27.2 to
+63.3 cm at video, against a 1.5 cm gate.
 
-Ceiling height is the weakest measured quantity at every tier: 2.4 to 91.0 cm
-error at the photo tier and 27.2 to 63.3 cm at the video tier, against a
-1.5 cm gate (`docs/benchmark/eval.json`).
-
-**Areas** propagate from edge lengths in quadrature over the two axes.
-**Partially observed rooms** have length and area intervals doubled and say so
-in the method string. **Damage extent** with depth runs from a contrast
-estimate to the box projected on the surface; without depth it is
-`unbounded_no_metric_depth`, 0 to 4 m2, with a warning.
+**Areas** propagate from edge lengths in quadrature. **Partially observed
+rooms** have intervals doubled and say so in the method string. **Damage
+extent** with depth runs from a contrast estimate to the box projected on the
+surface; without depth it is `unbounded_no_metric_depth`, 0 to 4 m2.
 
 ### Ground truth, and its limits
 
@@ -213,18 +212,17 @@ Measured over every capture with tape, from `docs/benchmark/eval.json`:
 
 | group | n | coverage | mean width, % of value | confident garbage |
 |---|---|---|---|---|
-| all | 37 | 0.81 | 252 | 7 |
-| photo | 16 | **0.56** | 47 | **7** |
+| all | 37 | 0.86 | 252 | 5 |
+| photo | 16 | **0.69** | 47 | **5** |
 | video | 21 | 1.00 | **409** | 0 |
-| photo, wall length | 12 | 0.50 | 45 | 6 |
-| photo, ceiling height | 4 | 0.75 | 50 | 1 |
-| video, wall length | 16 | 1.00 | 519 | 0 |
-| video, ceiling height | 5 | 1.00 | 57 | 0 |
+
+Broken down by quantity in `docs/benchmark/eval.json`: the photo tier's five
+confident-garbage cases are four wall lengths and one ceiling.
 
 **Both tiers are badly calibrated, in opposite directions, and the video tier
 looks better only because it says less.**
 
-The photo tier covers 0.56 against a nominal 0.95, with seven confident-garbage
+The photo tier covers 0.69 against a nominal 0.95, with five confident-garbage
 cases: wrong, and with an interval too narrow to admit it. That is the failure
 the grading penalises hardest, and the photo tier is currently committing it.
 
@@ -261,9 +259,8 @@ own Manhattan frame before the search, in commits before the BEFORE run.
 
 **The falsifier fired.** Dropping ghost faces alone, the cheap test named in
 the declaration, moved nothing: about 1% of face length is rejected and the
-gate stayed at 0. That also showed the declaration's own evidence had
-over-counted ghosts at 16%, because it measured faces against an envelope
-built from the polygons under test.
+gate stayed at 0. The declaration's own evidence had over-counted ghosts at
+16%, measuring faces against an envelope built from the polygons under test.
 
 **The fix shipped and did not work.** Wall-driven cell complex segmentation
 with support from the 1.0 to 1.6 m band. Still 0 rows within tolerance, rooms
@@ -285,9 +282,9 @@ does not, and no rule can invent a wall one capture never saw.
 ### Loop 2: video-tier metric scale (`fix_loop/loop2_video_scale/`)
 
 **Declared:** the metric scale came from a monocular depth model and was
-wrong. Eight predictions were written before any fix code. **Two came true:**
-every clip now produces a plan, where three of six produced nothing, and the
-share of the sample scan reaching the output went from 30% to 70%.
+wrong. Eight predictions were written before any fix code. **Two came true:** every clip now produces a plan, where three of six
+produced nothing, and the share of the sample scan reaching the output went
+from 30% to 70%.
 
 **Six did not.** Median wall error went from **54.8% to 35.3%** against a
 predicted 8 to 20%; nothing reached the 3% gate; and the two captures of one
@@ -309,9 +306,8 @@ Two things the diagnosis missed:
   room came back as the camera path in a box. It should have been found by
   looking at what the room fitter was using before the fix was designed.
 
-**Iteration 2 was declared, tried and rejected**: running the clip's frames
-through the photo reconstruction was predicted to give 3 to 12% error and gave
-+69% then -36%. SfM remains the default.
+**Iteration 2 was declared, tried and rejected**: frames through the photo
+reconstruction were predicted to give 3 to 12% error and gave +69% then -36%.
 
 **The finding that matters most is not about scale.** Nine composed stills of
 `bedroom_2`, same height prior and same room fitter, gave walls within about
@@ -323,33 +319,37 @@ recommends photographs over video for a phone without LiDAR.
 
 **Measured.**
 
-* **Neither image tier is accurate enough to ship.** Photo 25.9% median wall
+* **Neither image tier is accurate enough to ship.** Photo 22.4% median wall
   error, video 32.9%, against tier budgets of 8% and 3%.
-* **The photo tier's intervals are over-confident**: 0.56 coverage against a
-  nominal 0.95, with seven confident-garbage cases.
+* **The photo tier's intervals are over-confident**: 0.69 coverage against a
+  nominal 0.95, with five confident-garbage cases.
 * **Reading the true focal length from EXIF made the photo tier worse**,
-  1.4% to 25.9% median error. Unexplained.
+  1.4% to 22.4% median error. Unexplained, being chased.
+* **The photo stitcher recorded its transform twice**, once baked into the
+  geometry and once as a placement, so a consumer applying the contract put
+  every room on top of the others: 28.01 m2 of overlap against a 0.05 m2
+  gate, while the tier's own report said 0.0000. Found by the two disagreeing
+  and fixed; the gate passes at both tiers now.
 * **Cross-capture repeatability fails at every tier.** 0 of 153 rows on the
   lidar pair, 0 of 8 on the same-device video pair.
-* **Ceiling height fails at every tier**, 11.9 to 85.8 cm against a 1.5 cm
-  gate, and is unavailable entirely on two of three lidar scans.
+* **Ceiling height fails at every tier**, and is unavailable entirely on two
+  of three lidar scans.
 * **Damage precision on photos.** 8 to 15 false regions in a room with 2
-  marks, from 63 before filtering; on a lidar capture the same filters reach
-  0 from 106. Two of the four filters need depth and poses.
+  marks, from 63 before filtering; on lidar the same filters reach 0 from 106,
+  because two of the four need depth and poses.
 * **Cracks are the class most at risk**: the verifier that removes false
-  positives removes the crack at threshold 0.20, so 0.15 ships.
-* **Room segmentation over-segments**: 11 rooms on a flat with perhaps 6 or 7.
+  positives removes the crack at 0.20, so 0.15 ships. Room segmentation
+  over-segments: 11 rooms on a flat with perhaps 6 or 7.
 
 **Hazards in the real captures** (`docs/hazards.md`, each with evidence).
 Glass and a wardrobe mirror return confident depth for a room that is not
 there; the damage filters handle them, reconstruction does not. A dog walked
-through one capture. Glossy tiles thicken the floor peak. Textureless white
-walls give sparse returns, part of why coverage differs so much between two
-walks of one flat. An unobserved ceiling is the commonest cause of a wide
-interval and is purely a protocol problem.
+through one capture. Glossy tiles thicken the floor peak. Textureless walls
+give sparse returns, part of why coverage differs between two walks of one
+flat. An unobserved ceiling is the commonest cause of a wide interval and is
+purely a protocol problem.
 
 **Assumptions that will break.** Manhattan: a curved or 45 degree wall appears
-as a missing face rather than a wrong one, the safer failure but still a
-failure. Video and photo scale depends on the phone being held near 1.4 m; a
-clip shot at waist height is wrong by the ratio of heights and nothing in the
-pipeline can detect it.
+as a missing face, the safer failure but still a failure. Image-tier scale
+depends on the phone being held near 1.4 m, and a capture at waist height is
+wrong by the ratio of heights with nothing able to detect it.

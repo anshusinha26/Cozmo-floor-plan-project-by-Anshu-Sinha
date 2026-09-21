@@ -50,7 +50,21 @@ Rehearsed the same way: fresh clone, cold uv cache, empty Hugging Face cache.
 |---|---|---|---|
 | 1. clone | `git clone` | 1.1 s | |
 | 2. install everything | `uv sync --extra all` | 44.0 s | 1.6 GB venv |
-| 3. fetch every weight | `scripts/fetch_weights.sh` | see below | see below |
+| 3. fetch every weight | `scripts/fetch_weights.sh` | **929 s, 15 min 30 s** | 9.60 GB |
+
+Weights, measured from a cold cache rather than estimated:
+
+| model | used by | size |
+|---|---|---|
+| Depth Pro | video, photo | 1.90 GB |
+| Depth Anything V2 Metric Indoor Large | video, photo | 1.34 GB |
+| MapAnything, Apache checkpoint | video, photo, chunk-boundary poses only | 4.91 GB |
+| OWLv2 | damage | 0.62 GB |
+| SigLIP | damage | 0.82 GB |
+| **total** | | **9.60 GB** |
+
+MapAnything is half the download on its own, and the video and photo tiers use
+it for one job: the relative pose across a chunk boundary.
 
 **The 15-minute target applies to the lidar path only**, and the lidar path
 needs none of this. The full profile is dominated by two downloads, 1.6 GB of

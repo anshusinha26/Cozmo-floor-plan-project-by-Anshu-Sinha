@@ -12,11 +12,15 @@
 #
 # Measured sizes on disk, symlinks followed:
 #
-#   OWLv2                                damage detection      1.2 GB
-#   SigLIP                               crop verifier         1.5 GB
-#   Depth Pro                            video and photo       1.9 GB
-#   Depth Anything V2 Metric Indoor L    video and photo       1.3 GB
-#   MapAnything (Apache checkpoint)      chunk-boundary poses  1.4 GB
+#   Depth Pro                            video and photo       1.90 GB
+#   Depth Anything V2 Metric Indoor L    video and photo       1.34 GB
+#   MapAnything (Apache checkpoint)      chunk-boundary poses  4.91 GB
+#   OWLv2                                damage detection      0.62 GB
+#   SigLIP                               crop verifier         0.82 GB
+#                                                     total    9.60 GB
+#
+# About 15 minutes on a fast connection. Measured on a cold cache, see
+# docs/rehearsal.md.
 #
 # The lidar tier needs none of them: it is classical geometry, so nothing in a
 # lidar dimension came from a trained model.

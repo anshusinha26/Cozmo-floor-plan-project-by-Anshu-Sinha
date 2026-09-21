@@ -6,7 +6,7 @@ exists yet, so every accuracy row is scored on the stub only.
 
 | requirement | file path | artifact | status |
 |---|---|---|---|
-| Photo tier (2 or more stills per room, no depth, no poses) | cozmo/pipeline/photo/ | real reconstruction; 1.4% median wall error over 12 walls | done; best-performing tier, see docs/benchmark/benchmark.md |
+| Photo tier (2 or more stills per room, no depth, no poses) | cozmo/pipeline/photo/ | real reconstruction; 22.4% median wall error over 12 walls | partial: runs on every room, misses its 8% budget on 10 of 12 walls |
 | Video tier (one clip per room) | cozmo/pipeline/video/ | real reconstruction; 32.9% median wall error over 16 walls | partial: runs on every clip, not accurate enough to ship. Two fix loops, see fix_loop/loop2_video_scale/POSTMORTEM.md |
 | LiDAR tier (Stray Scanner scan folder) | cozmo/io/stray.py, cozmo/lidar/, cozmo/pipeline/lidar.py | reconstruction to plan.json, plan.png, drift_report.json, debug images | done: no longer waived. Sample iPhone LiDAR scans supplied; classical reconstruction runs on all three. Accuracy unverified: no tape ground truth yet |
 | Per-room plan (polygon, walls, openings) | cozmo/contracts/models.py | plan.json rooms[] | done (contract); stub values only |
@@ -106,3 +106,7 @@ exists yet, so every accuracy row is scored on the stub only.
 | Fix loop 2, video scale | fix_loop/loop2_video_scale/ | declaration, before and after runs, postmortem, iteration 2 rejected | done; negative result |
 | Install profiles and extras | pyproject.toml, README.md | lidar-only quick path and everything; damage, video, photo and all extras | done |
 | Model weights, all tiers | scripts/fetch_weights.sh | five checkpoints with measured sizes, fetched in halves or all at once | done |
+
+| Gates reported per tier | cozmo/eval/runner.py, docs/benchmark/benchmark.md | one table per tier, plus a pooled table kept for completeness | done |
+| Empty gates read NOT EVALUATED | cozmo/eval/gates.py, tests/test_gates.py | status with the reason; an unevaluated gate can never count as a pass | done |
+| Full-profile install rehearsal | docs/rehearsal.md | clean clone, all extras, every weight, timed with measured sizes | done |

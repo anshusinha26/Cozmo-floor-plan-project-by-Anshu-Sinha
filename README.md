@@ -35,14 +35,15 @@ COLMAP and several model checkpoints, so it is a much bigger install.
 
 ```bash
 uv sync --extra all              # about 45 seconds on a cold cache, 1.6 GB venv
-scripts/fetch_weights.sh         # about 7.3 GB of model weights, see below
+scripts/fetch_weights.sh         # 9.6 GB of weights, about 15 minutes
 ```
 
-**The 15-minute target applies to the lidar path only.** The full profile
-downloads 1.6 GB of packages and 7.3 GB of weights, so the honest figure is
-dominated by your connection rather than by anything this repository does.
-Timed on a fast connection in `docs/rehearsal.md`. If you only want a plan
-from a LiDAR scan, Profile 1 is the whole story and needs none of this.
+**The 15-minute target applies to the lidar path only.** Measured on a fresh
+clone with a cold cache and a fast connection: 44 seconds to install (1.6 GB
+of packages) and **15 minutes 30 seconds to fetch 9.6 GB of weights**. Your
+connection decides that second number, not this repository. If you only want
+a plan from a LiDAR scan, Profile 1 is the whole story and needs none of it.
+Timings in `docs/rehearsal.md`.
 
 Narrower extras exist if you only want one part: `--extra video` (also covers
 photo), `--extra photo`, `--extra damage`. `scripts/fetch_weights.sh video`
@@ -50,11 +51,12 @@ and `scripts/fetch_weights.sh damage` fetch only that half.
 
 | model | used by | size on disk |
 |---|---|---|
-| Depth Pro | video, photo | 1.9 GB |
-| Depth Anything V2 Metric Indoor Large | video, photo | 1.3 GB |
-| MapAnything, Apache checkpoint | video, photo, chunk-boundary poses only | 1.4 GB |
-| OWLv2 | damage | 1.2 GB |
-| SigLIP | damage | 1.5 GB |
+| Depth Pro | video, photo | 1.90 GB |
+| Depth Anything V2 Metric Indoor Large | video, photo | 1.34 GB |
+| MapAnything, Apache checkpoint | video, photo, chunk-boundary poses only | 4.91 GB |
+| OWLv2 | damage | 0.62 GB |
+| SigLIP | damage | 0.82 GB |
+| **total** | | **9.60 GB** |
 
 Nothing downloads during a run. If a weight is missing the run fails and says
 to run the fetch script.
