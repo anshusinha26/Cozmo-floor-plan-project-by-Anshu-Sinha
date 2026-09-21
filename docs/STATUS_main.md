@@ -637,3 +637,58 @@ of that alone. Corrected in the README, the fetch script and the rehearsal.
   measures a property that was scanned with a LiDAR phone.
 
 Tests: 266 passing.
+
+## Stage: rendered plans, evidence hygiene and a stale-claims sweep
+
+Done.
+
+**The photo stitcher put walls and polygons in different frames.** It rotated
+a room's polygon about that room's own anchor and its walls about the origin,
+so a placed room drew its outline in one place and its walls in another. Three
+rooms stacked, fills sat off their outlines, and every room was labelled
+"room". Placements are now fitted from the polygon correspondence and applied
+once to everything; labels fall back to the room id. `tests/test_plan_geometry.py`
+fails if any wall endpoint lies off its room polygon after placement, or if
+two rooms overlap.
+
+**The renderer was rewritten for legibility.** Drawings rotate into the plan's
+Manhattan frame, walls under 0.6 m get no label, labels sit outside their wall,
+the font scales with room size, doors and pass-throughs are drawn distinctly,
+partially observed sides are dashed, and the title carries capture, tier,
+pipeline version and an UNRELIABLE marker. `plan.json` is untouched by any of
+it.
+
+**Fix loop 1's snapshots had been swept.** `fix_loop/regenerate.sh` read the
+live `benchmarks/captures.yaml`, so every capture added after the loop landed
+in its after snapshot: twelve stub-pipeline `own_*` runs the loop never
+measured. It now reads `fix_loop/captures_loop1.yaml`, frozen at the five
+captures that existed then, and `tests/test_evidence_hygiene.py` fails if
+either snapshot grows, if the script reaches for the live registry again, or
+if a stub plan appears under `docs/benchmark`.
+
+**The head-to-head column never could have filled.** `--plans` built a map of
+room id to plan and handed it to a function expecting (room id, truth wall) to
+length, so every lookup missed whatever was passed. The flag is now `--eval`,
+and `docs/head_to_head.md` carries real numbers: the rival is closer on 4 of 6
+shared dimensions, our photo tier on 2.
+
+**The image tiers never marked a guessed side.** The single-room fit closes an
+unsupported side at the camera path plus a margin and recorded that only in a
+warning string, so the guessed side got the same narrow interval as a measured
+one. The fit now sets `partially_observed` and `perimeter_support`, as the
+lidar tier already did.
+
+**Stale documentation.** The README said both image tiers run the stub, that
+no tier produced plans for the measured rooms, and that the head-to-head
+column was pending. The third-party section claimed no trained model sits in
+the measurement path, which is true of the lidar tier alone. The compliance
+matrix scored accuracy rows "on the stub only". All corrected against
+`docs/benchmark`.
+
+**A gap found while correcting them:** damage detection is fully built and
+measured but is **not wired into `cozmo run`**. It is reached through
+`scripts/run_damage_eval.py`, and a plan from the command line carries an
+empty damage list and a warning saying so. Now stated in the README and the
+compliance matrix rather than implied away.
+
+Tests: 279 passing.

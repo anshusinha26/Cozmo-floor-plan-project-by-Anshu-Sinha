@@ -3,8 +3,8 @@
 Handheld phone capture to a dimensioned floor plan with damage annotations.
 
 Every number below comes from a file in this repository and names the script
-that rebuilds it. Anything not yet measured is marked PENDING with what it
-waits on. `scripts/regenerate_all.sh` rebuilds all of it.
+that rebuilds it. Nothing reads PENDING: a quantity that was never measured
+says so, and why. `scripts/regenerate_all.sh` rebuilds all of it.
 
 ---
 

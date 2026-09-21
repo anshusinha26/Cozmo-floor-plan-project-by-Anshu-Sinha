@@ -1,7 +1,11 @@
 # Merge plan: video-tier into main
 
-Written from `main` while `video-tier` was still running, so the merge is
-mechanical when it lands. Nothing here has been merged.
+**This merge has happened.** The document is kept as written, as the plan
+that was followed; the after-the-merge list at the end records what was
+actually done. Read `docs/STATUS_main.md` for the state since.
+
+Written from `main` while `video-tier` was still running, so the merge was
+mechanical when it landed.
 
 Merge base: `4c564f3`. At the time of writing `video-tier` is 8 commits ahead
 and has touched 30 files; `main` is 51 commits and has touched 45.
@@ -123,11 +127,14 @@ item 1 came out right.
 1. `uv run pytest -q`. Main is at 168 passing; the sum should pass.
 2. `scripts/regenerate_all.sh`. The config hash changes, so every run artifact
    is rebuilt and the fix-loop numbers should be re-read, not assumed.
-3. `.venv/bin/python scripts/head_to_head.py --plans <runs dir>` to fill the
-   column that reads "not yet" today. That is the headline the merge unlocks.
-4. Update these, which carry PENDING cells waiting on the video tier:
+3. `scripts/head_to_head.py --eval docs/benchmark/eval.json` to fill the
+   column that read "not yet". Done: the rival is closer on 4 of 6 shared
+   dimensions and our photo tier wins 2. The flag is `--eval`, not `--plans`,
+   which never worked.
+4. Update these, which carried PENDING cells waiting on the video tier:
    `docs/device_matrix.md`, `docs/technical_report.md` (tiers, calibration),
-   `docs/STATUS_main.md`, `docs/compliance_matrix.md`.
+   `docs/STATUS_main.md`, `docs/compliance_matrix.md`. Done; no PENDING cell
+   is left in any of them.
 5. Re-run `.venv/bin/python fix_loop/evidence_run.py` only if the LiDAR path
    changed. The merge should not touch it.
 
