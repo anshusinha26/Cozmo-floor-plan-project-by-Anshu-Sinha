@@ -9,9 +9,11 @@ floor plan. Three input tiers (photo, video, LiDAR) share one output contract.
 Every reported dimension carries a confidence interval, and the evaluation
 harness scores those intervals as well as the numbers.
 
-Damage detection exists and is measured, but is **not wired into `cozmo
-run`**: it is reached through `scripts/run_damage_eval.py`, and a plan from
-the command line carries an empty damage list and a warning saying so.
+Damage detection runs as part of `cozmo run` at the lidar and photo tiers.
+`--damage auto` is the default: on when the damage weights are installed, off
+with a warning when they are not. The plan always says which happened, because
+an empty damage list otherwise means "none found" and "never looked" equally
+well.
 
 ## Install: two profiles
 
@@ -79,7 +81,7 @@ video and photo tiers do use trained models, and say which in
 ```bash
 uv run cozmo run --input <path> --tier photo|video|lidar --out <dir> \
     [--config config/gates.yaml] [--seed 0] [--drift-correction on|off] \
-    [--segmentation erosion|cells] [--pipeline stub]
+    [--segmentation erosion|cells] [--damage auto|on|off] [--pipeline stub]
 ```
 
 The rest of the commands:
@@ -114,7 +116,7 @@ details the camera writes into each file, which a messaging app strips.
 | Renderer, debug images | done |
 | Ground truth format, hand-measured captures, benchmark registry | done |
 | Evaluation: matching, eight gates, calibration, repeatability, cross-capture registration | done |
-| Damage detection, concealed-damage rules, scope items | works and is measured, but not wired into `cozmo run`; precision is poor on photos |
+| Damage detection, concealed-damage rules, scope items | in `cozmo run` at the lidar and photo tiers; precision is poor on photos |
 | Head-to-head against AR Plan 3D, both sides against tape | done; the rival is closer on 4 of 6 shared dimensions |
 
 ## What works, and how well
@@ -148,9 +150,13 @@ rebuilt by `scripts/benchmark_all.py`.
   takes there has the fewest points of any it found.
 * **Video-tier intervals are vacuous.** 1.00 coverage at 409% mean width is an
   interval wide enough to contain anything.
-* **Damage detection at usable precision.** Clean on a LiDAR capture, 8 to 15
-  false regions in a photographed room containing 2 marks. See
+* **Damage detection at usable precision.** Clean on a LiDAR capture, 24
+  regions in a photographed room containing 2 marks. Both marks are found, but
+  without depth the same mark in several photos cannot be merged, so the count
+  is an upper bound and the plan says so. See
   [docs/damage_eval/README.md](docs/damage_eval/README.md).
+* **Damage at the video tier.** The stage has no frame source there yet, so it
+  is skipped with an explicit warning rather than guessed at.
 
 ## Where the numbers are
 

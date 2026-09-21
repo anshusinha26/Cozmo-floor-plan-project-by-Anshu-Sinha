@@ -41,3 +41,35 @@ def test_render_command_wraps_same_function(tmp_path):
     r = runner.invoke(app, ["render", "--plan", str(p), "--out", str(tmp_path / "r")])
     assert r.exit_code == 0, r.output
     assert (tmp_path / "r" / "plan.png").exists()
+
+
+def test_damage_regions_are_marked_on_the_plan():
+    """A plan that carries damage has to show it, or the PNG contradicts the JSON.
+
+    The marker sits on the wall the region is attached to. Its polygon is in
+    surface-local metres, which a floor plan cannot place along the wall
+    without the offset, so the plan marks the wall rather than inventing a
+    position on it.
+    """
+    from cozmo.render.plan import damage_markers
+
+    bare = Plan.model_validate(two_room_plan_dict()).model_copy(update={"damage_regions": []})
+    assert damage_markers(bare) == [], "no regions, no markers"
+
+    d = two_room_plan_dict()
+    surface = d["surfaces"][0]
+    # Scope items and flags reference the fixture's own regions, so they go too.
+    d["scope_items"] = []
+    d["concealed_damage_flags"] = []
+    d["damage_regions"] = [{
+        "id": "dmg_1", "surface_id": surface["id"], "damage_class": "water_stain",
+        "extent_m2": {"value": 0.2, "ci_low": 0.05, "ci_high": 0.5, "unit": "m2",
+                      "method": "unbounded_no_metric_depth", "ci_level": 0.95},
+        "polygon": [[0.0, 0.0], [0.4, 0.0], [0.4, 0.5], [0.0, 0.5]], "confidence": 0.6,
+    }]
+    marked = Plan.model_validate(d)
+    markers = damage_markers(marked)
+    assert len(markers) == 1, "the fixture's own regions were replaced by this one"
+    room_id, wall_id, damage_class = markers[0]
+    assert room_id == surface["room_id"] and wall_id == surface["wall_id"]
+    assert damage_class == "water_stain"

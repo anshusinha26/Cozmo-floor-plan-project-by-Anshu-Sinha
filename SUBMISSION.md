@@ -20,8 +20,9 @@
    and vacuous at the video tier (1.00 coverage, 409% mean width).
 8. **A rival consumer app beats both image tiers** on 4 of 6 shared
    dimensions; our photo tier wins 2.
-9. **Damage detection finds what is there** and too much else: both staged
-   marks found, 8 to 15 false regions in a room containing two.
+9. **Damage runs inside `cozmo run`** at the lidar and photo tiers and finds
+   what is there and too much else: both staged marks found, 24 regions in a
+   room containing two. Video is skipped with a warning.
 10. **Three fix loops and a focal regression were run and written up**, with
     every prediction scored against what happened, including the misses.
 

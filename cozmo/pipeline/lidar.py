@@ -407,7 +407,9 @@ class LidarPipeline(Pipeline):
             capture=capture, run=run, rooms=out_rooms, adjacency=adj, stitched_plan=stitched,
             surfaces=surfaces, damage_regions=[], concealed_damage_flags=[], scope_items=[],
             assumptions=assumptions,
-            warnings=warnings + ["Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty"],
+            # The damage stage runs after the pipeline and writes its own warning
+            # when it is off, so nothing is claimed about damage here.
+            warnings=warnings,
             renders=Renders(),
         )
 
