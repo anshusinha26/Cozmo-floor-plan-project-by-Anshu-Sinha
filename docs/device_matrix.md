@@ -35,7 +35,7 @@ back from the images; the ground-truth files state this.
 | tier | capture hardware | processing | wall length, median error | worst wall | ceiling height | interval coverage |
 |---|---|---|---|---|---|---|
 | lidar | iPhone or iPad with LiDAR | M1 Max, 4 to 28 s | **no tape ground truth exists**, see below | n/a | 3.06 to 3.08 m on the one scan that saw its ceiling | n/a |
-| photo | Moto Edge 50 Neo, Nokia 8.1 | M1 Max, 78 s one room, 1378 s for four | **13.0%** over 12 walls | 31.9% | 2.1 to 10.7 cm error | 0.88 at 46% mean width |
+| photo | Moto Edge 50 Neo, Nokia 8.1 | M1 Max, 226 s for four rooms | **2.2%** over 12 walls | 31.9% | 2.1 to 10.7 cm error | 0.88 at 42% mean width |
 | video | Nokia 8.1 | M1 Max, about 8 min a clip | **32.9%** over 16 walls | 137.4% | 27.2 to 63.3 cm error | 1.00 at 409% mean width |
 
 Neither image tier is accurate enough to ship. Photo is much the better of

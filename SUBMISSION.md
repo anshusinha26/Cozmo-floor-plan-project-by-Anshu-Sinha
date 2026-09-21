@@ -7,22 +7,23 @@
 2. **No lidar accuracy number exists.** Every lidar gate reads NOT EVALUATED,
    because the supplied scans are of a property nobody measured and no iPhone
    was available to scan the rooms that were.
-3. **The photo tier runs on every room** and reaches 13.0% median wall error,
-   against an 8% budget. Six of twelve walls are inside it.
+3. **The photo tier runs on every room** and reaches 2.2% median wall error
+   against an 8% budget, with 8 of 12 walls inside it and a worst of 31.9%.
 4. **The video tier runs on every clip** and reaches 32.9% median wall error
-   against a 3% budget. It is not close.
+   against a 3% budget. It is not close. **Every video number predates fix
+   loop 3's shared room fitter**: those plans are reused as they were made.
 5. **Openings are not found.** Zero of seven matched at either image tier: the
    gate fails on absence, not on width.
 6. **Repeatability fails everywhere** it can be measured, including a
    same-device video pair.
-7. **Intervals are honest at the photo tier** (0.88 coverage, 70% mean width)
+7. **Intervals are honest at the photo tier** (0.88 coverage, 42% mean width)
    and vacuous at the video tier (1.00 coverage, 409% mean width).
 8. **A rival consumer app beats both image tiers** on 4 of 6 shared
    dimensions; our photo tier wins 2.
 9. **Damage detection finds what is there** and too much else: both staged
    marks found, 8 to 15 false regions in a room containing two.
-10. **Three fix loops were run and written up**, two of them negative results
-    reported as they came out rather than as they were predicted.
+10. **Three fix loops and a focal regression were run and written up**, with
+    every prediction scored against what happened, including the misses.
 
 ## The eight deliverables
 

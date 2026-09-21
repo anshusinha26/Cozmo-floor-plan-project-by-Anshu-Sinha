@@ -1,14 +1,14 @@
 # Fix loops
 
 Each loop was declared before the fix was written, then measured after. Two of
-the three are negative results, reported as they came out.
+the four are negative results, reported as they came out.
 
 | loop | subject | outcome |
 |---|---|---|
 | [1](#loop-1-cross-capture-repeatability) | lidar room segmentation, cross-capture repeatability | **negative**: declared cause falsified, gate unmoved |
 | [2](loop2_video_scale/) | video tier metric scale | **partial**: every clip now produces a plan, accuracy still far off |
 | [photo focal](loop2_video_scale/photo_ablation.md) | photo tier scored worse on camera originals | **fixed**: cause found, 22.4% to 13.0% median wall error |
-| [3](#loop-3-photo-unanchored-wall) | photo tier unanchored wall | running on the tier branch |
+| [3](loop3_photo_unanchored_wall/) | photo tier unanchored wall | **partial**: 4 of 5 predictions met, 6 of 12 walls within gate became 8 of 12, one room flipped sign |
 
 ---
 
@@ -95,8 +95,41 @@ The control is the Nokia 8.1, which writes a focal in millimetres but no 35 mm
 equivalent, gets no intrinsics, and is the one camera whose rooms did not
 improve.
 
-## Loop 3: photo unanchored wall
+## Loop 3: the photo tier's unanchored wall
 
-Running on the tier branch. This section is filled in after that work merges,
-with the same structure as the others: what was declared, what was measured,
-which falsifiers fired.
+In [`loop3_photo_unanchored_wall/`](loop3_photo_unanchored_wall/). **Partial.**
+Five predictions were written before any fix code; four came true.
+
+Three of four room sides found a supported wall face. The fourth was closed at
+the camera path plus a margin, which overshoots whenever the photographer did
+not stand against that wall. Every room had exactly one such side, and every
+one of them was long.
+
+| prediction | actual | met |
+|---|---|---|
+| walls within the 8% gate: 7 to 9 of 12 | **8 of 12** | yes |
+| room sides anchored to evidence: 19 or 20 of 20 | **20 of 20** | yes |
+| bedroom_2 long axis inside the predicted band | **+3.1%** | yes |
+| kitchen unchanged | **unchanged** | yes |
+| bedroom_1 long axis between 380 and 430 cm | **334.8 cm, -14.4%** | no |
+
+**bedroom_1 flipped sign.** It had been 20.9% long and came back 14.4% short.
+The outermost significant density peak on that side sits inside the true wall,
+most likely a wardrobe front or a curtain hanging proud of it, and the fitter
+cannot tell that from the wall itself. The magnitude improved and the error
+became two-sided. That is an improvement and it is not the same as being right.
+
+**Kitchen was the control, and it held.** It was predicted not to move, because
+all four of its sides were already anchored and this loop deliberately did not
+touch anchored sides. It did not move. That is what says the edit reached no
+further than intended. It is still 31.9% long for a different reason: the rule
+takes the **outermost** qualifying face, and the face it takes there has 1584
+points, the fewest of any it found. That is the next loop's subject.
+
+**The first attempt found nothing at all.** It searched only beyond the camera
+path, on the reasoning that a wall must be outside where the photographer
+stood, and anchored 0 sides. On bedroom_2 the path runs 0.61 m **past** the
+room's own wall: a reconstruction stretched along one axis carries the cameras
+out with it, so the path is not an inner bound. That also explains the old
+fallback, which was adding a margin to an overshoot rather than covering an
+undershoot, and is why every error had the same sign.

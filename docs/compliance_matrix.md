@@ -9,7 +9,7 @@ nothing it produces appears in any reported result.
 
 | requirement | file path | artifact | status |
 |---|---|---|---|
-| Photo tier (2 or more stills per room, no depth, no poses) | cozmo/pipeline/photo/ | real reconstruction; 13.0% median wall error over 12 walls | partial: runs on every room, 6 of 12 walls inside the 8% budget. The focal regression loop is in fix_loop/loop2_video_scale/photo_ablation.md |
+| Photo tier (2 or more stills per room, no depth, no poses) | cozmo/pipeline/photo/ | real reconstruction; 2.2% median wall error over 12 walls, worst 31.9% | partial: runs on every room, 8 of 12 walls inside the 8% budget after fix loop 3. See fix_loop/loop3_photo_unanchored_wall/ |
 | Video tier (one clip per room) | cozmo/pipeline/video/ | real reconstruction; 32.9% median wall error over 16 walls | partial: runs on every clip, not accurate enough to ship. Two fix loops, see fix_loop/loop2_video_scale/POSTMORTEM.md |
 | LiDAR tier (Stray Scanner scan folder) | cozmo/io/stray.py, cozmo/lidar/, cozmo/pipeline/lidar.py | reconstruction to plan.json, plan.png, drift_report.json, debug images | done: no longer waived. Sample iPhone LiDAR scans supplied; classical reconstruction runs on all three. Accuracy unverified: no tape ground truth yet |
 | Per-room plan (polygon, walls, openings) | cozmo/contracts/models.py, cozmo/lidar/, cozmo/pipeline/ | plan.json rooms[] | done; reconstructed values at all three tiers |

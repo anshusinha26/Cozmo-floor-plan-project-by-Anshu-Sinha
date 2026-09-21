@@ -8,7 +8,7 @@ Video and photo plans cost about eight minutes a capture and were produced on th
 
 The EXAMPLE fixtures in `benchmarks/captures.yaml` are left out: they are placeholder files run through the stub pipeline, and nothing the stub produces belongs in a table of measured results.
 
-A reused plan is the plan as it was made. The video plans below predate the fix that records a guessed room side in the wall's method string, so their intervals are not widened for it and `plan.png` draws those sides solid, while the plan's own warnings say all four sides were closed by assumption. The photo plan was re-run after the fix and does carry it.
+A reused plan is the plan as it was made. The video plans below predate both the fix that records a guessed room side in the wall's method string and fix loop 3's shared room fitter, so **no video number here reflects either change**: their intervals are not widened for a guessed side and `plan.png` draws those sides solid, while the plan's own warnings say all four sides were closed by assumption. The photo plan was re-run after both and carries them.
 
 | capture | tier | plan | input hash matches | duration s | note |
 |---|---|---|---|---|---|
@@ -17,7 +17,7 @@ A reused plan is the plan as it was made. The video plans below predate the fix 
 | own_bedroom_2_photo | photo | no plan available | None | n/a |  |
 | own_bedroom_2_repeat_photo | photo | no plan available | None | n/a |  |
 | own_kitchen_photo | photo | no plan available | None | n/a |  |
-| own_home_photo | photo | re-run here after a fix, see the note | True | 744 |  |
+| own_home_photo | photo | re-run here after a fix, see the note | True | 226 |  |
 | own_hall_video | video | reused from the tier branch | True | 570 | room id renamed room_01 -> hall, geometry untouched |
 | own_bedroom_1_video | video | reused from the tier branch | True | 507 | room id renamed room_01 -> bedroom_1, geometry untouched |
 | own_bedroom_2_video | video | reused from the tier branch | True | 375 | room id renamed room_01 -> bedroom_2, geometry untouched |
@@ -95,11 +95,11 @@ Coverage is the share of tape readings inside the stated 95% interval. Confident
 
 | group | n | coverage | mean width, % of value | outside | confident garbage |
 |---|---|---|---|---|---|
-| all | 37 | 0.95 | 262 | 2 | 2 |
-| photo | 16 | 0.88 | 70 | 2 | 2 |
+| all | 37 | 0.95 | 250 | 2 | 2 |
+| photo | 16 | 0.88 | 42 | 2 | 2 |
 | video | 21 | 1.00 | 409 | 0 | 0 |
-| photo/ceiling_height | 4 | 1.00 | 47 | 0 | 0 |
-| photo/wall_length | 12 | 0.83 | 78 | 2 | 2 |
+| photo/ceiling_height | 4 | 1.00 | 43 | 0 | 0 |
+| photo/wall_length | 12 | 0.83 | 42 | 2 | 2 |
 | video/ceiling_height | 5 | 1.00 | 57 | 0 | 0 |
 | video/wall_length | 16 | 1.00 | 519 | 0 | 0 |
 
@@ -119,7 +119,7 @@ Walls seen in both: 0, median difference 0.0 cm. Registered footprint IoU 0.14.
 
 | capture | tier | seconds |
 |---|---|---|
-| own_home_photo | photo | 744 |
+| own_home_photo | photo | 226 |
 | own_hall_video | video | 570 |
 | own_bedroom_1_video | video | 507 |
 | own_bedroom_2_video | video | 375 |
@@ -135,7 +135,7 @@ Both sides against tape, per shared dimension. A tie means the two errors differ
 | room | dimension | tape m | theirs m | their error cm | ours m | our error cm | closer |
 |---|---|---|---|---|---|---|---|
 | bedroom_1 | short_pair | 3.658 | 3.410 | 24.8 | 3.637 | 2.1 | ours |
-| bedroom_1 | long_pair | 3.912 | 3.730 | 18.2 | 4.729 | 81.8 | theirs |
+| bedroom_1 | long_pair | 3.912 | 3.730 | 18.2 | 3.348 | 56.3 | theirs |
 | kitchen | short_wall_1 | 2.692 | 2.750 | 5.8 | 2.658 | 3.5 | ours |
 | kitchen | short_wall_2 | 2.692 | 2.700 | 0.8 | 2.658 | 3.5 | theirs |
 | kitchen | long_wall_1 | 3.603 | 3.510 | 9.3 | 4.753 | 115.0 | theirs |

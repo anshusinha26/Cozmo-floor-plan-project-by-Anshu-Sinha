@@ -57,7 +57,7 @@
     "repeat_of": null,
     "repeat_kind": null,
     "source": "re-run here after a fix, see the note",
-    "source_path": "<outside the repository>/photo_v5",
+    "source_path": "<outside the repository>/photo_v6",
     "recomputed": false,
     "plan_input_sha256": "d253b661f47ebf35cc45dc41356726a24dac56455a89e36c0394bdaae2971db6",
     "input_now": {
@@ -65,7 +65,7 @@
       "sha256": "d253b661f47ebf35cc45dc41356726a24dac56455a89e36c0394bdaae2971db6"
     },
     "input_hash_matches": true,
-    "duration_s": 744.147429,
+    "duration_s": 226.053604,
     "pipeline": "photo",
     "plan_path": "/Users/anshusinha/Downloads/Cozmo-AI/Cozmo-floor-plan-project-by-Anshu-Sinha/docs/benchmark/runs/own_home_photo/plan.json",
     "rooms": [

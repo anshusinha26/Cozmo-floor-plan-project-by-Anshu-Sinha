@@ -77,7 +77,7 @@ reconstruction itself.
 
 Both ran from the clean clone with no further setup, on 9 photographs and one
 50-second clip of the same bedroom. The video tier is 13 times slower than the
-photo tier on the same room and, at 32.9% median wall error against 13.0%,
+photo tier on the same room and, at 32.9% median wall error against 2.2%,
 much less accurate. That ratio is the argument for the capture protocol
 recommending photographs.
 

@@ -133,11 +133,13 @@ def render_report(result: dict, registry) -> str:
            "The EXAMPLE fixtures in `benchmarks/captures.yaml` are left out: they are "
            "placeholder files run through the stub pipeline, and nothing the stub "
            "produces belongs in a table of measured results.", "",
-           "A reused plan is the plan as it was made. The video plans below predate "
-           "the fix that records a guessed room side in the wall's method string, so "
-           "their intervals are not widened for it and `plan.png` draws those sides "
-           "solid, while the plan's own warnings say all four sides were closed by "
-           "assumption. The photo plan was re-run after the fix and does carry it.", "",
+           "A reused plan is the plan as it was made. The video plans below predate both "
+           "the fix that records a guessed room side in the wall's method string and fix "
+           "loop 3's shared room fitter, so **no video number here reflects either "
+           "change**: their intervals are not widened for a guessed side and `plan.png` "
+           "draws those sides solid, while the plan's own warnings say all four sides "
+           "were closed by assumption. The photo plan was re-run after both and carries "
+           "them.", "",
            "| capture | tier | plan | input hash matches | duration s | note |",
            "|---|---|---|---|---|---|"]
     for r in result["provenance"]:

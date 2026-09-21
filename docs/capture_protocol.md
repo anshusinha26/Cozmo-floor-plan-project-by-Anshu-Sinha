@@ -4,7 +4,7 @@ Pick the route that matches your phone. Each one ends with the exact command
 to run.
 
 **If you do not have a LiDAR iPhone, take photos rather than video.** Measured
-on the same rooms: photographs give a median wall error of 13.0%, video gives
+on the same rooms: photographs give a median wall error of 2.2%, video gives
 32.9% (`docs/benchmark/eval.json`). Both are still too large to rely on.
 Photographs are still the better of the two, because nine deliberate stills
 from the corners hold a viewpoint long enough to measure a wall and a walk

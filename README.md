@@ -100,7 +100,7 @@ and assumes no technical knowledge. The short version: LiDAR route if you have
 an iPhone Pro. **Otherwise photographs, not video**: nine deliberate stills
 from the corners of each room at chest height on the 1x lens, and send the
 camera originals. Measured on the same rooms, photographs give a median wall
-error of 13.0% where a video loop gives 32.9%, and the pipeline reads the lens
+error of 2.2% where a video loop gives 32.9%, and the pipeline reads the lens
 details the camera writes into each file, which a messaging app strips.
 
 ## What is implemented
@@ -125,7 +125,7 @@ rebuilt by `scripts/benchmark_all.py`.
 
 | tier | median wall error | budget | gates passed | interval coverage |
 |---|---|---|---|---|
-| photo | **13.0%**, 6 of 12 walls inside the budget | 8% | 2 of 6 evaluated | 0.88, mean width 70% of value |
+| photo | **2.2%**, 8 of 12 walls inside the budget, worst 31.9% | 8% | 2 of 6 evaluated | 0.88, mean width 42% of value |
 | video | **32.9%** | 3% | 2 of 7 evaluated | 1.00, mean width 409% of value |
 | lidar | no number exists | 2 cm or 1%, provisional | 0 of 8, all NOT EVALUATED | not evaluated |
 
@@ -142,8 +142,10 @@ rebuilt by `scripts/benchmark_all.py`.
 * **Cross-capture repeatability.** The gate fails wherever it can be measured,
   including a same-device video pair. Fix loop 1 was run and did not move it;
   see [fix_loop/POSTMORTEM.md](fix_loop/POSTMORTEM.md).
-* **One wall per room at the photo tier is 21 to 32% long**, the side the room
-  fitter could not anchor to an observed wall face. This is loop 3.
+* **The photo tier's worst wall is still 31.9% long.** Fix loop 3 anchored
+  every room side to evidence and took the median to 2.2%, but the kitchen did
+  not move: the rule takes the outermost qualifying wall face, and the one it
+  takes there has the fewest points of any it found.
 * **Video-tier intervals are vacuous.** 1.00 coverage at 409% mean width is an
   interval wide enough to contain anything.
 * **Damage detection at usable precision.** Clean on a LiDAR capture, 8 to 15
@@ -162,7 +164,7 @@ rebuilt by `scripts/benchmark_all.py`.
 | [docs/device_matrix.md](docs/device_matrix.md) | what ran on what, and what each tier delivers |
 | [docs/damage_eval/README.md](docs/damage_eval/README.md) | damage precision, filter by filter |
 | [docs/compliance_matrix.md](docs/compliance_matrix.md) | every requirement against a real file |
-| [fix_loop/](fix_loop/) | three fix loops and a focal regression, two of them negative results |
+| [fix_loop/](fix_loop/) | three fix loops and a focal regression, each scored against its predictions |
 | [docs/schema.md](docs/schema.md) | the output contract |
 | [docs/technical_report.md](docs/technical_report.md) | the bound report, six pages |
 | [docs/capture_protocol.md](docs/capture_protocol.md) | how to capture a property |
