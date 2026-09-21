@@ -5,23 +5,32 @@ This repository is MIT (see `LICENSE`).
 
 ## Models
 
-Both are optional: they are used only by damage detection. **Reconstruction
-uses no trained model at all**, so nothing in a reported dimension came from
-a network.
+**The lidar tier uses none of these.** It is classical geometry, so nothing in
+a lidar dimension came from a trained model. The video and photo tiers do use
+trained models, and every dimension they report passed through one.
 
-| model | version | use | licence |
-|---|---|---|---|
-| [OWLv2](https://huggingface.co/google/owlv2-base-patch16-ensemble) | `google/owlv2-base-patch16-ensemble` | open-vocabulary damage detection from text prompts | Apache 2.0 |
-| [SigLIP](https://huggingface.co/google/siglip-base-patch16-224) | `google/siglip-base-patch16-224` | zero-shot crop verifier that rejects false detections | Apache 2.0 |
+| model | version | used by | use | licence |
+|---|---|---|---|---|
+| [Depth Pro](https://huggingface.co/apple/DepthPro) | `apple/DepthPro`, `depth_pro.pt` | video, photo | monocular metric depth, one of the scale cues | weights `apple-amlr` (Apple ML Research Model licence); code Apple Sample Code licence |
+| [Depth Anything V2 Metric Indoor Large](https://huggingface.co/depth-anything/Depth-Anything-V2-Metric-Indoor-Large-hf) | `depth-anything/Depth-Anything-V2-Metric-Indoor-Large-hf` | video, photo | second monocular metric depth cue, cross-checked against Depth Pro | CC BY-NC 4.0 (the V2 Large variants; only V2 Small is Apache 2.0) |
+| [MapAnything](https://huggingface.co/facebook/map-anything-apache) | `facebook/map-anything-apache` | video, photo | poses across a chunk boundary; the photo tier's reconstruction | Apache 2.0 checkpoint, chosen over the default weights for that reason; code Apache 2.0 |
+| [OWLv2](https://huggingface.co/google/owlv2-base-patch16-ensemble) | `google/owlv2-base-patch16-ensemble` | damage | open-vocabulary damage detection from text prompts | Apache 2.0 |
+| [SigLIP](https://huggingface.co/google/siglip-base-patch16-224) | `google/siglip-base-patch16-224` | damage | zero-shot crop verifier that rejects false detections | Apache 2.0 |
 
-Measured download sizes: OWLv2 1.2 GB, SigLIP 1.5 GB. Fetched by
-`scripts/fetch_weights.sh` and never downloaded during a run.
+**CC BY-NC 4.0 is non-commercial.** Depth Anything V2 Large is the only
+component here that is not usable commercially. A commercial build would drop
+to the Apache-licensed V2 Small checkpoint, or to Depth Pro alone, and would
+need re-measuring; nothing in this repository has been evaluated that way.
+
+Measured sizes on disk, from `scripts/fetch_weights.sh`: Depth Pro 1.90 GB,
+Depth Anything V2 1.34 GB, MapAnything 4.91 GB, OWLv2 0.62 GB, SigLIP 0.82 GB,
+9.60 GB in total. Nothing is downloaded during a run.
 
 ### Models evaluated and not used
 
 | model | why not | evidence |
 |---|---|---|
-| [MapAnything](https://github.com/facebookresearch/map-anything) | metric scale wrong by about 30% and consistent across runs; fused cloud does not produce straight walls | `docs/experiments/mapanything/result.json` |
+| [MapAnything](https://github.com/facebookresearch/map-anything), fused-cloud route | metric scale wrong by about 30% and consistent across runs; the fused cloud does not produce straight walls. Kept for poses and for the photo tier's reconstruction, where the focal is supplied from EXIF | `docs/experiments/mapanything/result.json`, `fix_loop/loop2_video_scale/photo_ablation.md` |
 
 ## Runtime libraries
 
@@ -49,8 +58,12 @@ project's licence.
 
 | library | extra | use | licence |
 |---|---|---|---|
-| torch, torchvision | `damage` | runs the two models | BSD 3-Clause |
-| transformers | `damage` | loads and runs OWLv2 and SigLIP | Apache 2.0 |
+| torch, torchvision | `damage`, `video`, `photo` | runs every model above | BSD 3-Clause |
+| pycolmap | `video`, `photo` | COLMAP structure from motion, run in its own subprocess | BSD 3-Clause |
+| depth-pro | `video`, `photo` | Depth Pro inference | Apple Sample Code licence |
+| mapanything | `video`, `photo` | MapAnything inference | Apache 2.0 |
+| imageio-ffmpeg | `video`, `photo` | bundled ffmpeg for decoding clips | BSD 2-Clause |
+| transformers | `damage`, `video`, `photo` | loads and runs OWLv2, SigLIP and Depth Anything V2 | Apache 2.0 |
 | sentencepiece | `damage` | SigLIP's tokenizer | Apache 2.0 |
 | protobuf | `damage` | SigLIP's tokenizer | BSD 3-Clause |
 | pytest | `dev` | tests | MIT |
