@@ -1,22 +1,25 @@
 # Compliance matrix
 
 Status is one of: done, partial, not started, waived.
-"Done" here means the harness side exists and is tested. No reconstruction
-exists yet, so every accuracy row is scored on the stub only.
+"Done" here means the artefact exists and is tested. All three tiers now
+reconstruct for real; accuracy rows are scored on those outputs, and the
+numbers behind them are in `docs/benchmark/benchmark.md`. The stub pipeline
+survives only as a test fixture reachable through `--pipeline stub`, and
+nothing it produces appears in any reported result.
 
 | requirement | file path | artifact | status |
 |---|---|---|---|
-| Photo tier (2 or more stills per room, no depth, no poses) | cozmo/pipeline/photo/ | real reconstruction; 22.4% median wall error over 12 walls | partial: runs on every room, misses its 8% budget on 10 of 12 walls |
+| Photo tier (2 or more stills per room, no depth, no poses) | cozmo/pipeline/photo/ | real reconstruction; 13.0% median wall error over 12 walls | partial: runs on every room, 6 of 12 walls inside the 8% budget. The focal regression loop is in fix_loop/loop2_video_scale/photo_ablation.md |
 | Video tier (one clip per room) | cozmo/pipeline/video/ | real reconstruction; 32.9% median wall error over 16 walls | partial: runs on every clip, not accurate enough to ship. Two fix loops, see fix_loop/loop2_video_scale/POSTMORTEM.md |
 | LiDAR tier (Stray Scanner scan folder) | cozmo/io/stray.py, cozmo/lidar/, cozmo/pipeline/lidar.py | reconstruction to plan.json, plan.png, drift_report.json, debug images | done: no longer waived. Sample iPhone LiDAR scans supplied; classical reconstruction runs on all three. Accuracy unverified: no tape ground truth yet |
-| Per-room plan (polygon, walls, openings) | cozmo/contracts/models.py | plan.json rooms[] | done (contract); stub values only |
-| Ceiling height per room with interval | cozmo/contracts/models.py, cozmo/eval/gates.py | rooms[].ceiling_height_m, ceiling_height gate | done (contract and gate); stub values only |
-| Floor area per room with interval | cozmo/contracts/models.py, cozmo/eval/calibration.py | rooms[].floor_area_m2, calibration row floor_area | done (contract and calibration); stub values only |
-| Openings (door, window, pass-through) with width, height, offset | cozmo/contracts/models.py, cozmo/eval/matching.py | rooms[].openings[], opening matching | done (contract and matching); stub values only |
-| Stitched plan with adjacency graph | cozmo/contracts/models.py, cozmo/eval/gates.py | stitched_plan, adjacency[], stitch_adjacency and stitch_overlap gates | done (contract and gates); stub values only |
-| Damage regions with class enum and extent | cozmo/contracts/models.py | damage_regions[], DamageClass | partial: contract done, no detector; lidar plans emit an empty list and a warning saying so |
-| Concealed-damage flags with rule id and evidence | cozmo/contracts/models.py | concealed_damage_flags[] | done (contract); no rules engine |
-| Scope items with quantity and basis | cozmo/contracts/models.py | scope_items[] | done (contract); no generator |
+| Per-room plan (polygon, walls, openings) | cozmo/contracts/models.py, cozmo/lidar/, cozmo/pipeline/ | plan.json rooms[] | done; reconstructed values at all three tiers |
+| Ceiling height per room with interval | cozmo/contracts/models.py, cozmo/eval/gates.py | rooms[].ceiling_height_m, ceiling_height gate | done and scored against tape; the gate fails at both image tiers, see docs/benchmark/benchmark.md |
+| Floor area per room with interval | cozmo/contracts/models.py, cozmo/eval/calibration.py | rooms[].floor_area_m2 | done and emitted at every tier; never scored, because no room has a tape-measured floor area to score it against |
+| Openings (door, window, pass-through) with width, height, offset | cozmo/contracts/models.py, cozmo/eval/matching.py | rooms[].openings[], opening matching | partial: contract, detection and matching done, but 0 of 7 openings match at either image tier, so the gate fails on absence |
+| Stitched plan with adjacency graph | cozmo/contracts/models.py, cozmo/pipeline/photo/merge.py, cozmo/eval/gates.py | stitched_plan, adjacency[], stitch_adjacency and stitch_overlap gates | done and scored; adjacency matches truth, overlap is in docs/benchmark/benchmark.md |
+| Damage regions with class enum and extent | cozmo/contracts/models.py, cozmo/damage/detector.py, cozmo/damage/extent.py | damage_regions[], DamageClass | partial: detector, four precision filters and metric extent all work and are measured, but the module is **not wired into `cozmo run`**. It is reached through scripts/run_damage_eval.py, so plan.json still emits an empty list and a warning saying so. Precision is poor on photos: docs/damage_eval/README.md |
+| Concealed-damage flags with rule id and evidence | cozmo/contracts/models.py, cozmo/damage/rules.py | concealed_damage_flags[] | partial: the rules engine emits a rule id and its evidence, but reaches plan.json only through the damage scripts, not through `cozmo run` |
+| Scope items with quantity and basis | cozmo/contracts/models.py, cozmo/damage/pipeline.py | scope_items[] | partial: generated from the surviving damage regions, on the same script-only path as the flags above |
 | Interval on every measurement (no bare floats) | cozmo/contracts/models.py, tests/test_contract.py | Measurement type, bare-dimension walker on emitted output; coverage 0.94 photo and 1.00 video, measured | done |
 | One command per capture | cozmo/cli.py | cozmo run | done |
 | JSON schema published and versioned | cozmo/contracts/export_schema.py, schema/plan.schema.json | cozmo schema | done |
@@ -41,7 +44,7 @@ exists yet, so every accuracy row is scored on the stub only.
 | Device matrix (phones tested per tier) | docs/device_matrix.md, benchmarks/captures.yaml device field | matrix document, device recorded per capture | done |
 | Reproduction bundle (inputs, config, seed, manifest, outputs) | scripts/regenerate_all.sh, scripts/fetch_weights.sh, scripts/fetch_sample_data.sh, cozmo/io/manifest.py | one command rebuilds every reported number; run_manifest.json carries hashes, versions and commit | done |
 | Technical report | docs/technical_report.md, scripts/build_report.sh | one bound document, 6 rendered pages, every number traced to a file and a regenerating script, no PENDING cells left | done |
-| Raw data (captures and tape measurements) | data/sample/ (gitignored), benchmarks/captures.yaml | three iPhone LiDAR scans registered with truth null | partial: captures exist, tape measurements do not |
+| Raw data (captures and tape measurements) | data/ (gitignored), benchmarks/captures.yaml, benchmarks/ground_truth/ | three supplied iPhone LiDAR scans with truth null, plus five hand-measured rooms captured as photos and 4K video. Raw data, access restricted to the assessors: https://drive.google.com/drive/folders/1MkwFUkSrNJ4x_tVjm0pCOvGsyGjdGNaR . Download `own` and `own_compressed` into data/; the LiDAR scans come from scripts/fetch_sample_data.sh | done |
 | Mirrors, glass, wet-look and low-light coverage | docs/hazards.md, scripts/hazard_lowlight.py | one section each with evidence: shower screen, wardrobe mirror, glossy tiles, darkened photos at two levels, moving dog, textureless walls, unobserved ceiling | done |
 
 ## Added in the LiDAR reconstruction task
@@ -88,7 +91,7 @@ exists yet, so every accuracy row is scored on the stub only.
 | iPhone input robustness | cozmo/io/inputs.py, tests/test_iphone_inputs.py | HEIC, .mov, .hevc, mixed case, sidecar files, any scan folder name | done |
 | Clear input error messages | cozmo/io/inputs.py | every rejection names what was found and what is accepted | done |
 | Capture protocol | docs/capture_protocol.md | one page, three routes, what to avoid | done |
-| Device matrix | docs/device_matrix.md | capture hardware by processing hardware by tier | done; video and photo accuracy cells marked pending, never invented |
+| Device matrix | docs/device_matrix.md | capture hardware by processing hardware by tier | done; every accuracy cell now carries a measured number, none invented |
 | README, install to first run under 15 minutes | README.md | quickstart, licences, AI disclosure | done |
 | Reproduction bundle | scripts/regenerate_all.sh and the two fetch scripts | rebuilds every reported number | done |
 | Sample data fetch | scripts/fetch_sample_data.sh | defaults to the assessor-supplied Drive folder, unpacks into data/sample/<scan_id>/ and verifies the Stray Scanner layout | done |

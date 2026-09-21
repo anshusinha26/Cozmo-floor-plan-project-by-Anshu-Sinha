@@ -51,6 +51,16 @@
 | Licences of every model, library and dataset | [`THIRD_PARTY.md`](THIRD_PARTY.md) |
 | Models evaluated and rejected | [`docs/experiments/`](docs/experiments/) |
 
+## Raw data
+
+**Raw benchmark data** (own captures: original photos, 4K room videos, the tape
+measurements PDF, rival-app screenshots, and the messaging-app photo copies):
+https://drive.google.com/drive/folders/1MkwFUkSrNJ4x_tVjm0pCOvGsyGjdGNaR
+
+Access is restricted to the assessors. To reproduce, download `own` and
+`own_compressed` into `data/`. The supplied LiDAR scans come from
+`scripts/fetch_sample_data.sh`.
+
 ## What was never evaluated, and why
 
 **Every lidar gate.** The three supplied Stray Scanner scans are of a property

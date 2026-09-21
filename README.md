@@ -5,10 +5,13 @@ deliverables with their paths, and a ten-line honest status of what works,
 what does not, and what was never evaluated.
 
 Turns a handheld phone capture of an interior into a dimensioned, stitched
-floor plan with damage annotations. Three input tiers (photo, video, LiDAR)
-share one output contract. Every reported dimension carries a confidence
-interval, and the evaluation harness scores those intervals as well as the
-numbers.
+floor plan. Three input tiers (photo, video, LiDAR) share one output contract.
+Every reported dimension carries a confidence interval, and the evaluation
+harness scores those intervals as well as the numbers.
+
+Damage detection exists and is measured, but is **not wired into `cozmo
+run`**: it is reached through `scripts/run_damage_eval.py`, and a plan from
+the command line carries an empty damage list and a warning saying so.
 
 ## Install: two profiles
 
@@ -94,8 +97,11 @@ uv run cozmo schema --out schema/plan.schema.json
 
 Follow [docs/capture_protocol.md](docs/capture_protocol.md). It is one page
 and assumes no technical knowledge. The short version: LiDAR route if you have
-an iPhone Pro, otherwise one video loop per room at chest height on the 1x
-lens.
+an iPhone Pro. **Otherwise photographs, not video**: nine deliberate stills
+from the corners of each room at chest height on the 1x lens, and send the
+camera originals. Measured on the same rooms, photographs give a median wall
+error of 13.0% where a video loop gives 32.9%, and the pipeline reads the lens
+details the camera writes into each file, which a messaging app strips.
 
 ## What is implemented
 
@@ -108,32 +114,55 @@ lens.
 | Renderer, debug images | done |
 | Ground truth format, hand-measured captures, benchmark registry | done |
 | Evaluation: matching, eight gates, calibration, repeatability, cross-capture registration | done |
-| Damage detection, concealed-damage rules, scope items | done, precision is poor on photos |
-| Head-to-head comparison scaffold | done, our column pending |
+| Damage detection, concealed-damage rules, scope items | works and is measured, but not wired into `cozmo run`; precision is poor on photos |
+| Head-to-head against AR Plan 3D, both sides against tape | done; the rival is closer on 4 of 6 shared dimensions |
 
-## What is not implemented
+## What works, and how well
 
-* **Photo and video reconstruction.** Both tiers validate their input and then
-  run the stub, which says so loudly in `warnings`. They are being built
-  separately.
-* **Accuracy against tape for any tier.** The LiDAR scans have no tape ground
-  truth. Tape readings exist for five hand-measured rooms, but no tier
-  produces plans for them yet.
-* **Cross-capture repeatability.** The gate fails. One fix loop was run and
-  did not fix it; see [fix_loop/POSTMORTEM.md](fix_loop/POSTMORTEM.md).
-* **Damage detection at usable precision.** Clean on a LiDAR capture, 9 false
-  regions in a photographed room with 2 marks. See
+All three tiers reconstruct. None of them measures well enough to trust.
+Numbers from [docs/benchmark/benchmark.md](docs/benchmark/benchmark.md),
+rebuilt by `scripts/benchmark_all.py`.
+
+| tier | median wall error | budget | gates passed | interval coverage |
+|---|---|---|---|---|
+| photo | **13.0%**, 6 of 12 walls inside the budget | 8% | 1 of 6 evaluated | 0.88, mean width 46% of value |
+| video | **32.9%** | 3% | 2 of 7 evaluated | 1.00, mean width 409% of value |
+| lidar | no number exists | 2 cm or 1%, provisional | 0 of 8, all NOT EVALUATED | not evaluated |
+
+## What is not implemented, or does not work
+
+* **Accuracy at the lidar tier is unknown.** Every lidar gate reads NOT
+  EVALUATED: the three supplied scans are of a property nobody measured, and
+  no iPhone was available to scan the five rooms that were. Its only evidence
+  is cross-capture agreement, where two scans of one apartment place the same
+  wall face within 1.9 cm while the room polygons built from those faces
+  disagree by 97.5 cm. The geometry is sound; the partition into rooms is not.
+* **Openings are not found.** Zero of seven matched at either image tier, so
+  the opening gate is failing on absence, not on width.
+* **Cross-capture repeatability.** The gate fails wherever it can be measured,
+  including a same-device video pair. Fix loop 1 was run and did not move it;
+  see [fix_loop/POSTMORTEM.md](fix_loop/POSTMORTEM.md).
+* **One wall per room at the photo tier is 21 to 32% long**, the side the room
+  fitter could not anchor to an observed wall face. This is loop 3.
+* **Video-tier intervals are vacuous.** 1.00 coverage at 409% mean width is an
+  interval wide enough to contain anything.
+* **Damage detection at usable precision.** Clean on a LiDAR capture, 8 to 15
+  false regions in a photographed room containing 2 marks. See
   [docs/damage_eval/README.md](docs/damage_eval/README.md).
 
 ## Where the numbers are
 
 | document | what it holds |
 |---|---|
+| [SUBMISSION.md](SUBMISSION.md) | the honest status in ten lines, and every deliverable's path |
+| [docs/benchmark/benchmark.md](docs/benchmark/benchmark.md) | gates per tier, interval coverage, repeatability, timing, head to head |
+| [docs/photo_tier.md](docs/photo_tier.md) | how the photo tier works and what it measures |
+| [docs/video_tier.md](docs/video_tier.md) | how the video tier works and what it measures |
 | [docs/STATUS_main.md](docs/STATUS_main.md) | running status, newest stage last |
 | [docs/device_matrix.md](docs/device_matrix.md) | what ran on what, and what each tier delivers |
 | [docs/damage_eval/README.md](docs/damage_eval/README.md) | damage precision, filter by filter |
 | [docs/compliance_matrix.md](docs/compliance_matrix.md) | every requirement against a real file |
-| [fix_loop/](fix_loop/) | the repeatability fix loop, including its negative result |
+| [fix_loop/](fix_loop/) | three fix loops and a focal regression, two of them negative results |
 | [docs/schema.md](docs/schema.md) | the output contract |
 | [docs/technical_report.md](docs/technical_report.md) | the bound report, six pages |
 | [docs/capture_protocol.md](docs/capture_protocol.md) | how to capture a property |
@@ -144,12 +173,22 @@ lens.
 
 | model | used for | licence |
 |---|---|---|
-| [OWLv2](https://huggingface.co/google/owlv2-base-patch16-ensemble) `google/owlv2-base-patch16-ensemble` | open-vocabulary damage detection | Apache 2.0 |
-| [SigLIP](https://huggingface.co/google/siglip-base-patch16-224) `google/siglip-base-patch16-224` | crop verifier that rejects false detections | Apache 2.0 |
+| [Depth Pro](https://huggingface.co/apple/DepthPro) | monocular metric depth, video and photo | weights `apple-amlr`; code Apple Sample Code licence |
+| [Depth Anything V2 Metric Indoor Large](https://huggingface.co/depth-anything/Depth-Anything-V2-Metric-Indoor-Large-hf) | second metric depth cue, video and photo | **CC BY-NC 4.0**, non-commercial |
+| [MapAnything](https://huggingface.co/facebook/map-anything-apache) | chunk-boundary poses and the photo tier's reconstruction | Apache 2.0 checkpoint, chosen for that reason |
+| [COLMAP](https://colmap.github.io/), through `pycolmap` | structure from motion, video and photo | BSD 3-Clause |
+| [OWLv2](https://huggingface.co/google/owlv2-base-patch16-ensemble) | open-vocabulary damage detection | Apache 2.0 |
+| [SigLIP](https://huggingface.co/google/siglip-base-patch16-224) | crop verifier that rejects false detections | Apache 2.0 |
 
-No other model weights are used. Reconstruction is classical geometry: numpy,
-scipy, OpenCV, shapely, scikit-image. There is no trained model anywhere in
-the measurement path, so nothing in a reported dimension came from a network.
+**The lidar tier uses none of them.** Its reconstruction is classical
+geometry (numpy, scipy, OpenCV, shapely, scikit-image), so nothing in a lidar
+dimension came from a trained model. That claim holds for the lidar tier only:
+every dimension the video and photo tiers report passed through the models
+above. Depth Anything V2 Large is non-commercial, which makes it the one
+component that would have to be swapped in a commercial build.
+
+The full list, with versions, sizes and what each is used for, is in
+[THIRD_PARTY.md](THIRD_PARTY.md).
 
 Python dependencies and their licences are resolved by `uv sync` from
 `pyproject.toml`.
@@ -157,8 +196,16 @@ Python dependencies and their licences are resolved by `uv sync` from
 ## Data
 
 Capture data lives in `data/` and is gitignored: it is large, and the supplied
-LiDAR scans are not ours to redistribute. `scripts/fetch_sample_data.sh`
-retrieves it. Everything else, including every test, runs without it.
+LiDAR scans are not ours to redistribute. Everything else, including every
+test, runs without it.
+
+**Raw benchmark data** (own captures: original photos, 4K room videos, the tape
+measurements PDF, rival-app screenshots, and the messaging-app photo copies):
+https://drive.google.com/drive/folders/1MkwFUkSrNJ4x_tVjm0pCOvGsyGjdGNaR
+
+Access is restricted to the assessors. To reproduce, download `own` and
+`own_compressed` into `data/`. The supplied LiDAR scans come from
+`scripts/fetch_sample_data.sh`.
 
 ## Licence
 
