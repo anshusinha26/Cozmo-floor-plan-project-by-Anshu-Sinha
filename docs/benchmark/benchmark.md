@@ -15,7 +15,7 @@ Video and photo plans cost about eight minutes a capture and were produced on th
 | own_bedroom_2_photo | photo | no plan available | None | n/a |  |
 | own_bedroom_2_repeat_photo | photo | no plan available | None | n/a |  |
 | own_kitchen_photo | photo | no plan available | None | n/a |  |
-| own_home_photo | photo | re-run here after a fix, see the note | True | 1391 |  |
+| own_home_photo | photo | re-run here after a fix, see the note | True | 758 |  |
 | own_hall_video | video | reused from the tier branch | True | 570 | room id renamed room_01 -> hall, geometry untouched |
 | own_bedroom_1_video | video | reused from the tier branch | True | 507 | room id renamed room_01 -> bedroom_1, geometry untouched |
 | own_bedroom_2_video | video | reused from the tier branch | True | 375 | room id renamed room_01 -> bedroom_2, geometry untouched |
@@ -55,10 +55,10 @@ Captures: own.
 | gate | result | value | threshold | n | note |
 |---|---|---|---|---|---|
 | opening_width | FAIL | 0 | 0.85 | 7 |  |
-| ceiling_height | FAIL | 0.9097 | 0.015 | 4 |  |
-| ceiling_height_diagnosis | FAIL | 0.9097 | 0.015 | 4 | label: repeatable_but_biased; spaces seen once have spread 0 by construction and cannot be labelled unrepeatable |
+| ceiling_height | FAIL | 0.1065 | 0.015 | 4 |  |
+| ceiling_height_diagnosis | FAIL | 0.1065 | 0.015 | 4 | label: repeatable_but_biased; spaces seen once have spread 0 by construction and cannot be labelled unrepeatable |
 | repeatability | NOT EVALUATED | 0 | 1 | 0 | no repeat captures of the same space at this tier |
-| wall_length_tier | FAIL | 4.871 | 1 | 12 |  |
+| wall_length_tier | FAIL | 3.991 | 1 | 12 |  |
 | footprint | NOT EVALUATED | 0 | 0.08 | 0 | no capture has a tape-measured footprint: the hall was not measured wall by wall, so the only multi-room property has no truth footprint to compare against |
 | stitch_adjacency | PASS | 0 | 0 | 1 |  |
 | stitch_overlap | PASS | 0 | 0.05 | 1 |  |
@@ -72,8 +72,8 @@ Kept for completeness. Read the per-tier tables above instead.
 | gate | result | value | threshold | n |
 |---|---|---|---|---|
 | opening_width | FAIL | 0 | 0.85 | 14 |
-| ceiling_height | FAIL | 0.9097 | 0.015 | 9 |
-| ceiling_height_diagnosis | FAIL | 0.9097 | 0.015 | 9 |
+| ceiling_height | FAIL | 0.6329 | 0.015 | 9 |
+| ceiling_height_diagnosis | FAIL | 0.6329 | 0.015 | 9 |
 | repeatability | FAIL | 250.4 | 1 | 4 |
 | wall_length_tier | FAIL | 45.82 | 1 | 28 |
 | footprint | NOT EVALUATED | 0 | 0.08 | 0 |
@@ -86,11 +86,11 @@ Coverage is the share of tape readings inside the stated 95% interval. Confident
 
 | group | n | coverage | mean width, % of value | outside | confident garbage |
 |---|---|---|---|---|---|
-| all | 37 | 0.86 | 252 | 5 | 5 |
-| photo | 16 | 0.69 | 47 | 5 | 5 |
+| all | 37 | 0.95 | 252 | 2 | 2 |
+| photo | 16 | 0.88 | 46 | 2 | 2 |
 | video | 21 | 1.00 | 409 | 0 | 0 |
-| photo/ceiling_height | 4 | 0.75 | 50 | 1 | 1 |
-| photo/wall_length | 12 | 0.67 | 45 | 4 | 4 |
+| photo/ceiling_height | 4 | 1.00 | 47 | 0 | 0 |
+| photo/wall_length | 12 | 0.83 | 45 | 2 | 2 |
 | video/ceiling_height | 5 | 1.00 | 57 | 0 | 0 |
 | video/wall_length | 16 | 1.00 | 519 | 0 | 0 |
 
@@ -110,7 +110,7 @@ Walls seen in both: 0, median difference 0.0 cm. Registered footprint IoU 0.14.
 
 | capture | tier | seconds |
 |---|---|---|
-| own_home_photo | photo | 1391 |
+| own_home_photo | photo | 758 |
 | own_hall_video | video | 570 |
 | own_bedroom_1_video | video | 507 |
 | own_bedroom_2_video | video | 375 |
@@ -125,14 +125,14 @@ Both sides against tape, per shared dimension. A tie means the two errors differ
 
 | room | dimension | tape m | theirs m | their error cm | ours m | our error cm | closer |
 |---|---|---|---|---|---|---|---|
-| bedroom_1 | short_pair | 3.658 | 3.410 | 24.8 | 4.026 | 36.9 | theirs |
-| bedroom_1 | long_pair | 3.912 | 3.730 | 18.2 | 5.193 | 128.2 | theirs |
-| kitchen | short_wall_1 | 2.692 | 2.750 | 5.8 | 2.636 | 5.7 | tie |
-| kitchen | short_wall_2 | 2.692 | 2.700 | 0.8 | 2.636 | 5.7 | theirs |
-| kitchen | long_wall_1 | 3.603 | 3.510 | 9.3 | 5.007 | 140.4 | theirs |
-| kitchen | long_wall_2 | 3.603 | 3.790 | 18.7 | 5.007 | 140.4 | theirs |
+| bedroom_1 | short_pair | 3.658 | 3.410 | 24.8 | 3.637 | 2.1 | ours |
+| bedroom_1 | long_pair | 3.912 | 3.730 | 18.2 | 4.729 | 81.8 | theirs |
+| kitchen | short_wall_1 | 2.692 | 2.750 | 5.8 | 2.658 | 3.5 | ours |
+| kitchen | short_wall_2 | 2.692 | 2.700 | 0.8 | 2.658 | 3.5 | theirs |
+| kitchen | long_wall_1 | 3.603 | 3.510 | 9.3 | 4.753 | 115.0 | theirs |
+| kitchen | long_wall_2 | 3.603 | 3.790 | 18.7 | 4.753 | 115.0 | theirs |
 
-**Beat or tie: 17% of 6 dimensions** (ours 0, tie 1, theirs 5).
+**Beat or tie: 33% of 6 dimensions** (ours 2, tie 0, theirs 4).
 
 ### Our video tier
 

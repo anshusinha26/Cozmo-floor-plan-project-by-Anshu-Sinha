@@ -35,25 +35,25 @@ back from the images; the ground-truth files state this.
 | tier | capture hardware | processing | wall length, median error | worst wall | ceiling height | interval coverage |
 |---|---|---|---|---|---|---|
 | lidar | iPhone or iPad with LiDAR | M1 Max, 4 to 28 s | **no tape ground truth exists**, see below | n/a | 3.06 to 3.08 m on the one scan that saw its ceiling | n/a |
-| photo | Moto Edge 50 Neo, Nokia 8.1 | M1 Max, 1378 s for four rooms | **22.4%** over 12 walls | 39.0% | 2.4 to 91.0 cm error | 0.69 at 47% mean width |
+| photo | Moto Edge 50 Neo, Nokia 8.1 | M1 Max, 78 s one room, 1378 s for four | **13.0%** over 12 walls | 31.9% | 2.1 to 10.7 cm error | 0.88 at 46% mean width |
 | video | Nokia 8.1 | M1 Max, about 8 min a clip | **32.9%** over 16 walls | 137.4% | 27.2 to 63.3 cm error | 1.00 at 409% mean width |
 
-Neither image tier is accurate enough to ship. Photo is the better of the two
-and still misses its 8% budget on 10 of 12 walls.
+Neither image tier is accurate enough to ship. Photo is much the better of
+the two and now meets its 8% budget on 6 of 12 walls.
 
 From `docs/benchmark/eval.json`, rebuilt by `scripts/benchmark_all.py`.
 
 **Read the coverage column with the width column.** The video tier covers
 every tape reading because its intervals average four times the value it
 reports: too wide to be wrong. The photo tier is the opposite, covering only
-0.69 against a nominal 0.95, with five confident-garbage cases.
+0.88 against a nominal 0.95, with two confident-garbage cases.
 
-**The photo tier scored 1.4% median error on compressed copies of the same
-photographs and 22.4% on the camera originals.** The originals carry EXIF the
-copies had stripped, and reading the real focal length made the answer worse.
-That is unexplained and is the first thing to chase. Both runs are kept:
-`fix_loop/loop2_video_scale/photo_tier_tape_compressed.md` and
-`photo_tier_tape_originals.md`.
+**The photo tier briefly scored worse on the camera originals than on
+compressed copies of the same photographs, and the cause was found**:
+MapAnything was estimating the focal length instead of being given it, and
+guessed 464 px against a true 332 px. Giving it the EXIF focal took the tier
+from 22.4% to 13.0% median wall error. Evidence in
+`fix_loop/loop2_video_scale/photo_ablation.md`.
 
 Photographs still beat video on the same rooms with the same scale cue and
 room fitter, which is why the capture protocol recommends them.

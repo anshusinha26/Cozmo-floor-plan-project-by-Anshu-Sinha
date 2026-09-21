@@ -4,8 +4,8 @@ Pick the route that matches your phone. Each one ends with the exact command
 to run.
 
 **If you do not have a LiDAR iPhone, take photos rather than video.** Measured
-on the same rooms: photographs give a median wall error of 25.9%, video gives
-32.9% (`docs/benchmark/eval.json`). Both are too large to rely on today.
+on the same rooms: photographs give a median wall error of 13.0%, video gives
+32.9% (`docs/benchmark/eval.json`). Both are still too large to rely on.
 Photographs are still the better of the two, because nine deliberate stills
 from the corners hold a viewpoint long enough to measure a wall and a walk
 does not. Route 3 is the recommended route for a phone without LiDAR.
@@ -105,11 +105,13 @@ flash off, lights on.
 3. Do that from **each corner you can reach**: between 2 and 8 photos per
    room. **Nine photos per room is what the measured results came from**, and
    more is better than fewer.
-4. **Stand still for each shot.** A sharp photo from a fixed position is worth
+4. **Send the camera originals, not copies.** The pipeline reads the lens
+   details the camera writes into each file, and a messaging app strips them.
+5. **Stand still for each shot.** A sharp photo from a fixed position is worth
    more than several taken while moving; blur is what costs accuracy here.
-5. Take **one extra photo through each doorway**, standing in the doorway
+6. Take **one extra photo through each doorway**, standing in the doorway
    looking into the next room.
-6. Make sure **every wall appears in at least two photos** taken from
+7. Make sure **every wall appears in at least two photos** taken from
    different positions. A wall seen from one position only cannot be measured,
    only guessed at.
 
