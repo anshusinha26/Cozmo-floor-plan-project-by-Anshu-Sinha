@@ -87,6 +87,27 @@ def _is_unreliable(plan: Plan) -> bool:
     return any(m.lower() in text for m in UNRELIABLE_MARKERS)
 
 
+DAMAGE_COLOUR = "#d62728"
+
+
+def damage_markers(plan: Plan) -> list[tuple[str, str, str]]:
+    """(room id, wall id, damage class) for every region that can be placed.
+
+    A region's polygon is in surface-local metres with no offset along the
+    wall, so a floor plan cannot say where on the wall the mark sits. It marks
+    the wall instead of inventing a position. Regions on floors and ceilings,
+    and any whose surface is missing, are left off rather than drawn wrongly.
+    """
+    surfaces = {s.id: s for s in plan.surfaces}
+    out: list[tuple[str, str, str]] = []
+    for region in plan.damage_regions:
+        surface = surfaces.get(region.surface_id)
+        if surface is None or surface.wall_id is None:
+            continue
+        out.append((surface.room_id, surface.wall_id, region.damage_class.value))
+    return out
+
+
 def _partially_observed(room) -> bool:
     return any("partially_observed" in w.length_m.method for w in room.walls)
 
@@ -145,6 +166,27 @@ def render_plan_png(plan: Plan, out_path: Path, dpi: int = 150) -> Path:
             ax.plot([x0 + ux * a, x0 + ux * b], [y0 + uy * a, y0 + uy * b],
                     color=colour, linestyle=style, linewidth=width, zorder=5,
                     solid_capstyle="butt")
+
+    marked = {}
+    for room_id, wall_id, damage_class in damage_markers(plan):
+        marked.setdefault((room_id, wall_id), []).append(damage_class)
+    for entry in rooms:
+        centre = entry["poly"].mean(axis=0)
+        for wall, seg in entry["walls"]:
+            classes = marked.get((entry["room"].id, wall.id))
+            if not classes:
+                continue
+            (x0, y0), (x1, y1) = seg
+            mx, my = (x0 + x1) / 2, (y0 + y1) / 2
+            # Nudge the marker inside the room so it reads as damage to that
+            # room's wall rather than to the neighbour's.
+            vx, vy = centre[0] - mx, centre[1] - my
+            n = math.hypot(vx, vy) or 1.0
+            ax.plot([mx + vx / n * 0.12], [my + vy / n * 0.12], marker="o", markersize=7,
+                    color=DAMAGE_COLOUR, markeredgecolor="white", markeredgewidth=0.8, zorder=8)
+            if len(classes) > 1:
+                ax.text(mx + vx / n * 0.12, my + vy / n * 0.12, str(len(classes)),
+                        ha="center", va="center", fontsize=5, color="white", zorder=9)
 
     # Wall labels last, so they sit over the fills and under nothing. They are
     # gathered first and placed longest wall first: where a cluster of short
@@ -222,6 +264,9 @@ def render_plan_png(plan: Plan, out_path: Path, dpi: int = 150) -> Path:
         plt.Line2D([], [], color="black", linestyle=(0, (6, 4)), linewidth=2.4,
                    label="partially observed"),
     ]
+    if plan.damage_regions:
+        legend.append(plt.Line2D([], [], color=DAMAGE_COLOUR, marker="o", linestyle="none",
+                                 markersize=6, label="damage"))
     ax.legend(handles=legend, loc="lower right", fontsize=7, framealpha=0.9)
 
     title = f"{plan.capture.id}  |  {plan.capture.tier}  |  {plan.run.pipeline_version}"

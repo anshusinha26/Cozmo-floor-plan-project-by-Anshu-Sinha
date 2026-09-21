@@ -61,6 +61,12 @@ class Switch(str, Enum):
     off = "off"
 
 
+class DamageOpt(str, Enum):
+    auto = "auto"
+    on = "on"
+    off = "off"
+
+
 class Segmentation(str, Enum):
     """Lidar tier: erosion is the default; see fix_loop/POSTMORTEM.md."""
 
@@ -143,13 +149,43 @@ def resolve_config(config_path: Path, drift_correction: bool, pipeline_name: str
     return cfg
 
 
+def _attach_damage(plan: Plan, input_path: Path, tier: str, resolved: dict, requested: str) -> Plan:
+    """Run the damage stage, or record why it did not run.
+
+    Kept here rather than inside a pipeline because it is tier-agnostic: every
+    tier hands it frames and gets the same contract objects back.
+    """
+    from cozmo.pipeline import damage_stage as ds
+
+    log = logging.getLogger("cozmo.cli")
+    try:
+        mode = ds.resolve_damage_mode(requested, ds.weights_present())
+    except (RuntimeError, ValueError) as e:
+        raise RuntimeError(str(e)) from e
+    if mode is ds.DamageMode.off:
+        reason = ("it was switched off with --damage off" if requested == "off"
+                  else "the damage weights are not installed, so --damage auto turned it off; "
+                       "run scripts/fetch_weights.sh damage")
+        return ds.run_damage_stage(plan, mode, None, None, resolved, reason=reason)
+
+    spec = validate_input(input_path, tier)
+    frames, why = ds.frames_for_tier(tier, input_path, spec, resolved)
+    if frames is None:
+        return ds.run_damage_stage(plan, ds.DamageMode.off, None, None, resolved, reason=why)
+    log.info("damage: looking, tier %s", tier)
+    dcfg = resolved.get("pipeline", {}).get("lidar", resolved)
+    return ds.run_damage_stage(plan, mode, frames, ds.build_detector(resolved), dcfg,
+                               verifier=ds.build_verifier(resolved))
+
+
 def execute_run(input_path: Path, tier: str, out: Path, config: Path, seed: int, drift_correction: bool,
                 pipeline_name: str | None = None, debug: bool = True,
                 segmentation: str | None = None,
                 video_rotation: str = "auto", camera_height_m: float | None = None,
                 single_room: str = "auto", connector: str | None = None,
                 cache_root: str | None = None, exclude: str | None = None,
-                repeat_rooms: str | None = None, video_engine: str = "sfm") -> dict[str, Any]:
+                repeat_rooms: str | None = None, video_engine: str = "sfm",
+                damage: str = "auto") -> dict[str, Any]:
     """Run one capture: validate input, run the pipeline, write plan.json, plan.png, run_manifest.json.
 
     Raises InputError / FileNotFoundError on bad input. Returns the manifest dict.
@@ -184,6 +220,9 @@ def execute_run(input_path: Path, tier: str, out: Path, config: Path, seed: int,
         raise RuntimeError("pipeline and CLI disagree on input manifest hash")
     if plan.run.config_sha256 != config_hash:
         raise RuntimeError("pipeline and CLI disagree on config hash")
+
+    with pipeline.stage("damage"):
+        plan = _attach_damage(plan, input_path, tier, resolved, damage)
 
     with pipeline.stage("render"):
         render_plan_png(plan, out / "plan.png")
@@ -255,6 +294,9 @@ def run(
     cache_root: str = typer.Option(None, "--cache-root",
                                    help="Share decoded frames and reconstructions between runs of "
                                         "the same capture, keyed by capture name"),
+    damage: DamageOpt = typer.Option(DamageOpt.auto, "--damage",
+                                     help="Damage detection: auto (on when the weights are "
+                                          "installed), on, or off. The plan always says which"),
 ) -> None:
     """Run the pipeline on one capture and write plan.json, plan.png and run_manifest.json."""
     try:
@@ -264,7 +306,8 @@ def run(
                                video_rotation=video_rotation.value,
                                camera_height_m=camera_height_m, single_room=single_room.value,
                                connector=connector, cache_root=cache_root, exclude=exclude,
-                               repeat_rooms=repeat_rooms, video_engine=video_engine.value)
+                               repeat_rooms=repeat_rooms, video_engine=video_engine.value,
+                               damage=damage.value)
     except (InputError, FileNotFoundError, RuntimeError, ValueError, KeyError) as e:
         _fail(str(e))
     typer.echo(f"wrote {out / 'plan.json'} ({manifest['n_rooms']} rooms), plan.png and run_manifest.json")
