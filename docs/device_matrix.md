@@ -97,6 +97,12 @@ registered and awaiting predictions:
 Two of the four precision filters need depth and poses, so the photo tier
 gets no benefit from them. Details in `damage_eval/README.md`.
 
+**Video runtimes come from the runs that produced the plans.** The video
+tier's depth-scale step was once observed running about twelve times slower,
+roughly a minute per frame with the device reported as `mps`, cause not
+investigated and a silent CPU fallback or thermal throttling suspected; that
+session's timings are not reported anywhere.
+
 **None of this reaches `cozmo run`.** The damage module is driven by
 `scripts/run_damage_eval.py`, which reads a plan and reports against ground
 truth. A plan written by the command line carries an empty damage list and a
