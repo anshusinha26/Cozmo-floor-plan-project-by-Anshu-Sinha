@@ -55,7 +55,9 @@ def main() -> int:
     plan = Plan.from_json_bytes(
         (ROOT / "fix_loop" / "before" / "bench" / "runs" / "c7d28f72c6" / "plan.json").read_bytes())
     if a.source == "own":
-        photos = sorted((ROOT / "data" / "own" / "bedroom_2_repeat").glob("*.jpeg"))
+        folder = ROOT / "data" / "own" / "bedroom_2_repeat"
+        photos = sorted(p for p in folder.iterdir()
+                        if p.is_file() and p.suffix.lower() in (".jpg", ".jpeg", ".heic", ".png"))
         base = [(p.stem, cv2.imread(str(p)), str(p)) for p in photos]
         base = [(n, img, src) for n, img, src in base if img is not None]
         if not base:

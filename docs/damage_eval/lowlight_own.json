@@ -1,0 +1,68 @@
+{
+  "source": "own",
+  "expected": [
+    "crack",
+    "water_stain"
+  ],
+  "threshold": 0.15,
+  "n_photos": 9,
+  "levels": [
+    {
+      "level": "bright (original)",
+      "gamma": 1.0,
+      "mean_brightness_0_255": 134.3,
+      "regions": 44,
+      "hits": [
+        "crack",
+        "water_stain"
+      ],
+      "misses": [],
+      "false_regions": 8,
+      "per_class": {
+        "water_stain": 19,
+        "crack": 17,
+        "burn_char": 2,
+        "missing_material": 4,
+        "hole_puncture": 2
+      }
+    },
+    {
+      "level": "dim (gamma 1.8)",
+      "gamma": 1.8,
+      "mean_brightness_0_255": 91.9,
+      "regions": 47,
+      "hits": [
+        "crack",
+        "water_stain"
+      ],
+      "misses": [],
+      "false_regions": 15,
+      "per_class": {
+        "water_stain": 16,
+        "crack": 16,
+        "hole_puncture": 6,
+        "burn_char": 2,
+        "missing_material": 7
+      }
+    },
+    {
+      "level": "dark (gamma 3.0)",
+      "gamma": 3.0,
+      "mean_brightness_0_255": 58.4,
+      "regions": 31,
+      "hits": [
+        "crack",
+        "water_stain"
+      ],
+      "misses": [],
+      "false_regions": 11,
+      "per_class": {
+        "crack": 9,
+        "missing_material": 3,
+        "water_stain": 11,
+        "burn_char": 3,
+        "hole_puncture": 5
+      }
+    }
+  ]
+}

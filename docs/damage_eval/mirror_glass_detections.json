@@ -1,0 +1,44 @@
+{
+  "bedroom_2": {
+    "a glass panel": {
+      "n": 73,
+      "max_confidence": 0.467
+    },
+    "a mirror": {
+      "n": 10,
+      "max_confidence": 0.534
+    },
+    "a reflection on a glossy surface": {
+      "n": 1,
+      "max_confidence": 0.105
+    }
+  },
+  "bedroom_2_repeat": {
+    "a glass panel": {
+      "n": 59,
+      "max_confidence": 0.434
+    },
+    "a mirror": {
+      "n": 5,
+      "max_confidence": 0.45
+    },
+    "a reflection on a glossy surface": {
+      "n": 1,
+      "max_confidence": 0.101
+    }
+  },
+  "bedroom_1": {
+    "a glass panel": {
+      "n": 57,
+      "max_confidence": 0.345
+    },
+    "a reflection on a glossy surface": {
+      "n": 5,
+      "max_confidence": 0.123
+    },
+    "a mirror": {
+      "n": 12,
+      "max_confidence": 0.393
+    }
+  }
+}

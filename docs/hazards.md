@@ -57,13 +57,29 @@ correct depth for the reflection, so the sensor reports a room extending
 beyond the wall. Unlike the shower screen, the reflected geometry usually
 falls inside the building envelope, which is what makes it harder.
 
-**Evidence.** The bedroom_2 captures could not be re-read during this session
-(see the note at the end of this document), so no number is given for this
-room. What is measured is the general case above: faces without observed
-floor beside them are rejected, faces with it are not, and a mirror on a wall
-somebody stood next to is in the second group.
+**Evidence.** The mirror is visible to the detector and harmless to the
+measurement. Running the detector's distractor prompts over the nine
+bedroom_2 photos
+(`docs/damage_eval/mirror_glass_detections.json`):
 
-**What the pipeline does.** Nothing specific. This is a known gap.
+| prompt | detections in bedroom_2 | best confidence |
+|---|---|---|
+| a glass panel | 73 | 0.467 |
+| a mirror | 10 | 0.534 |
+| a reflection on a glossy surface | 1 | 0.105 |
+
+Despite that, the photo tier measured bedroom_2's walls to within
+**3.6 cm and 4.4 cm of tape** (`docs/benchmark/eval.json`, rebuilt by `scripts/benchmark_all.py`), which is
+the best of any room the photo tier measured. The mirror did not pull the
+wall out of place.
+
+The reason is the mirror's position: it is on a wardrobe against a wall, so
+the reflected geometry sits behind a surface that was itself observed from a
+metre away. Wall fitting takes the strongest plane along each axis, and the
+real wall has far more support than the reflection behind it.
+
+**What the pipeline does.** Nothing specific about mirrors. It survives this
+one by luck of geometry, not by handling it.
 
 **What would fix it.** A mirror produces geometry that is a reflection of
 observed geometry about the mirror plane. Detecting that symmetry is
@@ -119,21 +135,25 @@ Detection volume is roughly flat from bright to dark on this material. That
 says the detector does not collapse in low light; it does not say the right
 things survive, because this property has no known damage.
 
-**PENDING: whether the staged stain and crack survive darkening.** This is the
-measurement the hazard section actually needs, and it could not be taken. The
-staged-damage photos in `data/own/bedroom_2_repeat` carry
-`com.apple.quarantine` and `com.apple.macl` extended attributes and are
-blocked by macOS at the time of writing: the directory lists but every file
-read fails with `PermissionError: Operation not permitted`. Earlier results in
-`docs/damage_eval/` were taken from these photos before the restriction
-appeared. Once file access is restored, one command answers it:
+**The staged marks survive darkening.** Measured on the nine
+`bedroom_2_repeat` photos, darkened by gamma and put through the full
+detector and filter chain (`docs/damage_eval/lowlight_own.json`,
+`scripts/hazard_lowlight.py --source own`):
 
-```bash
-.venv/bin/python scripts/hazard_lowlight.py --source own
-```
+| level | mean brightness, 0 to 255 | regions | false regions | found | missed |
+|---|---|---|---|---|---|
+| bright (original) | 134.3 | 44 | 8 | crack, water_stain | none |
+| dim (gamma 1.8) | 91.9 | 47 | 15 | crack, water_stain | none |
+| dark (gamma 3.0) | 58.4 | 31 | 11 | crack, water_stain | none |
 
-The script already handles this case: it reports the permission problem and
-exits rather than silently reporting nothing.
+**Both staged classes survive at every level**, down to a mean brightness of
+58 out of 255, which is a room lit by one lamp at dusk. False regions do not
+climb with darkness either: 8, 15, then 11.
+
+What this does not show is that low light is free. The detector was given
+photographs taken in good light and then darkened, which removes information
+but adds no sensor noise. A photograph actually taken in the dark carries
+motion blur and high-ISO grain as well, and neither is simulated here.
 
 ---
 
@@ -192,11 +212,11 @@ room, which `docs/capture_protocol.md` asks for and explains.
 
 ---
 
-## Note on data access during this session
+## Note on data access
 
-`data/own` became unreadable partway through this work: the files carry macOS
-quarantine attributes and every read returns `Operation not permitted`, while
-`data/sample` is unaffected. Results already derived from those photos stand
-and are in `docs/damage_eval/`. Measurements that needed a fresh read of them
-are marked PENDING above with the command that produces them. Nothing was
-substituted silently.
+`data/own` was unreadable for part of this work under macOS quarantine, which
+is why an earlier version of this document carried two PENDING items. Access
+was restored and both were measured: the mirror section and the low-light
+table above are real results, not estimates. The photographs are now the
+camera originals rather than the compressed copies used earlier, which is why
+false-region counts here differ from `docs/damage_eval/README.md`.
