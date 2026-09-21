@@ -854,14 +854,14 @@
       "passed": true,
       "evaluated": true,
       "status": "PASS",
-      "value": 0.0,
+      "value": 2.3702431740604046e-15,
       "threshold": 0.05,
       "n": 6,
       "detail": {
         "per_capture": [
           {
             "capture_id": "own",
-            "overlap_m2": 0.0,
+            "overlap_m2": 2.3702431740604046e-15,
             "ok": true
           },
           {
@@ -1292,14 +1292,14 @@
         "passed": true,
         "evaluated": true,
         "status": "PASS",
-        "value": 0.0,
+        "value": 2.3702431740604046e-15,
         "threshold": 0.05,
         "n": 1,
         "detail": {
           "per_capture": [
             {
               "capture_id": "own",
-              "overlap_m2": 0.0,
+              "overlap_m2": 2.3702431740604046e-15,
               "ok": true
             }
           ]
@@ -1934,16 +1934,14 @@
         "kitchen is attached wall to wall: no free door pair was available between it and hall",
         "bedroom_1: 1 of 4 room sides (x+) are set by a dense band of points rather than by a wall face that passed the strict test, which is what a wall behind a curtain or a wardrobe looks like. Their intervals are widened",
         "bedroom_1: Windows are not detected in this version; openings are doors and pass-throughs only",
-        "bedroom_1: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty",
         "bedroom_2: 1 of 4 room sides (z-) are set by a dense band of points rather than by a wall face that passed the strict test, which is what a wall behind a curtain or a wardrobe looks like. Their intervals are widened",
         "bedroom_2: Windows are not detected in this version; openings are doors and pass-throughs only",
-        "bedroom_2: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty",
         "hall: 1 of 4 room sides (z+) are set by a dense band of points rather than by a wall face that passed the strict test, which is what a wall behind a curtain or a wardrobe looks like. Their intervals are widened",
         "hall: Windows are not detected in this version; openings are doors and pass-throughs only",
-        "hall: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty",
         "kitchen: Windows are not detected in this version; openings are doors and pass-throughs only",
-        "kitchen: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty",
-        "footprint area is reported with an interval wider than the value itself (75.54 m2, plus or minus 94.69). It is an unreliable measurement: the reconstruction constrains it barely or not at all"
+        "footprint area is reported with an interval wider than the value itself (75.54 m2, plus or minus 94.69). It is an unreliable measurement: the reconstruction constrains it barely or not at all",
+        "Damage regions were detected without metric depth, so their extent is unbounded: extent_m2 carries a nominal value with an interval spanning the plausible range and method unbounded_no_metric_depth. Do not read these as measured areas",
+        "Without metric depth the same mark seen in several photos cannot be merged, so damage_regions counts detections per photo and over-counts the marks present. Read the count as an upper bound, not as a number of defects"
       ],
       "matching": {
         "counts": {
@@ -2407,8 +2405,8 @@
           ]
         ]
       },
-      "overlap_m2_geometric": 0.0,
-      "overlap_m2_claimed": 0.0
+      "overlap_m2_geometric": 2.3702431740604046e-15,
+      "overlap_m2_claimed": 2.3702431740604046e-15
     },
     {
       "capture_id": "hall",
@@ -3435,7 +3433,7 @@
       "repeat_of": null,
       "repeat_kind": null,
       "source": "re-run here after a fix, see the note",
-      "source_path": "<outside the repository>/photo_v6",
+      "source_path": "<outside the repository>/photo_v8",
       "recomputed": false,
       "plan_input_sha256": "d253b661f47ebf35cc45dc41356726a24dac56455a89e36c0394bdaae2971db6",
       "input_now": {
@@ -3443,7 +3441,7 @@
         "sha256": "d253b661f47ebf35cc45dc41356726a24dac56455a89e36c0394bdaae2971db6"
       },
       "input_hash_matches": true,
-      "duration_s": 226.053604,
+      "duration_s": 1645.567311,
       "pipeline": "photo",
       "plan_path": "/Users/anshusinha/Downloads/Cozmo-AI/Cozmo-floor-plan-project-by-Anshu-Sinha/docs/benchmark/runs/own_home_photo/plan.json",
       "rooms": [

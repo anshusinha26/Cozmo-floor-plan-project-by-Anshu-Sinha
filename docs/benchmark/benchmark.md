@@ -17,7 +17,7 @@ A reused plan is the plan as it was made. The video plans below predate both the
 | own_bedroom_2_photo | photo | no plan available | None | n/a |  |
 | own_bedroom_2_repeat_photo | photo | no plan available | None | n/a |  |
 | own_kitchen_photo | photo | no plan available | None | n/a |  |
-| own_home_photo | photo | re-run here after a fix, see the note | True | 226 |  |
+| own_home_photo | photo | re-run here after a fix, see the note | True | 1646 |  |
 | own_hall_video | video | reused from the tier branch | True | 570 | room id renamed room_01 -> hall, geometry untouched |
 | own_bedroom_1_video | video | reused from the tier branch | True | 507 | room id renamed room_01 -> bedroom_1, geometry untouched |
 | own_bedroom_2_video | video | reused from the tier branch | True | 375 | room id renamed room_01 -> bedroom_2, geometry untouched |
@@ -63,7 +63,7 @@ Captures: own.
 | wall_length_tier | FAIL | 3.991 | 1 | 12 |  |
 | footprint | NOT EVALUATED | 0 | 0.08 | 0 | no capture has a tape-measured footprint: the hall was not measured wall by wall, so the only multi-room property has no truth footprint to compare against |
 | stitch_adjacency | PASS | 0 | 0 | 1 |  |
-| stitch_overlap | PASS | 0 | 0.05 | 1 |  |
+| stitch_overlap | PASS | 2.37e-15 | 0.05 | 1 |  |
 
 **2 of 6 evaluated gates pass** (2 not evaluated).
 
@@ -80,7 +80,7 @@ Kept for completeness. Read the per-tier tables above instead.
 | wall_length_tier | FAIL | 45.82 | 1 | 28 |
 | footprint | NOT EVALUATED | 0 | 0.08 | 0 |
 | stitch_adjacency | PASS | 0 | 0 | 6 |
-| stitch_overlap | PASS | 0 | 0.05 | 6 |
+| stitch_overlap | PASS | 2.37e-15 | 0.05 | 6 |
 
 ### Two gaps worth stating plainly
 
@@ -119,7 +119,7 @@ Walls seen in both: 0, median difference 0.0 cm. Registered footprint IoU 0.14.
 
 | capture | tier | seconds |
 |---|---|---|
-| own_home_photo | photo | 226 |
+| own_home_photo | photo | 1646 |
 | own_hall_video | video | 570 |
 | own_bedroom_1_video | video | 507 |
 | own_bedroom_2_video | video | 375 |

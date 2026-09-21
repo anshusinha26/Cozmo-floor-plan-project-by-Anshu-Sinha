@@ -1,0 +1,5763 @@
+{
+  "schema_version": "1.0.0",
+  "capture": {
+    "id": "own",
+    "tier": "photo",
+    "device": null,
+    "captured_at": null,
+    "input_manifest_sha256": "d253b661f47ebf35cc45dc41356726a24dac56455a89e36c0394bdaae2971db6"
+  },
+  "run": {
+    "pipeline_version": "photo-0.1.0",
+    "git_commit": "99ac3a9dfc6080bdcbc8512436d688899eb07a9a",
+    "config_sha256": "c051985a1b7e8e82bd21a3a4c546a23367edfe36066c1c87b33241ed964846c0",
+    "seed": 0
+  },
+  "rooms": [
+    {
+      "id": "hall",
+      "label": "Hall",
+      "polygon": [
+        [
+          -2.8735044213461114,
+          -5.513897166022229
+        ],
+        [
+          3.3409377776635654,
+          -5.513897166022231
+        ],
+        [
+          3.3409377776635654,
+          0.28585419067476303
+        ],
+        [
+          -2.8735044213461114,
+          0.2858541906747627
+        ]
+      ],
+      "walls": [
+        {
+          "id": "w1",
+          "start": [
+            -2.8735044213461105,
+            -5.513897166022231
+          ],
+          "end": [
+            3.340937777663565,
+            -5.513897166022231
+          ],
+          "length_m": {
+            "value": 6.214442199009678,
+            "ci_low": 4.85440353935546,
+            "ci_high": 7.574480858663896,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 2.865279164228845,
+            "ci_low": 2.231567440835273,
+            "ci_high": 3.498990887622417,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        },
+        {
+          "id": "w2",
+          "start": [
+            3.340937777663565,
+            -5.513897166022231
+          ],
+          "end": [
+            3.340937777663565,
+            0.2858541906747638
+          ],
+          "length_m": {
+            "value": 5.799751356696993,
+            "ci_low": 4.530382604638786,
+            "ci_high": 7.069120108755201,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 2.865279164228845,
+            "ci_low": 2.231567440835273,
+            "ci_high": 3.498990887622417,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        },
+        {
+          "id": "w3",
+          "start": [
+            3.340937777663565,
+            0.2858541906747638
+          ],
+          "end": [
+            -2.8735044213461105,
+            0.2858541906747625
+          ],
+          "length_m": {
+            "value": 6.214442199009678,
+            "ci_low": 4.85440353935546,
+            "ci_high": 7.574480858663896,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 2.865279164228845,
+            "ci_low": 2.231567440835273,
+            "ci_high": 3.498990887622417,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        },
+        {
+          "id": "w4",
+          "start": [
+            -2.8735044213461105,
+            0.2858541906747625
+          ],
+          "end": [
+            -2.8735044213461105,
+            -5.513897166022231
+          ],
+          "length_m": {
+            "value": 5.799751356696993,
+            "ci_low": 4.530382604638786,
+            "ci_high": 7.069120108755201,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 2.865279164228845,
+            "ci_low": 2.231567440835273,
+            "ci_high": 3.498990887622417,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        }
+      ],
+      "ceiling_height_m": {
+        "value": 2.865279164228845,
+        "ci_low": 2.231567440835273,
+        "ci_high": 3.498990887622417,
+        "unit": "m",
+        "method": "ceiling_floor_plane_fit",
+        "ci_level": 0.95
+      },
+      "floor_area_m2": {
+        "value": 36.04221957482143,
+        "ci_low": 24.886310808598367,
+        "ci_high": 47.198128341044495,
+        "unit": "m2",
+        "method": "polygon_from_wall_faces",
+        "ci_level": 0.95
+      },
+      "openings": []
+    },
+    {
+      "id": "bedroom_1",
+      "label": "Bedroom 1",
+      "polygon": [
+        [
+          2.0520053712057496,
+          -8.862094984354442
+        ],
+        [
+          2.05200537120575,
+          -5.51389716602223
+        ],
+        [
+          -1.584572014888296,
+          -5.513897166022229
+        ],
+        [
+          -1.584572014888296,
+          -8.862094984354442
+        ]
+      ],
+      "walls": [
+        {
+          "id": "w1",
+          "start": [
+            2.05200537120575,
+            -8.862094984354442
+          ],
+          "end": [
+            2.0520053712057504,
+            -5.513897166022229
+          ],
+          "length_m": {
+            "value": 3.3481978183322143,
+            "ci_low": 2.6150905560882474,
+            "ci_high": 4.081305080576181,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 3.0495782148406128,
+            "ci_low": 2.37657765697912,
+            "ci_high": 3.7225787727021054,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        },
+        {
+          "id": "w2",
+          "start": [
+            2.0520053712057504,
+            -5.513897166022229
+          ],
+          "end": [
+            -1.584572014888296,
+            -5.513897166022229
+          ],
+          "length_m": {
+            "value": 3.6365773860940465,
+            "ci_low": 2.8404350039683814,
+            "ci_high": 4.4327197682197115,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 3.0495782148406128,
+            "ci_low": 2.37657765697912,
+            "ci_high": 3.7225787727021054,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        },
+        {
+          "id": "w3",
+          "start": [
+            -1.584572014888296,
+            -5.513897166022229
+          ],
+          "end": [
+            -1.5845720148882958,
+            -8.862094984354442
+          ],
+          "length_m": {
+            "value": 3.3481978183322143,
+            "ci_low": 2.6150905560882474,
+            "ci_high": 4.081305080576181,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 3.0495782148406128,
+            "ci_low": 2.37657765697912,
+            "ci_high": 3.7225787727021054,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        },
+        {
+          "id": "w4",
+          "start": [
+            -1.5845720148882958,
+            -8.862094984354442
+          ],
+          "end": [
+            2.05200537120575,
+            -8.862094984354442
+          ],
+          "length_m": {
+            "value": 3.6365773860940465,
+            "ci_low": 2.8404350039683814,
+            "ci_high": 4.4327197682197115,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 3.0495782148406128,
+            "ci_low": 2.37657765697912,
+            "ci_high": 3.7225787727021054,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        }
+      ],
+      "ceiling_height_m": {
+        "value": 3.0495782148406128,
+        "ci_low": 2.37657765697912,
+        "ci_high": 3.7225787727021054,
+        "unit": "m",
+        "method": "ceiling_floor_plane_fit",
+        "ci_level": 0.95
+      },
+      "floor_area_m2": {
+        "value": 12.175980470316352,
+        "ci_low": 8.405685286632648,
+        "ci_high": 15.946275654000056,
+        "unit": "m2",
+        "method": "polygon_from_wall_faces",
+        "ci_level": 0.95
+      },
+      "openings": []
+    },
+    {
+      "id": "bedroom_2",
+      "label": "Bedroom 2",
+      "polygon": [
+        [
+          -1.7272448418606832,
+          0.2858541906747625
+        ],
+        [
+          2.1946781981781367,
+          0.28585419067476336
+        ],
+        [
+          2.1946781981781367,
+          4.030101918288226
+        ],
+        [
+          -1.7272448418606832,
+          4.030101918288227
+        ]
+      ],
+      "walls": [
+        {
+          "id": "w1",
+          "start": [
+            -1.7272448418606838,
+            0.2858541906747627
+          ],
+          "end": [
+            2.1946781981781376,
+            0.2858541906747627
+          ],
+          "length_m": {
+            "value": 3.9219230400388208,
+            "ci_low": 3.062874871985594,
+            "ci_high": 4.780971208092048,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 3.0579242727303333,
+            "ci_low": 2.3777820180460685,
+            "ci_high": 3.738066527414598,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        },
+        {
+          "id": "w2",
+          "start": [
+            2.1946781981781376,
+            0.2858541906747627
+          ],
+          "end": [
+            2.1946781981781376,
+            4.030101918288226
+          ],
+          "length_m": {
+            "value": 3.7442477276134642,
+            "ci_low": 2.9246427558696544,
+            "ci_high": 4.563852699357274,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 3.0579242727303333,
+            "ci_low": 2.3777820180460685,
+            "ci_high": 3.738066527414598,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        },
+        {
+          "id": "w3",
+          "start": [
+            2.1946781981781376,
+            4.030101918288226
+          ],
+          "end": [
+            -1.7272448418606838,
+            4.030101918288227
+          ],
+          "length_m": {
+            "value": 3.9219230400388208,
+            "ci_low": 3.062874871985594,
+            "ci_high": 4.780971208092048,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 3.0579242727303333,
+            "ci_low": 2.3777820180460685,
+            "ci_high": 3.738066527414598,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        },
+        {
+          "id": "w4",
+          "start": [
+            -1.7272448418606838,
+            4.030101918288227
+          ],
+          "end": [
+            -1.7272448418606838,
+            0.2858541906747627
+          ],
+          "length_m": {
+            "value": 3.7442477276134642,
+            "ci_low": 2.9246427558696544,
+            "ci_high": 4.563852699357274,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 3.0579242727303333,
+            "ci_low": 2.3777820180460685,
+            "ci_high": 3.738066527414598,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        }
+      ],
+      "ceiling_height_m": {
+        "value": 3.0579242727303333,
+        "ci_low": 2.3777820180460685,
+        "ci_high": 3.738066527414598,
+        "unit": "m",
+        "method": "ceiling_floor_plane_fit",
+        "ci_level": 0.95
+      },
+      "floor_area_m2": {
+        "value": 14.684651430540242,
+        "ci_low": 10.13584884976675,
+        "ci_high": 19.233454011313732,
+        "unit": "m2",
+        "method": "polygon_from_wall_faces",
+        "ci_level": 0.95
+      },
+      "openings": []
+    },
+    {
+      "id": "kitchen",
+      "label": "Kitchen",
+      "polygon": [
+        [
+          5.9987605749694675,
+          -0.23745336575467846
+        ],
+        [
+          3.340937777663566,
+          -0.23745336575467846
+        ],
+        [
+          3.340937777663565,
+          -4.9905896095927895
+        ],
+        [
+          5.998760574969467,
+          -4.9905896095927895
+        ]
+      ],
+      "walls": [
+        {
+          "id": "w1",
+          "start": [
+            5.998760574969468,
+            -0.2374533657546798
+          ],
+          "end": [
+            3.3409377776635667,
+            -0.23745336575467801
+          ],
+          "length_m": {
+            "value": 2.6578227973059017,
+            "ci_low": 2.140184577493154,
+            "ci_high": 3.1754610171186495,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 2.992382170405103,
+            "ci_low": 2.4090194064523986,
+            "ci_high": 3.5757449343578074,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        },
+        {
+          "id": "w2",
+          "start": [
+            3.3409377776635667,
+            -0.23745336575467801
+          ],
+          "end": [
+            3.3409377776635645,
+            -4.990589609592789
+          ],
+          "length_m": {
+            "value": 4.753136243838111,
+            "ci_low": 3.8275149964112525,
+            "ci_high": 5.67875749126497,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 2.992382170405103,
+            "ci_low": 2.4090194064523986,
+            "ci_high": 3.5757449343578074,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        },
+        {
+          "id": "w3",
+          "start": [
+            3.3409377776635645,
+            -4.990589609592789
+          ],
+          "end": [
+            5.998760574969467,
+            -4.99058960959279
+          ],
+          "length_m": {
+            "value": 2.6578227973059017,
+            "ci_low": 2.140184577493154,
+            "ci_high": 3.1754610171186495,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 2.992382170405103,
+            "ci_low": 2.4090194064523986,
+            "ci_high": 3.5757449343578074,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        },
+        {
+          "id": "w4",
+          "start": [
+            5.998760574969467,
+            -4.99058960959279
+          ],
+          "end": [
+            5.998760574969468,
+            -0.2374533657546798
+          ],
+          "length_m": {
+            "value": 4.753136243838111,
+            "ci_low": 3.8275149964112525,
+            "ci_high": 5.67875749126497,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 2.992382170405103,
+            "ci_low": 2.4090194064523986,
+            "ci_high": 3.5757449343578074,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        }
+      ],
+      "ceiling_height_m": {
+        "value": 2.992382170405103,
+        "ci_low": 2.4090194064523986,
+        "ci_high": 3.5757449343578074,
+        "unit": "m",
+        "method": "ceiling_floor_plane_fit",
+        "ci_level": 0.95
+      },
+      "floor_area_m2": {
+        "value": 12.632993867573877,
+        "ci_low": 9.1534557705708,
+        "ci_high": 16.112531964576952,
+        "unit": "m2",
+        "method": "polygon_from_wall_faces",
+        "ci_level": 0.95
+      },
+      "openings": [
+        {
+          "id": "kitchen_d1",
+          "type": "door",
+          "wall_id": "w2",
+          "offset_along_wall_m": {
+            "value": 1.7369519750356144,
+            "ci_low": 1.5801519750356143,
+            "ci_high": 1.8937519750356144,
+            "unit": "m",
+            "method": "owlv2_door_detection",
+            "ci_level": 0.95
+          },
+          "width_m": {
+            "value": 0.987217093005466,
+            "ci_low": 0.830417093005466,
+            "ci_high": 1.144017093005466,
+            "unit": "m",
+            "method": "owlv2_door_detection",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 1.6471434117813617,
+            "ci_low": 1.4511434117813617,
+            "ci_high": 1.8431434117813617,
+            "unit": "m",
+            "method": "owlv2_door_detection",
+            "ci_level": 0.95
+          },
+          "sill_height_m": null,
+          "detection_confidence": 0.21966280043125153
+        }
+      ]
+    }
+  ],
+  "adjacency": [
+    {
+      "room_a": "hall",
+      "room_b": "bedroom_1",
+      "via_opening_id": null
+    },
+    {
+      "room_a": "hall",
+      "room_b": "bedroom_2",
+      "via_opening_id": null
+    },
+    {
+      "room_a": "hall",
+      "room_b": "kitchen",
+      "via_opening_id": null
+    }
+  ],
+  "stitched_plan": {
+    "placements": [
+      {
+        "room_id": "hall",
+        "tx": 0.0,
+        "ty": 0.0,
+        "theta_deg": {
+          "value": 0.0,
+          "ci_low": -15.0,
+          "ci_high": 15.0,
+          "unit": "deg",
+          "method": "star_layout_assumption_connector_applied_theta_0.0_tx_0.000_ty_0.000",
+          "ci_level": 0.95
+        }
+      },
+      {
+        "room_id": "bedroom_1",
+        "tx": 0.0,
+        "ty": 0.0,
+        "theta_deg": {
+          "value": 0.0,
+          "ci_low": -15.0,
+          "ci_high": 15.0,
+          "unit": "deg",
+          "method": "star_layout_assumption_wall_applied_theta_0.0_tx_0.065_ty_-5.132",
+          "ci_level": 0.95
+        }
+      },
+      {
+        "room_id": "bedroom_2",
+        "tx": 0.0,
+        "ty": 0.0,
+        "theta_deg": {
+          "value": 0.0,
+          "ci_low": -15.0,
+          "ci_high": 15.0,
+          "unit": "deg",
+          "method": "star_layout_assumption_wall_applied_theta_-90.0_tx_-2.011_ty_0.649",
+          "ci_level": 0.95
+        }
+      },
+      {
+        "room_id": "kitchen",
+        "tx": 0.0,
+        "ty": 0.0,
+        "theta_deg": {
+          "value": 0.0,
+          "ci_low": -15.0,
+          "ci_high": 15.0,
+          "unit": "deg",
+          "method": "star_layout_assumption_wall_applied_theta_90.0_tx_3.420_ty_-2.912",
+          "ci_level": 0.95
+        }
+      }
+    ],
+    "footprint_polygon": [
+      [
+        2.0520053712057496,
+        -8.862094984354442
+      ],
+      [
+        2.05200537120575,
+        -5.513897166022231
+      ],
+      [
+        3.3409377776635654,
+        -5.513897166022231
+      ],
+      [
+        3.3409377776635654,
+        -4.9905896095927895
+      ],
+      [
+        5.998760574969467,
+        -4.9905896095927895
+      ],
+      [
+        5.9987605749694675,
+        -0.23745336575467846
+      ],
+      [
+        3.340937777663566,
+        -0.23745336575467846
+      ],
+      [
+        3.3409377776635654,
+        -2.614021487673734
+      ],
+      [
+        3.3409377776635654,
+        0.28585419067476303
+      ],
+      [
+        -0.08739943167068029,
+        0.28585419067476286
+      ],
+      [
+        2.1946781981781367,
+        0.28585419067476336
+      ],
+      [
+        2.1946781981781367,
+        4.030101918288226
+      ],
+      [
+        -1.7272448418606832,
+        4.030101918288227
+      ],
+      [
+        -1.7272448418606832,
+        0.28585419067476275
+      ],
+      [
+        -2.8735044213461114,
+        0.2858541906747627
+      ],
+      [
+        -2.8735044213461114,
+        -5.513897166022229
+      ],
+      [
+        -1.584572014888296,
+        -5.513897166022229
+      ],
+      [
+        -1.584572014888296,
+        -8.862094984354442
+      ]
+    ],
+    "footprint_area_m2": {
+      "value": 75.53584534325188,
+      "ci_low": 0.01,
+      "ci_high": 189.38999081595352,
+      "unit": "m2",
+      "method": "star_layout_union_of_rooms",
+      "ci_level": 0.95
+    },
+    "overlap_area_m2": {
+      "value": 2.3702431740604046e-15,
+      "ci_low": 0.0,
+      "ci_high": 0.050000000000002376,
+      "unit": "m2",
+      "method": "pairwise_polygon_intersection",
+      "ci_level": 0.95
+    }
+  },
+  "surfaces": [
+    {
+      "id": "s_hall_w1",
+      "room_id": "hall",
+      "type": "wall",
+      "wall_id": "w1",
+      "area_m2": {
+        "value": 17.806111750126917,
+        "ci_low": 12.265814136775841,
+        "ci_high": 23.346409363477992,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_hall_w2",
+      "room_id": "hall",
+      "type": "wall",
+      "wall_id": "w2",
+      "area_m2": {
+        "value": 16.61790672005187,
+        "ci_low": 11.447141408525841,
+        "ci_high": 21.7886720315779,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_hall_w3",
+      "room_id": "hall",
+      "type": "wall",
+      "wall_id": "w3",
+      "area_m2": {
+        "value": 17.806111750126917,
+        "ci_low": 12.265814136775841,
+        "ci_high": 23.346409363477992,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_hall_w4",
+      "room_id": "hall",
+      "type": "wall",
+      "wall_id": "w4",
+      "area_m2": {
+        "value": 16.61790672005187,
+        "ci_low": 11.447141408525841,
+        "ci_high": 21.7886720315779,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_hall_floor",
+      "room_id": "hall",
+      "type": "floor",
+      "wall_id": null,
+      "area_m2": {
+        "value": 36.04221957482143,
+        "ci_low": 24.886310808598367,
+        "ci_high": 47.198128341044495,
+        "unit": "m2",
+        "method": "polygon_from_wall_faces",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_hall_ceiling",
+      "room_id": "hall",
+      "type": "ceiling",
+      "wall_id": null,
+      "area_m2": {
+        "value": 36.04221957482143,
+        "ci_low": 24.886310808598367,
+        "ci_high": 47.198128341044495,
+        "unit": "m2",
+        "method": "polygon_from_wall_faces",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_bedroom_1_w1",
+      "room_id": "bedroom_1",
+      "type": "wall",
+      "wall_id": "w1",
+      "area_m2": {
+        "value": 10.210591125762788,
+        "ci_low": 7.036359286814321,
+        "ci_high": 13.384822964711255,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_bedroom_1_w2",
+      "room_id": "bedroom_1",
+      "type": "wall",
+      "wall_id": "w2",
+      "area_m2": {
+        "value": 11.090027173214423,
+        "ci_low": 7.642629777496989,
+        "ci_high": 14.537424568931858,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_bedroom_1_w3",
+      "room_id": "bedroom_1",
+      "type": "wall",
+      "wall_id": "w3",
+      "area_m2": {
+        "value": 10.210591125762788,
+        "ci_low": 7.036359286814321,
+        "ci_high": 13.384822964711255,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_bedroom_1_w4",
+      "room_id": "bedroom_1",
+      "type": "wall",
+      "wall_id": "w4",
+      "area_m2": {
+        "value": 11.090027173214423,
+        "ci_low": 7.642629777496989,
+        "ci_high": 14.537424568931858,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_bedroom_1_floor",
+      "room_id": "bedroom_1",
+      "type": "floor",
+      "wall_id": null,
+      "area_m2": {
+        "value": 12.175980470316352,
+        "ci_low": 8.405685286632648,
+        "ci_high": 15.946275654000056,
+        "unit": "m2",
+        "method": "polygon_from_wall_faces",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_bedroom_1_ceiling",
+      "room_id": "bedroom_1",
+      "type": "ceiling",
+      "wall_id": null,
+      "area_m2": {
+        "value": 12.175980470316352,
+        "ci_low": 8.405685286632648,
+        "ci_high": 15.946275654000056,
+        "unit": "m2",
+        "method": "polygon_from_wall_faces",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_bedroom_2_w1",
+      "room_id": "bedroom_2",
+      "type": "wall",
+      "wall_id": "w1",
+      "area_m2": {
+        "value": 11.99294365991505,
+        "ci_low": 8.249148990611687,
+        "ci_high": 15.736738329218412,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_bedroom_2_w2",
+      "room_id": "bedroom_2",
+      "type": "wall",
+      "wall_id": "w2",
+      "area_m2": {
+        "value": 11.449626009384605,
+        "ci_low": 7.876564544339024,
+        "ci_high": 15.022687474430187,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_bedroom_2_w3",
+      "room_id": "bedroom_2",
+      "type": "wall",
+      "wall_id": "w3",
+      "area_m2": {
+        "value": 11.99294365991505,
+        "ci_low": 8.249148990611687,
+        "ci_high": 15.736738329218412,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_bedroom_2_w4",
+      "room_id": "bedroom_2",
+      "type": "wall",
+      "wall_id": "w4",
+      "area_m2": {
+        "value": 11.449626009384605,
+        "ci_low": 7.876564544339024,
+        "ci_high": 15.022687474430187,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_bedroom_2_floor",
+      "room_id": "bedroom_2",
+      "type": "floor",
+      "wall_id": null,
+      "area_m2": {
+        "value": 14.684651430540242,
+        "ci_low": 10.13584884976675,
+        "ci_high": 19.233454011313732,
+        "unit": "m2",
+        "method": "polygon_from_wall_faces",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_bedroom_2_ceiling",
+      "room_id": "bedroom_2",
+      "type": "ceiling",
+      "wall_id": null,
+      "area_m2": {
+        "value": 14.684651430540242,
+        "ci_low": 10.13584884976675,
+        "ci_high": 19.233454011313732,
+        "unit": "m2",
+        "method": "polygon_from_wall_faces",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_kitchen_w1",
+      "room_id": "kitchen",
+      "type": "wall",
+      "wall_id": "w1",
+      "area_m2": {
+        "value": 7.953221550754396,
+        "ci_low": 5.7615818437565345,
+        "ci_high": 10.144861257752257,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_kitchen_w2",
+      "room_id": "kitchen",
+      "type": "wall",
+      "wall_id": "w2",
+      "area_m2": {
+        "value": 14.223200149567445,
+        "ci_low": 10.30397877590098,
+        "ci_high": 18.14242152323391,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_kitchen_w3",
+      "room_id": "kitchen",
+      "type": "wall",
+      "wall_id": "w3",
+      "area_m2": {
+        "value": 7.953221550754396,
+        "ci_low": 5.7615818437565345,
+        "ci_high": 10.144861257752257,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_kitchen_w4",
+      "room_id": "kitchen",
+      "type": "wall",
+      "wall_id": "w4",
+      "area_m2": {
+        "value": 14.223200149567445,
+        "ci_low": 10.30397877590098,
+        "ci_high": 18.14242152323391,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_kitchen_floor",
+      "room_id": "kitchen",
+      "type": "floor",
+      "wall_id": null,
+      "area_m2": {
+        "value": 12.632993867573877,
+        "ci_low": 9.1534557705708,
+        "ci_high": 16.112531964576952,
+        "unit": "m2",
+        "method": "polygon_from_wall_faces",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_kitchen_ceiling",
+      "room_id": "kitchen",
+      "type": "ceiling",
+      "wall_id": null,
+      "area_m2": {
+        "value": 12.632993867573877,
+        "ci_low": 9.1534557705708,
+        "ci_high": 16.112531964576952,
+        "unit": "m2",
+        "method": "polygon_from_wall_faces",
+        "ci_level": 0.95
+      }
+    }
+  ],
+  "damage_regions": [
+    {
+      "id": "d1",
+      "surface_id": "s_hall_w1",
+      "damage_class": "missing_material",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          1093.6375732421875,
+          809.2977294921875
+        ],
+        [
+          1196.2213134765625,
+          809.2977294921875
+        ],
+        [
+          1196.2213134765625,
+          1111.0595703125
+        ],
+        [
+          1093.6375732421875,
+          1111.0595703125
+        ]
+      ],
+      "confidence": 0.2269391119480133
+    },
+    {
+      "id": "d2",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          474.25726318359375,
+          921.2456665039062
+        ],
+        [
+          700.742431640625,
+          921.2456665039062
+        ],
+        [
+          700.742431640625,
+          1026.7353515625
+        ],
+        [
+          474.25726318359375,
+          1026.7353515625
+        ]
+      ],
+      "confidence": 0.31772133708000183
+    },
+    {
+      "id": "d3",
+      "surface_id": "s_hall_w1",
+      "damage_class": "missing_material",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          481.7268371582031,
+          818.1045532226562
+        ],
+        [
+          706.9046020507812,
+          818.1045532226562
+        ],
+        [
+          706.9046020507812,
+          981.2620239257812
+        ],
+        [
+          481.7268371582031,
+          981.2620239257812
+        ]
+      ],
+      "confidence": 0.22224174439907074
+    },
+    {
+      "id": "d4",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          1126.7891845703125,
+          1092.0552978515625
+        ],
+        [
+          1199.7760009765625,
+          1092.0552978515625
+        ],
+        [
+          1199.7760009765625,
+          1174.7772216796875
+        ],
+        [
+          1126.7891845703125,
+          1174.7772216796875
+        ]
+      ],
+      "confidence": 0.20335306227207184
+    },
+    {
+      "id": "d5",
+      "surface_id": "s_hall_w1",
+      "damage_class": "water_stain",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          753.1904296875,
+          1030.0509033203125
+        ],
+        [
+          1010.3994140625,
+          1030.0509033203125
+        ],
+        [
+          1010.3994140625,
+          1120.8509521484375
+        ],
+        [
+          753.1904296875,
+          1120.8509521484375
+        ]
+      ],
+      "confidence": 0.25543078780174255
+    },
+    {
+      "id": "d6",
+      "surface_id": "s_hall_w1",
+      "damage_class": "water_stain",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          831.7259521484375,
+          1080.29443359375
+        ],
+        [
+          941.3023681640625,
+          1080.29443359375
+        ],
+        [
+          941.3023681640625,
+          1124.525390625
+        ],
+        [
+          831.7259521484375,
+          1124.525390625
+        ]
+      ],
+      "confidence": 0.21837890148162842
+    },
+    {
+      "id": "d7",
+      "surface_id": "s_hall_w1",
+      "damage_class": "mould",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          87.6663589477539,
+          1134.89208984375
+        ],
+        [
+          214.52694702148438,
+          1134.89208984375
+        ],
+        [
+          214.52694702148438,
+          1390.019775390625
+        ],
+        [
+          87.6663589477539,
+          1390.019775390625
+        ]
+      ],
+      "confidence": 0.3020560145378113
+    },
+    {
+      "id": "d8",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          877.9364624023438,
+          1250.0367431640625
+        ],
+        [
+          1206.2860107421875,
+          1250.0367431640625
+        ],
+        [
+          1206.2860107421875,
+          1326.836669921875
+        ],
+        [
+          877.9364624023438,
+          1326.836669921875
+        ]
+      ],
+      "confidence": 0.25630053877830505
+    },
+    {
+      "id": "d9",
+      "surface_id": "s_hall_w1",
+      "damage_class": "missing_material",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          230.834716796875,
+          697.6168823242188
+        ],
+        [
+          404.78582763671875,
+          697.6168823242188
+        ],
+        [
+          404.78582763671875,
+          1300.12841796875
+        ],
+        [
+          230.834716796875,
+          1300.12841796875
+        ]
+      ],
+      "confidence": 0.2339106649160385
+    },
+    {
+      "id": "d10",
+      "surface_id": "s_hall_w1",
+      "damage_class": "missing_material",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          247.9062042236328,
+          1231.56494140625
+        ],
+        [
+          406.980224609375,
+          1231.56494140625
+        ],
+        [
+          406.980224609375,
+          1298.2982177734375
+        ],
+        [
+          247.9062042236328,
+          1298.2982177734375
+        ]
+      ],
+      "confidence": 0.2230907827615738
+    },
+    {
+      "id": "d11",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          281.98785400390625,
+          1231.775634765625
+        ],
+        [
+          397.1524658203125,
+          1231.775634765625
+        ],
+        [
+          397.1524658203125,
+          1239.7899169921875
+        ],
+        [
+          281.98785400390625,
+          1239.7899169921875
+        ]
+      ],
+      "confidence": 0.20105527341365814
+    },
+    {
+      "id": "d12",
+      "surface_id": "s_hall_w1",
+      "damage_class": "water_stain",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          809.987060546875,
+          429.6860656738281
+        ],
+        [
+          851.9185791015625,
+          429.6860656738281
+        ],
+        [
+          851.9185791015625,
+          465.18212890625
+        ],
+        [
+          809.987060546875,
+          465.18212890625
+        ]
+      ],
+      "confidence": 0.33245182037353516
+    },
+    {
+      "id": "d13",
+      "surface_id": "s_hall_w1",
+      "damage_class": "missing_material",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          688.112060546875,
+          133.7065887451172
+        ],
+        [
+          812.818603515625,
+          133.7065887451172
+        ],
+        [
+          812.818603515625,
+          871.2797241210938
+        ],
+        [
+          688.112060546875,
+          871.2797241210938
+        ]
+      ],
+      "confidence": 0.23981942236423492
+    },
+    {
+      "id": "d14",
+      "surface_id": "s_hall_w1",
+      "damage_class": "water_stain",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          538.9797973632812,
+          606.0933227539062
+        ],
+        [
+          586.7998046875,
+          606.0933227539062
+        ],
+        [
+          586.7998046875,
+          699.4395141601562
+        ],
+        [
+          538.9797973632812,
+          699.4395141601562
+        ]
+      ],
+      "confidence": 0.31458228826522827
+    },
+    {
+      "id": "d15",
+      "surface_id": "s_hall_w1",
+      "damage_class": "burn_char",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          362.9294738769531,
+          464.0494689941406
+        ],
+        [
+          409.0248107910156,
+          464.0494689941406
+        ],
+        [
+          409.0248107910156,
+          561.24169921875
+        ],
+        [
+          362.9294738769531,
+          561.24169921875
+        ]
+      ],
+      "confidence": 0.44078201055526733
+    },
+    {
+      "id": "d16",
+      "surface_id": "s_hall_w1",
+      "damage_class": "burn_char",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          835.9901123046875,
+          744.1173095703125
+        ],
+        [
+          847.4195556640625,
+          744.1173095703125
+        ],
+        [
+          847.4195556640625,
+          768.4061279296875
+        ],
+        [
+          835.9901123046875,
+          768.4061279296875
+        ]
+      ],
+      "confidence": 0.33696219325065613
+    },
+    {
+      "id": "d17",
+      "surface_id": "s_hall_w1",
+      "damage_class": "missing_material",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          742.232421875,
+          214.50173950195312
+        ],
+        [
+          904.312255859375,
+          214.50173950195312
+        ],
+        [
+          904.312255859375,
+          784.80908203125
+        ],
+        [
+          742.232421875,
+          784.80908203125
+        ]
+      ],
+      "confidence": 0.24404023587703705
+    },
+    {
+      "id": "d18",
+      "surface_id": "s_hall_w1",
+      "damage_class": "water_stain",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          901.743896484375,
+          595.6548461914062
+        ],
+        [
+          926.1785278320312,
+          595.6548461914062
+        ],
+        [
+          926.1785278320312,
+          712.15576171875
+        ],
+        [
+          901.743896484375,
+          712.15576171875
+        ]
+      ],
+      "confidence": 0.2222784012556076
+    },
+    {
+      "id": "d19",
+      "surface_id": "s_hall_w1",
+      "damage_class": "water_stain",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          381.7802429199219,
+          754.2719116210938
+        ],
+        [
+          489.77117919921875,
+          754.2719116210938
+        ],
+        [
+          489.77117919921875,
+          869.06201171875
+        ],
+        [
+          381.7802429199219,
+          869.06201171875
+        ]
+      ],
+      "confidence": 0.21021559834480286
+    },
+    {
+      "id": "d20",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          6.008493900299072,
+          1264.7080078125
+        ],
+        [
+          318.42584228515625,
+          1264.7080078125
+        ],
+        [
+          318.42584228515625,
+          1413.33251953125
+        ],
+        [
+          6.008493900299072,
+          1413.33251953125
+        ]
+      ],
+      "confidence": 0.21599094569683075
+    },
+    {
+      "id": "d21",
+      "surface_id": "s_hall_w1",
+      "damage_class": "hole_puncture",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          1071.11376953125,
+          208.0259552001953
+        ],
+        [
+          1127.666259765625,
+          208.0259552001953
+        ],
+        [
+          1127.666259765625,
+          803.6702880859375
+        ],
+        [
+          1071.11376953125,
+          803.6702880859375
+        ]
+      ],
+      "confidence": 0.24654769897460938
+    },
+    {
+      "id": "d22",
+      "surface_id": "s_hall_w1",
+      "damage_class": "water_stain",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          189.36688232421875,
+          0.30624717473983765
+        ],
+        [
+          580.0518798828125,
+          0.30624717473983765
+        ],
+        [
+          580.0518798828125,
+          35.9898796081543
+        ],
+        [
+          189.36688232421875,
+          35.9898796081543
+        ]
+      ],
+      "confidence": 0.2149927169084549
+    },
+    {
+      "id": "d23",
+      "surface_id": "s_hall_w1",
+      "damage_class": "water_stain",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          713.8616333007812,
+          944.5692138671875
+        ],
+        [
+          975.9292602539062,
+          944.5692138671875
+        ],
+        [
+          975.9292602539062,
+          1252.125732421875
+        ],
+        [
+          713.8616333007812,
+          1252.125732421875
+        ]
+      ],
+      "confidence": 0.252565860748291
+    },
+    {
+      "id": "d24",
+      "surface_id": "s_hall_w1",
+      "damage_class": "water_stain",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          992.646484375,
+          1123.5401611328125
+        ],
+        [
+          1053.55419921875,
+          1123.5401611328125
+        ],
+        [
+          1053.55419921875,
+          1191.674560546875
+        ],
+        [
+          992.646484375,
+          1191.674560546875
+        ]
+      ],
+      "confidence": 0.24830368161201477
+    },
+    {
+      "id": "d25",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          828.839111328125,
+          1131.6611328125
+        ],
+        [
+          1058.891845703125,
+          1131.6611328125
+        ],
+        [
+          1058.891845703125,
+          1214.4354248046875
+        ],
+        [
+          828.839111328125,
+          1214.4354248046875
+        ]
+      ],
+      "confidence": 0.2339247763156891
+    },
+    {
+      "id": "d26",
+      "surface_id": "s_hall_w1",
+      "damage_class": "missing_material",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          1084.9825439453125,
+          -3.5001754760742188
+        ],
+        [
+          1198.47216796875,
+          -3.5001754760742188
+        ],
+        [
+          1198.47216796875,
+          1298.0196533203125
+        ],
+        [
+          1084.9825439453125,
+          1298.0196533203125
+        ]
+      ],
+      "confidence": 0.2222585678100586
+    },
+    {
+      "id": "d27",
+      "surface_id": "s_hall_w1",
+      "damage_class": "water_stain",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          777.9771118164062,
+          1137.9739990234375
+        ],
+        [
+          831.207763671875,
+          1137.9739990234375
+        ],
+        [
+          831.207763671875,
+          1160.908447265625
+        ],
+        [
+          777.9771118164062,
+          1160.908447265625
+        ]
+      ],
+      "confidence": 0.21951526403427124
+    },
+    {
+      "id": "d28",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          834.4915161132812,
+          1200.8812255859375
+        ],
+        [
+          1060.986328125,
+          1200.8812255859375
+        ],
+        [
+          1060.986328125,
+          1214.159423828125
+        ],
+        [
+          834.4915161132812,
+          1214.159423828125
+        ]
+      ],
+      "confidence": 0.21183139085769653
+    },
+    {
+      "id": "d29",
+      "surface_id": "s_hall_w1",
+      "damage_class": "missing_material",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          241.74342346191406,
+          771.7244873046875
+        ],
+        [
+          434.7550354003906,
+          771.7244873046875
+        ],
+        [
+          434.7550354003906,
+          1211.713623046875
+        ],
+        [
+          241.74342346191406,
+          1211.713623046875
+        ]
+      ],
+      "confidence": 0.33804237842559814
+    },
+    {
+      "id": "d30",
+      "surface_id": "s_hall_w1",
+      "damage_class": "hole_puncture",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          305.5044860839844,
+          1027.823486328125
+        ],
+        [
+          380.40325927734375,
+          1027.823486328125
+        ],
+        [
+          380.40325927734375,
+          1070.09716796875
+        ],
+        [
+          305.5044860839844,
+          1070.09716796875
+        ]
+      ],
+      "confidence": 0.2961685061454773
+    },
+    {
+      "id": "d31",
+      "surface_id": "s_hall_w1",
+      "damage_class": "water_stain",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          330.65496826171875,
+          884.4786376953125
+        ],
+        [
+          392.37811279296875,
+          884.4786376953125
+        ],
+        [
+          392.37811279296875,
+          961.9166259765625
+        ],
+        [
+          330.65496826171875,
+          961.9166259765625
+        ]
+      ],
+      "confidence": 0.29406800866127014
+    },
+    {
+      "id": "d32",
+      "surface_id": "s_hall_w1",
+      "damage_class": "water_stain",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          254.19244384765625,
+          868.1292724609375
+        ],
+        [
+          421.3227233886719,
+          868.1292724609375
+        ],
+        [
+          421.3227233886719,
+          1126.3853759765625
+        ],
+        [
+          254.19244384765625,
+          1126.3853759765625
+        ]
+      ],
+      "confidence": 0.24950061738491058
+    },
+    {
+      "id": "d33",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          271.3671569824219,
+          1131.820068359375
+        ],
+        [
+          419.1636962890625,
+          1131.820068359375
+        ],
+        [
+          419.1636962890625,
+          1140.8023681640625
+        ],
+        [
+          271.3671569824219,
+          1140.8023681640625
+        ]
+      ],
+      "confidence": 0.24174155294895172
+    },
+    {
+      "id": "d34",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          260.40679931640625,
+          1085.739501953125
+        ],
+        [
+          274.4730224609375,
+          1085.739501953125
+        ],
+        [
+          274.4730224609375,
+          1118.4251708984375
+        ],
+        [
+          260.40679931640625,
+          1118.4251708984375
+        ]
+      ],
+      "confidence": 0.20156942307949066
+    },
+    {
+      "id": "d35",
+      "surface_id": "s_hall_w1",
+      "damage_class": "water_stain",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          925.356689453125,
+          529.3433837890625
+        ],
+        [
+          1017.2445068359375,
+          529.3433837890625
+        ],
+        [
+          1017.2445068359375,
+          666.9390869140625
+        ],
+        [
+          925.356689453125,
+          666.9390869140625
+        ]
+      ],
+      "confidence": 0.3777952492237091
+    },
+    {
+      "id": "d36",
+      "surface_id": "s_hall_w1",
+      "damage_class": "water_stain",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          1103.91259765625,
+          608.5200805664062
+        ],
+        [
+          1199.41259765625,
+          608.5200805664062
+        ],
+        [
+          1199.41259765625,
+          797.01416015625
+        ],
+        [
+          1103.91259765625,
+          797.01416015625
+        ]
+      ],
+      "confidence": 0.24192148447036743
+    },
+    {
+      "id": "d37",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          924.1417846679688,
+          656.2418212890625
+        ],
+        [
+          990.2091064453125,
+          656.2418212890625
+        ],
+        [
+          990.2091064453125,
+          670.4953002929688
+        ],
+        [
+          924.1417846679688,
+          670.4953002929688
+        ]
+      ],
+      "confidence": 0.20651383697986603
+    },
+    {
+      "id": "d38",
+      "surface_id": "s_hall_w1",
+      "damage_class": "missing_material",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          857.2984619140625,
+          119.86029052734375
+        ],
+        [
+          1203.1630859375,
+          119.86029052734375
+        ],
+        [
+          1203.1630859375,
+          377.4309387207031
+        ],
+        [
+          857.2984619140625,
+          377.4309387207031
+        ]
+      ],
+      "confidence": 0.4066607654094696
+    },
+    {
+      "id": "d39",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          850.5250854492188,
+          199.8045196533203
+        ],
+        [
+          868.009765625,
+          199.8045196533203
+        ],
+        [
+          868.009765625,
+          376.7486267089844
+        ],
+        [
+          850.5250854492188,
+          376.7486267089844
+        ]
+      ],
+      "confidence": 0.25224629044532776
+    },
+    {
+      "id": "d40",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          773.169189453125,
+          108.99629211425781
+        ],
+        [
+          860.5631103515625,
+          108.99629211425781
+        ],
+        [
+          860.5631103515625,
+          225.47157287597656
+        ],
+        [
+          773.169189453125,
+          225.47157287597656
+        ]
+      ],
+      "confidence": 0.2037523090839386
+    },
+    {
+      "id": "d41",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          877.70263671875,
+          122.84319305419922
+        ],
+        [
+          1191.479248046875,
+          122.84319305419922
+        ],
+        [
+          1191.479248046875,
+          235.82843017578125
+        ],
+        [
+          877.70263671875,
+          235.82843017578125
+        ]
+      ],
+      "confidence": 0.2036699503660202
+    },
+    {
+      "id": "d42",
+      "surface_id": "s_hall_w1",
+      "damage_class": "missing_material",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          3.937959671020508,
+          1009.4124755859375
+        ],
+        [
+          275.1495666503906,
+          1009.4124755859375
+        ],
+        [
+          275.1495666503906,
+          1265.86865234375
+        ],
+        [
+          3.937959671020508,
+          1265.86865234375
+        ]
+      ],
+      "confidence": 0.31349456310272217
+    },
+    {
+      "id": "d43",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          1.2250542640686035,
+          1194.234619140625
+        ],
+        [
+          119.9228286743164,
+          1194.234619140625
+        ],
+        [
+          119.9228286743164,
+          1266.2445068359375
+        ],
+        [
+          1.2250542640686035,
+          1266.2445068359375
+        ]
+      ],
+      "confidence": 0.25178202986717224
+    },
+    {
+      "id": "d44",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          1.0295987129211426,
+          1149.44873046875
+        ],
+        [
+          109.95152282714844,
+          1149.44873046875
+        ],
+        [
+          109.95152282714844,
+          1205.8271484375
+        ],
+        [
+          1.0295987129211426,
+          1205.8271484375
+        ]
+      ],
+      "confidence": 0.23403815925121307
+    },
+    {
+      "id": "d45",
+      "surface_id": "s_hall_w1",
+      "damage_class": "water_stain",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          135.96995544433594,
+          -0.7783234119415283
+        ],
+        [
+          868.624755859375,
+          -0.7783234119415283
+        ],
+        [
+          868.624755859375,
+          93.06063842773438
+        ],
+        [
+          135.96995544433594,
+          93.06063842773438
+        ]
+      ],
+      "confidence": 0.20906342566013336
+    },
+    {
+      "id": "d46",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          155.88035583496094,
+          1035.8134765625
+        ],
+        [
+          262.34783935546875,
+          1035.8134765625
+        ],
+        [
+          262.34783935546875,
+          1206.2950439453125
+        ],
+        [
+          155.88035583496094,
+          1206.2950439453125
+        ]
+      ],
+      "confidence": 0.20224225521087646
+    },
+    {
+      "id": "d47",
+      "surface_id": "s_hall_w1",
+      "damage_class": "hole_puncture",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          0.8771061897277832,
+          384.3837585449219
+        ],
+        [
+          257.4623107910156,
+          384.3837585449219
+        ],
+        [
+          257.4623107910156,
+          513.807373046875
+        ],
+        [
+          0.8771061897277832,
+          513.807373046875
+        ]
+      ],
+      "confidence": 0.208280548453331
+    },
+    {
+      "id": "d48",
+      "surface_id": "s_hall_w1",
+      "damage_class": "water_stain",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          942.530029296875,
+          0.7857084274291992
+        ],
+        [
+          1202.8604736328125,
+          0.7857084274291992
+        ],
+        [
+          1202.8604736328125,
+          366.5904235839844
+        ],
+        [
+          942.530029296875,
+          366.5904235839844
+        ]
+      ],
+      "confidence": 0.24615314602851868
+    },
+    {
+      "id": "d49",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          1001.4816284179688,
+          940.0568237304688
+        ],
+        [
+          1205.612548828125,
+          940.0568237304688
+        ],
+        [
+          1205.612548828125,
+          1015.0964965820312
+        ],
+        [
+          1001.4816284179688,
+          1015.0964965820312
+        ]
+      ],
+      "confidence": 0.2062665820121765
+    },
+    {
+      "id": "d50",
+      "surface_id": "s_hall_w1",
+      "damage_class": "missing_material",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          69.44503021240234,
+          186.00421142578125
+        ],
+        [
+          228.5676727294922,
+          186.00421142578125
+        ],
+        [
+          228.5676727294922,
+          819.15625
+        ],
+        [
+          69.44503021240234,
+          819.15625
+        ]
+      ],
+      "confidence": 0.3464532494544983
+    },
+    {
+      "id": "d51",
+      "surface_id": "s_hall_w1",
+      "damage_class": "missing_material",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          523.580078125,
+          31.65848159790039
+        ],
+        [
+          1117.875244140625,
+          31.65848159790039
+        ],
+        [
+          1117.875244140625,
+          466.7096252441406
+        ],
+        [
+          523.580078125,
+          466.7096252441406
+        ]
+      ],
+      "confidence": 0.30772507190704346
+    },
+    {
+      "id": "d52",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          686.7879638671875,
+          1027.237548828125
+        ],
+        [
+          781.6619262695312,
+          1027.237548828125
+        ],
+        [
+          781.6619262695312,
+          1104.990966796875
+        ],
+        [
+          686.7879638671875,
+          1104.990966796875
+        ]
+      ],
+      "confidence": 0.22915175557136536
+    },
+    {
+      "id": "d53",
+      "surface_id": "s_hall_w1",
+      "damage_class": "hole_puncture",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          680.4520874023438,
+          975.4794311523438
+        ],
+        [
+          983.962890625,
+          975.4794311523438
+        ],
+        [
+          983.962890625,
+          1156.6201171875
+        ],
+        [
+          680.4520874023438,
+          1156.6201171875
+        ]
+      ],
+      "confidence": 0.22642740607261658
+    },
+    {
+      "id": "d54",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          324.673828125,
+          977.3617553710938
+        ],
+        [
+          376.5998840332031,
+          977.3617553710938
+        ],
+        [
+          376.5998840332031,
+          1027.4605712890625
+        ],
+        [
+          324.673828125,
+          1027.4605712890625
+        ]
+      ],
+      "confidence": 0.21770915389060974
+    },
+    {
+      "id": "d55",
+      "surface_id": "s_hall_w1",
+      "damage_class": "water_stain",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          943.103515625,
+          -0.6013602018356323
+        ],
+        [
+          1205.032470703125,
+          -0.6013602018356323
+        ],
+        [
+          1205.032470703125,
+          60.88505935668945
+        ],
+        [
+          943.103515625,
+          60.88505935668945
+        ]
+      ],
+      "confidence": 0.21761800348758698
+    },
+    {
+      "id": "d56",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          685.5546264648438,
+          1072.725830078125
+        ],
+        [
+          781.7406005859375,
+          1072.725830078125
+        ],
+        [
+          781.7406005859375,
+          1162.12255859375
+        ],
+        [
+          685.5546264648438,
+          1162.12255859375
+        ]
+      ],
+      "confidence": 0.21417443454265594
+    },
+    {
+      "id": "d57",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          1021.5430908203125,
+          1109.4237060546875
+        ],
+        [
+          1202.5238037109375,
+          1109.4237060546875
+        ],
+        [
+          1202.5238037109375,
+          1221.272216796875
+        ],
+        [
+          1021.5430908203125,
+          1221.272216796875
+        ]
+      ],
+      "confidence": 0.2598980963230133
+    },
+    {
+      "id": "d58",
+      "surface_id": "s_hall_w1",
+      "damage_class": "missing_material",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          759.812744140625,
+          169.1285400390625
+        ],
+        [
+          975.6536254882812,
+          169.1285400390625
+        ],
+        [
+          975.6536254882812,
+          495.041748046875
+        ],
+        [
+          759.812744140625,
+          495.041748046875
+        ]
+      ],
+      "confidence": 0.28093084692955017
+    },
+    {
+      "id": "d59",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          428.9427795410156,
+          1049.8765869140625
+        ],
+        [
+          593.985107421875,
+          1049.8765869140625
+        ],
+        [
+          593.985107421875,
+          1157.605224609375
+        ],
+        [
+          428.9427795410156,
+          1157.605224609375
+        ]
+      ],
+      "confidence": 0.2129177749156952
+    },
+    {
+      "id": "d60",
+      "surface_id": "s_hall_w1",
+      "damage_class": "missing_material",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          869.402099609375,
+          293.616943359375
+        ],
+        [
+          978.5131225585938,
+          293.616943359375
+        ],
+        [
+          978.5131225585938,
+          804.6389770507812
+        ],
+        [
+          869.402099609375,
+          804.6389770507812
+        ]
+      ],
+      "confidence": 0.29715654253959656
+    },
+    {
+      "id": "d61",
+      "surface_id": "s_hall_w1",
+      "damage_class": "water_stain",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          685.702880859375,
+          2.3313403129577637
+        ],
+        [
+          1205.176513671875,
+          2.3313403129577637
+        ],
+        [
+          1205.176513671875,
+          261.65118408203125
+        ],
+        [
+          685.702880859375,
+          261.65118408203125
+        ]
+      ],
+      "confidence": 0.2268056869506836
+    },
+    {
+      "id": "d62",
+      "surface_id": "s_hall_w1",
+      "damage_class": "missing_material",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          337.46649169921875,
+          784.9732666015625
+        ],
+        [
+          430.3130187988281,
+          784.9732666015625
+        ],
+        [
+          430.3130187988281,
+          1050.440673828125
+        ],
+        [
+          337.46649169921875,
+          1050.440673828125
+        ]
+      ],
+      "confidence": 0.22503992915153503
+    },
+    {
+      "id": "d63",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          1097.681396484375,
+          1082.226806640625
+        ],
+        [
+          1200.7296142578125,
+          1082.226806640625
+        ],
+        [
+          1200.7296142578125,
+          1128.9207763671875
+        ],
+        [
+          1097.681396484375,
+          1128.9207763671875
+        ]
+      ],
+      "confidence": 0.26327699422836304
+    },
+    {
+      "id": "d64",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          1085.5555419921875,
+          1070.9052734375
+        ],
+        [
+          1206.1138916015625,
+          1070.9052734375
+        ],
+        [
+          1206.1138916015625,
+          1087.8404541015625
+        ],
+        [
+          1085.5555419921875,
+          1087.8404541015625
+        ]
+      ],
+      "confidence": 0.2007739394903183
+    },
+    {
+      "id": "d65",
+      "surface_id": "s_hall_w1",
+      "damage_class": "water_stain",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          -2.889585494995117,
+          87.35492706298828
+        ],
+        [
+          864.46435546875,
+          87.35492706298828
+        ],
+        [
+          864.46435546875,
+          216.83816528320312
+        ],
+        [
+          -2.889585494995117,
+          216.83816528320312
+        ]
+      ],
+      "confidence": 0.29876139760017395
+    },
+    {
+      "id": "d66",
+      "surface_id": "s_hall_w1",
+      "damage_class": "water_stain",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          -5.79075813293457,
+          268.7159423828125
+        ],
+        [
+          879.8568725585938,
+          268.7159423828125
+        ],
+        [
+          879.8568725585938,
+          376.16058349609375
+        ],
+        [
+          -5.79075813293457,
+          376.16058349609375
+        ]
+      ],
+      "confidence": 0.21553316712379456
+    },
+    {
+      "id": "d67",
+      "surface_id": "s_hall_w1",
+      "damage_class": "hole_puncture",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          1019.6424560546875,
+          235.7774658203125
+        ],
+        [
+          1062.302734375,
+          235.7774658203125
+        ],
+        [
+          1062.302734375,
+          259.5200500488281
+        ],
+        [
+          1019.6424560546875,
+          259.5200500488281
+        ]
+      ],
+      "confidence": 0.2061009705066681
+    },
+    {
+      "id": "d68",
+      "surface_id": "s_hall_w1",
+      "damage_class": "hole_puncture",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          895.146484375,
+          1155.26123046875
+        ],
+        [
+          1201.6365966796875,
+          1155.26123046875
+        ],
+        [
+          1201.6365966796875,
+          1297.6968994140625
+        ],
+        [
+          895.146484375,
+          1297.6968994140625
+        ]
+      ],
+      "confidence": 0.4100598692893982
+    },
+    {
+      "id": "d69",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          911.0177001953125,
+          1157.4100341796875
+        ],
+        [
+          1207.4490966796875,
+          1157.4100341796875
+        ],
+        [
+          1207.4490966796875,
+          1235.365234375
+        ],
+        [
+          911.0177001953125,
+          1235.365234375
+        ]
+      ],
+      "confidence": 0.23752766847610474
+    },
+    {
+      "id": "d70",
+      "surface_id": "s_hall_w1",
+      "damage_class": "missing_material",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          639.0501708984375,
+          16.529560089111328
+        ],
+        [
+          1110.833984375,
+          16.529560089111328
+        ],
+        [
+          1110.833984375,
+          1196.6114501953125
+        ],
+        [
+          639.0501708984375,
+          1196.6114501953125
+        ]
+      ],
+      "confidence": 0.20677775144577026
+    },
+    {
+      "id": "d71",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          54.2949333190918,
+          1209.110595703125
+        ],
+        [
+          379.5204162597656,
+          1209.110595703125
+        ],
+        [
+          379.5204162597656,
+          1397.5670166015625
+        ],
+        [
+          54.2949333190918,
+          1397.5670166015625
+        ]
+      ],
+      "confidence": 0.47166261076927185
+    },
+    {
+      "id": "d72",
+      "surface_id": "s_hall_w1",
+      "damage_class": "water_stain",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          199.12899780273438,
+          1337.851318359375
+        ],
+        [
+          370.1019287109375,
+          1337.851318359375
+        ],
+        [
+          370.1019287109375,
+          1596.1221923828125
+        ],
+        [
+          199.12899780273438,
+          1596.1221923828125
+        ]
+      ],
+      "confidence": 0.371437132358551
+    },
+    {
+      "id": "d73",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          22.97496223449707,
+          1319.0687255859375
+        ],
+        [
+          88.09779357910156,
+          1319.0687255859375
+        ],
+        [
+          88.09779357910156,
+          1408.7154541015625
+        ],
+        [
+          22.97496223449707,
+          1408.7154541015625
+        ]
+      ],
+      "confidence": 0.28752678632736206
+    },
+    {
+      "id": "d74",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          362.63226318359375,
+          1213.716064453125
+        ],
+        [
+          388.8761901855469,
+          1213.716064453125
+        ],
+        [
+          388.8761901855469,
+          1282.7462158203125
+        ],
+        [
+          362.63226318359375,
+          1282.7462158203125
+        ]
+      ],
+      "confidence": 0.2858528792858124
+    },
+    {
+      "id": "d75",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          255.58485412597656,
+          1213.4327392578125
+        ],
+        [
+          377.48760986328125,
+          1213.4327392578125
+        ],
+        [
+          377.48760986328125,
+          1275.9512939453125
+        ],
+        [
+          255.58485412597656,
+          1275.9512939453125
+        ]
+      ],
+      "confidence": 0.2856649160385132
+    },
+    {
+      "id": "d76",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          359.2975769042969,
+          1221.382568359375
+        ],
+        [
+          368.11993408203125,
+          1221.382568359375
+        ],
+        [
+          368.11993408203125,
+          1283.6904296875
+        ],
+        [
+          359.2975769042969,
+          1283.6904296875
+        ]
+      ],
+      "confidence": 0.24010799825191498
+    },
+    {
+      "id": "d77",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          -1.489698886871338,
+          1390.497802734375
+        ],
+        [
+          195.15411376953125,
+          1390.497802734375
+        ],
+        [
+          195.15411376953125,
+          1598.122802734375
+        ],
+        [
+          -1.489698886871338,
+          1598.122802734375
+        ]
+      ],
+      "confidence": 0.21000464260578156
+    },
+    {
+      "id": "d78",
+      "surface_id": "s_hall_w1",
+      "damage_class": "burn_char",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          635.1968383789062,
+          1101.0606689453125
+        ],
+        [
+          697.607666015625,
+          1101.0606689453125
+        ],
+        [
+          697.607666015625,
+          1142.9537353515625
+        ],
+        [
+          635.1968383789062,
+          1142.9537353515625
+        ]
+      ],
+      "confidence": 0.23040679097175598
+    },
+    {
+      "id": "d79",
+      "surface_id": "s_hall_w1",
+      "damage_class": "water_stain",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          959.4891357421875,
+          537.1141357421875
+        ],
+        [
+          1080.0230712890625,
+          537.1141357421875
+        ],
+        [
+          1080.0230712890625,
+          755.14453125
+        ],
+        [
+          959.4891357421875,
+          755.14453125
+        ]
+      ],
+      "confidence": 0.21099753677845
+    },
+    {
+      "id": "d80",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          597.5147705078125,
+          1093.514892578125
+        ],
+        [
+          823.6094360351562,
+          1093.514892578125
+        ],
+        [
+          823.6094360351562,
+          1157.8604736328125
+        ],
+        [
+          597.5147705078125,
+          1157.8604736328125
+        ]
+      ],
+      "confidence": 0.355686753988266
+    },
+    {
+      "id": "d81",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          575.6401977539062,
+          1089.8116455078125
+        ],
+        [
+          798.2821655273438,
+          1089.8116455078125
+        ],
+        [
+          798.2821655273438,
+          1106.44482421875
+        ],
+        [
+          575.6401977539062,
+          1106.44482421875
+        ]
+      ],
+      "confidence": 0.30726906657218933
+    },
+    {
+      "id": "d82",
+      "surface_id": "s_hall_w1",
+      "damage_class": "mould",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          955.9271850585938,
+          792.5750732421875
+        ],
+        [
+          1026.4703369140625,
+          792.5750732421875
+        ],
+        [
+          1026.4703369140625,
+          835.545166015625
+        ],
+        [
+          955.9271850585938,
+          835.545166015625
+        ]
+      ],
+      "confidence": 0.2532699704170227
+    },
+    {
+      "id": "d83",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          135.32876586914062,
+          1550.5667724609375
+        ],
+        [
+          798.2579956054688,
+          1550.5667724609375
+        ],
+        [
+          798.2579956054688,
+          1593.6634521484375
+        ],
+        [
+          135.32876586914062,
+          1593.6634521484375
+        ]
+      ],
+      "confidence": 0.2383221536874771
+    },
+    {
+      "id": "d84",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          836.7318115234375,
+          1092.22998046875
+        ],
+        [
+          860.45654296875,
+          1092.22998046875
+        ],
+        [
+          860.45654296875,
+          1153.0491943359375
+        ],
+        [
+          836.7318115234375,
+          1153.0491943359375
+        ]
+      ],
+      "confidence": 0.23455815017223358
+    },
+    {
+      "id": "d85",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          918.9717407226562,
+          1028.614013671875
+        ],
+        [
+          934.0457153320312,
+          1028.614013671875
+        ],
+        [
+          934.0457153320312,
+          1054.1280517578125
+        ],
+        [
+          918.9717407226562,
+          1054.1280517578125
+        ]
+      ],
+      "confidence": 0.21923679113388062
+    },
+    {
+      "id": "d86",
+      "surface_id": "s_hall_w1",
+      "damage_class": "water_stain",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          916.4081420898438,
+          1291.6806640625
+        ],
+        [
+          1061.76123046875,
+          1291.6806640625
+        ],
+        [
+          1061.76123046875,
+          1460.6005859375
+        ],
+        [
+          916.4081420898438,
+          1460.6005859375
+        ]
+      ],
+      "confidence": 0.20437835156917572
+    },
+    {
+      "id": "d87",
+      "surface_id": "s_hall_w1",
+      "damage_class": "crack",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          934.1221923828125,
+          1028.11572265625
+        ],
+        [
+          966.2572021484375,
+          1028.11572265625
+        ],
+        [
+          966.2572021484375,
+          1183.826904296875
+        ],
+        [
+          934.1221923828125,
+          1183.826904296875
+        ]
+      ],
+      "confidence": 0.20038852095603943
+    },
+    {
+      "id": "d88",
+      "surface_id": "s_hall_w1",
+      "damage_class": "hole_puncture",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          -0.6410837173461914,
+          349.132568359375
+        ],
+        [
+          366.6212463378906,
+          349.132568359375
+        ],
+        [
+          366.6212463378906,
+          428.9534606933594
+        ],
+        [
+          -0.6410837173461914,
+          428.9534606933594
+        ]
+      ],
+      "confidence": 0.3121629059314728
+    },
+    {
+      "id": "d89",
+      "surface_id": "s_hall_w1",
+      "damage_class": "mould",
+      "extent_m2": {
+        "value": 0.25,
+        "ci_low": 0.0,
+        "ci_high": 4.0,
+        "unit": "m2",
+        "method": "unbounded_no_metric_depth",
+        "ci_level": 0.95
+      },
+      "polygon": [
+        [
+          -1.1849403381347656,
+          1240.1865234375
+        ],
+        [
+          801.453857421875,
+          1240.1865234375
+        ],
+        [
+          801.453857421875,
+          1361.418701171875
+        ],
+        [
+          -1.1849403381347656,
+          1361.418701171875
+        ]
+      ],
+      "confidence": 0.220267191529274
+    }
+  ],
+  "concealed_damage_flags": [
+    {
+      "id": "c1",
+      "surface_id": "s_hall_w1",
+      "rule_id": "CD-08",
+      "rule_text": "Missing material exposes the substrate, which may be damaged behind the surface",
+      "evidence": [
+        "d1"
+      ],
+      "confidence": 0.4
+    },
+    {
+      "id": "c2",
+      "surface_id": "s_hall_w1",
+      "rule_id": "CD-08",
+      "rule_text": "Missing material exposes the substrate, which may be damaged behind the surface",
+      "evidence": [
+        "d3"
+      ],
+      "confidence": 0.4
+    },
+    {
+      "id": "c3",
+      "surface_id": "s_hall_w1",
+      "rule_id": "CD-05",
+      "rule_text": "Any mould indicates a moisture source that is not visible at the surface",
+      "evidence": [
+        "d7"
+      ],
+      "confidence": 0.6
+    },
+    {
+      "id": "c4",
+      "surface_id": "s_hall_w1",
+      "rule_id": "CD-08",
+      "rule_text": "Missing material exposes the substrate, which may be damaged behind the surface",
+      "evidence": [
+        "d9"
+      ],
+      "confidence": 0.4
+    },
+    {
+      "id": "c5",
+      "surface_id": "s_hall_w1",
+      "rule_id": "CD-08",
+      "rule_text": "Missing material exposes the substrate, which may be damaged behind the surface",
+      "evidence": [
+        "d10"
+      ],
+      "confidence": 0.4
+    },
+    {
+      "id": "c6",
+      "surface_id": "s_hall_w1",
+      "rule_id": "CD-08",
+      "rule_text": "Missing material exposes the substrate, which may be damaged behind the surface",
+      "evidence": [
+        "d13"
+      ],
+      "confidence": 0.4
+    },
+    {
+      "id": "c7",
+      "surface_id": "s_hall_w1",
+      "rule_id": "CD-07",
+      "rule_text": "Burn or char marks indicate heat damage that may extend into the substrate",
+      "evidence": [
+        "d15"
+      ],
+      "confidence": 0.45
+    },
+    {
+      "id": "c8",
+      "surface_id": "s_hall_w1",
+      "rule_id": "CD-07",
+      "rule_text": "Burn or char marks indicate heat damage that may extend into the substrate",
+      "evidence": [
+        "d16"
+      ],
+      "confidence": 0.45
+    },
+    {
+      "id": "c9",
+      "surface_id": "s_hall_w1",
+      "rule_id": "CD-08",
+      "rule_text": "Missing material exposes the substrate, which may be damaged behind the surface",
+      "evidence": [
+        "d17"
+      ],
+      "confidence": 0.4
+    },
+    {
+      "id": "c10",
+      "surface_id": "s_hall_w1",
+      "rule_id": "CD-08",
+      "rule_text": "Missing material exposes the substrate, which may be damaged behind the surface",
+      "evidence": [
+        "d26"
+      ],
+      "confidence": 0.4
+    },
+    {
+      "id": "c11",
+      "surface_id": "s_hall_w1",
+      "rule_id": "CD-08",
+      "rule_text": "Missing material exposes the substrate, which may be damaged behind the surface",
+      "evidence": [
+        "d29"
+      ],
+      "confidence": 0.4
+    },
+    {
+      "id": "c12",
+      "surface_id": "s_hall_w1",
+      "rule_id": "CD-08",
+      "rule_text": "Missing material exposes the substrate, which may be damaged behind the surface",
+      "evidence": [
+        "d38"
+      ],
+      "confidence": 0.4
+    },
+    {
+      "id": "c13",
+      "surface_id": "s_hall_w1",
+      "rule_id": "CD-08",
+      "rule_text": "Missing material exposes the substrate, which may be damaged behind the surface",
+      "evidence": [
+        "d42"
+      ],
+      "confidence": 0.4
+    },
+    {
+      "id": "c14",
+      "surface_id": "s_hall_w1",
+      "rule_id": "CD-08",
+      "rule_text": "Missing material exposes the substrate, which may be damaged behind the surface",
+      "evidence": [
+        "d50"
+      ],
+      "confidence": 0.4
+    },
+    {
+      "id": "c15",
+      "surface_id": "s_hall_w1",
+      "rule_id": "CD-08",
+      "rule_text": "Missing material exposes the substrate, which may be damaged behind the surface",
+      "evidence": [
+        "d51"
+      ],
+      "confidence": 0.4
+    },
+    {
+      "id": "c16",
+      "surface_id": "s_hall_w1",
+      "rule_id": "CD-08",
+      "rule_text": "Missing material exposes the substrate, which may be damaged behind the surface",
+      "evidence": [
+        "d58"
+      ],
+      "confidence": 0.4
+    },
+    {
+      "id": "c17",
+      "surface_id": "s_hall_w1",
+      "rule_id": "CD-08",
+      "rule_text": "Missing material exposes the substrate, which may be damaged behind the surface",
+      "evidence": [
+        "d60"
+      ],
+      "confidence": 0.4
+    },
+    {
+      "id": "c18",
+      "surface_id": "s_hall_w1",
+      "rule_id": "CD-08",
+      "rule_text": "Missing material exposes the substrate, which may be damaged behind the surface",
+      "evidence": [
+        "d62"
+      ],
+      "confidence": 0.4
+    },
+    {
+      "id": "c19",
+      "surface_id": "s_hall_w1",
+      "rule_id": "CD-08",
+      "rule_text": "Missing material exposes the substrate, which may be damaged behind the surface",
+      "evidence": [
+        "d70"
+      ],
+      "confidence": 0.4
+    },
+    {
+      "id": "c20",
+      "surface_id": "s_hall_w1",
+      "rule_id": "CD-07",
+      "rule_text": "Burn or char marks indicate heat damage that may extend into the substrate",
+      "evidence": [
+        "d78"
+      ],
+      "confidence": 0.45
+    },
+    {
+      "id": "c21",
+      "surface_id": "s_hall_w1",
+      "rule_id": "CD-05",
+      "rule_text": "Any mould indicates a moisture source that is not visible at the surface",
+      "evidence": [
+        "d82"
+      ],
+      "confidence": 0.6
+    },
+    {
+      "id": "c22",
+      "surface_id": "s_hall_w1",
+      "rule_id": "CD-05",
+      "rule_text": "Any mould indicates a moisture source that is not visible at the surface",
+      "evidence": [
+        "d89"
+      ],
+      "confidence": 0.6
+    }
+  ],
+  "scope_items": [
+    {
+      "id": "sc1",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d1"
+      ],
+      "description": "Replace the missing material and make good",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent plus a fixing margin"
+    },
+    {
+      "id": "sc2",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d2"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc3",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d3"
+      ],
+      "description": "Replace the missing material and make good",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent plus a fixing margin"
+    },
+    {
+      "id": "sc4",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d4"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc5",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d5"
+      ],
+      "description": "Stain-block and repaint the affected wall area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc6",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d6"
+      ],
+      "description": "Stain-block and repaint the affected wall area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc7",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d7"
+      ],
+      "description": "Treat with fungicidal wash, then seal and redecorate",
+      "quantity": {
+        "value": 0.5,
+        "ci_low": 0.5,
+        "ci_high": 8.0,
+        "unit": "m2",
+        "method": "scope_table_x2.0",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent plus a 0.3 m treated margin"
+    },
+    {
+      "id": "sc8",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d8"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc9",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d9"
+      ],
+      "description": "Replace the missing material and make good",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent plus a fixing margin"
+    },
+    {
+      "id": "sc10",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d10"
+      ],
+      "description": "Replace the missing material and make good",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent plus a fixing margin"
+    },
+    {
+      "id": "sc11",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d11"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc12",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d12"
+      ],
+      "description": "Stain-block and repaint the affected wall area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc13",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d13"
+      ],
+      "description": "Replace the missing material and make good",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent plus a fixing margin"
+    },
+    {
+      "id": "sc14",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d14"
+      ],
+      "description": "Stain-block and repaint the affected wall area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc15",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d15"
+      ],
+      "description": "Cut out charred material, treat and make good",
+      "quantity": {
+        "value": 0.5,
+        "ci_low": 0.25,
+        "ci_high": 8.0,
+        "unit": "m2",
+        "method": "scope_table_x2.0",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent plus a cut-back margin"
+    },
+    {
+      "id": "sc16",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d16"
+      ],
+      "description": "Cut out charred material, treat and make good",
+      "quantity": {
+        "value": 0.5,
+        "ci_low": 0.25,
+        "ci_high": 8.0,
+        "unit": "m2",
+        "method": "scope_table_x2.0",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent plus a cut-back margin"
+    },
+    {
+      "id": "sc17",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d17"
+      ],
+      "description": "Replace the missing material and make good",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent plus a fixing margin"
+    },
+    {
+      "id": "sc18",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d18"
+      ],
+      "description": "Stain-block and repaint the affected wall area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc19",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d19"
+      ],
+      "description": "Stain-block and repaint the affected wall area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc20",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d20"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc21",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d21"
+      ],
+      "description": "Cut out, patch and make good",
+      "quantity": {
+        "value": 0.5,
+        "ci_low": 0.25,
+        "ci_high": 8.0,
+        "unit": "m2",
+        "method": "scope_table_x2.0",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent plus a patch margin"
+    },
+    {
+      "id": "sc22",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d22"
+      ],
+      "description": "Stain-block and repaint the affected wall area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc23",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d23"
+      ],
+      "description": "Stain-block and repaint the affected wall area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc24",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d24"
+      ],
+      "description": "Stain-block and repaint the affected wall area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc25",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d25"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc26",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d26"
+      ],
+      "description": "Replace the missing material and make good",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent plus a fixing margin"
+    },
+    {
+      "id": "sc27",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d27"
+      ],
+      "description": "Stain-block and repaint the affected wall area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc28",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d28"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc29",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d29"
+      ],
+      "description": "Replace the missing material and make good",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent plus a fixing margin"
+    },
+    {
+      "id": "sc30",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d30"
+      ],
+      "description": "Cut out, patch and make good",
+      "quantity": {
+        "value": 0.5,
+        "ci_low": 0.25,
+        "ci_high": 8.0,
+        "unit": "m2",
+        "method": "scope_table_x2.0",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent plus a patch margin"
+    },
+    {
+      "id": "sc31",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d31"
+      ],
+      "description": "Stain-block and repaint the affected wall area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc32",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d32"
+      ],
+      "description": "Stain-block and repaint the affected wall area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc33",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d33"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc34",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d34"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc35",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d35"
+      ],
+      "description": "Stain-block and repaint the affected wall area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc36",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d36"
+      ],
+      "description": "Stain-block and repaint the affected wall area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc37",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d37"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc38",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d38"
+      ],
+      "description": "Replace the missing material and make good",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent plus a fixing margin"
+    },
+    {
+      "id": "sc39",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d39"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc40",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d40"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc41",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d41"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc42",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d42"
+      ],
+      "description": "Replace the missing material and make good",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent plus a fixing margin"
+    },
+    {
+      "id": "sc43",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d43"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc44",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d44"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc45",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d45"
+      ],
+      "description": "Stain-block and repaint the affected wall area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc46",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d46"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc47",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d47"
+      ],
+      "description": "Cut out, patch and make good",
+      "quantity": {
+        "value": 0.5,
+        "ci_low": 0.25,
+        "ci_high": 8.0,
+        "unit": "m2",
+        "method": "scope_table_x2.0",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent plus a patch margin"
+    },
+    {
+      "id": "sc48",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d48"
+      ],
+      "description": "Stain-block and repaint the affected wall area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc49",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d49"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc50",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d50"
+      ],
+      "description": "Replace the missing material and make good",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent plus a fixing margin"
+    },
+    {
+      "id": "sc51",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d51"
+      ],
+      "description": "Replace the missing material and make good",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent plus a fixing margin"
+    },
+    {
+      "id": "sc52",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d52"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc53",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d53"
+      ],
+      "description": "Cut out, patch and make good",
+      "quantity": {
+        "value": 0.5,
+        "ci_low": 0.25,
+        "ci_high": 8.0,
+        "unit": "m2",
+        "method": "scope_table_x2.0",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent plus a patch margin"
+    },
+    {
+      "id": "sc54",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d54"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc55",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d55"
+      ],
+      "description": "Stain-block and repaint the affected wall area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc56",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d56"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc57",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d57"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc58",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d58"
+      ],
+      "description": "Replace the missing material and make good",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent plus a fixing margin"
+    },
+    {
+      "id": "sc59",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d59"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc60",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d60"
+      ],
+      "description": "Replace the missing material and make good",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent plus a fixing margin"
+    },
+    {
+      "id": "sc61",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d61"
+      ],
+      "description": "Stain-block and repaint the affected wall area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc62",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d62"
+      ],
+      "description": "Replace the missing material and make good",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent plus a fixing margin"
+    },
+    {
+      "id": "sc63",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d63"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc64",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d64"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc65",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d65"
+      ],
+      "description": "Stain-block and repaint the affected wall area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc66",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d66"
+      ],
+      "description": "Stain-block and repaint the affected wall area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc67",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d67"
+      ],
+      "description": "Cut out, patch and make good",
+      "quantity": {
+        "value": 0.5,
+        "ci_low": 0.25,
+        "ci_high": 8.0,
+        "unit": "m2",
+        "method": "scope_table_x2.0",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent plus a patch margin"
+    },
+    {
+      "id": "sc68",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d68"
+      ],
+      "description": "Cut out, patch and make good",
+      "quantity": {
+        "value": 0.5,
+        "ci_low": 0.25,
+        "ci_high": 8.0,
+        "unit": "m2",
+        "method": "scope_table_x2.0",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent plus a patch margin"
+    },
+    {
+      "id": "sc69",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d69"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc70",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d70"
+      ],
+      "description": "Replace the missing material and make good",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent plus a fixing margin"
+    },
+    {
+      "id": "sc71",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d71"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc72",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d72"
+      ],
+      "description": "Stain-block and repaint the affected wall area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc73",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d73"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc74",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d74"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc75",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d75"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc76",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d76"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc77",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d77"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc78",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d78"
+      ],
+      "description": "Cut out charred material, treat and make good",
+      "quantity": {
+        "value": 0.5,
+        "ci_low": 0.25,
+        "ci_high": 8.0,
+        "unit": "m2",
+        "method": "scope_table_x2.0",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent plus a cut-back margin"
+    },
+    {
+      "id": "sc79",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d79"
+      ],
+      "description": "Stain-block and repaint the affected wall area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc80",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d80"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc81",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d81"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc82",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d82"
+      ],
+      "description": "Treat with fungicidal wash, then seal and redecorate",
+      "quantity": {
+        "value": 0.5,
+        "ci_low": 0.5,
+        "ci_high": 8.0,
+        "unit": "m2",
+        "method": "scope_table_x2.0",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent plus a 0.3 m treated margin"
+    },
+    {
+      "id": "sc83",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d83"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc84",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d84"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc85",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d85"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc86",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d86"
+      ],
+      "description": "Stain-block and repaint the affected wall area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc87",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d87"
+      ],
+      "description": "Rake out, fill and redecorate the cracked area",
+      "quantity": {
+        "value": 0.375,
+        "ci_low": 0.25,
+        "ci_high": 6.0,
+        "unit": "m2",
+        "method": "scope_table_x1.5",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent with feathering allowance"
+    },
+    {
+      "id": "sc88",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d88"
+      ],
+      "description": "Cut out, patch and make good",
+      "quantity": {
+        "value": 0.5,
+        "ci_low": 0.25,
+        "ci_high": 8.0,
+        "unit": "m2",
+        "method": "scope_table_x2.0",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent plus a patch margin"
+    },
+    {
+      "id": "sc89",
+      "surface_id": "s_hall_w1",
+      "damage_region_ids": [
+        "d89"
+      ],
+      "description": "Treat with fungicidal wash, then seal and redecorate",
+      "quantity": {
+        "value": 0.5,
+        "ci_low": 0.5,
+        "ci_high": 8.0,
+        "unit": "m2",
+        "method": "scope_table_x2.0",
+        "ci_level": 0.95
+      },
+      "basis": "damage extent plus a 0.3 m treated margin"
+    }
+  ],
+  "assumptions": [
+    "Camera-height prior: the photos were taken from about 1.40 m plus or minus 0.12 m, and each room is scaled so its own median camera sits that far above its own floor plane. Nothing in this tier measured a distance directly",
+    "MapAnything supplies the geometry and the camera poses; its own metric scale is discarded, because spike 1 measured its depth at 0.70x while its trajectory ran 2.5 to 3.9 times long, so the two are not consistent with each other",
+    "Star layout assumption: no photograph or clip sees two rooms at once, so nothing measures where one room sits relative to another. Each room is attached to the connector's perimeter, door to door where both sides have a door and wall to wall otherwise. Room shapes and sizes are measured; the arrangement is assumed, and the placements are approximate",
+    "Rooms are assumed square to each other: each room is rotated into its own Manhattan frame before placement, so every room sits at a quarter turn to the connector. Each room was reconstructed separately and carries a few degrees of its own yaw, which nothing in this pipeline measures against the building. Lengths and areas are unchanged by the rotation",
+    "Manhattan assumption: walls meet at right angles and are axis aligned after a single global rotation. A curved or 45 degree wall appears as a missing face, not a wrong one",
+    "All rooms are reconstructed in one world frame, so stitching placements are the identity"
+  ],
+  "warnings": [
+    "Skipped all (0 image(s), needs at least 2)",
+    "Skipped home (0 image(s), needs at least 2)",
+    "app_comparision was excluded by --exclude and is not treated as a room",
+    "bedroom_2_repeat is a repeat capture: it is measured and reported, but it is not placed in the property, because it is the same room as another",
+    "kitchen is attached wall to wall: no free door pair was available between it and hall",
+    "bedroom_1: 1 of 4 room sides (x+) are set by a dense band of points rather than by a wall face that passed the strict test, which is what a wall behind a curtain or a wardrobe looks like. Their intervals are widened",
+    "bedroom_1: Windows are not detected in this version; openings are doors and pass-throughs only",
+    "bedroom_2: 1 of 4 room sides (z-) are set by a dense band of points rather than by a wall face that passed the strict test, which is what a wall behind a curtain or a wardrobe looks like. Their intervals are widened",
+    "bedroom_2: Windows are not detected in this version; openings are doors and pass-throughs only",
+    "hall: 1 of 4 room sides (z+) are set by a dense band of points rather than by a wall face that passed the strict test, which is what a wall behind a curtain or a wardrobe looks like. Their intervals are widened",
+    "hall: Windows are not detected in this version; openings are doors and pass-throughs only",
+    "kitchen: Windows are not detected in this version; openings are doors and pass-throughs only",
+    "footprint area is reported with an interval wider than the value itself (75.54 m2, plus or minus 94.69). It is an unreliable measurement: the reconstruction constrains it barely or not at all",
+    "Damage regions were detected without metric depth, so their extent is unbounded: extent_m2 carries a nominal value with an interval spanning the plausible range and method unbounded_no_metric_depth. Do not read these as measured areas",
+    "Without metric depth the same mark seen in several photos cannot be merged, so damage_regions counts detections per photo and over-counts the marks present. Read the count as an upper bound, not as a number of defects"
+  ],
+  "renders": {
+    "plan_png": "plan.png",
+    "plan_svg": null
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "tier": "video",
+  "yaw_snap": {
+    "applied": true,
+    "max_yaw_deg": 6.0,
+    "per_chunk": [
+      {
+        "chunk": 3,
+        "n_wall_points": 12399,
+        "yaw_delta_deg": -15.591,
+        "rejected": "yaw beyond the limit"
+      },
+      {
+        "chunk": 4,
+        "n_wall_points": 26528,
+        "yaw_delta_deg": 5.593,
+        "rejected": null
+      },
+      {
+        "chunk": 5,
+        "n_wall_points": 7496,
+        "yaw_delta_deg": -34.855,
+        "rejected": "yaw beyond the limit"
+      }
+    ],
+    "global_yaw_deg": 36.735
+  },
+  "applied": true,
+  "model": {
+    "method": "manhattan_yaw_snap_per_sfm_chunk",
+    "applied": true,
+    "n_chunks": 3,
+    "n_corrected": 1,
+    "yaw_deg": {
+      "mean": 5.593,
+      "max": 5.593
+    },
+    "rejected": [
+      "yaw beyond the limit"
+    ],
+    "note": ""
+  },
+  "gravity": {
+    "method": "per_chunk_floor_plane_before_bridging",
+    "chunks": [
+      {
+        "chunk": 0,
+        "method": "camera_height_prior",
+        "floor_inliers": 0.964,
+        "camera_height_m": 0.645
+      },
+      {
+        "chunk": 1,
+        "method": "camera_height_prior",
+        "floor_inliers": 0.236,
+        "camera_height_m": 1.423
+      },
+      {
+        "chunk": 2,
+        "method": "camera_height_prior",
+        "floor_inliers": 0.628,
+        "camera_height_m": 0.735
+      },
+      {
+        "chunk": 3,
+        "method": "camera_height_prior",
+        "floor_inliers": 1.0,
+        "camera_height_m": 0.307
+      },
+      {
+        "chunk": 4,
+        "method": "camera_height_prior",
+        "floor_inliers": 0.2,
+        "camera_height_m": 0.515
+      },
+      {
+        "chunk": 5,
+        "method": "camera_height_prior",
+        "floor_inliers": 0.435,
+        "camera_height_m": 1.62
+      },
+      {
+        "chunk": 6,
+        "method": "camera_height_prior",
+        "floor_inliers": 0.585,
+        "camera_height_m": 1.801
+      },
+      {
+        "chunk": 7,
+        "method": "camera_height_prior",
+        "floor_inliers": 0.543,
+        "camera_height_m": 2.389
+      }
+    ]
+  }
+}

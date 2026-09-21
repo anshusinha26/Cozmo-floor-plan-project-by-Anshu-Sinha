@@ -8,6 +8,12 @@ runs/
 # Fix-loop snapshots are evidence, not run output: they are committed on purpose.
 !fix_loop/**/runs/
 !fix_loop/**/runs/**
+# The benchmark's per-capture plans are the evidence behind its tables. Without
+# them a reader has the numbers and nothing to check them against. Debug folders
+# and point clouds stay out: they are large and reproducible from the input.
+!docs/benchmark/runs/
+!docs/benchmark/runs/**
+docs/benchmark/runs/*/debug/
 data/
 
 # macOS and editor noise

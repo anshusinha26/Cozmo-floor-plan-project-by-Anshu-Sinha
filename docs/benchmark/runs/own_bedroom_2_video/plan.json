@@ -1,0 +1,336 @@
+{
+  "schema_version": "1.0.0",
+  "capture": {
+    "id": "bedroom_2",
+    "tier": "video",
+    "device": null,
+    "captured_at": null,
+    "input_manifest_sha256": "de7ef73b6a2778a564d8d4d5c8877cf858767e22fb79aa4e0013a84c65000f77"
+  },
+  "run": {
+    "pipeline_version": "video-0.1.0",
+    "git_commit": "31803d332c97cb8245afddb55ddfe5b7494d6784",
+    "config_sha256": "8e3b03ddd5de2cb926d796eb47b474fbe61cd851790f84b8be5a8c184d48b316",
+    "seed": 0
+  },
+  "rooms": [
+    {
+      "id": "bedroom_2",
+      "label": "room",
+      "polygon": [
+        [
+          0.2695194935923814,
+          -0.7495560363907885
+        ],
+        [
+          0.9089324193045385,
+          0.9516890984586879
+        ],
+        [
+          -0.2546000530951801,
+          1.3890027383910248
+        ],
+        [
+          -0.8940129788073372,
+          -0.3122423964584518
+        ]
+      ],
+      "walls": [
+        {
+          "id": "w1",
+          "start": [
+            0.2695194935923814,
+            -0.7495560363907885
+          ],
+          "end": [
+            0.9089324193045385,
+            0.9516890984586879
+          ],
+          "length_m": {
+            "value": 1.8174388293466148,
+            "ci_low": -4.061625611788733,
+            "ci_high": 7.696503270481962,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 2.7,
+            "ci_low": 2.2,
+            "ci_high": 3.2,
+            "unit": "m",
+            "method": "prior_no_ceiling_observed",
+            "ci_level": 0.95
+          }
+        },
+        {
+          "id": "w2",
+          "start": [
+            0.9089324193045385,
+            0.9516890984586879
+          ],
+          "end": [
+            -0.2546000530951801,
+            1.3890027383910248
+          ],
+          "length_m": {
+            "value": 1.2430008181813363,
+            "ci_low": -2.77790042491867,
+            "ci_high": 5.2639020612813425,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 2.7,
+            "ci_low": 2.2,
+            "ci_high": 3.2,
+            "unit": "m",
+            "method": "prior_no_ceiling_observed",
+            "ci_level": 0.95
+          }
+        },
+        {
+          "id": "w3",
+          "start": [
+            -0.2546000530951801,
+            1.3890027383910248
+          ],
+          "end": [
+            -0.8940129788073372,
+            -0.3122423964584518
+          ],
+          "length_m": {
+            "value": 1.8174388293466148,
+            "ci_low": -4.061625611788733,
+            "ci_high": 7.696503270481962,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 2.7,
+            "ci_low": 2.2,
+            "ci_high": 3.2,
+            "unit": "m",
+            "method": "prior_no_ceiling_observed",
+            "ci_level": 0.95
+          }
+        },
+        {
+          "id": "w4",
+          "start": [
+            -0.8940129788073372,
+            -0.3122423964584518
+          ],
+          "end": [
+            0.2695194935923814,
+            -0.7495560363907885
+          ],
+          "length_m": {
+            "value": 1.2430008181813363,
+            "ci_low": -2.77790042491867,
+            "ci_high": 5.2639020612813425,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 2.7,
+            "ci_low": 2.2,
+            "ci_high": 3.2,
+            "unit": "m",
+            "method": "prior_no_ceiling_observed",
+            "ci_level": 0.95
+          }
+        }
+      ],
+      "ceiling_height_m": {
+        "value": 2.7,
+        "ci_low": 2.2,
+        "ci_high": 3.2,
+        "unit": "m",
+        "method": "prior_no_ceiling_observed",
+        "ci_level": 0.95
+      },
+      "floor_area_m2": {
+        "value": 2.2590779518723725,
+        "ci_low": -8.075629962985127,
+        "ci_high": 12.593785866729872,
+        "unit": "m2",
+        "method": "polygon_from_wall_faces",
+        "ci_level": 0.95
+      },
+      "openings": []
+    }
+  ],
+  "adjacency": [],
+  "stitched_plan": {
+    "placements": [
+      {
+        "room_id": "bedroom_2",
+        "tx": 0.0,
+        "ty": 0.0,
+        "theta_deg": {
+          "value": 0.0,
+          "ci_low": -1.0,
+          "ci_high": 1.0,
+          "unit": "deg",
+          "method": "single_world_frame",
+          "ci_level": 0.95
+        }
+      }
+    ],
+    "footprint_polygon": [
+      [
+        0.9089324193045384,
+        0.951689098458688
+      ],
+      [
+        -0.25460005309518,
+        1.3890027383910248
+      ],
+      [
+        -0.894012978807337,
+        -0.3122423964584518
+      ],
+      [
+        0.2695194935923814,
+        -0.7495560363907884
+      ]
+    ],
+    "footprint_area_m2": {
+      "value": 2.259077951872372,
+      "ci_low": -8.075629962985126,
+      "ci_high": 12.59378586672987,
+      "unit": "m2",
+      "method": "union_of_room_polygons",
+      "ci_level": 0.95
+    },
+    "overlap_area_m2": {
+      "value": 0.0,
+      "ci_low": 0.0,
+      "ci_high": 0.05,
+      "unit": "m2",
+      "method": "pairwise_polygon_intersection",
+      "ci_level": 0.95
+    }
+  },
+  "surfaces": [
+    {
+      "id": "s_bedroom_2_w1",
+      "room_id": "bedroom_2",
+      "type": "wall",
+      "wall_id": "w1",
+      "area_m2": {
+        "value": 4.907084839235861,
+        "ci_low": -10.992378910200319,
+        "ci_high": 20.80654858867204,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_bedroom_2_w2",
+      "room_id": "bedroom_2",
+      "type": "wall",
+      "wall_id": "w2",
+      "area_m2": {
+        "value": 3.356102209089608,
+        "ci_low": -7.518106174963156,
+        "ci_high": 14.230310593142372,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_bedroom_2_w3",
+      "room_id": "bedroom_2",
+      "type": "wall",
+      "wall_id": "w3",
+      "area_m2": {
+        "value": 4.907084839235861,
+        "ci_low": -10.992378910200319,
+        "ci_high": 20.80654858867204,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_bedroom_2_w4",
+      "room_id": "bedroom_2",
+      "type": "wall",
+      "wall_id": "w4",
+      "area_m2": {
+        "value": 3.356102209089608,
+        "ci_low": -7.518106174963156,
+        "ci_high": 14.230310593142372,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_bedroom_2_floor",
+      "room_id": "bedroom_2",
+      "type": "floor",
+      "wall_id": null,
+      "area_m2": {
+        "value": 2.2590779518723725,
+        "ci_low": -8.075629962985127,
+        "ci_high": 12.593785866729872,
+        "unit": "m2",
+        "method": "polygon_from_wall_faces",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_bedroom_2_ceiling",
+      "room_id": "bedroom_2",
+      "type": "ceiling",
+      "wall_id": null,
+      "area_m2": {
+        "value": 2.2590779518723725,
+        "ci_low": -8.075629962985127,
+        "ci_high": 12.593785866729872,
+        "unit": "m2",
+        "method": "polygon_from_wall_faces",
+        "ci_level": 0.95
+      }
+    }
+  ],
+  "damage_regions": [],
+  "concealed_damage_flags": [],
+  "scope_items": [],
+  "assumptions": [
+    "Metric scale comes from a monocular depth model given the focal length COLMAP estimated from the same frames; nothing in this tier measured a distance directly",
+    "Camera-height prior: the phone was held at 1.40 m plus or minus 0.12 m, and each chunk is scaled so its own median camera sits that far above its own floor plane. This is the capture protocol, not a measurement, and its uncertainty is carried into every interval",
+    "Single-room fitting: the clip covers one room, so the room is the smallest rectilinear shape containing the whole camera path out to the wall faces found on each side. Sides with no face are closed by that assumption, not measured",
+    "Manhattan assumption: walls meet at right angles and are axis aligned after a single global rotation. A curved or 45 degree wall appears as a missing face, not a wrong one",
+    "Ceiling height prior 2.2 to 3.2 m used where the ceiling was not observed",
+    "All rooms are reconstructed in one world frame, so stitching placements are the identity"
+  ],
+  "warnings": [
+    "1 of 5 chunks had no usable floor plane and kept the monocular depth scale instead of the height prior",
+    "Chunk 1 (15 frames, 3% of the video) could not be bridged to the main group and was dropped",
+    "Chunk 2 (99 frames, 19% of the video) could not be bridged to the main group and was dropped",
+    "Chunk 3 (48 frames, 9% of the video) could not be bridged to the main group and was dropped",
+    "Chunk 4 (17 frames, 3% of the video) could not be bridged to the main group and was dropped",
+    "The camera-height prior and the monocular depth scale disagree by 69% on this capture; the wider of that and the prior's own uncertainty sets the scale term in every interval",
+    "Only 40% of the video reached the output, under the 60% this tier expects; every interval is widened by 1.6x and the plan should be read as a fragment",
+    "Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall",
+    "2 of 4 room sides had no supported wall face (x-, z-); they are closed at the camera path plus 0.35 m by the rectangle assumption and the room is only partially observed",
+    "Windows are not detected in this version; openings are doors and pass-throughs only",
+    "Ceiling not observed over enough of the floor (coverage 0% < 12%); ceiling height is a prior interval, not a measurement",
+    "2 of 4 room sides had no supported wall face (x-, z-); they are closed at the camera path plus 0.35 m by the rectangle assumption and the room is only partially observed",
+    "room_01: Ceiling not observed over enough of the floor (coverage 0% < 12%); ceiling height is a prior interval, not a measurement",
+    "Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty"
+  ],
+  "renders": {
+    "plan_png": "plan.png",
+    "plan_svg": null
+  }
+}

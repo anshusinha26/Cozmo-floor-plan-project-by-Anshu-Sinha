@@ -88,3 +88,42 @@ def test_the_benchmark_report_does_not_list_the_stub_fixtures() -> None:
     # a row is read as a capture the tiers were scored on.
     rows = [ln for ln in report.read_text(encoding="utf-8").splitlines() if ln.startswith("|")]
     assert [ln for ln in rows if "EXAMPLE" in ln] == []
+
+
+def _tracked(path: Path) -> bool:
+    """Whether git tracks this path. A file that exists but is ignored is not evidence."""
+    import subprocess
+
+    r = subprocess.run(["git", "ls-files", "--error-unmatch", str(path.relative_to(ROOT))],
+                       cwd=ROOT, capture_output=True)
+    return r.returncode == 0
+
+
+def _benchmark_captures_with_plans() -> list[str]:
+    """Capture ids the benchmark's provenance says it has a plan for."""
+    prov = ROOT / "docs" / "benchmark" / "provenance.json"
+    if not prov.is_file():
+        return []
+    rows = json.loads(prov.read_text(encoding="utf-8"))
+    rows = rows if isinstance(rows, list) else rows.get("provenance", [])
+    return [r["capture_id"] for r in rows if r.get("source") not in (None, "no plan available")]
+
+
+def test_every_benchmark_capture_with_a_plan_has_that_plan_tracked() -> None:
+    """Tables without their plans are numbers nobody can check.
+
+    `runs/` is ignored repo-wide, which silently swallowed the benchmark's own
+    output for a long time: the report named captures whose plan.json existed
+    only on the machine that built it.
+    """
+    import subprocess
+
+    if subprocess.run(["git", "rev-parse"], cwd=ROOT, capture_output=True).returncode != 0:
+        pytest.skip("not a git checkout")
+    missing = []
+    for capture_id in _benchmark_captures_with_plans():
+        for name in ("plan.json", "plan.png", "run_manifest.json"):
+            f = ROOT / "docs" / "benchmark" / "runs" / capture_id / name
+            if not (f.is_file() and _tracked(f)):
+                missing.append(f"{capture_id}/{name}")
+    assert missing == []
