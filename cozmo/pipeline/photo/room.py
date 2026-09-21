@@ -180,12 +180,47 @@ class MapAnythingReconstructor:
             self._model.eval()
         return self._model
 
-    def infer(self, paths: list[Path]) -> list[dict]:
+    @staticmethod
+    def _attach_intrinsics(views, focal_px: float, upright_wh: tuple[int, int]) -> None:
+        """Put the known focal into each view, at that view's working resolution.
+
+        The focal is in pixels of the upright full resolution frame, so it scales
+        by the same factor the image did. Width and height must not be swapped:
+        EXIF gives the focal across the sensor's long side, and after the
+        orientation rotation that side is the image height.
+        """
+        import torch
+
+        w0, h0 = upright_wh
+        for v in views:
+            shape = v.get("true_shape")
+            h, w = (int(shape[0][0]), int(shape[0][1])) if shape is not None else (h0, w0)
+            scale = 0.5 * (w / max(w0, 1) + h / max(h0, 1))
+            f = float(focal_px) * scale
+            K = torch.tensor([[[f, 0.0, w / 2.0], [0.0, f, h / 2.0], [0.0, 0.0, 1.0]]],
+                             dtype=torch.float32)
+            v["intrinsics"] = K.to(v["img"].device) if hasattr(v["img"], "device") else K
+        log.info("gave MapAnything a focal of %.0f px in the %dx%d working tensor "
+                 "(%.0f px at %dx%d)", f, w, h, focal_px, w0, h0)
+
+    def infer(self, paths: list[Path], focal_px: float | None = None,
+              upright_wh: tuple[int, int] | None = None) -> list[dict]:
+        """Reconstruct. ``focal_px`` is the focal length of the upright, full
+        resolution photograph, and is handed to the model rather than guessed.
+
+        Left to itself on these captures the model estimated 463 px in a 392
+        wide working tensor where EXIF says 334, a 39% error, and a focal that
+        long stretches the room sideways by the same factor. It guessed 283 on
+        the messaging-app copies of the same photographs, which is why they
+        scored better. Telling it the answer removes the whole question.
+        """
         import torch
         from mapanything.utils.image import load_images
 
         model = self._load()
         views = load_images([str(p) for p in paths], verbose=False)
+        if focal_px and upright_wh:
+            self._attach_intrinsics(views, focal_px, upright_wh)
         with torch.no_grad():
             preds = model.infer(views, memory_efficient_inference=True, use_amp=True,
                                 amp_dtype="fp16" if self.device_name == "mps" else "bf16",
@@ -207,7 +242,8 @@ class MapAnythingReconstructor:
 
 def reconstruct_room(room_id: str, paths: list[Path], reconstructor: MapAnythingReconstructor,
                      voxel_m: float = 0.03, pixel_stride: int = 1,
-                     work_dir: Path | None = None) -> RoomReconstruction:
+                     work_dir: Path | None = None,
+                     use_exif_focal: bool = True) -> RoomReconstruction:
     """Photos in, a metric-in-MapAnything-units cloud out. Scaling happens after."""
     if len(paths) < 2:
         raise ValueError(f"{room_id}: the photo tier needs at least 2 images, got {len(paths)}")
@@ -217,7 +253,13 @@ def reconstruct_room(room_id: str, paths: list[Path], reconstructor: MapAnything
         use, n_rotated = upright_copies(use, Path(work_dir) / room_id)
     else:
         n_rotated = 0
-    preds = reconstructor.infer(use)
+    upright_wh = None
+    if use:
+        from PIL import Image as _Image
+        with _Image.open(use[0]) as _im:
+            upright_wh = (_im.width, _im.height)
+    preds = reconstructor.infer(use, focal_px=focal if use_exif_focal else None,
+                                upright_wh=upright_wh)
 
     grid = VoxelGrid(voxel_m)
     centres, ups, focals = [], [], []
@@ -254,6 +296,7 @@ def reconstruct_room(room_id: str, paths: list[Path], reconstructor: MapAnything
                               camera_up=np.array(ups), focal_px=focals, n_photos=len(use),
                               scale_applied=1.0, measured_height_m=float("nan"),
                               exif_focal_px=focal, depth_pro_scale=None,
-                              method="mapanything_unscaled",
+                              method=("mapanything_exif_focal" if (use_exif_focal and focal)
+                                      else "mapanything_estimated_focal"),
                               views=[{"pts3d": p["pts3d"], "mask": p["mask"],
                                       "pose": p["pose"]} for p in preds], paths=list(use))

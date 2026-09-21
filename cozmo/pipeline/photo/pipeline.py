@@ -157,7 +157,8 @@ class PhotoPipeline(Pipeline):
         work = Path(self.debug_dir) / "upright" if self.debug_dir else Path(tempfile.mkdtemp())
         rec = room_mod.reconstruct_room(rid, list(files), reconstructor,
                                         voxel_m=cfg["voxel_m"],
-                                        pixel_stride=cfg["pixel_stride"], work_dir=work)
+                                        pixel_stride=cfg["pixel_stride"], work_dir=work,
+                                        use_exif_focal=cfg.get("use_exif_focal", True))
         cloud = rec.cloud
         g = fit_floor(cloud.points, cloud.normals, rec.camera_up,
                       max_tilt_deg=cfg["gravity"]["max_tilt_deg"], seed=seed)

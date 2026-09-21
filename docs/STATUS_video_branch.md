@@ -12,36 +12,34 @@ Final for this session. Worktree `../cozmo-video-tier`, **not merged**.
 
 ## Results against tape
 
-**Photo tier**, two photo sets of the same five rooms, gate 8%. The originals
-are the primary benchmark; the messaging-app copies are a robustness result.
-The compressed set scores better, which was not expected:
+**Photo tier**, camera originals, gate 8%. The originals are the benchmark;
+the messaging-app copies are kept as a robustness result.
 
 | set | within 8% | inside interval | Moto vs Nokia | footprint |
 |---|---|---|---|---|
-| originals, 4096x3072 with EXIF | **3 of 12** | 7 of 12 | -4.5%, -0.2% | 111.10 m2 |
-| messaging-app copies, 1200x1600 | **8 of 12** | 11 of 12 | +1.9%, +1.8% | 79.85 m2 |
+| **originals, EXIF focal given to the model** | **6 of 12** | 10 of 12 | +10.9%, +10.0% | 89.93 m2 |
+| originals, model guessing the focal | 3 of 12 | 7 of 12 | -4.5%, -0.2% | 111.10 m2 |
+| messaging-app copies, model guessing | 8 of 12 | 11 of 12 | +1.9%, +1.8% | 79.85 m2 |
 
-Both give adjacency 3 of 3 and zero overlap. The two sets are not the same
-photographs, only the same rooms, so this most likely says something about which
-shots each set holds rather than about compression. It is unresolved and it is
-not hidden.
+All three give adjacency 3 of 3 and zero overlap.
 
-**Photo tier, compressed copies**, gate 8%:
+The originals scored worse than the compressed copies because **MapAnything was
+guessing the focal length and guessing 39% long**, which stretches a room
+sideways by 39% while the camera-height prior holds the ceiling right. The
+photographs are identical between the two sets, 9 of 9 at correlation 1.000, so
+nothing here was about which shots were taken. Handing the model the EXIF focal
+fixes it, and the one camera that publishes no 35 mm equivalent, the Nokia, is
+the control that did not improve. Detail in
+`fix_loop/loop2_video_scale/photo_ablation.md`.
 
-| room | quantity | tape cm | predicted cm | error |
-|---|---|---|---|---|
-| bedroom_1 | wall (door) | 365.8 | 367.9 | +0.6% |
-| bedroom_1 | wall | 391.2 | 437.7 | +11.9% |
-| bedroom_2 | wall (door) | 388.6 | 393.0 | +1.1% |
-| bedroom_2 | wall | 363.2 | 366.8 | +1.0% |
-| bedroom_2_repeat | wall (door) | 388.6 | 400.4 | +3.0% |
-| bedroom_2_repeat | wall | 363.2 | 373.4 | +2.8% |
-| kitchen | wall (door) | 269.2 | 264.9 | -1.6% |
-| kitchen | wall | 360.3 | 437.8 | +21.5% |
+The compressed set still scores highest, on luck: the model's guess happened to
+land near the truth on soft low resolution images. The originals are now right
+for a reason, which is what matters for the walk-in test, where iPhone photos
+carry both EXIF focal and orientation.
 
-8 of 12 within the gate, 11 of 12 tape values inside their stated interval,
-adjacency 3 of 3 against truth, zero room overlap, and the two bedroom_2
-captures agree to 1.9% **across two different phones**.
+Remaining error is one wall per room, 21 to 32% long: the side the room fitter
+could not anchor to a wall face, closed at the camera path plus a margin. A
+different defect, not fixed here.
 
 **Video tier**: 6 of 6 clips produce a plan, median wall error 35.3%, nothing
 within 3%. It does not pass. Full before and after in

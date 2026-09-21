@@ -156,6 +156,9 @@ pipeline:
   # single-room fitter. Everything below mirrors the video tier's meaning.
   photo:
     device: null
+    use_exif_focal: true       # hand MapAnything the focal from EXIF instead of letting it
+                               # guess. It guessed 39% long on the camera originals, which
+                               # stretched every room sideways by the same factor.
     voxel_m: 0.03
     pixel_stride: 2
     vertical_normal_cos: 0.9
