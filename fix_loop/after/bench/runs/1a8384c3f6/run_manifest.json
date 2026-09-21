@@ -52882,7 +52882,7 @@
     }
   },
   "git": {
-    "commit": "95cd8ead08248e27f4eee5d68e130b15a853fb01",
+    "commit": "98fe55bfa7a2fa278defa1122d6abddb05210a5b",
     "dirty": true
   },
   "seed": 0,
@@ -52891,18 +52891,18 @@
     "version": "0.1.0",
     "cozmo_version": "0.1.0"
   },
-  "started_at": "2026-09-21T06:18:30.093317+00:00",
-  "finished_at": "2026-09-21T06:18:50.340594+00:00",
-  "duration_s": 20.247277,
+  "started_at": "2026-09-21T06:48:56.067594+00:00",
+  "finished_at": "2026-09-21T06:49:10.680063+00:00",
+  "duration_s": 14.612469,
   "stage_timings_s": {
-    "fuse_raw": 8.367002124985447,
-    "drift_estimate": 0.39509120798902586,
-    "fuse_corrected": 9.422322041995358,
-    "openings": 0.34838995899190195,
-    "drift_report": 0.6993628749914933,
-    "assemble": 0.5234580829855986,
-    "debug_images": 0.4892815409984905,
-    "render": 0.22031733399489895
+    "fuse_raw": 6.384312708018115,
+    "drift_estimate": 0.15537958301138133,
+    "fuse_corrected": 6.666715957981069,
+    "openings": 0.2710999169794377,
+    "drift_report": 0.43452441701083444,
+    "assemble": 0.30562470899894834,
+    "debug_images": 0.37581854200107045,
+    "render": 0.16093020798871294
   },
   "library_versions": {
     "pydantic": "2.13.5",
@@ -52926,7 +52926,7 @@
     ],
     "drift_report": "drift_report.json"
   },
-  "plan_sha256": "af3249669eae5b1c52398d7895d207e437be3fb1b49c6d404a3f206b9722d1ac",
+  "plan_sha256": "94d7c9dcf61459506b3c47a7315a44aa78013690b16657f1ae130bb548dbb896",
   "n_rooms": 6,
   "warnings": [
     "Windows are not detected in this version; openings are doors and pass-throughs only",

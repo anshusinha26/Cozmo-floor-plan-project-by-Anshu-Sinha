@@ -9,7 +9,7 @@
   },
   "run": {
     "pipeline_version": "stub-0.1.0",
-    "git_commit": "95cd8ead08248e27f4eee5d68e130b15a853fb01",
+    "git_commit": "98fe55bfa7a2fa278defa1122d6abddb05210a5b",
     "config_sha256": "48daffd5bc43e7f415a49bd4978260b8301c005bd7423fad633ca0849174bb29",
     "seed": 0
   },

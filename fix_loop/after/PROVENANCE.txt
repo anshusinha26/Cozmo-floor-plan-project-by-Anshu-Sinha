@@ -1,9 +1,9 @@
 side: after
 segmentation: cells
 registry: fix_loop/captures_loop1.yaml
-commit: 95cd8ead08248e27f4eee5d68e130b15a853fb01
-commit_subject: docs: fit the report to six pages with the gap statements included
+commit: 98fe55bfa7a2fa278defa1122d6abddb05210a5b
+commit_subject: fix(benchmark): keep the stub fixtures out of the published report
 dirty: true
-generated_at: 2026-09-21T06:19:48Z
+generated_at: 2026-09-21T06:49:50Z
 python: Python 3.11.15
 config_sha256: 890051217f9823f1366de3864db7d9e0fc37d4ad5a35c0d1d13d1bdba8eaa882

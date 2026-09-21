@@ -8,11 +8,11 @@ Captures: 5. cozmo 0.1.0.
 
 | capture | space | tier | pipeline | repeat_of | multi_room | rooms | duration_s | stages (s) | plan sha256 |
 |---|---|---|---|---|---|---|---|---|---|
-| EXAMPLE | example_flat | photo | stub |  | True | 2 | 0.0 | provenance 0.01, hand_written_geometry 0.00, hand_written_stitch 0.00, hand_written_damage 0.00, render 0.12 | 5c3ff61615c1 |
-| EXAMPLE_REPEAT | example_flat | photo | stub | EXAMPLE | True | 2 | 0.0 | provenance 0.01, hand_written_geometry 0.00, hand_written_stitch 0.00, hand_written_damage 0.00, render 0.06 | 41a9ca567500 |
-| c00a170fe1 | sample_partial_spaces | lidar | lidar |  | False | 4 | 5.9 | fuse_raw 2.90, drift_estimate 0.09, fuse_corrected 2.21, openings 0.01, drift_report 0.03, assemble 0.09, debug_images 0.49, render 0.62 | 93fd4ed09848 |
-| 1a8384c3f6 | sample_apartment | lidar | lidar |  | True | 6 | 20.2 | fuse_raw 8.37, drift_estimate 0.40, fuse_corrected 9.42, openings 0.35, drift_report 0.70, assemble 0.52, debug_images 0.49, render 0.22 | af3249669eae |
-| c7d28f72c6 | sample_apartment | lidar | lidar | 1a8384c3f6 | True | 9 | 50.2 | fuse_raw 23.07, drift_estimate 1.13, fuse_corrected 20.35, openings 1.09, drift_report 2.19, assemble 1.04, debug_images 1.23, render 0.31 | 3c9b124f8e59 |
+| EXAMPLE | example_flat | photo | stub |  | True | 2 | 0.0 | provenance 0.01, hand_written_geometry 0.00, hand_written_stitch 0.00, hand_written_damage 0.00, render 0.10 | c28491f5c992 |
+| EXAMPLE_REPEAT | example_flat | photo | stub | EXAMPLE | True | 2 | 0.0 | provenance 0.01, hand_written_geometry 0.00, hand_written_stitch 0.00, hand_written_damage 0.00, render 0.05 | 5e02e43456c7 |
+| c00a170fe1 | sample_partial_spaces | lidar | lidar |  | False | 4 | 4.2 | fuse_raw 1.94, drift_estimate 0.05, fuse_corrected 1.81, openings 0.01, drift_report 0.03, assemble 0.08, debug_images 0.24, render 0.08 | c106bb544b15 |
+| 1a8384c3f6 | sample_apartment | lidar | lidar |  | True | 6 | 14.6 | fuse_raw 6.38, drift_estimate 0.16, fuse_corrected 6.67, openings 0.27, drift_report 0.43, assemble 0.31, debug_images 0.38, render 0.16 | 94d7c9dcf614 |
+| c7d28f72c6 | sample_apartment | lidar | lidar | 1a8384c3f6 | True | 9 | 35.2 | fuse_raw 17.02, drift_estimate 0.62, fuse_corrected 13.61, openings 0.96, drift_report 1.71, assemble 0.78, debug_images 0.45, render 0.17 | 7a4d02de861c |
 
 ## Captures with no ground truth
 
@@ -20,9 +20,9 @@ Captures: 5. cozmo 0.1.0.
 
 | capture | tier | rooms | walls | openings | footprint m2 | sum of rooms m2 | room overlap m2 | rooms connected | ceiling from prior | duration_s |
 |---|---|---|---|---|---|---|---|---|---|---|
-| c00a170fe1 | lidar | 4 | 16 | 0 | 35.85 | 35.85 | 0.000 | no ['room_02', 'room_03', 'room_04'] | 4/4 | 5.9 |
-| 1a8384c3f6 | lidar | 6 | 60 | 6 | 86.59 | 84.04 | 0.000 | no ['connector_01', 'room_02', 'room_04', 'room_05'] | 6/6 | 20.2 |
-| c7d28f72c6 | lidar | 9 | 107 | 9 | 64.71 | 61.30 | 0.000 | no ['connector_01', 'connector_02', 'connector_03', 'connector_04', 'connector_05', 'room_02', 'room_03', 'room_04'] | 8/9 | 50.2 |
+| c00a170fe1 | lidar | 4 | 16 | 0 | 35.85 | 35.85 | 0.000 | no ['room_02', 'room_03', 'room_04'] | 4/4 | 4.2 |
+| 1a8384c3f6 | lidar | 6 | 60 | 6 | 86.59 | 84.04 | 0.000 | no ['connector_01', 'room_02', 'room_04', 'room_05'] | 6/6 | 14.6 |
+| c7d28f72c6 | lidar | 9 | 107 | 9 | 64.71 | 61.30 | 0.000 | no ['connector_01', 'connector_02', 'connector_03', 'connector_04', 'connector_05', 'room_02', 'room_03', 'room_04'] | 8/9 | 35.2 |
 
 ### Repeat pair: 1a8384c3f6 and c7d28f72c6 (lidar)
 

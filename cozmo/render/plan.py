@@ -32,6 +32,8 @@ from cozmo.contracts.models import Plan  # noqa: E402
 from cozmo.eval.gates import place_polygon  # noqa: E402
 
 MIN_LABELLED_WALL_M = 0.6
+# Two wall labels closer than this on the page are unreadable together.
+LABEL_CLEARANCE_M = 0.42
 UNRELIABLE_MARKERS = ("STUB PIPELINE", "unreliable", "not a real reconstruction")
 OPENING_STYLE = {
     "door": ("#1f77b4", "-", 3.0),
@@ -144,7 +146,12 @@ def render_plan_png(plan: Plan, out_path: Path, dpi: int = 150) -> Path:
                     color=colour, linestyle=style, linewidth=width, zorder=5,
                     solid_capstyle="butt")
 
-    # Wall labels last, so they sit over the fills and under nothing.
+    # Wall labels last, so they sit over the fills and under nothing. They are
+    # gathered first and placed longest wall first: where a cluster of short
+    # connector walls would stack their labels on top of each other, the
+    # longest wall keeps its number and the rest go unlabelled. An unreadable
+    # pile of overlapping figures tells a reader less than one clear figure.
+    candidates = []
     for entry in rooms:
         centre = entry["poly"].mean(axis=0)
         room_span = max(float(np.ptp(entry["poly"][:, 0])), float(np.ptp(entry["poly"][:, 1])), 0.5)
@@ -166,10 +173,21 @@ def render_plan_png(plan: Plan, out_path: Path, dpi: int = 150) -> Path:
             angle = math.degrees(math.atan2(y1 - y0, x1 - x0))
             if angle > 90 or angle < -90:
                 angle += 180
-            ax.text(mx + nx * offset, my + ny * offset, _wall_label(wall),
-                    fontsize=font * 0.82, ha="center", va="center", rotation=angle,
-                    rotation_mode="anchor", zorder=6, color="#333333")
+            candidates.append((length, (mx + nx * offset, my + ny * offset),
+                               _wall_label(wall), font, angle))
 
+    placed: list[tuple[float, float]] = []
+    for _, (lx, ly), text, font, angle in sorted(candidates, key=lambda c: -c[0]):
+        if any(math.hypot(lx - px, ly - py) < LABEL_CLEARANCE_M for px, py in placed):
+            continue
+        placed.append((lx, ly))
+        ax.text(lx, ly, text, fontsize=font * 0.82, ha="center", va="center", rotation=angle,
+                rotation_mode="anchor", zorder=6, color="#333333")
+
+    for entry in rooms:
+        centre = entry["poly"].mean(axis=0)
+        room_span = max(float(np.ptp(entry["poly"][:, 0])), float(np.ptp(entry["poly"][:, 1])), 0.5)
+        font = float(np.clip(room_span * 1.6, 5.0, 8.0))
         room = entry["room"]
         height = room.ceiling_height_m
         prior = height.method.startswith("prior")

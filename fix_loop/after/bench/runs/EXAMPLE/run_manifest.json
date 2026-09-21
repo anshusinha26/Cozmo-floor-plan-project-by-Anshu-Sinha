@@ -372,7 +372,7 @@
     }
   },
   "git": {
-    "commit": "95cd8ead08248e27f4eee5d68e130b15a853fb01",
+    "commit": "98fe55bfa7a2fa278defa1122d6abddb05210a5b",
     "dirty": true
   },
   "seed": 0,
@@ -381,15 +381,15 @@
     "version": "0.1.0",
     "cozmo_version": "0.1.0"
   },
-  "started_at": "2026-09-21T06:18:16.141330+00:00",
-  "finished_at": "2026-09-21T06:18:16.155931+00:00",
-  "duration_s": 0.014601,
+  "started_at": "2026-09-21T06:48:48.807013+00:00",
+  "finished_at": "2026-09-21T06:48:48.818488+00:00",
+  "duration_s": 0.011475,
   "stage_timings_s": {
-    "provenance": 0.014088583004195243,
-    "hand_written_geometry": 0.0001977079955395311,
-    "hand_written_stitch": 2.562499139457941e-05,
-    "hand_written_damage": 9.558300371281803e-05,
-    "render": 0.1206407499848865
+    "provenance": 0.011096624977653846,
+    "hand_written_geometry": 0.00015654100570827723,
+    "hand_written_stitch": 2.316699828952551e-05,
+    "hand_written_damage": 7.199999527074397e-05,
+    "render": 0.09962083300342783
   },
   "library_versions": {
     "pydantic": "2.13.5",
@@ -408,7 +408,7 @@
     "debug": [],
     "drift_report": null
   },
-  "plan_sha256": "5c3ff61615c1578da6dbbd775efda0b8d5701bc7ace17331835b44c0863c47ca",
+  "plan_sha256": "c28491f5c9928e73456403da06c5a12e8a6096f13551ef4723e0ac82c123ebe7",
   "n_rooms": 2,
   "warnings": [
     "STUB PIPELINE: NOT A REAL RECONSTRUCTION"

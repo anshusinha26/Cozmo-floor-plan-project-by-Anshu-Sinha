@@ -9,7 +9,7 @@
   },
   "run": {
     "pipeline_version": "lidar-0.1.0",
-    "git_commit": "95cd8ead08248e27f4eee5d68e130b15a853fb01",
+    "git_commit": "98fe55bfa7a2fa278defa1122d6abddb05210a5b",
     "config_sha256": "4abcd08848e0cabebcc7075a93a35f771511231dc86bed0a5f36b647e03da47f",
     "seed": 0
   },
