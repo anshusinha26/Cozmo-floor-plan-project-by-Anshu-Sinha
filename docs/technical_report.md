@@ -144,14 +144,13 @@ reconstructed floor finds either nothing or a fragment. Median wall error
 ARKit odometry drifts slowly: yaw creeps and floor height wanders over a few
 minutes of walking, which smears wall faces and breaks the floor into a wedge.
 
-`cozmo/lidar/drift.py` anchors to the building, not the trajectory. The walk
-is cut into 5-second chunks. Per chunk: the dominant wall azimuth modulo 90
-degrees gives a yaw error against the global Manhattan direction, removed by
-rotating about the chunk's own centroid; the median height of its floor points
-gives a vertical offset; then its wall points shift along each axis by the
-median offset to the nearest global face. Corrections beyond configured limits
-are rejected, because a chunk that looks 20 degrees off usually has too little
-wall to estimate from.
+`cozmo/lidar/drift.py` anchors to the building, not the trajectory. Per
+5-second chunk: the dominant wall azimuth modulo 90 degrees gives a yaw error
+against the global Manhattan direction, removed by rotating about the chunk's
+own centroid; the median height of its floor points gives a vertical offset;
+then its wall points shift onto the nearest global faces. Corrections beyond
+configured limits are rejected, because a chunk that looks 20 degrees off
+usually has too little wall to estimate from.
 
 **The ablation says it barely matters here**
 (`fix_loop/after/bench/runs/*/drift_report.json`):
@@ -162,15 +161,13 @@ wall to estimate from.
 | 1a8384c3f6 | 32.1 mm | 35.8 mm | 80.0 m2 | 86.6 m2 |
 | c7d28f72c6 | 32.5 mm | 32.6 mm | 65.8 m2 | 64.7 m2 |
 
-Thickness improves on one scan, worsens on another, unchanged on the third.
-The model summary says why: mean yaw error 0.55 to 1.57 degrees, mean height
-error 3 to 8 mm, mean shift 1.4 to 2.2 cm. **ARKit's poses were already good
-enough that there was little to correct.** Room overlap does fall
-consistently. It stays on because it costs one pass and does no harm; that is
-the whole case for it.
-
-The video tier has its own drift problem and it is not this one: chunks
-disagree about scale, not orientation, which section 6 covers.
+Thickness improves on one scan, worsens on another, unchanged on the third,
+because the corrections themselves are tiny: mean yaw error 0.55 to 1.57
+degrees, mean height error 3 to 8 mm. **ARKit's poses were already good enough
+that there was little to correct.** Room overlap does fall consistently. It
+stays on because it costs one pass and does no harm, which is the whole case
+for it. The video tier's drift problem is different: its chunks disagree about
+scale rather than orientation, which section 6 covers.
 
 ---
 
@@ -356,12 +353,12 @@ the capture**, and the protocol now recommends photographs over video.
 
 **Hazards in the real captures**, each with evidence in `docs/hazards.md`.
 Glass and a wardrobe mirror return confident depth for a room that is not
-there, and while the damage filters handle them, reconstruction does not. A
-dog walked through one capture, glossy tiles thicken the floor peak, and
-textureless walls give sparse returns. An unobserved ceiling is the commonest
-cause of a wide interval and is purely a protocol problem.
+there: the damage filters handle them, reconstruction does not. A dog walked
+through one capture, glossy tiles thicken the floor peak, textureless walls
+give sparse returns, and an unobserved ceiling is the commonest cause of a
+wide interval, purely a protocol problem.
 
 **Assumptions that will break.** Manhattan: a curved wall appears as a missing
-face, the safer failure but still a failure. Image-tier scale depends on the
-phone being held near 1.4 m, and a capture at waist height is wrong by the
-ratio with nothing able to detect it.
+face, the safer failure but still a failure. Image-tier scale assumes the
+phone is held near 1.4 m, and a waist-height capture is wrong by the ratio of
+heights, undetectably.
