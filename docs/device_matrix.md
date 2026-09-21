@@ -96,3 +96,8 @@ registered and awaiting predictions:
 
 Two of the four precision filters need depth and poses, so the photo tier
 gets no benefit from them. Details in `damage_eval/README.md`.
+
+**None of this reaches `cozmo run`.** The damage module is driven by
+`scripts/run_damage_eval.py`, which reads a plan and reports against ground
+truth. A plan written by the command line carries an empty damage list and a
+warning saying so, at every tier in this table.
