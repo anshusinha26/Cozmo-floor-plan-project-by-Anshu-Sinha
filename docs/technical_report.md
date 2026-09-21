@@ -238,15 +238,13 @@ confident-garbage cases, both wall lengths.
 **The photo tier is now roughly calibrated; the video tier is not, and looks
 better only because it says less.**
 
-Photo covers 0.88 with intervals at 46% of value, which is wide but in
-proportion to what a handheld photo reconstruction knows. Two confident-garbage
-cases remain, both wall lengths: wrong, with an interval too narrow to admit
-it.
+Photo covers 0.88 with intervals at 46% of value: wide, but in proportion to
+what a handheld photo reconstruction knows. Two confident-garbage cases
+remain, both wall lengths, wrong with an interval too narrow to admit it.
 
 Video covers 1.00 with intervals averaging **409% of the value**. A wall
 reported as 6.6 m plus or minus 5 m contains the tape reading and tells nobody
-anything. It is not rewarded for knowing its error, it is rewarded for
-refusing to commit.
+anything: that is not knowing its error, it is refusing to commit.
 
 The lidar tier contributes no coverage, because the supplied scans have no
 tape. What it contributes is refusal: two of three scans report ceiling height
