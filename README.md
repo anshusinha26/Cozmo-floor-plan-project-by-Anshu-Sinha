@@ -6,33 +6,58 @@ share one output contract. Every reported dimension carries a confidence
 interval, and the evaluation harness scores those intervals as well as the
 numbers.
 
-## Install and first run, under 15 minutes
+## Install: two profiles
 
 Requires Python 3.11 and [uv](https://docs.astral.sh/uv/).
 
+### Profile 1: lidar only, the quick path
+
+Everything needed to turn a LiDAR scan into a plan. No machine learning, no
+model weights, no network at run time. **Clone to first plan is under three
+minutes**, timed on a fresh machine in `docs/rehearsal.md`.
+
 ```bash
 git clone <this repo> && cd Cozmo-floor-plan-project-by-Anshu-Sinha
-uv sync                          # about 2 minutes
-uv run pytest -q                 # about 2 minutes, no data or weights needed
-scripts/fetch_sample_data.sh     # capture data, gitignored (see the script)
+uv sync                          # about 15 seconds on a cold cache
+uv run pytest -q                 # about 45 seconds, no data or weights needed
+scripts/fetch_sample_data.sh     # the three sample scans, about 95 seconds
 uv run cozmo run --input data/sample/c00a170fe1 --tier lidar --out runs/first
 ```
 
 That last command writes `plan.json`, `plan.png`, `run_manifest.json`,
-`drift_report.json` and a `debug/` folder, and takes 4 to 28 seconds
-depending on the scan.
+`drift_report.json` and a `debug/` folder, in 4 to 34 seconds depending on the
+scan.
 
-Damage detection is optional and needs two extra things, neither of which
-reconstruction touches:
+### Profile 2: everything
+
+Adds the video tier, the photo tier and damage detection. These pull torch,
+COLMAP and several model checkpoints, so it is a much bigger install.
 
 ```bash
-uv sync --extra damage           # torch and transformers, about 3 minutes
-scripts/fetch_weights.sh         # model weights, about 1.9 GB
+uv sync --extra all              # torch, pycolmap, transformers and the rest
+scripts/fetch_weights.sh         # about 7.3 GB of model weights, see below
 ```
 
-**Reconstruction needs no weights, no network and no torch.** It is classical
-geometry, so nothing in a reported dimension came from a trained model. A run
-works with the network off; that is checked in `docs/rehearsal.md`.
+Narrower extras exist if you only want one part: `--extra video` (also covers
+photo), `--extra photo`, `--extra damage`. `scripts/fetch_weights.sh video`
+and `scripts/fetch_weights.sh damage` fetch only that half.
+
+| model | used by | size on disk |
+|---|---|---|
+| Depth Pro | video, photo | 1.9 GB |
+| Depth Anything V2 Metric Indoor Large | video, photo | 1.3 GB |
+| MapAnything, Apache checkpoint | video, photo, chunk-boundary poses only | 1.4 GB |
+| OWLv2 | damage | 1.2 GB |
+| SigLIP | damage | 1.5 GB |
+
+Nothing downloads during a run. If a weight is missing the run fails and says
+to run the fetch script.
+
+**The lidar tier needs no weights, no network and no torch.** It is classical
+geometry, so nothing in a lidar dimension came from a trained model. A lidar
+run works with the network off; that is checked in `docs/rehearsal.md`. The
+video and photo tiers do use trained models, and say which in
+[THIRD_PARTY.md](THIRD_PARTY.md).
 
 ## One command per capture
 

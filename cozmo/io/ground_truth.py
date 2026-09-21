@@ -185,6 +185,12 @@ class CaptureEntry(_Strict):
     repeat_of: str | None = None
     repeat_kind: Literal["same_device_repeat", "cross_device_repeat", "coverage_mismatched"] | None = None
     multi_room: bool = False
+    # Video tier only. ffmpeg applies a container rotation tag by itself, so
+    # "auto" is right for phone video; Stray Scanner's rgb.mp4 carries no tag.
+    video_rotation: Literal["auto", "0", "90", "180", "270"] = "auto"
+    # Synthetic harness fixtures pin the stub; real captures leave this null and
+    # take the tier's own pipeline.
+    pipeline: str | None = None
 
     @model_validator(mode="after")
     def _repeat_kind_needs_a_repeat(self) -> "CaptureEntry":

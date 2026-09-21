@@ -19,8 +19,11 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# Damage detection only. Reconstruction needs none of this: it is classical
-# geometry, and the measurement path contains no trained model.
+# The lidar tier needs none of these. It is classical geometry, so nothing in a
+# lidar dimension came from a trained model. Install what you actually intend
+# to run; see the two install profiles in README.md.
+
+# Damage detection: OWLv2 for detection, SigLIP to verify the crops.
 damage = [
     "torch>=2.2",
     "torchvision>=0.17",
@@ -28,6 +31,24 @@ damage = [
     "sentencepiece>=0.2",
     "protobuf>=4.25",
 ]
+
+# Video and photo tiers: COLMAP for structure from motion, Depth Pro and Depth
+# Anything for monocular depth, MapAnything for poses across a chunk boundary,
+# imageio-ffmpeg for decoding, pillow-heif for iPhone stills.
+video = [
+    "torch>=2.2",
+    "torchvision>=0.17",
+    "pycolmap>=3.10",
+    "transformers>=4.40",
+    "depth-pro @ git+https://github.com/apple/ml-depth-pro.git",
+    "mapanything @ git+https://github.com/facebookresearch/map-anything.git",
+    "imageio-ffmpeg>=0.5",
+    "pillow-heif>=1.7.0",
+    "gdown>=5.0",
+]
+photo = ["cozmo[video]"]
+
+all = ["cozmo[damage]", "cozmo[video]"]
 
 [project.scripts]
 cozmo = "cozmo.cli:app"

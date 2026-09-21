@@ -1,0 +1,415 @@
+{
+  "video": {
+    "video": "data/own/hall/hall_loop.mp4",
+    "decoded": 600,
+    "kept": 480,
+    "dropped_blur": 120,
+    "fps_used": 6.98,
+    "frame_wh": [
+      720,
+      1280
+    ],
+    "rotation": "auto",
+    "duration_s": 85.96,
+    "source_wh": [
+      3840,
+      2160
+    ],
+    "source_fps": 30.0,
+    "codec": "h264",
+    "rotation_tag": -90
+  },
+  "sfm": {
+    "n_images": 480,
+    "n_models_found": 15,
+    "model_sizes": [
+      52,
+      46,
+      45,
+      33,
+      32,
+      23,
+      20,
+      19,
+      16,
+      13,
+      12,
+      12,
+      11,
+      10,
+      6
+    ],
+    "chunks_kept": 9,
+    "registered_images": 286,
+    "registered_fraction": 0.5958,
+    "chunk_sizes": [
+      45,
+      23,
+      46,
+      16,
+      19,
+      20,
+      33,
+      52,
+      32
+    ],
+    "focal_px": [
+      1492.47,
+      923.3,
+      889.04,
+      1113.2,
+      986.48,
+      1054.98,
+      1045.66,
+      1010.29,
+      1020.56
+    ],
+    "mean_reproj_err_px": [
+      0.8968,
+      0.9032,
+      0.7516,
+      0.8245,
+      0.7961,
+      0.5744,
+      0.8968,
+      0.7558,
+      0.7118
+    ],
+    "timings_s": {
+      "extract": 43.92,
+      "match": 16.12,
+      "mapping": 37.6,
+      "subprocess_wall": 98.49
+    }
+  },
+  "scale": [
+    {
+      "chunk": 0,
+      "n_images": 45,
+      "n_scale_frames": 12,
+      "focal_px": 1492.47,
+      "scale_m_per_unit": 0.247759,
+      "scale_rel_spread": 0.2713,
+      "scale_rel_sem": 0.0982,
+      "ratio_min": 0.186871,
+      "ratio_max": 0.693411,
+      "sec_per_frame": 3.004
+    },
+    {
+      "chunk": 1,
+      "n_images": 23,
+      "n_scale_frames": 12,
+      "focal_px": 923.3,
+      "scale_m_per_unit": 0.169758,
+      "scale_rel_spread": 0.1181,
+      "scale_rel_sem": 0.0427,
+      "ratio_min": 0.137973,
+      "ratio_max": 0.317257,
+      "sec_per_frame": 2.922
+    },
+    {
+      "chunk": 2,
+      "n_images": 46,
+      "n_scale_frames": 12,
+      "focal_px": 889.04,
+      "scale_m_per_unit": 0.1575,
+      "scale_rel_spread": 0.0655,
+      "scale_rel_sem": 0.0237,
+      "ratio_min": 0.117751,
+      "ratio_max": 0.275955,
+      "sec_per_frame": 2.925
+    },
+    {
+      "chunk": 3,
+      "n_images": 16,
+      "n_scale_frames": 12,
+      "focal_px": 1113.2,
+      "scale_m_per_unit": 0.117676,
+      "scale_rel_spread": 0.0381,
+      "scale_rel_sem": 0.0138,
+      "ratio_min": 0.098954,
+      "ratio_max": 0.130497,
+      "sec_per_frame": 2.937
+    },
+    {
+      "chunk": 4,
+      "n_images": 19,
+      "n_scale_frames": 12,
+      "focal_px": 986.48,
+      "scale_m_per_unit": 0.098714,
+      "scale_rel_spread": 0.1245,
+      "scale_rel_sem": 0.045,
+      "ratio_min": 0.08524,
+      "ratio_max": 0.112461,
+      "sec_per_frame": 3.078
+    },
+    {
+      "chunk": 5,
+      "n_images": 20,
+      "n_scale_frames": 12,
+      "focal_px": 1054.98,
+      "scale_m_per_unit": 0.100042,
+      "scale_rel_spread": 0.0316,
+      "scale_rel_sem": 0.0114,
+      "ratio_min": 0.093412,
+      "ratio_max": 0.110356,
+      "sec_per_frame": 3.254
+    },
+    {
+      "chunk": 6,
+      "n_images": 33,
+      "n_scale_frames": 12,
+      "focal_px": 1045.66,
+      "scale_m_per_unit": 0.166037,
+      "scale_rel_spread": 0.2019,
+      "scale_rel_sem": 0.0731,
+      "ratio_min": 0.123741,
+      "ratio_max": 0.215218,
+      "sec_per_frame": 3.339
+    },
+    {
+      "chunk": 7,
+      "n_images": 52,
+      "n_scale_frames": 12,
+      "focal_px": 1010.29,
+      "scale_m_per_unit": 0.260926,
+      "scale_rel_spread": 0.0515,
+      "scale_rel_sem": 0.0186,
+      "ratio_min": 0.233105,
+      "ratio_max": 0.28402,
+      "sec_per_frame": 3.523
+    },
+    {
+      "chunk": 8,
+      "n_images": 32,
+      "n_scale_frames": 12,
+      "focal_px": 1020.56,
+      "scale_m_per_unit": 0.196535,
+      "scale_rel_spread": 0.2153,
+      "scale_rel_sem": 0.0779,
+      "ratio_min": 0.161988,
+      "ratio_max": 0.279778,
+      "sec_per_frame": 3.642
+    }
+  ],
+  "bridge": {
+    "group": [
+      5,
+      6
+    ],
+    "n_bridges_tried": 8,
+    "n_accepted": 1,
+    "n_rejected": 7,
+    "timed_out": false,
+    "note": "",
+    "attempts": [
+      {
+        "a": 0,
+        "b": 1,
+        "accepted": false,
+        "reason": "alignment residual 0.271 m and 0.282 m against 0.294 and 0.270 allowed",
+        "rms_a_m": 0.2708,
+        "rms_b_m": 0.282,
+        "scale_ratio": 3.4278,
+        "scale_tolerance": null,
+        "seconds": 37.4
+      },
+      {
+        "a": 1,
+        "b": 2,
+        "accepted": false,
+        "reason": "implied scales disagree by 21.3%, over the 15% allowed (15% floor, 2 sigma of the chunks' own 4.9%)",
+        "rms_a_m": 0.0437,
+        "rms_b_m": 0.0731,
+        "scale_ratio": 0.7873,
+        "scale_tolerance": 0.15,
+        "seconds": 3.6
+      },
+      {
+        "a": 2,
+        "b": 3,
+        "accepted": false,
+        "reason": "overlap cameras span only 0.18 m, under the 0.20 m a similarity fit needs to pin a scale",
+        "rms_a_m": 0.0526,
+        "rms_b_m": 0.1902,
+        "scale_ratio": 0.9266,
+        "scale_tolerance": null,
+        "seconds": 3.6
+      },
+      {
+        "a": 3,
+        "b": 4,
+        "accepted": false,
+        "reason": "implied scales disagree by 42.1%, over the 15% allowed (15% floor, 2 sigma of the chunks' own 4.7%)",
+        "rms_a_m": 0.0284,
+        "rms_b_m": 0.0847,
+        "scale_ratio": 1.4211,
+        "scale_tolerance": 0.15,
+        "seconds": 3.5
+      },
+      {
+        "a": 4,
+        "b": 5,
+        "accepted": false,
+        "reason": "implied scales disagree by 16.7%, over the 15% allowed (15% floor, 2 sigma of the chunks' own 4.6%)",
+        "rms_a_m": 0.0137,
+        "rms_b_m": 0.0317,
+        "scale_ratio": 0.8331,
+        "scale_tolerance": 0.15,
+        "seconds": 3.5
+      },
+      {
+        "a": 5,
+        "b": 6,
+        "accepted": true,
+        "reason": "accepted",
+        "rms_a_m": 0.0471,
+        "rms_b_m": 0.0321,
+        "scale_ratio": 1.0349,
+        "scale_tolerance": 0.15,
+        "seconds": 3.5
+      },
+      {
+        "a": 6,
+        "b": 7,
+        "accepted": false,
+        "reason": "implied scales disagree by 126.1%, over the 15% allowed (15% floor, 2 sigma of the chunks' own 7.5%)",
+        "rms_a_m": 0.1017,
+        "rms_b_m": 0.0476,
+        "scale_ratio": 2.261,
+        "scale_tolerance": 0.1508,
+        "seconds": 3.5
+      },
+      {
+        "a": 7,
+        "b": 8,
+        "accepted": false,
+        "reason": "implied scales disagree by 17.8%, over the 16% allowed (15% floor, 2 sigma of the chunks' own 8.0%)",
+        "rms_a_m": 0.0785,
+        "rms_b_m": 0.0223,
+        "scale_ratio": 0.8217,
+        "scale_tolerance": 0.1602,
+        "seconds": 3.5
+      }
+    ],
+    "dropped": [
+      {
+        "chunk": 0,
+        "n_images": 45,
+        "share_of_registered_frames": 0.1573,
+        "share_of_video": 0.075,
+        "time_span_s": [
+          0.0,
+          6.6
+        ]
+      },
+      {
+        "chunk": 1,
+        "n_images": 23,
+        "share_of_registered_frames": 0.0804,
+        "share_of_video": 0.0383,
+        "time_span_s": [
+          10.6,
+          13.8
+        ]
+      },
+      {
+        "chunk": 2,
+        "n_images": 46,
+        "share_of_registered_frames": 0.1608,
+        "share_of_video": 0.0767,
+        "time_span_s": [
+          13.9,
+          20.8
+        ]
+      },
+      {
+        "chunk": 3,
+        "n_images": 16,
+        "share_of_registered_frames": 0.0559,
+        "share_of_video": 0.0267,
+        "time_span_s": [
+          24.1,
+          26.5
+        ]
+      },
+      {
+        "chunk": 4,
+        "n_images": 19,
+        "share_of_registered_frames": 0.0664,
+        "share_of_video": 0.0317,
+        "time_span_s": [
+          35.1,
+          37.8
+        ]
+      },
+      {
+        "chunk": 7,
+        "n_images": 52,
+        "share_of_registered_frames": 0.1818,
+        "share_of_video": 0.0867,
+        "time_span_s": [
+          59.5,
+          68.1
+        ]
+      },
+      {
+        "chunk": 8,
+        "n_images": 32,
+        "share_of_registered_frames": 0.1119,
+        "share_of_video": 0.0533,
+        "time_span_s": [
+          64.6,
+          69.5
+        ]
+      }
+    ]
+  },
+  "dense": {
+    "keyframes": 53,
+    "per_chunk": [
+      {
+        "chunk": 5,
+        "keyframes": 20,
+        "scale_median": 1.2613,
+        "n_scale_clamped": 8,
+        "chunk_scale_m_per_unit": 0.100042
+      },
+      {
+        "chunk": 6,
+        "keyframes": 33,
+        "scale_median": 1.5583,
+        "n_scale_clamped": 23,
+        "chunk_scale_m_per_unit": 0.166037
+      }
+    ],
+    "pixel_stride": 2,
+    "sec_per_frame": 0.491,
+    "cached_depth_mb": 24.4,
+    "points_before_voxel": 11911461,
+    "voxels": 46963
+  },
+  "coverage": {
+    "group_chunks": [
+      5,
+      6
+    ],
+    "frames_in_group": 53,
+    "frames_decoded": 600,
+    "frames_kept": 480,
+    "share_of_kept_frames": 0.1104,
+    "share_of_video": 0.0883
+  },
+  "device": "mps",
+  "interval_budget": {
+    "systematic": 0.03,
+    "scale_sem": 0.0498,
+    "chunk_spread": 0.3677,
+    "coverage": 0.1104,
+    "min_coverage": 0.6,
+    "widened": true,
+    "widening_factor": 1.6,
+    "effective_depth_scale_bias": 0.5957,
+    "abs_floor_m": 0.048
+  }
+}

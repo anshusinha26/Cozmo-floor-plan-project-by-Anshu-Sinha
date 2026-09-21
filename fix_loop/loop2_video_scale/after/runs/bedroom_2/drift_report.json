@@ -1,0 +1,57 @@
+{
+  "tier": "video",
+  "yaw_snap": {
+    "applied": true,
+    "max_yaw_deg": 6.0,
+    "per_chunk": [],
+    "note": "single chunk: nothing to snap against"
+  },
+  "applied": true,
+  "model": {
+    "method": "manhattan_yaw_snap_per_sfm_chunk",
+    "applied": true,
+    "n_chunks": 0,
+    "n_corrected": 0,
+    "yaw_deg": {
+      "mean": 0.0,
+      "max": 0.0
+    },
+    "rejected": [],
+    "note": "single chunk: nothing to snap against"
+  },
+  "gravity": {
+    "method": "per_chunk_floor_plane_before_bridging",
+    "chunks": [
+      {
+        "chunk": 0,
+        "method": "camera_height_prior",
+        "floor_inliers": 0.552,
+        "camera_height_m": 2.813
+      },
+      {
+        "chunk": 1,
+        "method": "depth_pro_only_no_floor_plane",
+        "floor_inliers": 0.26,
+        "camera_height_m": -1.413
+      },
+      {
+        "chunk": 2,
+        "method": "camera_height_prior",
+        "floor_inliers": 0.452,
+        "camera_height_m": 0.748
+      },
+      {
+        "chunk": 3,
+        "method": "camera_height_prior",
+        "floor_inliers": 0.446,
+        "camera_height_m": 0.083
+      },
+      {
+        "chunk": 4,
+        "method": "camera_height_prior",
+        "floor_inliers": 0.831,
+        "camera_height_m": 1.315
+      }
+    ]
+  }
+}

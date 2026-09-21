@@ -37,7 +37,7 @@ def test_evaluate_stub_against_example_reports_every_gate_and_counts():
 def test_eval_command_writes_json_and_md(tmp_path):
     out = tmp_path / "run"
     r = runner.invoke(app, ["run", "--input", str(REPO / "benchmarks" / "captures" / "EXAMPLE"), "--tier", "photo",
-                            "--out", str(out), "--config", str(CONFIG)])
+                            "--out", str(out), "--config", str(CONFIG), "--pipeline", "stub"])
     assert r.exit_code == 0, r.output
     ev = tmp_path / "eval"
     r = runner.invoke(app, ["eval", "--pred", str(out / "plan.json"), "--truth",
@@ -106,7 +106,9 @@ def test_bench_handles_captures_without_ground_truth(tmp_path):
 
     reg = {"captures": [{"capture_id": "EXAMPLE", "space_id": "example_flat", "tier": "photo",
                          "input": "benchmarks/captures/EXAMPLE",
-                         "ground_truth": None, "repeat_of": None, "multi_room": True}]}
+                         "ground_truth": None, "repeat_of": None, "multi_room": True,
+                             # placeholder files, not photographs: pin the stub
+                             "pipeline": "stub"}]}
     path = REPO / "benchmarks" / "_tmp_registry.yaml"
     path.write_text(yaml.safe_dump(reg))
     try:

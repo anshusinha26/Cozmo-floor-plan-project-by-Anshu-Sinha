@@ -9,6 +9,8 @@ captures:
     ground_truth: benchmarks/ground_truth/EXAMPLE.yaml
     repeat_of: null
     multi_room: true
+    # Synthetic fixture: the files are placeholders, not photographs.
+    pipeline: stub
   - capture_id: EXAMPLE_REPEAT
     space_id: example_flat
     tier: photo
@@ -16,6 +18,7 @@ captures:
     ground_truth: benchmarks/ground_truth/EXAMPLE_REPEAT.yaml
     repeat_of: EXAMPLE
     multi_room: true
+    pipeline: stub
   # iPhone LiDAR sample scans in Stray Scanner format. No tape ground truth
   # exists for these yet, so bench reports outputs, runtime and
   # self-consistency only. The two apartment scans are a repeat pair.

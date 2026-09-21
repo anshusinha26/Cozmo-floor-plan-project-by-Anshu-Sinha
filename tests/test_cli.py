@@ -32,7 +32,10 @@ def capture_dir(tmp_path):
 
 
 def _run(capture_dir: Path, out: Path, *extra: str):
-    args = ["run", "--input", str(capture_dir), "--tier", "photo", "--out", str(out), "--config", str(CONFIG), *extra]
+    # These fixtures are two-byte files, not photographs. They exercise the CLI
+    # contract, so they pin the stub rather than reaching the real photo tier.
+    args = ["run", "--input", str(capture_dir), "--tier", "photo", "--out", str(out),
+            "--config", str(CONFIG), "--pipeline", "stub", *extra]
     result = runner.invoke(app, args)
     assert result.exit_code == 0, result.output
     return result
@@ -104,11 +107,11 @@ def test_run_rejects_bad_layout(tmp_path):
     d = tmp_path / "cap" / "living"
     d.mkdir(parents=True)
     (d / "only_one.jpg").write_bytes(b"x")
-    result = runner.invoke(app, ["run", "--input", str(tmp_path / "cap"), "--tier", "photo", "--out", str(tmp_path / "o"), "--config", str(CONFIG)])
+    result = runner.invoke(app, ["run", "--input", str(tmp_path / "cap"), "--tier", "photo", "--out", str(tmp_path / "o"), "--config", str(CONFIG), "--pipeline", "stub"])
     assert result.exit_code == 1
     assert "at least 2" in result.output
 
 
 def test_run_rejects_missing_input(tmp_path):
-    result = runner.invoke(app, ["run", "--input", str(tmp_path / "nope"), "--tier", "photo", "--out", str(tmp_path / "o")])
+    result = runner.invoke(app, ["run", "--input", str(tmp_path / "nope"), "--tier", "photo", "--out", str(tmp_path / "o"), "--pipeline", "stub"])
     assert result.exit_code != 0

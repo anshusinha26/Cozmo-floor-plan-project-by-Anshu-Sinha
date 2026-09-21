@@ -1,0 +1,210 @@
+{
+  "capture_id": "home",
+  "tier": "video",
+  "input": {
+    "root": "/Users/anshusinha/Downloads/Cozmo-AI/Cozmo-floor-plan-project-by-Anshu-Sinha/data/own/home",
+    "files": [
+      {
+        "path": "bedroom_1/bedroom1_loop.mp4",
+        "sha256": "4072d48cb488c38499c7ef6e16b32214647134bbef1b7bad42a1fb66a77edf93",
+        "size_bytes": 234238112
+      },
+      {
+        "path": "bedroom_2/bedroom2_loop.mp4",
+        "sha256": "37444c1c052d9459b6dfdd47bd021d363c458257f634d45469975b9eea2819a2",
+        "size_bytes": 274136106
+      },
+      {
+        "path": "hall/hall_loop.mp4",
+        "sha256": "3bb8cd6daf4bd42b10038dca7b308d6b2f29fb14a9d497514d26c6fba451c428",
+        "size_bytes": 455139750
+      },
+      {
+        "path": "kitchen/kitchen_loop.mp4",
+        "sha256": "094170546ec7896fc52c8a40fbcfb19f77d08fd5a9e9ad03ec78442ad3e5add2",
+        "size_bytes": 203126694
+      }
+    ],
+    "sha256": "65a0bd928333e1351e870a0894e057719f7cbb473374a9fdcca9fe1dc41005c9"
+  },
+  "config": {
+    "path": "config/gates.yaml",
+    "sha256": "739380e84a7fa5e0c285cd6570db103dd946bad5dc46a28881cce6e2bbd6cd0e",
+    "resolved": {
+      "config_version": 1,
+      "gates": {
+        "opening_width": {
+          "tolerance_m": 0.02,
+          "min_pass_fraction": 0.85
+        },
+        "ceiling_height": {
+          "tolerance_m": 0.015,
+          "spread_tolerance_m": 0.01
+        },
+        "ceiling_height_diagnosis": {
+          "small_spread_m": 0.01,
+          "biased_mean_m": 0.015
+        },
+        "repeatability": {
+          "abs_tolerance_m": 0.01,
+          "rel_tolerance": 0.005
+        },
+        "wall_length_tier": {
+          "photo": {
+            "rel_tolerance": 0.08
+          },
+          "video": {
+            "rel_tolerance": 0.03
+          },
+          "lidar": {
+            "abs_tolerance_m": 0.02,
+            "rel_tolerance": 0.01,
+            "status": "PROVISIONAL"
+          }
+        },
+        "footprint": {
+          "rel_tolerance": 0.08
+        },
+        "stitch_adjacency": {},
+        "stitch_overlap": {
+          "max_overlap_m2": 0.05
+        }
+      },
+      "matching": {
+        "opening_offset_gate_m": 0.5
+      },
+      "calibration": {
+        "alpha": 0.05
+      },
+      "pipeline": {
+        "lidar": {
+          "frame_stride": 10,
+          "voxel_m": 0.02,
+          "min_depth_m": 0.2,
+          "max_depth_m": 4.5,
+          "vertical_normal_cos": 0.9,
+          "horizontal_normal_cos": 0.25,
+          "level": {
+            "hist_bin_m": 0.01,
+            "peak_min_fraction": 0.15,
+            "plane_band_m": 0.05,
+            "cell_m": 0.25,
+            "min_ceiling_coverage": 0.15,
+            "prior_height_m": [
+              2.2,
+              3.2
+            ]
+          },
+          "wall": {
+            "min_height_above_floor_m": 0.3,
+            "max_height_below_ceiling_m": 0.1,
+            "hist_bin_m": 0.02,
+            "peak_min_points": 150,
+            "peak_min_separation_m": 0.06,
+            "occupancy_bin_m": 0.05,
+            "min_run_m": 0.4,
+            "wall_min_top_m": 1.6,
+            "max_gap_m": 0.35
+          },
+          "ghost": {
+            "enabled": true,
+            "cell_m": 0.05,
+            "reach_m": 0.35,
+            "probe_offset_m": 0.25,
+            "min_supported_share": 0.25
+          },
+          "cells": {
+            "support_band_m": [
+              1.0,
+              1.6
+            ],
+            "support_cell_m": 0.05,
+            "support_tol_m": 0.12,
+            "min_support_share": 0.55,
+            "max_opening_m": 1.6,
+            "min_line_gap_m": 0.16,
+            "min_cell_area_m2": 0.06,
+            "min_observed_share": 0.25,
+            "observed_cell_m": 0.05,
+            "observed_reach_m": 0.35,
+            "min_keep_area_m2": 0.8,
+            "min_perimeter_support": 0.8
+          },
+          "segmentation": "cells",
+          "room": {
+            "grid_m": 0.02,
+            "erode_m": 0.5,
+            "min_area_m2": 1.5,
+            "min_constriction_m": 0.62,
+            "wall_min_top_m": 1.6,
+            "snap_m": 0.15
+          },
+          "opening": {
+            "band_low_m": 0.3,
+            "band_high_m": 1.9,
+            "min_width_m": 0.6,
+            "max_width_m": 2.4,
+            "bin_m": 0.05
+          },
+          "drift": {
+            "chunk_s": 5.0,
+            "max_yaw_deg": 5.0,
+            "max_shift_m": 0.25
+          },
+          "uncertainty": {
+            "depth_scale_bias": 0.01,
+            "abs_floor_m": 0.01,
+            "ci_level": 0.95
+          }
+        }
+      },
+      "run": {
+        "pipeline": "stub",
+        "drift_correction": true,
+        "segmentation": "cells"
+      }
+    }
+  },
+  "git": {
+    "commit": "10968b769f2f067ccfdf72c20038ce97ccf94230",
+    "dirty": true
+  },
+  "seed": 0,
+  "pipeline": {
+    "name": "stub",
+    "version": "0.1.0",
+    "cozmo_version": "0.1.0"
+  },
+  "started_at": "2026-09-20T18:15:35.645976+00:00",
+  "finished_at": "2026-09-20T18:15:35.664192+00:00",
+  "duration_s": 0.018216,
+  "stage_timings_s": {
+    "provenance": 0.017752707994077355,
+    "hand_written_geometry": 0.00018499998259358108,
+    "hand_written_stitch": 1.9458995666354895e-05,
+    "hand_written_damage": 7.849998655728996e-05,
+    "render": 0.09549645797233097
+  },
+  "library_versions": {
+    "pydantic": "2.13.5",
+    "numpy": "2.4.6",
+    "shapely": "2.1.2",
+    "typer": "0.27.2",
+    "pyyaml": "6.0.3",
+    "jsonschema": "4.26.0",
+    "matplotlib": "3.11.2"
+  },
+  "python_version": "3.11.15",
+  "platform": "macOS-27.0-arm64-arm-64bit",
+  "outputs": {
+    "plan": "plan.json",
+    "plan_png": "plan.png",
+    "debug": [],
+    "drift_report": null
+  },
+  "plan_sha256": "96d35721341f96d4acae8ef3142aead2f9719e79b474f59ad70c57d29cb7c1d8",
+  "n_rooms": 2,
+  "warnings": [
+    "STUB PIPELINE: NOT A REAL RECONSTRUCTION"
+  ]
+}

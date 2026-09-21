@@ -29,7 +29,7 @@ def test_run_writes_plan_png_and_records_it(tmp_path):
         (cap / room / "a.jpg").write_bytes(b"1")
         (cap / room / "b.jpg").write_bytes(b"2")
     out = tmp_path / "out"
-    r = runner.invoke(app, ["run", "--input", str(cap), "--tier", "photo", "--out", str(out), "--config", str(CONFIG)])
+    r = runner.invoke(app, ["run", "--input", str(cap), "--tier", "photo", "--out", str(out), "--config", str(CONFIG), "--pipeline", "stub"])
     assert r.exit_code == 0, r.output
     assert (out / "plan.png").exists()
     assert json.loads((out / "plan.json").read_text())["renders"]["plan_png"] == "plan.png"

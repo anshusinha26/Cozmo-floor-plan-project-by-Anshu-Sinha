@@ -26,7 +26,7 @@ from cozmo.io.stray import StrayScan
 # extension case depends on how the files were transferred, so everything is
 # compared lower-cased.
 IMAGE_EXT = {".jpg", ".jpeg", ".png", ".heic", ".heif"}
-VIDEO_EXT = {".mp4", ".mov", ".m4v", ".hevc"}
+VIDEO_EXT = {".mp4", ".mov", ".m4v", ".hevc", ".avi", ".mkv"}
 KNOWN_JUNK = {".ds_store", ".thumbs.db", ".aae"}  # Finder and iOS sidecar files
 
 
@@ -47,6 +47,7 @@ class InputSpec:
     files: list[Path]
     rooms: list[RoomInput] | None = None  # photo tier only
     n_frames: int | None = None  # lidar tier only
+    skipped: list[str] = field(default_factory=list)  # subfolders that hold no room
 
 
 def _visible(paths):
@@ -103,46 +104,62 @@ def _photo(root: Path) -> InputSpec:
             f"no images and no room subfolders under {root}. The photo tier wants either a folder "
             f"of 2 or more images ({', '.join(sorted(IMAGE_EXT))}, any case) or a folder of such "
             f"folders. Folder holds: {_describe_contents(root)}")
-    rooms = []
+    rooms, skipped = [], []
     for d in subdirs:
         imgs = _images_in(d)
         if len(imgs) < 2:
-            raise InputError(
-                f"room {d.name!r}: photo tier needs at least 2 images, found {len(imgs)}. "
-                f"Folder holds: {_describe_contents(d)}")
+            # A capture folder often carries things that are not rooms: a
+            # measurements pdf, a folder of screenshots. Naming them and moving
+            # on beats refusing the whole capture over one of them.
+            skipped.append(f"{d.name} ({len(imgs)} image(s), needs at least 2)")
+            continue
         rooms.append(RoomInput(d.name, imgs))
-    return InputSpec("photo", root, [f for r in rooms for f in r.files], rooms=rooms)
+    if not rooms:
+        raise InputError(f"no room folder under {root} has enough images; skipped: "
+                         f"{', '.join(skipped) if skipped else 'none'}")
+    return InputSpec("photo", root, [f for r in rooms for f in r.files], rooms=rooms,
+                     skipped=skipped)
 
 
 def _video(root: Path) -> InputSpec:
+    """A Stray Scanner folder (rgb.mp4) or any folder holding exactly one video file.
+
+    Either way the spec lists the one video, so tier isolation holds: the video
+    tier never sees depth, odometry or the still photos sitting beside the clip.
+    """
     if not root.is_dir():
-        raise InputError(f"video input must be a directory: {root}")
+        raise InputError(f"video input must be a folder holding one video: {root}")
     if looks_like_scan(root):
         scan = StrayScan(root, "video")
         if not scan.open("rgb.mp4").is_file():
             raise InputError(f"video tier needs rgb.mp4 in {root}")
         return InputSpec("video", root, scan.files())
-    clips = _clips_in(root)
-    if len(clips) == 1:
-        return InputSpec("video", root, clips, rooms=[RoomInput(root.name, clips)])
-    if len(clips) > 1:
+    vids = _clips_in(root)
+    if len(vids) > 1:
         raise InputError(
-            f"room {root.name!r}: video tier needs exactly one clip, found {len(clips)}: "
-            f"{', '.join(p.name for p in clips)}. Put one room's clip in one folder")
-    subdirs = _visible(p for p in root.iterdir() if p.is_dir())
-    if not subdirs:
-        raise InputError(
-            f"video tier needs one clip or room subfolders in {root}. Accepted clip types: "
-            f"{', '.join(sorted(VIDEO_EXT))}, any case. Folder holds: {_describe_contents(root)}")
-    rooms = []
-    for d in subdirs:
-        c = _clips_in(d)
-        if len(c) != 1:
-            raise InputError(
-                f"room {d.name!r}: video tier needs exactly one clip, found {len(c)}. "
-                f"Folder holds: {_describe_contents(d)}")
-        rooms.append(RoomInput(d.name, c))
-    return InputSpec("video", root, [f for r in rooms for f in r.files], rooms=rooms)
+            f"{root} holds {len(vids)} video files: {', '.join(p.name for p in vids)}. "
+            "Put one room's clip in one folder")
+    if vids:
+        # rooms stays None on purpose: one bare clip is one room, and the video
+        # pipeline uses rooms being None to tell that from a property walk.
+        return InputSpec("video", root, vids)
+
+    # A property captured as one clip per room, the same layout the photo tier
+    # takes. Each room is reconstructed on its own and the rooms are stitched.
+    rooms, skipped = [], []
+    for d in _visible(p for p in root.iterdir() if p.is_dir()):
+        sub = _clips_in(d)
+        if len(sub) == 1:
+            rooms.append(RoomInput(d.name, sub))
+        else:
+            skipped.append(f"{d.name} ({len(sub)} video(s), needs exactly 1)")
+    if rooms:
+        return InputSpec("video", root, [f for r in rooms for f in r.files], rooms=rooms,
+                         skipped=skipped)
+    raise InputError(
+        f"no video file in {root}, and no subfolder holds exactly one (looked for "
+        f"{', '.join(sorted(VIDEO_EXT))}, any case). Folder holds: {_describe_contents(root)}"
+        + (f"; skipped: {', '.join(skipped)}" if skipped else ""))
 
 
 def _lidar(root: Path) -> InputSpec:

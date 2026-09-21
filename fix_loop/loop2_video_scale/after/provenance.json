@@ -1,0 +1,19 @@
+{
+  "commit": "31803d332c97cb8245afddb55ddfe5b7494d6784",
+  "commit_subject": "fix(video): set the wall-height bar from what was reconstructed",
+  "branch": "video-tier",
+  "tree_dirty": false,
+  "note": "Clean tree: the commit reproduces this snapshot, given the cached reconstructions",
+  "config_sha256": "8e3b03ddd5de2cb926d796eb47b474fbe61cd851790f84b8be5a8c184d48b316",
+  "taken_at": "2026-09-21T03:20:18.024832+00:00",
+  "python": "3.11.15",
+  "platform": "macOS-27.0-arm64-arm-64bit",
+  "runs": [
+    "bedroom_1",
+    "bedroom_2",
+    "bedroom_2_repeat",
+    "c00a170fe1",
+    "hall",
+    "kitchen"
+  ]
+}

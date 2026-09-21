@@ -1,0 +1,102 @@
+{
+  "tier": "video",
+  "yaw_snap": {
+    "applied": true,
+    "max_yaw_deg": 6.0,
+    "per_chunk": [
+      {
+        "chunk": 1,
+        "n_wall_points": 4683,
+        "yaw_delta_deg": -17.81,
+        "rejected": "yaw beyond the limit"
+      },
+      {
+        "chunk": 2,
+        "n_wall_points": 8087,
+        "yaw_delta_deg": 6.103,
+        "rejected": "yaw beyond the limit"
+      },
+      {
+        "chunk": 3,
+        "n_wall_points": 5463,
+        "yaw_delta_deg": 15.929,
+        "rejected": "yaw beyond the limit"
+      },
+      {
+        "chunk": 4,
+        "n_wall_points": 2971,
+        "yaw_delta_deg": -8.887,
+        "rejected": "yaw beyond the limit"
+      },
+      {
+        "chunk": 5,
+        "n_wall_points": 2737,
+        "yaw_delta_deg": -2.458,
+        "rejected": null
+      }
+    ],
+    "global_yaw_deg": 48.005
+  },
+  "applied": true,
+  "model": {
+    "method": "manhattan_yaw_snap_per_sfm_chunk",
+    "applied": true,
+    "n_chunks": 5,
+    "n_corrected": 1,
+    "yaw_deg": {
+      "mean": 2.458,
+      "max": 2.458
+    },
+    "rejected": [
+      "yaw beyond the limit"
+    ],
+    "note": ""
+  },
+  "gravity": {
+    "method": "per_chunk_floor_plane_before_bridging",
+    "chunks": [
+      {
+        "chunk": 0,
+        "method": "depth_pro_only_no_floor_plane",
+        "floor_inliers": 0.737,
+        "camera_height_m": 1.105
+      },
+      {
+        "chunk": 1,
+        "method": "camera_height_prior",
+        "floor_inliers": 0.68,
+        "camera_height_m": 1.404
+      },
+      {
+        "chunk": 2,
+        "method": "camera_height_prior",
+        "floor_inliers": 0.784,
+        "camera_height_m": 1.496
+      },
+      {
+        "chunk": 3,
+        "method": "camera_height_prior",
+        "floor_inliers": 0.786,
+        "camera_height_m": 1.471
+      },
+      {
+        "chunk": 4,
+        "method": "camera_height_prior",
+        "floor_inliers": 0.986,
+        "camera_height_m": 1.442
+      },
+      {
+        "chunk": 5,
+        "method": "camera_height_prior",
+        "floor_inliers": 0.953,
+        "camera_height_m": 1.305
+      },
+      {
+        "chunk": 6,
+        "method": "camera_height_prior",
+        "floor_inliers": 0.171,
+        "camera_height_m": 2.881
+      }
+    ]
+  }
+}

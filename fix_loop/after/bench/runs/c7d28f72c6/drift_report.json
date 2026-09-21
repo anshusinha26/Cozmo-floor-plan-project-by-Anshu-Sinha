@@ -1,0 +1,37 @@
+{
+  "drift_off": {
+    "footprint_area_m2": 65.75115683500105,
+    "mean_wall_thickness_m": 0.032455000810569824,
+    "n_rooms": 8,
+    "n_wall_faces": 107,
+    "room_overlap_m2": 0.0
+  },
+  "drift_on": {
+    "footprint_area_m2": 64.70894175886352,
+    "mean_wall_thickness_m": 0.032638111507421116,
+    "n_rooms": 9,
+    "n_wall_faces": 109,
+    "room_overlap_m2": 0.0
+  },
+  "delta": {
+    "footprint_area_m2": -1.0422150761375377,
+    "mean_wall_thickness_m": 0.00018311069685129217
+  },
+  "applied": true,
+  "model": {
+    "n_chunks": 43,
+    "yaw_deg": {
+      "mean": 0.5535655781101237,
+      "max": 2.0425904353648012
+    },
+    "height_m": {
+      "mean": 0.002971367791045725,
+      "max": 0.022824166534316737
+    },
+    "shift_m": {
+      "mean": 0.02243201152939865,
+      "max": 0.05456075375645007
+    },
+    "rejected": []
+  }
+}

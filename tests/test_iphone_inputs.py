@@ -99,7 +99,7 @@ def test_error_messages_say_what_was_found_and_what_is_accepted(tmp_path):
     (two_clips / "b.MP4").write_bytes(b"v")
     with pytest.raises(InputError) as e:
         validate_input(two_clips, "video")
-    assert "exactly one clip" in str(e.value) and "a.mov" in str(e.value)
+    assert "2 video files" in str(e.value) and "a.mov" in str(e.value) and "b.MP4" in str(e.value)
 
     not_a_scan = tmp_path / "docs"
     not_a_scan.mkdir()

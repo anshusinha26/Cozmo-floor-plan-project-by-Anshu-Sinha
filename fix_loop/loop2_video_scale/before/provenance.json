@@ -1,0 +1,19 @@
+{
+  "commit": "89a09e95121ebbc60cbb3dbb98f1b1821cd2f42e",
+  "commit_subject": "fix(video): pin and cache the reconstruction so a run is regenerable",
+  "branch": "video-tier",
+  "tree_dirty": false,
+  "note": "Produced by a git archive of 89a09e9, so the working tree at snapshot time is irrelevant. regenerate.sh reproduces it the same way.",
+  "config_sha256": "84155fec7085dcf10a7cbd889dccf676e299310834148e44d62207c0c19b6729",
+  "taken_at": "2026-09-20T18:30:01.742223+00:00",
+  "python": "3.11.15",
+  "platform": "macOS-27.0-arm64-arm-64bit",
+  "runs": [
+    "bedroom_1",
+    "bedroom_2",
+    "bedroom_2_repeat",
+    "c00a170fe1",
+    "hall",
+    "kitchen"
+  ]
+}

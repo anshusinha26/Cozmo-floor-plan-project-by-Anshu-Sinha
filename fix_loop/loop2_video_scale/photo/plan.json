@@ -1,0 +1,1128 @@
+{
+  "schema_version": "1.0.0",
+  "capture": {
+    "id": "own",
+    "tier": "photo",
+    "device": null,
+    "captured_at": null,
+    "input_manifest_sha256": "dab64f05a6f074187b4dfb87096c55b3f6bd366ff237bb2e8740a42272ac7003"
+  },
+  "run": {
+    "pipeline_version": "photo-0.1.0",
+    "git_commit": "8f7aaeff959702c538ab7997ef3b6718a4dfb6ba",
+    "config_sha256": "f8da9852f393c16abef9ae1f6f8fa275aa4dde553f51205fae3e214e87660bd6",
+    "seed": 0
+  },
+  "rooms": [
+    {
+      "id": "hall",
+      "label": "room",
+      "polygon": [
+        [
+          -1.5315696291882785,
+          -6.0940987274834955
+        ],
+        [
+          3.9852166401550218,
+          -3.562363936477417
+        ],
+        [
+          1.3920787419584069,
+          2.0882230057669924
+        ],
+        [
+          -4.124707527384894,
+          -0.44351178523908685
+        ]
+      ],
+      "walls": [
+        {
+          "id": "w1",
+          "start": [
+            -1.5315696291882785,
+            -6.0940987274834955
+          ],
+          "end": [
+            3.9852166401550218,
+            -3.562363936477417
+          ],
+          "length_m": {
+            "value": 6.069976259723374,
+            "ci_low": 4.593997188672304,
+            "ci_high": 7.545955330774444,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 3.0905815471599776,
+            "ci_low": 2.3355384533543653,
+            "ci_high": 3.84562464096559,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        },
+        {
+          "id": "w2",
+          "start": [
+            3.9852166401550218,
+            -3.562363936477417
+          ],
+          "end": [
+            1.3920787419584069,
+            2.0882230057669924
+          ],
+          "length_m": {
+            "value": 6.217193655575366,
+            "ci_low": 4.705393534777107,
+            "ci_high": 7.728993776373626,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 3.0905815471599776,
+            "ci_low": 2.3355384533543653,
+            "ci_high": 3.84562464096559,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        },
+        {
+          "id": "w3",
+          "start": [
+            1.3920787419584069,
+            2.0882230057669924
+          ],
+          "end": [
+            -4.124707527384894,
+            -0.44351178523908685
+          ],
+          "length_m": {
+            "value": 6.069976259723374,
+            "ci_low": 4.593997188672304,
+            "ci_high": 7.545955330774444,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 3.0905815471599776,
+            "ci_low": 2.3355384533543653,
+            "ci_high": 3.84562464096559,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        },
+        {
+          "id": "w4",
+          "start": [
+            -4.124707527384894,
+            -0.44351178523908685
+          ],
+          "end": [
+            -1.5315696291882785,
+            -6.0940987274834955
+          ],
+          "length_m": {
+            "value": 6.217193655575366,
+            "ci_low": 4.705393534777107,
+            "ci_high": 7.728993776373626,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 3.0905815471599776,
+            "ci_low": 2.3355384533543653,
+            "ci_high": 3.84562464096559,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        }
+      ],
+      "ceiling_height_m": {
+        "value": 3.0905815471599776,
+        "ci_low": 2.3355384533543653,
+        "ci_high": 3.84562464096559,
+        "unit": "m",
+        "method": "ceiling_floor_plane_fit",
+        "ci_level": 0.95
+      },
+      "floor_area_m2": {
+        "value": 37.73821789144525,
+        "ci_low": 24.76055866536096,
+        "ci_high": 50.715877117529544,
+        "unit": "m2",
+        "method": "polygon_from_wall_faces",
+        "ci_level": 0.95
+      },
+      "openings": []
+    },
+    {
+      "id": "bedroom_1",
+      "label": "room",
+      "polygon": [
+        [
+          -0.32839832244799005,
+          3.499748271920367
+        ],
+        [
+          3.0780179936740115,
+          0.7519574909519466
+        ],
+        [
+          5.387623177606103,
+          3.6151582982468344
+        ],
+        [
+          1.9812068614841014,
+          6.362949079215255
+        ]
+      ],
+      "walls": [
+        {
+          "id": "w1",
+          "start": [
+            -4.650848608177172,
+            4.331681258135548
+          ],
+          "end": [
+            -1.2444322920551696,
+            1.5838904771671283
+          ],
+          "length_m": {
+            "value": 4.376531308549869,
+            "ci_low": 3.312022991398228,
+            "ci_high": 5.44103962570151,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 3.203348741862629,
+            "ci_low": 2.4218149838383516,
+            "ci_high": 3.984882499886907,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        },
+        {
+          "id": "w2",
+          "start": [
+            -1.2444322920551696,
+            1.5838904771671283
+          ],
+          "end": [
+            1.0651728918769214,
+            4.447091284462016
+          ],
+          "length_m": {
+            "value": 3.678613185500765,
+            "ci_low": 2.7838447382089395,
+            "ci_high": 4.57338163279259,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 3.203348741862629,
+            "ci_low": 2.4218149838383516,
+            "ci_high": 3.984882499886907,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        },
+        {
+          "id": "w3",
+          "start": [
+            1.0651728918769214,
+            4.447091284462016
+          ],
+          "end": [
+            -2.3412434242450804,
+            7.194882065430436
+          ],
+          "length_m": {
+            "value": 4.376531308549869,
+            "ci_low": 3.312022991398228,
+            "ci_high": 5.44103962570151,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 3.203348741862629,
+            "ci_low": 2.4218149838383516,
+            "ci_high": 3.984882499886907,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        },
+        {
+          "id": "w4",
+          "start": [
+            -2.3412434242450804,
+            7.194882065430436
+          ],
+          "end": [
+            -4.650848608177172,
+            4.331681258135548
+          ],
+          "length_m": {
+            "value": 3.678613185500765,
+            "ci_low": 2.7838447382089395,
+            "ci_high": 4.57338163279259,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 3.203348741862629,
+            "ci_low": 2.4218149838383516,
+            "ci_high": 3.984882499886907,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        }
+      ],
+      "ceiling_height_m": {
+        "value": 3.203348741862629,
+        "ci_low": 2.4218149838383516,
+        "ci_high": 3.984882499886907,
+        "unit": "m",
+        "method": "ceiling_floor_plane_fit",
+        "ci_level": 0.95
+      },
+      "floor_area_m2": {
+        "value": 16.099565778388467,
+        "ci_low": 10.561530749359207,
+        "ci_high": 21.637600807417726,
+        "unit": "m2",
+        "method": "polygon_from_wall_faces",
+        "ci_level": 0.95
+      },
+      "openings": [
+        {
+          "id": "bedroom_1_o1",
+          "type": "pass_through",
+          "wall_id": "w3",
+          "offset_along_wall_m": {
+            "value": 2.230889610299484,
+            "ci_low": 2.0185096074155027,
+            "ci_high": 2.4432696131834657,
+            "unit": "m",
+            "method": "wall_occupancy_gap",
+            "ci_level": 0.95
+          },
+          "width_m": {
+            "value": 0.8500000000000002,
+            "ci_low": 0.6376199971160186,
+            "ci_high": 1.0623800028839818,
+            "unit": "m",
+            "method": "wall_occupancy_gap",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 3.0374453414940574,
+            "ci_low": 2.9749453414940574,
+            "ci_high": 3.0999453414940574,
+            "unit": "m",
+            "method": "lintel_points",
+            "ci_level": 0.95
+          },
+          "sill_height_m": null,
+          "detection_confidence": 0.6
+        }
+      ]
+    },
+    {
+      "id": "bedroom_2",
+      "label": "room",
+      "polygon": [
+        [
+          3.3235081551809635,
+          -4.529072143422125
+        ],
+        [
+          6.558374159882307,
+          -6.760805976287279
+        ],
+        [
+          8.641264706274386,
+          -3.7416861687126906
+        ],
+        [
+          5.406398701573043,
+          -1.5099523358475366
+        ]
+      ],
+      "walls": [
+        {
+          "id": "w1",
+          "start": [
+            -1.1000916782441452,
+            -3.6596693311044466
+          ],
+          "end": [
+            2.1347743264571983,
+            -5.891403163969601
+          ],
+          "length_m": {
+            "value": 3.9300119553415387,
+            "ci_low": 3.165101066266664,
+            "ci_high": 4.694922844416413,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 3.1630882911929317,
+            "ci_low": 2.5443556345719474,
+            "ci_high": 3.781820947813916,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        },
+        {
+          "id": "w2",
+          "start": [
+            2.1347743264571983,
+            -5.891403163969601
+          ],
+          "end": [
+            4.217664872849277,
+            -2.872283356395012
+          ],
+          "length_m": {
+            "value": 3.6679036847685507,
+            "ci_low": 2.954076378246503,
+            "ci_high": 4.381730991290598,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 3.1630882911929317,
+            "ci_low": 2.5443556345719474,
+            "ci_high": 3.781820947813916,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        },
+        {
+          "id": "w3",
+          "start": [
+            4.217664872849277,
+            -2.872283356395012
+          ],
+          "end": [
+            0.9827988681479334,
+            -0.6405495235298582
+          ],
+          "length_m": {
+            "value": 3.9300119553415387,
+            "ci_low": 3.165101066266664,
+            "ci_high": 4.694922844416413,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 3.1630882911929317,
+            "ci_low": 2.5443556345719474,
+            "ci_high": 3.781820947813916,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        },
+        {
+          "id": "w4",
+          "start": [
+            0.9827988681479334,
+            -0.6405495235298582
+          ],
+          "end": [
+            -1.1000916782441452,
+            -3.6596693311044466
+          ],
+          "length_m": {
+            "value": 3.6679036847685507,
+            "ci_low": 2.954076378246503,
+            "ci_high": 4.381730991290598,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 3.1630882911929317,
+            "ci_low": 2.5443556345719474,
+            "ci_high": 3.781820947813916,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        }
+      ],
+      "ceiling_height_m": {
+        "value": 3.1630882911929317,
+        "ci_low": 2.5443556345719474,
+        "ci_high": 3.781820947813916,
+        "unit": "m",
+        "method": "ceiling_floor_plane_fit",
+        "ci_level": 0.95
+      },
+      "floor_area_m2": {
+        "value": 14.414905332181688,
+        "ci_low": 10.44716022888993,
+        "ci_high": 18.382650435473444,
+        "unit": "m2",
+        "method": "polygon_from_wall_faces",
+        "ci_level": 0.95
+      },
+      "openings": []
+    },
+    {
+      "id": "kitchen",
+      "label": "room",
+      "polygon": [
+        [
+          6.10303317721948,
+          3.092329370967507
+        ],
+        [
+          3.854907646891003,
+          1.6919834031538603
+        ],
+        [
+          6.169433385958543,
+          -2.023772934348991
+        ],
+        [
+          8.41755891628702,
+          -0.6234269665353445
+        ]
+      ],
+      "walls": [
+        {
+          "id": "w1",
+          "start": [
+            4.4803500705519,
+            3.158442915673712
+          ],
+          "end": [
+            2.2322245402234238,
+            1.7580969478600648
+          ],
+          "length_m": {
+            "value": 2.6485915558437156,
+            "ci_low": 2.1326332855493484,
+            "ci_high": 3.164549826138083,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 2.1134234434066093,
+            "ci_low": 1.6955385960997895,
+            "ci_high": 2.531308290713429,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        },
+        {
+          "id": "w2",
+          "start": [
+            2.2322245402234238,
+            1.7580969478600648
+          ],
+          "end": [
+            4.546750279290964,
+            -1.9576593896427867
+          ],
+          "length_m": {
+            "value": 4.37765628578795,
+            "ci_low": 3.5252071928931046,
+            "ci_high": 5.230105378682795,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 2.1134234434066093,
+            "ci_low": 1.6955385960997895,
+            "ci_high": 2.531308290713429,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        },
+        {
+          "id": "w3",
+          "start": [
+            4.546750279290964,
+            -1.9576593896427867
+          ],
+          "end": [
+            6.79487580961944,
+            -0.5573134218291396
+          ],
+          "length_m": {
+            "value": 2.6485915558437156,
+            "ci_low": 2.1326332855493484,
+            "ci_high": 3.164549826138083,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 2.1134234434066093,
+            "ci_low": 1.6955385960997895,
+            "ci_high": 2.531308290713429,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        },
+        {
+          "id": "w4",
+          "start": [
+            6.79487580961944,
+            -0.5573134218291396
+          ],
+          "end": [
+            4.4803500705519,
+            3.158442915673712
+          ],
+          "length_m": {
+            "value": 4.37765628578795,
+            "ci_low": 3.5252071928931046,
+            "ci_high": 5.230105378682795,
+            "unit": "m",
+            "method": "wall_face_separation",
+            "ci_level": 0.95
+          },
+          "height_m": {
+            "value": 2.1134234434066093,
+            "ci_low": 1.6955385960997895,
+            "ci_high": 2.531308290713429,
+            "unit": "m",
+            "method": "ceiling_floor_plane_fit",
+            "ci_level": 0.95
+          }
+        }
+      ],
+      "ceiling_height_m": {
+        "value": 2.1134234434066093,
+        "ci_low": 1.6955385960997895,
+        "ci_high": 2.531308290713429,
+        "unit": "m",
+        "method": "ceiling_floor_plane_fit",
+        "ci_level": 0.95
+      },
+      "floor_area_m2": {
+        "value": 11.594623472924127,
+        "ci_low": 8.400356319428209,
+        "ci_high": 14.788890626420045,
+        "unit": "m2",
+        "method": "polygon_from_wall_faces",
+        "ci_level": 0.95
+      },
+      "openings": []
+    }
+  ],
+  "adjacency": [
+    {
+      "room_a": "hall",
+      "room_b": "bedroom_1",
+      "via_opening_id": null
+    },
+    {
+      "room_a": "hall",
+      "room_b": "bedroom_2",
+      "via_opening_id": null
+    },
+    {
+      "room_a": "hall",
+      "room_b": "kitchen",
+      "via_opening_id": null
+    }
+  ],
+  "stitched_plan": {
+    "placements": [
+      {
+        "room_id": "hall",
+        "tx": 0.0,
+        "ty": 0.0,
+        "theta_deg": {
+          "value": 0.0,
+          "ci_low": -15.0,
+          "ci_high": 15.0,
+          "unit": "deg",
+          "method": "star_layout_assumption_connector",
+          "ci_level": 0.95
+        }
+      },
+      {
+        "room_id": "bedroom_1",
+        "tx": -0.3704488141439892,
+        "ty": 4.703044517408339,
+        "theta_deg": {
+          "value": -90.0,
+          "ci_low": -105.0,
+          "ci_high": -75.0,
+          "unit": "deg",
+          "method": "star_layout_assumption_wall",
+          "ci_level": 0.95
+        }
+      },
+      {
+        "room_id": "bedroom_2",
+        "tx": 3.16384264697792,
+        "ty": -2.998437736983308,
+        "theta_deg": {
+          "value": -90.0,
+          "ci_low": -105.0,
+          "ci_high": -75.0,
+          "unit": "deg",
+          "method": "star_layout_assumption_wall",
+          "ci_level": 0.95
+        }
+      },
+      {
+        "room_id": "kitchen",
+        "tx": 4.200828963090983,
+        "ty": -0.13283799324446321,
+        "theta_deg": {
+          "value": -180.0,
+          "ci_low": -195.0,
+          "ci_high": -165.0,
+          "unit": "deg",
+          "method": "star_layout_assumption_wall",
+          "ci_level": 0.95
+        }
+      }
+    ],
+    "footprint_polygon": [
+      [
+        -4.124707527384894,
+        -0.44351178523908685
+      ],
+      [
+        -1.5315696291882785,
+        -6.0940987274834955
+      ],
+      [
+        3.9852166401550218,
+        -3.562363936477417
+      ],
+      [
+        1.3920787419584069,
+        2.0882230057669924
+      ]
+    ],
+    "footprint_area_m2": {
+      "value": 79.84731247493954,
+      "ci_low": 0.01,
+      "ci_high": 204.22834222621924,
+      "unit": "m2",
+      "method": "star_layout_union_of_rooms",
+      "ci_level": 0.95
+    },
+    "overlap_area_m2": {
+      "value": 0.0,
+      "ci_low": 0.0,
+      "ci_high": 0.05,
+      "unit": "m2",
+      "method": "pairwise_polygon_intersection",
+      "ci_level": 0.95
+    }
+  },
+  "surfaces": [
+    {
+      "id": "s_hall_w1",
+      "room_id": "hall",
+      "type": "wall",
+      "wall_id": "w1",
+      "area_m2": {
+        "value": 18.7597566200002,
+        "ci_low": 12.293440103998153,
+        "ci_high": 25.22607313600225,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_hall_w2",
+      "room_id": "hall",
+      "type": "wall",
+      "wall_id": "w2",
+      "area_m2": {
+        "value": 19.214743987041313,
+        "ci_low": 12.591546078405159,
+        "ci_high": 25.837941895677467,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_hall_w3",
+      "room_id": "hall",
+      "type": "wall",
+      "wall_id": "w3",
+      "area_m2": {
+        "value": 18.7597566200002,
+        "ci_low": 12.293440103998153,
+        "ci_high": 25.22607313600225,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_hall_w4",
+      "room_id": "hall",
+      "type": "wall",
+      "wall_id": "w4",
+      "area_m2": {
+        "value": 19.214743987041313,
+        "ci_low": 12.591546078405159,
+        "ci_high": 25.837941895677467,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_hall_floor",
+      "room_id": "hall",
+      "type": "floor",
+      "wall_id": null,
+      "area_m2": {
+        "value": 37.73821789144525,
+        "ci_low": 24.76055866536096,
+        "ci_high": 50.715877117529544,
+        "unit": "m2",
+        "method": "polygon_from_wall_faces",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_hall_ceiling",
+      "room_id": "hall",
+      "type": "ceiling",
+      "wall_id": null,
+      "area_m2": {
+        "value": 37.73821789144525,
+        "ci_low": 24.76055866536096,
+        "ci_high": 50.715877117529544,
+        "unit": "m2",
+        "method": "polygon_from_wall_faces",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_bedroom_1_w1",
+      "room_id": "bedroom_1",
+      "type": "wall",
+      "wall_id": "w1",
+      "area_m2": {
+        "value": 14.01955606096563,
+        "ci_low": 9.189729461823116,
+        "ci_high": 18.849382660108144,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_bedroom_1_w2",
+      "room_id": "bedroom_1",
+      "type": "wall",
+      "wall_id": "w2",
+      "area_m2": {
+        "value": 11.783880919573154,
+        "ci_low": 7.724223651943512,
+        "ci_high": 15.843538187202796,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_bedroom_1_w3",
+      "room_id": "bedroom_1",
+      "type": "wall",
+      "wall_id": "w3",
+      "area_m2": {
+        "value": 14.01955606096563,
+        "ci_low": 9.189729461823116,
+        "ci_high": 18.849382660108144,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_bedroom_1_w4",
+      "room_id": "bedroom_1",
+      "type": "wall",
+      "wall_id": "w4",
+      "area_m2": {
+        "value": 11.783880919573154,
+        "ci_low": 7.724223651943512,
+        "ci_high": 15.843538187202796,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_bedroom_1_floor",
+      "room_id": "bedroom_1",
+      "type": "floor",
+      "wall_id": null,
+      "area_m2": {
+        "value": 16.099565778388467,
+        "ci_low": 10.561530749359207,
+        "ci_high": 21.637600807417726,
+        "unit": "m2",
+        "method": "polygon_from_wall_faces",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_bedroom_1_ceiling",
+      "room_id": "bedroom_1",
+      "type": "ceiling",
+      "wall_id": null,
+      "area_m2": {
+        "value": 16.099565778388467,
+        "ci_low": 10.561530749359207,
+        "ci_high": 21.637600807417726,
+        "unit": "m2",
+        "method": "polygon_from_wall_faces",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_bedroom_2_w1",
+      "room_id": "bedroom_2",
+      "type": "wall",
+      "wall_id": "w1",
+      "area_m2": {
+        "value": 12.430974800189059,
+        "ci_low": 9.000713099098691,
+        "ci_high": 15.861236501279427,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_bedroom_2_w2",
+      "room_id": "bedroom_2",
+      "type": "wall",
+      "wall_id": "w2",
+      "area_m2": {
+        "value": 11.601903198514812,
+        "ci_low": 8.4005724749727,
+        "ci_high": 14.803233922056924,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_bedroom_2_w3",
+      "room_id": "bedroom_2",
+      "type": "wall",
+      "wall_id": "w3",
+      "area_m2": {
+        "value": 12.430974800189059,
+        "ci_low": 9.000713099098691,
+        "ci_high": 15.861236501279427,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_bedroom_2_w4",
+      "room_id": "bedroom_2",
+      "type": "wall",
+      "wall_id": "w4",
+      "area_m2": {
+        "value": 11.601903198514812,
+        "ci_low": 8.4005724749727,
+        "ci_high": 14.803233922056924,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_bedroom_2_floor",
+      "room_id": "bedroom_2",
+      "type": "floor",
+      "wall_id": null,
+      "area_m2": {
+        "value": 14.414905332181688,
+        "ci_low": 10.44716022888993,
+        "ci_high": 18.382650435473444,
+        "unit": "m2",
+        "method": "polygon_from_wall_faces",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_bedroom_2_ceiling",
+      "room_id": "bedroom_2",
+      "type": "ceiling",
+      "wall_id": null,
+      "area_m2": {
+        "value": 14.414905332181688,
+        "ci_low": 10.44716022888993,
+        "ci_high": 18.382650435473444,
+        "unit": "m2",
+        "method": "polygon_from_wall_faces",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_kitchen_w1",
+      "room_id": "kitchen",
+      "type": "wall",
+      "wall_id": "w1",
+      "area_m2": {
+        "value": 5.597595486128894,
+        "ci_low": 4.043865833912163,
+        "ci_high": 7.151325138345625,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_kitchen_w2",
+      "room_id": "kitchen",
+      "type": "wall",
+      "wall_id": "w2",
+      "area_m2": {
+        "value": 9.251841421560556,
+        "ci_low": 6.684302530707477,
+        "ci_high": 11.819380312413635,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_kitchen_w3",
+      "room_id": "kitchen",
+      "type": "wall",
+      "wall_id": "w3",
+      "area_m2": {
+        "value": 5.597595486128894,
+        "ci_low": 4.043865833912163,
+        "ci_high": 7.151325138345625,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_kitchen_w4",
+      "room_id": "kitchen",
+      "type": "wall",
+      "wall_id": "w4",
+      "area_m2": {
+        "value": 9.251841421560556,
+        "ci_low": 6.684302530707477,
+        "ci_high": 11.819380312413635,
+        "unit": "m2",
+        "method": "wall_length_times_height",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_kitchen_floor",
+      "room_id": "kitchen",
+      "type": "floor",
+      "wall_id": null,
+      "area_m2": {
+        "value": 11.594623472924127,
+        "ci_low": 8.400356319428209,
+        "ci_high": 14.788890626420045,
+        "unit": "m2",
+        "method": "polygon_from_wall_faces",
+        "ci_level": 0.95
+      }
+    },
+    {
+      "id": "s_kitchen_ceiling",
+      "room_id": "kitchen",
+      "type": "ceiling",
+      "wall_id": null,
+      "area_m2": {
+        "value": 11.594623472924127,
+        "ci_low": 8.400356319428209,
+        "ci_high": 14.788890626420045,
+        "unit": "m2",
+        "method": "polygon_from_wall_faces",
+        "ci_level": 0.95
+      }
+    }
+  ],
+  "damage_regions": [],
+  "concealed_damage_flags": [],
+  "scope_items": [],
+  "assumptions": [
+    "Camera-height prior: the photos were taken from about 1.40 m plus or minus 0.12 m, and each room is scaled so its own median camera sits that far above its own floor plane. Nothing in this tier measured a distance directly",
+    "MapAnything supplies the geometry and the camera poses; its own metric scale is discarded, because spike 1 measured its depth at 0.70x while its trajectory ran 2.5 to 3.9 times long, so the two are not consistent with each other",
+    "Star layout assumption: no photograph or clip sees two rooms at once, so nothing measures where one room sits relative to another. Each room is attached to the connector's perimeter, door to door where both sides have a door and wall to wall otherwise. Room shapes and sizes are measured; the arrangement is assumed, and the placements are approximate",
+    "Single-room fitting: the clip covers one room, so the room is the smallest rectilinear shape containing the whole camera path out to the wall faces found on each side. Sides with no face are closed by that assumption, not measured",
+    "Manhattan assumption: walls meet at right angles and are axis aligned after a single global rotation. A curved or 45 degree wall appears as a missing face, not a wrong one",
+    "All rooms are reconstructed in one world frame, so stitching placements are the identity"
+  ],
+  "warnings": [
+    "Skipped all (0 image(s), needs at least 2)",
+    "Skipped home (0 image(s), needs at least 2)",
+    "app_comparision was excluded by --exclude and is not treated as a room",
+    "bedroom_2_repeat is a repeat capture: it is measured and reported, but it is not placed in the property, because it is the same room as another",
+    "bedroom_1: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall",
+    "bedroom_1: 1 of 4 room sides had no supported wall face (x+); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed",
+    "bedroom_1: Windows are not detected in this version; openings are doors and pass-throughs only",
+    "bedroom_1: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty",
+    "bedroom_2: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall",
+    "bedroom_2: Windows are not detected in this version; openings are doors and pass-throughs only",
+    "bedroom_2: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty",
+    "hall: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall",
+    "hall: 1 of 4 room sides had no supported wall face (z+); they are closed at the camera path plus 0.45 m by the rectangle assumption and the room is only partially observed",
+    "hall: Windows are not detected in this version; openings are doors and pass-throughs only",
+    "hall: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty",
+    "kitchen: Walls were only reconstructed to about 1.91 m above the floor, so a face counts as a wall at 1.34 m rather than the usual 1.40 m. Wall heights and the ceiling are not measured from this capture",
+    "kitchen: Mirror and glass rejection is not available in this build, so a wardrobe mirror can still read as a wall",
+    "kitchen: Windows are not detected in this version; openings are doors and pass-throughs only",
+    "kitchen: Damage detection is not implemented; damage_regions, concealed_damage_flags and scope_items are empty",
+    "footprint area is reported with an interval wider than the value itself (79.85 m2, plus or minus 102.11). It is an unreliable measurement: the reconstruction constrains it barely or not at all"
+  ],
+  "renders": {
+    "plan_png": "plan.png",
+    "plan_svg": null
+  }
+}
