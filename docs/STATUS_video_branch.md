@@ -12,34 +12,44 @@ Final for this session. Worktree `../cozmo-video-tier`, **not merged**.
 
 ## Results against tape
 
-**Photo tier**, camera originals, gate 8%. The originals are the benchmark;
-the messaging-app copies are kept as a robustness result.
+**Photo tier**, camera originals, gate 8%, after fix loops 2 and 3:
 
-| set | within 8% | inside interval | Moto vs Nokia | footprint |
+| run | within 8% | inside interval | Moto vs Nokia | footprint |
 |---|---|---|---|---|
-| **originals, EXIF focal given to the model** | **6 of 12** | 10 of 12 | +10.9%, +10.0% | 89.93 m2 |
-| originals, model guessing the focal | 3 of 12 | 7 of 12 | -4.5%, -0.2% | 111.10 m2 |
+| **current: EXIF focal + density anchoring** | **8 of 12** | 11 of 12 | +10.0%, +9.9% | 75.54 m2 |
+| EXIF focal only (loop 3 before) | 6 of 12 | 10 of 12 | +10.9%, +10.0% | 89.93 m2 |
+| model guessing the focal | 3 of 12 | 7 of 12 | -4.5%, -0.2% | 111.10 m2 |
 | messaging-app copies, model guessing | 8 of 12 | 11 of 12 | +1.9%, +1.8% | 79.85 m2 |
 
-All three give adjacency 3 of 3 and zero overlap.
+All give adjacency 3 of 3 and zero overlap.
 
-The originals scored worse than the compressed copies because **MapAnything was
-guessing the focal length and guessing 39% long**, which stretches a room
-sideways by 39% while the camera-height prior holds the ceiling right. The
-photographs are identical between the two sets, 9 of 9 at correlation 1.000, so
-nothing here was about which shots were taken. Handing the model the EXIF focal
-fixes it, and the one camera that publishes no 35 mm equivalent, the Nokia, is
-the control that did not improve. Detail in
-`fix_loop/loop2_video_scale/photo_ablation.md`.
+Two loops, two causes, both measured:
 
-The compressed set still scores highest, on luck: the model's guess happened to
-land near the truth on soft low resolution images. The originals are now right
-for a reason, which is what matters for the walk-in test, where iPhone photos
-carry both EXIF focal and orientation.
+* **Loop 2**: MapAnything was guessing the focal 39% long, which stretches a
+  room sideways by 39% while the camera-height prior holds the ceiling right.
+  Handing it the EXIF focal fixed it; the Nokia, which publishes no 35 mm
+  equivalent, is the control that did not improve.
+* **Loop 3**: a room side with no qualifying wall face was closed at the camera
+  path plus a margin, which assumed the path lies inside the room. It does not:
+  on bedroom_2 the path runs 0.61 m past the room's own wall. Anchoring to the
+  outermost significant peak in point density instead took bedroom_2's long wall
+  from +26.3% to +3.1% and every side from 16 of 20 anchored to 20 of 20.
 
-Remaining error is one wall per room, 21 to 32% long: the side the room fitter
-could not anchor to a wall face, closed at the camera path plus a margin. A
-different defect, not fixed here.
+Known remaining, both named with evidence in
+`fix_loop/loop3_photo_unanchored_wall/POSTMORTEM.md`:
+
+* **kitchen, +31.9%**, untouched by loop 3 as predicted. All four sides are on
+  faces, but the rule takes the *outermost* qualifying face and the one it picked
+  has 1584 points against thousands for its neighbours. The outermost-wins rule
+  has the same defect the old fallback had.
+* **bedroom_1, -14.4%**, now short where it was long: the density peak found a
+  plane inside the true wall, probably a wardrobe front. The fix trades a
+  consistent overshoot for a smaller two-sided error, which is an improvement and
+  is not the same as being right.
+* **bedroom_2_repeat, the Nokia**, +18.8%, still guessing its intrinsics.
+
+**The video tier shares `fit_single_room` and inherits loop 3.** It was not
+re-run, so every video number recorded below predates the change.
 
 **Video tier**: 6 of 6 clips produce a plan, median wall error 35.3%, nothing
 within 3%. It does not pass. Full before and after in

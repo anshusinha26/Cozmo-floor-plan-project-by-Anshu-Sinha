@@ -49,13 +49,17 @@ class IntervalBudget:
     min_coverage: float = MIN_COVERAGE
     low_coverage_factor: float = LOW_COVERAGE_FACTOR
     abs_floor_m: float = ABS_FLOOR_M
-    unsupported_sides: int = 0
+    unsupported_sides: float = 0.0
     notes: list[str] = field(default_factory=list)
 
-    def with_unsupported_sides(self, n: int) -> "IntervalBudget":
-        """A room side closed by assumption is not a measured side."""
+    def with_unsupported_sides(self, n: float) -> "IntervalBudget":
+        """A room side closed by assumption is not a measured side.
+
+        Fractional: a side anchored to a dense band of points rather than to a
+        wall face counts half, because it is real evidence of weaker quality.
+        """
         out = IntervalBudget(**{k: v for k, v in self.__dict__.items() if k != "unsupported_sides"})
-        out.unsupported_sides = int(n)
+        out.unsupported_sides = float(n)
         return out
 
     @property
@@ -99,7 +103,7 @@ class IntervalBudget:
         return {"systematic": round(self.systematic, 4),
                 "height_prior": round(self.height_prior, 4),
                 "scale_sem": round(self.scale_sem, 4),
-                "unsupported_sides": self.unsupported_sides,
+                "unsupported_sides": round(self.unsupported_sides, 2),
                 "chunk_spread": round(self.chunk_spread, 4),
                 "coverage": round(self.coverage, 4),
                 "min_coverage": self.min_coverage,

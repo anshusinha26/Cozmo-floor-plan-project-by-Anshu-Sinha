@@ -185,8 +185,8 @@ def plan_from_cloud(points: np.ndarray, normals: np.ndarray, camera_path: np.nda
     frame = ManhattanFrame.fit(cloud.normals[sel], cloud.points[sel][:, [0, 2]])
     height = cloud.points[sel][:, 1] - levels.floor.height_at(cloud.points[sel][:, [0, 2]])
     top = _adaptive_wall_top(height, cfg, warnings)
-    faces = extract_faces(frame.to_frame(cloud.points[sel][:, [0, 2]]),
-                          frame.rotate_normals(cloud.normals[sel]), height, cfg)
+    wall_xz = frame.to_frame(cloud.points[sel][:, [0, 2]])
+    faces = extract_faces(wall_xz, frame.rotate_normals(cloud.normals[sel]), height, cfg)
     faces, ghosts, ghost_report = _reject_ghosts(cloud, levels, frame, faces, cfg)
     if ghosts:
         warnings.append(f"Dropped {len(ghosts)} wall face(s) with no observed floor on either side; "
@@ -207,7 +207,8 @@ def plan_from_cloud(points: np.ndarray, normals: np.ndarray, camera_path: np.nda
         path_frame = frame.to_frame(camera_path[:, [0, 2]])
         room_fit = fit_single_room(faces, path_frame, cfg,
                                    margin_m=cfg["room"].get("unsupported_margin_m", 0.35),
-                                   allow_l=cfg["room"].get("allow_l_shape", True))
+                                   allow_l=cfg["room"].get("allow_l_shape", True),
+                                   wall_xz=wall_xz)
         # Name the room after the capture folder, which the input convention
         # already treats as the room id. Calling it room_01 makes it unmatchable
         # against ground truth that names rooms after the rooms.
@@ -215,7 +216,7 @@ def plan_from_cloud(points: np.ndarray, normals: np.ndarray, camera_path: np.nda
                                room_id=Path(input_path).name or "room_01")
         warnings.extend(room_fit.warnings)
         assumptions.extend(room_fit.assumptions)
-        budget = budget.with_unsupported_sides(4 - room_fit.n_supported)
+        budget = budget.with_unsupported_sides(room_fit.unsupported_weight)
         cfg["uncertainty"] = budget.apply(cfg["uncertainty"])
     else:
         rooms = segment_rooms(cloud, levels, frame, faces, cfg)

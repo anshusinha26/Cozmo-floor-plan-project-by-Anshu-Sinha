@@ -36,7 +36,11 @@ MIN_STEP_M = 0.6            # an L step smaller than this is wall thickness, not
 
 @dataclass
 class Side:
-    """One of the four sides of the fitted room, in the Manhattan frame."""
+    """One of the four sides of the fitted room, in the Manhattan frame.
+
+    ``support`` is how the position was arrived at: a wall face that passed the
+    strict test, a dense band of points that did not, or nothing at all.
+    """
 
     axis: int          # 0: the face's normal is along x, so the side runs along z
     direction: int     # -1 for the low side, +1 for the high side
@@ -45,11 +49,16 @@ class Side:
     face_length_m: float = 0.0
     n_points: int = 0
     margin_used_m: float = 0.0
+    support: str = "face"          # face | density | camera_path
+
+    @property
+    def weak(self) -> bool:
+        return self.support == "density"
 
     def summary(self) -> dict:
         return {"axis": self.axis, "direction": self.direction, "pos": round(self.pos, 3),
-                "supported": self.supported, "face_length_m": round(self.face_length_m, 3),
-                "n_points": self.n_points}
+                "supported": self.supported, "support": self.support,
+                "face_length_m": round(self.face_length_m, 3), "n_points": self.n_points}
 
 
 @dataclass
@@ -65,6 +74,19 @@ class SingleRoomFit:
         return sum(1 for s in self.sides if s.supported)
 
     @property
+    def n_weak(self) -> int:
+        return sum(1 for s in self.sides if s.weak)
+
+    @property
+    def unsupported_weight(self) -> float:
+        """How much of the room is assumed rather than measured.
+
+        A side found by density is real evidence but weaker than a wall face, so
+        it counts half. A side closed at the camera path counts whole.
+        """
+        return sum(0.0 if s.support == "face" else 0.5 if s.weak else 1.0 for s in self.sides)
+
+    @property
     def area_m2(self) -> float:
         p = np.array(self.polygon_frame)
         x, y = p[:, 0], p[:, 1]
@@ -72,6 +94,8 @@ class SingleRoomFit:
 
     def summary(self) -> dict:
         return {"shape": self.shape, "n_supported_sides": self.n_supported,
+                "n_weakly_supported": self.n_weak,
+                "unsupported_weight": round(self.unsupported_weight, 2),
                 "area_m2": round(self.area_m2, 3),
                 "sides": [s.summary() for s in self.sides]}
 
@@ -103,8 +127,65 @@ def _candidates(faces: list[WallFace], axis: int, direction: int, lo: float, hi:
     return out
 
 
+def density_side(wall_xz: np.ndarray, axis: int, direction: int, path: np.ndarray,
+                 cfg: dict) -> tuple[float, int] | None:
+    """The outermost dense band of points beyond the camera path on this side.
+
+    Fix loop 3. The strict face test wants a plane that is long enough, tall
+    enough and flat enough. A wall behind a curtain, a run of window, or a
+    wardrobe front fails all three while still leaving a dense sheet of points
+    exactly where the wall is. This looks for that sheet.
+
+    Outermost among the *significant* peaks, not outermost overall: a handful of
+    points leaking through a doorway or a reflection must not become a wall,
+    which is the mistake the strict path already makes from the other direction.
+
+    The search starts a little **inside** the camera path, not at it. The path is
+    not a reliable inner bound: on bedroom_2 it runs 0.61 m past the room's own
+    wall, because a reconstruction that is imperfect along one axis carries the
+    cameras out with it. Requiring the wall to lie beyond the path found nothing
+    at all on the first attempt, for exactly that reason.
+    """
+    if wall_xz is None or len(wall_xz) == 0:
+        return None
+    rcfg = cfg["room"]
+    bin_m = float(rcfg.get("density_bin_m", 0.06))
+    min_points = int(rcfg.get("density_min_points", 120))
+    min_share = float(rcfg.get("density_min_share", 0.35))
+    max_reach = float(rcfg.get("density_max_reach_m", 2.5))
+    inward = float(rcfg.get("density_inward_m", 1.0))
+
+    lo, hi = _span(path, axis)
+    other_lo, other_hi = _span(path, 1 - axis)
+    span = max(other_hi - other_lo, 1e-6)
+    along = wall_xz[:, 1 - axis]
+    pos = wall_xz[:, axis]
+    # Same room: the points have to run along the stretch the camera path covers.
+    near = (along >= other_lo - 0.5 * span) & (along <= other_hi + 0.5 * span)
+    if direction < 0:
+        sel = near & (pos <= lo + inward) & (pos >= lo - max_reach)
+    else:
+        sel = near & (pos >= hi - inward) & (pos <= hi + max_reach)
+    vals = pos[sel]
+    if len(vals) < min_points:
+        return None
+    edges = np.arange(vals.min() - bin_m, vals.max() + 2 * bin_m, bin_m)
+    counts, edges = np.histogram(vals, bins=edges)
+    if not counts.size or counts.max() < min_points:
+        return None
+    strong = np.nonzero(counts >= max(min_points, min_share * counts.max()))[0]
+    if not strong.size:
+        return None
+    k = int(strong[0] if direction < 0 else strong[-1])
+    centre = float((edges[k] + edges[k + 1]) / 2)
+    band = np.abs(vals - centre) <= 1.5 * bin_m
+    if band.sum() < min_points:
+        return None
+    return float(np.median(vals[band])), int(band.sum())
+
+
 def _pick_side(faces: list[WallFace], axis: int, direction: int, path: np.ndarray,
-               cfg: dict, margin_m: float) -> Side:
+               cfg: dict, margin_m: float, wall_xz: np.ndarray | None = None) -> Side:
     lo, hi = _span(path, axis)
     other_lo, other_hi = _span(path, 1 - axis)
     cands = _candidates(faces, axis, direction, lo, hi, other_lo, other_hi, cfg)
@@ -112,9 +193,23 @@ def _pick_side(faces: list[WallFace], axis: int, direction: int, path: np.ndarra
         # Outermost: the wall is the furthest supported face, not the nearest,
         # because furniture and half-height returns sit between the path and it.
         f = min(cands, key=lambda f: f.pos) if direction < 0 else max(cands, key=lambda f: f.pos)
-        return Side(axis, direction, float(f.pos), True, f.length(), f.n_points)
+        return Side(axis, direction, float(f.pos), True, f.length(), f.n_points, support="face")
+
+    found = density_side(wall_xz, axis, direction, path, cfg)
+    if found is not None:
+        pos, n = found
+        fallback = (lo - margin_m) if direction < 0 else (hi + margin_m)
+        # A peak further out than the fallback would be worse than not looking,
+        # which is one of the declared falsifiers for this change.
+        outside = pos < fallback if direction < 0 else pos > fallback
+        if not outside:
+            return Side(axis, direction, pos, True, 0.0, n, support="density")
+
+    # Nothing to anchor to. The room is closed a short step beyond where the
+    # photographer stood, because a person backs away from the wall they are
+    # photographing and the path is therefore always inside the room.
     pos = (lo - margin_m) if direction < 0 else (hi + margin_m)
-    return Side(axis, direction, float(pos), False, margin_used_m=margin_m)
+    return Side(axis, direction, float(pos), False, margin_used_m=margin_m, support="camera_path")
 
 
 def _l_step(faces: list[WallFace], axis: int, direction: int, path: np.ndarray,
@@ -146,11 +241,12 @@ def _l_step(faces: list[WallFace], axis: int, direction: int, path: np.ndarray,
 
 
 def fit_single_room(faces: list[WallFace], path_frame: np.ndarray, cfg: dict,
-                    margin_m: float = 0.35, allow_l: bool = True) -> SingleRoomFit:
+                    margin_m: float = 0.35, allow_l: bool = True,
+                    wall_xz: np.ndarray | None = None) -> SingleRoomFit:
     """The room around this camera path, as a rectangle or a clearly supported L."""
     if len(path_frame) == 0:
         raise ValueError("single-room fitting needs a camera path")
-    sides = [_pick_side(faces, axis, d, path_frame, cfg, margin_m)
+    sides = [_pick_side(faces, axis, d, path_frame, cfg, margin_m, wall_xz)
              for axis in (0, 1) for d in (-1, 1)]
     by = {(s.axis, s.direction): s for s in sides}
     x0, x1 = by[(0, -1)].pos, by[(0, 1)].pos
@@ -182,6 +278,13 @@ def fit_single_room(faces: list[WallFace], path_frame: np.ndarray, cfg: dict,
         if shape != "l_shape":
             polygon = [(x0, z0), (x1, z0), (x1, z1), (x0, z1)]
 
+    weak = [s for s in sides if s.weak]
+    if weak:
+        names = ", ".join(_side_name(s) for s in weak)
+        warnings.append(
+            f"{len(weak)} of 4 room sides ({names}) are set by a dense band of points rather "
+            f"than by a wall face that passed the strict test, which is what a wall behind a "
+            f"curtain or a wardrobe looks like. Their intervals are widened")
     unsupported = [s for s in sides if not s.supported]
     if unsupported:
         names = ", ".join(_side_name(s) for s in unsupported)
@@ -193,8 +296,9 @@ def fit_single_room(faces: list[WallFace], path_frame: np.ndarray, cfg: dict,
             "Single-room fitting: the clip covers one room, so the room is the smallest "
             "rectilinear shape containing the whole camera path out to the wall faces found on "
             "each side. Sides with no face are closed by that assumption, not measured")
-    log.info("single room: %s, %.2f by %.2f m, %d of 4 sides supported",
-             shape, x1 - x0, z1 - z0, 4 - len(unsupported))
+    log.info("single room: %s, %.2f by %.2f m, %d of 4 sides on a face, %d on point density, "
+             "%d closed at the camera path", shape, x1 - x0, z1 - z0,
+             sum(1 for s in sides if s.support == "face"), len(weak), len(unsupported))
     return SingleRoomFit(polygon, sides, shape, warnings, assumptions)
 
 
