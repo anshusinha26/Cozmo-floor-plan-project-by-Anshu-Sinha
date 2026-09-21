@@ -25,9 +25,22 @@ CFG = {"uncertainty": {"ci_level": 0.95}}
 
 
 def _plan() -> Plan:
-    """The shared fixture, with any damage stripped: this stage is what puts it there."""
-    return Plan.model_validate(world_two_room_plan()).model_copy(
-        update={"damage_regions": [], "concealed_damage_flags": [], "scope_items": []})
+    """The shared fixture, with any damage stripped: this stage is what puts it there.
+
+    The fixture carries wall surfaces for its first room only, so the second
+    room gets one here: a room with no wall surface has nothing to attach a
+    fallback region to, and these tests are about which room's wall is used.
+    """
+    d = world_two_room_plan()
+    d["damage_regions"], d["concealed_damage_flags"], d["scope_items"] = [], [], []
+    have = {s["room_id"] for s in d["surfaces"] if s["type"] == "wall"}
+    for room in d["rooms"]:
+        if room["id"] not in have and room["walls"]:
+            d["surfaces"].append({"id": f"s_{room['id']}_w1", "room_id": room["id"], "type": "wall",
+                                  "wall_id": room["walls"][0]["id"],
+                                  "area_m2": {"value": 9.0, "ci_low": 8.5, "ci_high": 9.5,
+                                              "unit": "m2", "method": "test"}})
+    return Plan.model_validate(d)
 
 
 def _frames():
@@ -83,3 +96,62 @@ def test_on_without_weights_is_an_error_rather_than_a_quiet_skip() -> None:
     """`--damage on` is an instruction, so failing it silently would be a lie."""
     with pytest.raises(RuntimeError, match="weights"):
         resolve_damage_mode("on", weights_present=False)
+
+
+def _frames_for(room_tag: str, n: int = 2):
+    img = np.full((200, 300, 3), 180, dtype=np.uint8)
+    img[80:120, 100:160] = 60
+    for i in range(n):
+        yield DamageFrame(frame_id=f"{room_tag}_f{i}", image=img)
+
+
+def _detector_hitting(frame_ids):
+    boxes = {fid: [Detection(DamageClass.crack.value, "a crack in the wall", 0.6,
+                             (100, 80, 160, 120), fid)] for fid in frame_ids}
+    return DummyDetector(boxes)
+
+
+def test_a_mark_photographed_in_room_b_is_never_recorded_against_room_a() -> None:
+    """Without depth a region falls back to a wall, and it must be a wall of the
+    room whose photo it came from. One fallback for the whole property put every
+    mark in a four-room capture on the hall."""
+    from cozmo.pipeline.damage_stage import run_damage_stage_per_room
+
+    plan = _plan()
+    rooms = [r.id for r in plan.rooms]
+    room_a, room_b = rooms[0], rooms[1]
+    groups = {room_a: list(_frames_for("a")), room_b: list(_frames_for("b"))}
+    detector = _detector_hitting(["b_f0", "b_f1"])
+    out = run_damage_stage_per_room(plan, groups, detector, CFG)
+    assert out.damage_regions, "the mark in room B should reach the plan"
+    surfaces = {s.id: s for s in out.surfaces}
+    rooms_hit = {surfaces[r.surface_id].room_id for r in out.damage_regions}
+    assert rooms_hit == {room_b}
+    Plan.from_json_bytes(out.to_json_bytes())
+
+
+def test_per_room_ids_stay_unique_across_the_property() -> None:
+    from cozmo.pipeline.damage_stage import run_damage_stage_per_room
+
+    plan = _plan()
+    rooms = [r.id for r in plan.rooms]
+    groups = {rooms[0]: list(_frames_for("a")), rooms[1]: list(_frames_for("b"))}
+    detector = _detector_hitting(["a_f0", "a_f1", "b_f0", "b_f1"])
+    out = run_damage_stage_per_room(plan, groups, detector, CFG)
+    ids = [r.id for r in out.damage_regions]
+    assert len(ids) == len(set(ids)) and len(ids) >= 2
+    referenced = {d for s in out.scope_items for d in s.damage_region_ids}
+    assert referenced <= set(ids)
+    Plan.from_json_bytes(out.to_json_bytes())
+
+
+def test_per_room_stage_is_deterministic() -> None:
+    from cozmo.pipeline.damage_stage import run_damage_stage_per_room
+
+    def run():
+        plan = _plan()
+        rooms = [r.id for r in plan.rooms]
+        groups = {rooms[0]: list(_frames_for("a")), rooms[1]: list(_frames_for("b"))}
+        return run_damage_stage_per_room(plan, groups, _detector_hitting(["a_f0", "a_f1", "b_f1"]), CFG)
+
+    assert run().to_json_bytes() == run().to_json_bytes()

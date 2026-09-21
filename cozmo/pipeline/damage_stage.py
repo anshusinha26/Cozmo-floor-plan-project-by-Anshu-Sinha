@@ -146,3 +146,75 @@ def build_verifier(cfg: dict):
     from cozmo.damage.filters import CropVerifier
 
     return CropVerifier(margin=float(cfg.get("damage", {}).get("verifier_margin", 0.0)))
+
+
+FALLBACK_NOTE = (
+    "Damage regions in this plan are attached to a wall of the room each photo came from by "
+    "fallback, not by measurement: without depth the mark cannot be placed on a specific "
+    "wall, so it is recorded against that room's first wall surface")
+
+
+def _rebase(result, prefix: str):
+    """Prefix every id a room's result produced, keeping the references between them.
+
+    Each room's analysis numbers its regions from d1, so two rooms' results
+    would collide the moment they met in one plan. The room id makes them
+    unique across the property and, as a bonus, says where each came from.
+    """
+    idmap = {r.id: f"{prefix}{r.id}" for r in result.regions}
+    regions = [r.model_copy(update={"id": idmap[r.id]}) for r in result.regions]
+    flags = [f.model_copy(update={"id": f"{prefix}{f.id}",
+                                  "evidence": [idmap.get(e, e) for e in f.evidence]})
+             for f in result.flags]
+    scope = [s.model_copy(update={"id": f"{prefix}{s.id}",
+                                  "damage_region_ids": [idmap[d] for d in s.damage_region_ids]})
+             for s in result.scope_items]
+    return regions, flags, scope
+
+
+def run_damage_stage_per_room(plan: Plan, groups: dict[str, Iterable[DamageFrame]], detector,
+                              cfg: dict, verifier=None) -> Plan:
+    """Damage for a multi-room capture, one room's photos against that room's walls.
+
+    One fallback surface for the whole property put every mark in a four-room
+    capture on the hall. A photo taken in the kitchen can only show the
+    kitchen, so its regions go to a kitchen wall, and the plan says that the
+    wall was chosen by fallback rather than found.
+    """
+    from cozmo.damage.pipeline import analyse_damage
+
+    wall_by_room: dict[str, str] = {}
+    for s in plan.surfaces:
+        if s.type == "wall":
+            wall_by_room.setdefault(s.room_id, s.id)
+    regions, flags, scope, warnings = [], [], [], list(plan.warnings)
+    looked = False
+    for room_id in sorted(groups):
+        surface_id = wall_by_room.get(room_id)
+        if surface_id is None:
+            warnings.append(f"{room_id}: damage was not looked for, the room has no wall surface "
+                            "in the plan to attach a region to")
+            continue
+        result = analyse_damage(groups[room_id], plan, detector, cfg,
+                                fallback_surface_id=surface_id, verifier=verifier)
+        looked = True
+        log.info("damage: %s: %d detection(s) merged into %d region(s)",
+                 room_id, result.detections, result.merged)
+        r, f, s = _rebase(result, f"{room_id}_")
+        regions += r
+        flags += f
+        scope += s
+        for w in result.warnings:
+            if w not in warnings:
+                warnings.append(w)
+    if regions:
+        warnings.append(FALLBACK_NOTE)
+        if any(r.extent_m2.method == "unbounded_no_metric_depth" for r in regions):
+            warnings.append(
+                "Without metric depth the same mark seen in several photos cannot be merged, so "
+                "damage_regions counts detections per photo and over-counts the marks present. "
+                "Read the count as an upper bound, not as a number of defects")
+    if not looked:
+        warnings.append(f"{DAMAGE_OFF_WARNING}: no room had both photos and a wall surface")
+    return plan.model_copy(update={"damage_regions": regions, "concealed_damage_flags": flags,
+                                   "scope_items": scope, "warnings": warnings})

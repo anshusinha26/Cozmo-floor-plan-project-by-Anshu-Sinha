@@ -169,11 +169,26 @@ def _attach_damage(plan: Plan, input_path: Path, tier: str, resolved: dict, requ
         return ds.run_damage_stage(plan, mode, None, None, resolved, reason=reason)
 
     spec = validate_input(input_path, tier)
+    dcfg = resolved.get("pipeline", {}).get("lidar", resolved)
+    if tier == "photo" and spec.rooms:
+        # One room's photos against that room's own walls. A single fallback
+        # for the property recorded every mark in a four-room capture against
+        # the hall, because the fallback wall was the hall's.
+        from cozmo.damage.frames import frames_from_images
+
+        in_plan = {r.id for r in plan.rooms}
+        groups = {r.room_id: list(frames_from_images(list(r.files)))
+                  for r in spec.rooms if r.room_id in in_plan and r.files}
+        if not groups:
+            return ds.run_damage_stage(plan, ds.DamageMode.off, None, None, resolved,
+                                       reason="no room in the plan had photos to look at")
+        log.info("damage: looking, tier photo, %d room(s)", len(groups))
+        return ds.run_damage_stage_per_room(plan, groups, ds.build_detector(resolved), dcfg,
+                                            verifier=ds.build_verifier(resolved))
     frames, why = ds.frames_for_tier(tier, input_path, spec, resolved)
     if frames is None:
         return ds.run_damage_stage(plan, ds.DamageMode.off, None, None, resolved, reason=why)
     log.info("damage: looking, tier %s", tier)
-    dcfg = resolved.get("pipeline", {}).get("lidar", resolved)
     return ds.run_damage_stage(plan, mode, frames, ds.build_detector(resolved), dcfg,
                                verifier=ds.build_verifier(resolved))
 

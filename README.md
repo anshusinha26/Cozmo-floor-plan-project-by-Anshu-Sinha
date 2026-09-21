@@ -84,6 +84,10 @@ uv run cozmo run --input <path> --tier photo|video|lidar --out <dir> \
     [--segmentation erosion|cells] [--damage auto|on|off] [--pipeline stub]
 ```
 
+The photo tier with damage on has been observed taking far longer than the
+same run without it on this machine, 26 minutes against under 4; the cause is
+not established. `--damage off` gives the plan alone, quickly.
+
 The rest of the commands:
 
 ```bash
