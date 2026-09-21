@@ -47,6 +47,8 @@ step "Benchmark: every capture with ground truth, all tiers"
 # Video and photo plans are reused from the tier branch rather than recomputed;
 # the report records the source of every plan and whether its input still
 # hashes the same. Pass --skip-lidar to reuse those too.
+# COZMO_REUSE_OVERRIDE lets a locally re-run plan stand in for a branch plan,
+# for example after a fix; the report records which plan came from where.
 "$PY" scripts/benchmark_all.py >/dev/null
 echo "wrote docs/benchmark/"
 

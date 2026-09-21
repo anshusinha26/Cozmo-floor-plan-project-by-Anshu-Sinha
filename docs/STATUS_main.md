@@ -513,3 +513,127 @@ are kept and the report says it is unexplained.
 * Two of eight gates pass.
 
 Tests: 213 passing.
+
+## Task 10: per-tier gates, full-profile rehearsal, second merge
+
+Done. Two merges landed, both photo fixes measured.
+
+### Gates, per tier
+
+Pooled tables are gone from the top of the report. A gate with nothing to
+score reads NOT EVALUATED with its reason and can never count as a pass.
+
+**lidar**
+
+**NOT EVALUATED**: no lidar capture has tape ground truth. The supplied scans are of a property nobody measured, and no iPhone was available to scan the rooms that were.
+
+**photo**
+
+| gate | result | value | threshold | n |
+|---|---|---|---|---|
+| opening_width | FAIL | 0 | 0.85 | 7 |
+| ceiling_height | FAIL | 0.1065 | 0.015 | 4 |
+| ceiling_height_diagnosis | FAIL | 0.1065 | 0.015 | 4 |
+| repeatability | NOT EVALUATED | 0 | 1 | 0 |
+| wall_length_tier | FAIL | 3.991 | 1 | 12 |
+| footprint | NOT EVALUATED | 0 | 0.08 | 0 |
+| stitch_adjacency | PASS | 0 | 0 | 1 |
+| stitch_overlap | PASS | 0 | 0.05 | 1 |
+
+2 of 6 evaluated gates pass, 2 not evaluated.
+
+**video**
+
+| gate | result | value | threshold | n |
+|---|---|---|---|---|
+| opening_width | FAIL | 0 | 0.85 | 7 |
+| ceiling_height | FAIL | 0.6329 | 0.015 | 5 |
+| ceiling_height_diagnosis | FAIL | 0.6329 | 0.015 | 5 |
+| repeatability | FAIL | 250.4 | 1 | 4 |
+| wall_length_tier | FAIL | 45.82 | 1 | 16 |
+| footprint | NOT EVALUATED | 0 | 0.08 | 0 |
+| stitch_adjacency | PASS | 0 | 0 | 5 |
+| stitch_overlap | PASS | 0 | 0.05 | 5 |
+
+2 of 7 evaluated gates pass, 1 not evaluated.
+
+### Head to head against AR Plan 3D, 1.5 cm tie threshold
+
+| tier | room | dimension | tape m | theirs m | their error cm | ours m | our error cm | closer |
+|---|---|---|---|---|---|---|---|---|
+| photo | bedroom_1 | short_pair | 3.658 | 3.410 | 24.8 | 3.637 | 2.1 | ours |
+| photo | bedroom_1 | long_pair | 3.912 | 3.730 | 18.2 | 4.729 | 81.8 | theirs |
+| photo | kitchen | short_wall_1 | 2.692 | 2.750 | 5.8 | 2.658 | 3.5 | ours |
+| photo | kitchen | short_wall_2 | 2.692 | 2.700 | 0.8 | 2.658 | 3.5 | theirs |
+| photo | kitchen | long_wall_1 | 3.603 | 3.510 | 9.3 | 4.753 | 115.0 | theirs |
+| photo | kitchen | long_wall_2 | 3.603 | 3.790 | 18.7 | 4.753 | 115.0 | theirs |
+| video | bedroom_1 | short_pair | 3.658 | 3.410 | 24.8 | 5.935 | 227.8 | theirs |
+| video | bedroom_1 | long_pair | 3.912 | 3.730 | 18.2 | 4.578 | 66.6 | theirs |
+| video | kitchen | short_wall_1 | 2.692 | 2.750 | 5.8 | 1.806 | 88.7 | theirs |
+| video | kitchen | short_wall_2 | 2.692 | 2.700 | 0.8 | 1.806 | 88.7 | theirs |
+| video | kitchen | long_wall_1 | 3.603 | 3.510 | 9.3 | 3.162 | 44.1 | theirs |
+| video | kitchen | long_wall_2 | 3.603 | 3.790 | 18.7 | 3.162 | 44.1 | theirs |
+
+**Photo beats or ties on 33% of dimensions, video on 0%.** The photo tier now
+wins two dimensions outright, both short walls, and loses the long walls.
+
+### The stitch_overlap finding
+
+28.01 m2 was real and came from the photo tier, not a stale plan. The stitcher
+applied its rotation and translation to every polygon and wall, then recorded
+the same transform as the placement, so a consumer following the contract
+applied it twice and put all four rooms on top of each other. The tier's own
+report said 0.0000 because it never re-applied the placement. Fixed by
+recording the identity, keeping the transform in the method string and the
+15 degree interval on theta. Overlap is now 0.0000 and the gate passes at both
+tiers.
+
+### The photo regression, found and fixed
+
+The branch found the cause: MapAnything estimates a focal length when it is
+not given one, and on the camera originals it guessed 464 px against a true
+332 px, implying a 46 degree field of view where the camera has 76. Too long a
+focal pushes the scene apart sideways while the camera-height prior pins the
+heights, which is exactly what was seen. Giving it the EXIF focal:
+
+| quantity | before | after |
+|---|---|---|
+| median wall error | 22.4% | **13.0%** |
+| walls inside the 8% budget | 2 of 12 | **6 of 12** |
+| interval coverage | 0.69 | **0.88** |
+| confident-garbage cases | 5 | **2** |
+
+The capture protocol gains the instruction that follows: send the camera
+originals, because a messaging app strips the lens details the pipeline reads.
+
+### Full-profile rehearsal
+
+| step | time | size |
+|---|---|---|
+| clone | 1.1 s | |
+| `uv sync --extra all`, cold cache | 44.0 s | 1.6 GB venv |
+| `scripts/fetch_weights.sh`, cold cache | 929 s | 9.60 GB |
+| photo tier, one room | 78 s | |
+| video tier, one clip | 1017 s | |
+
+**Two defects found by installing what the README tells a stranger to
+install.** The `all` extra was unsatisfiable: depth-pro pins numpy<2 while
+mapanything needs numpy>=2. depth-pro runs correctly on numpy 2 and the whole
+image path was measured on 2.4.6, so the pin is overridden with the reason
+written beside it. The git-sourced packages also needed
+`allow-direct-references`. Neither is visible from a venv built up by hand.
+
+The weights are **9.60 GB, not the 7.3 GB estimated**, and MapAnything is half
+of that alone. Corrected in the README, the fetch script and the rehearsal.
+
+### Failures and open items
+
+* Neither image tier is accurate enough to ship. Photo is within reach at
+  13.0% median error against an 8% budget; video is not, at 32.9% against 3%.
+* Repeatability still fails: 0 of 4 rows on the same-device video pair, and
+  the photo repeat pair has no plan of its own to compare.
+* Ceiling height fails at both image tiers.
+* Every lidar gate is NOT EVALUATED, and will stay that way until someone
+  measures a property that was scanned with a LiDAR phone.
+
+Tests: 266 passing.

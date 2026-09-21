@@ -73,10 +73,25 @@ reconstruction itself.
 |---|---|---|
 | 4. fetch sample data | `scripts/fetch_sample_data.sh` | 112 s |
 | 5. photo tier, one room | `cozmo run --input <room> --tier photo` | **78 s** |
-| 6. video tier, one clip | `cozmo run --input <room> --tier video` | see below |
+| 6. video tier, one clip | `cozmo run --input <room> --tier video` | **1017 s, 17 minutes** |
 
 Both ran from the clean clone with no further setup, on 9 photographs and one
-50-second clip of the same bedroom.
+50-second clip of the same bedroom. The video tier is 13 times slower than the
+photo tier on the same room and, at 32.9% median wall error against 13.0%,
+much less accurate. That ratio is the argument for the capture protocol
+recommending photographs.
+
+### Full profile, clone to first image-tier plan
+
+| profile | install | weights | first plan | total |
+|---|---|---|---|---|
+| lidar | 11 s | none | 19 s | **under 3 minutes** including tests and data |
+| photo | 44 s | 930 s | 78 s | **about 18 minutes**, nearly all of it the download |
+| video | 44 s | 930 s | 1017 s | **about 33 minutes** |
+
+**The 15-minute target applies to the lidar path**, which meets it with room
+to spare. The full profile cannot: 9.6 GB of weights takes as long as your
+connection takes, and the video tier then spends 17 minutes on one clip.
 
 **The 15-minute target applies to the lidar path only**, and the lidar path
 needs none of this. The full profile is dominated by two downloads, 1.6 GB of
