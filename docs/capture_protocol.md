@@ -1,8 +1,14 @@
 # How to capture a property
 
 Pick the route that matches your phone. Each one ends with the exact command
-to run. If in doubt, use Route 2: it is the only route with a real
-reconstruction today.
+to run.
+
+**If you do not have a LiDAR iPhone, take photos rather than video.** Measured
+on the same rooms: photographs give a median wall error of 1.4%, video gives
+32.9% (`docs/benchmark/eval.json`). Nine deliberate stills from the corners
+beat fifty seconds of walking, because a walk never holds a viewpoint long
+enough to measure a wall well. Route 3 is the recommended route for a phone
+without LiDAR; Route 2 is there because a clip is easier to collect.
 
 ---
 
@@ -92,12 +98,20 @@ flash off, lights on.
 
 **Taking them, per room:**
 
-1. Hold the phone at **chest height, about 1.4 m**, as in Route 2.
+1. Hold the phone at **chest height, about 1.4 m**, as in Route 2. The
+   measurements depend on this height.
 2. Stand in a **corner and photograph the opposite corner**, with the **floor
    edge and the ceiling edge both visible** in the shot.
-3. Do that from **each corner you can reach**: between 2 and 8 photos per room.
-4. Take **one extra photo through each doorway**, standing in the doorway
+3. Do that from **each corner you can reach**: between 2 and 8 photos per
+   room. **Nine photos per room is what the measured results above came
+   from**, and more is better than fewer.
+4. **Stand still for each shot.** A sharp photo from a fixed position is worth
+   more than several taken while moving; blur is what costs accuracy here.
+5. Take **one extra photo through each doorway**, standing in the doorway
    looking into the next room.
+6. Make sure **every wall appears in at least two photos** taken from
+   different positions. A wall seen from one position only cannot be measured,
+   only guessed at.
 
 **Getting them to the computer:** one folder per room, as in Route 2. Transfer
 the **originals** by cable, AirDrop, or a cloud drive. **Do not send them

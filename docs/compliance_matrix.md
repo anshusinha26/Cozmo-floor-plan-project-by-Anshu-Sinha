@@ -6,8 +6,8 @@ exists yet, so every accuracy row is scored on the stub only.
 
 | requirement | file path | artifact | status |
 |---|---|---|---|
-| Photo tier (2 or more stills per room, no depth, no poses) | cozmo/io/inputs.py, cozmo/pipeline/stub.py | input validation, stub plan | partial: input convention validated, still the stub, which says so in warnings |
-| Video tier (one scan folder, rgb.mp4 only) | cozmo/io/inputs.py, cozmo/pipeline/stub.py | input validation, tier isolation, stub plan | partial: the tier may open only rgb.mp4, enforced in code; still the stub, which says so in warnings |
+| Photo tier (2 or more stills per room, no depth, no poses) | cozmo/pipeline/photo/ | real reconstruction; 1.4% median wall error over 12 walls | done; best-performing tier, see docs/benchmark/benchmark.md |
+| Video tier (one clip per room) | cozmo/pipeline/video/ | real reconstruction; 32.9% median wall error over 16 walls | partial: runs on every clip, not accurate enough to ship. Two fix loops, see fix_loop/loop2_video_scale/POSTMORTEM.md |
 | LiDAR tier (Stray Scanner scan folder) | cozmo/io/stray.py, cozmo/lidar/, cozmo/pipeline/lidar.py | reconstruction to plan.json, plan.png, drift_report.json, debug images | done: no longer waived. Sample iPhone LiDAR scans supplied; classical reconstruction runs on all three. Accuracy unverified: no tape ground truth yet |
 | Per-room plan (polygon, walls, openings) | cozmo/contracts/models.py | plan.json rooms[] | done (contract); stub values only |
 | Ceiling height per room with interval | cozmo/contracts/models.py, cozmo/eval/gates.py | rooms[].ceiling_height_m, ceiling_height gate | done (contract and gate); stub values only |
@@ -17,7 +17,7 @@ exists yet, so every accuracy row is scored on the stub only.
 | Damage regions with class enum and extent | cozmo/contracts/models.py | damage_regions[], DamageClass | partial: contract done, no detector; lidar plans emit an empty list and a warning saying so |
 | Concealed-damage flags with rule id and evidence | cozmo/contracts/models.py | concealed_damage_flags[] | done (contract); no rules engine |
 | Scope items with quantity and basis | cozmo/contracts/models.py | scope_items[] | done (contract); no generator |
-| Interval on every measurement (no bare floats) | cozmo/contracts/models.py, tests/test_contract.py, tests/test_cli.py | Measurement type, bare-dimension walker test on emitted output | done |
+| Interval on every measurement (no bare floats) | cozmo/contracts/models.py, tests/test_contract.py | Measurement type, bare-dimension walker on emitted output; coverage 0.94 photo and 1.00 video, measured | done |
 | One command per capture | cozmo/cli.py | cozmo run | done |
 | JSON schema published and versioned | cozmo/contracts/export_schema.py, schema/plan.schema.json | cozmo schema | done |
 | Rendered plan | cozmo/render/plan.py | plan.png next to plan.json | done (PNG only; SVG dropped per revised scope) |
@@ -35,14 +35,14 @@ exists yet, so every accuracy row is scored on the stub only.
 | Evaluation report | cozmo/eval/runner.py | eval.json, eval.md | done |
 | Benchmark report with per-capture timing | cozmo/cli.py (bench) | benchmark.md | done |
 | Drift ablation (--drift-correction on vs off) | cozmo/lidar/drift.py, cozmo/pipeline/lidar.py | drift_report.json: footprint area and mean wall thickness for both settings | done for the lidar tier |
-| Head-to-head (tiers or pipelines on the same space) | benchmarks/captures.yaml, cozmo/eval/runner.py | same space_id across captures in one bench | partial: harness groups by space_id; no second pipeline to compare |
+| Head-to-head against a rival app | benchmarks/head_to_head/arplan3d.yaml, docs/benchmark/head_to_head_photo.md | AR Plan 3D against our photo and video tiers, both against tape | done: photo beats or ties on 33% of dimensions, video on 0% |
 | Fix loop bundle (eval.md pasted back for iteration) | cozmo/eval/runner.py | eval.md | done |
 | Capture protocol (how to film each tier) | docs/capture_protocol.md | one-page protocol, three routes, each ending in the exact command | done |
 | Device matrix (phones tested per tier) | docs/device_matrix.md, benchmarks/captures.yaml device field | matrix document, device recorded per capture | done |
 | Reproduction bundle (inputs, config, seed, manifest, outputs) | scripts/regenerate_all.sh, scripts/fetch_weights.sh, scripts/fetch_sample_data.sh, cozmo/io/manifest.py | one command rebuilds every reported number; run_manifest.json carries hashes, versions and commit | done |
-| Technical report | docs/technical_report.md, scripts/build_report.sh | one bound document, 6 rendered pages, every number traced to a file and a regenerating script | done |
+| Technical report | docs/technical_report.md, scripts/build_report.sh | one bound document, 6 rendered pages, every number traced to a file and a regenerating script, no PENDING cells left | done |
 | Raw data (captures and tape measurements) | data/sample/ (gitignored), benchmarks/captures.yaml | three iPhone LiDAR scans registered with truth null | partial: captures exist, tape measurements do not |
-| Mirrors, glass, wet-look and low-light coverage | cozmo/damage/filters.py, docs/damage_eval/README.md | glass and mirror returns handled by the geometry and multi-view filters; measured on the scan with the shower screen | partial: handled and measured for damage, no scene-condition flags in the registry |
+| Mirrors, glass, wet-look and low-light coverage | docs/hazards.md, scripts/hazard_lowlight.py | one section each with evidence: shower screen, wardrobe mirror, glossy tiles, darkened photos at two levels, moving dog, textureless walls, unobserved ceiling | done |
 
 ## Added in the LiDAR reconstruction task
 
@@ -94,3 +94,15 @@ exists yet, so every accuracy row is scored on the stub only.
 | Sample data fetch | scripts/fetch_sample_data.sh | defaults to the assessor-supplied Drive folder, unpacks into data/sample/<scan_id>/ and verifies the Stray Scanner layout | done |
 | MapAnything rejection evidence | docs/experiments/mapanything/result.json | 0.70x depth scale over three runs, smeared top-down density | done |
 | Report renderer | scripts/build_report.sh, scripts/md_to_pdf.py | PDF via pandoc when present, reportlab fallback otherwise, fails if over 6 pages | done |
+
+## Added in the merge and full benchmark
+
+| requirement | file path | artifact | status |
+|---|---|---|---|
+| Benchmark across every tier with ground truth | scripts/benchmark_all.py, docs/benchmark/benchmark.md | gates, coverage, repeatability, timing, head to head, with per-plan provenance | done |
+| Reuse of expensive plans, declared | docs/benchmark/provenance.json | every plan records its source and whether its input still hashes the same | done |
+| Interval coverage per tier and quantity | docs/benchmark/eval.json | photo 0.94 at 43% width, video 1.00 at 409% width, one confident-garbage case | done |
+| Repeatability, same-device video pair | docs/benchmark/benchmark.md | bedroom_2 against bedroom_2_repeat, 0 of 8 rows within tolerance | done; the gate fails |
+| Fix loop 2, video scale | fix_loop/loop2_video_scale/ | declaration, before and after runs, postmortem, iteration 2 rejected | done; negative result |
+| Install profiles and extras | pyproject.toml, README.md | lidar-only quick path and everything; damage, video, photo and all extras | done |
+| Model weights, all tiers | scripts/fetch_weights.sh | five checkpoints with measured sizes, fetched in halves or all at once | done |
