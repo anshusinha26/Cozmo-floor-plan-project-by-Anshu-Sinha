@@ -1,0 +1,492 @@
+{
+  "device": "mps",
+  "rooms": [
+    {
+      "room_id": "bedroom_1",
+      "n_photos": 9,
+      "points": 147410,
+      "scale_applied": 0.9711,
+      "measured_camera_height_m": 1.442,
+      "exif_focal_px": 2616.9,
+      "mapanything_focal_px": [
+        316.2,
+        331.1,
+        362.7,
+        346.8,
+        325.3,
+        319.4,
+        319.9,
+        340.5,
+        316.9
+      ],
+      "depth_pro_scale": null,
+      "method": "camera_height_prior",
+      "warnings": [],
+      "fitted": {
+        "shape": "rectangle",
+        "n_supported_sides": 3,
+        "area_m2": 17.198,
+        "sides": [
+          {
+            "axis": 0,
+            "direction": -1,
+            "pos": -1.648,
+            "supported": true,
+            "face_length_m": 3.841,
+            "n_points": 19909
+          },
+          {
+            "axis": 0,
+            "direction": 1,
+            "pos": 3.081,
+            "supported": false,
+            "face_length_m": 0.0,
+            "n_points": 0
+          },
+          {
+            "axis": 1,
+            "direction": -1,
+            "pos": -1.818,
+            "supported": true,
+            "face_length_m": 3.327,
+            "n_points": 14273
+          },
+          {
+            "axis": 1,
+            "direction": 1,
+            "pos": 1.818,
+            "supported": true,
+            "face_length_m": 3.796,
+            "n_points": 17119
+          }
+        ]
+      },
+      "interval_budget": {
+        "systematic": 0.05,
+        "height_prior": 0.0857,
+        "scale_sem": 0.0,
+        "unsupported_sides": 1,
+        "chunk_spread": 0.0,
+        "coverage": 1.0,
+        "min_coverage": 0.6,
+        "widened": false,
+        "widening_factor": 1.25,
+        "effective_depth_scale_bias": 0.124,
+        "abs_floor_m": 0.0625
+      },
+      "doors": [],
+      "doors_dropped_off_wall": 0
+    },
+    {
+      "room_id": "bedroom_2",
+      "n_photos": 9,
+      "points": 136925,
+      "scale_applied": 1.011,
+      "measured_camera_height_m": 1.385,
+      "exif_focal_px": 2616.9,
+      "mapanything_focal_px": [
+        320.4,
+        328.1,
+        344.7,
+        364.1,
+        361.9,
+        393.9,
+        315.9,
+        332.8,
+        330.8
+      ],
+      "depth_pro_scale": null,
+      "method": "camera_height_prior",
+      "warnings": [],
+      "fitted": {
+        "shape": "rectangle",
+        "n_supported_sides": 3,
+        "area_m2": 17.985,
+        "sides": [
+          {
+            "axis": 0,
+            "direction": -1,
+            "pos": -2.01,
+            "supported": true,
+            "face_length_m": 1.522,
+            "n_points": 5694
+          },
+          {
+            "axis": 0,
+            "direction": 1,
+            "pos": 1.911,
+            "supported": true,
+            "face_length_m": 3.899,
+            "n_points": 13609
+          },
+          {
+            "axis": 1,
+            "direction": -1,
+            "pos": -2.78,
+            "supported": false,
+            "face_length_m": 0.0,
+            "n_points": 0
+          },
+          {
+            "axis": 1,
+            "direction": 1,
+            "pos": 1.806,
+            "supported": true,
+            "face_length_m": 3.792,
+            "n_points": 16022
+          }
+        ]
+      },
+      "interval_budget": {
+        "systematic": 0.05,
+        "height_prior": 0.0857,
+        "scale_sem": 0.0,
+        "unsupported_sides": 1,
+        "chunk_spread": 0.0,
+        "coverage": 1.0,
+        "min_coverage": 0.6,
+        "widened": false,
+        "widening_factor": 1.25,
+        "effective_depth_scale_bias": 0.124,
+        "abs_floor_m": 0.0625
+      },
+      "doors": [],
+      "doors_dropped_off_wall": 0
+    },
+    {
+      "room_id": "bedroom_2_repeat",
+      "n_photos": 9,
+      "points": 103729,
+      "scale_applied": 1.105,
+      "measured_camera_height_m": 1.267,
+      "exif_focal_px": null,
+      "mapanything_focal_px": [
+        477.8,
+        480.3,
+        484.1,
+        479.3,
+        394.4,
+        478.0,
+        477.4,
+        470.1,
+        477.0
+      ],
+      "depth_pro_scale": null,
+      "method": "camera_height_prior",
+      "warnings": [],
+      "fitted": {
+        "shape": "rectangle",
+        "n_supported_sides": 3,
+        "area_m2": 21.94,
+        "sides": [
+          {
+            "axis": 0,
+            "direction": -1,
+            "pos": -2.129,
+            "supported": true,
+            "face_length_m": 4.101,
+            "n_points": 6798
+          },
+          {
+            "axis": 0,
+            "direction": 1,
+            "pos": 2.185,
+            "supported": true,
+            "face_length_m": 1.654,
+            "n_points": 4505
+          },
+          {
+            "axis": 1,
+            "direction": -1,
+            "pos": -1.991,
+            "supported": true,
+            "face_length_m": 3.885,
+            "n_points": 10569
+          },
+          {
+            "axis": 1,
+            "direction": 1,
+            "pos": 3.094,
+            "supported": false,
+            "face_length_m": 0.0,
+            "n_points": 0
+          }
+        ]
+      },
+      "interval_budget": {
+        "systematic": 0.05,
+        "height_prior": 0.0857,
+        "scale_sem": 0.0,
+        "unsupported_sides": 1,
+        "chunk_spread": 0.0,
+        "coverage": 1.0,
+        "min_coverage": 0.6,
+        "widened": false,
+        "widening_factor": 1.25,
+        "effective_depth_scale_bias": 0.124,
+        "abs_floor_m": 0.0625
+      },
+      "doors": [
+        {
+          "photo": "005_bedroom2_repeat_6.jpg",
+          "score": 0.296,
+          "width_m": 1.732,
+          "height_m": 2.493,
+          "n_points": 199580
+        }
+      ],
+      "doors_dropped_off_wall": 0
+    },
+    {
+      "room_id": "hall",
+      "n_photos": 12,
+      "points": 277029,
+      "scale_applied": 1.0211,
+      "measured_camera_height_m": 1.371,
+      "exif_focal_px": 2616.9,
+      "mapanything_focal_px": [
+        338.9,
+        325.7,
+        339.8,
+        389.9,
+        348.3,
+        382.2,
+        379.0,
+        338.9,
+        384.8,
+        380.8,
+        345.0,
+        339.4
+      ],
+      "depth_pro_scale": null,
+      "method": "camera_height_prior",
+      "warnings": [],
+      "fitted": {
+        "shape": "rectangle",
+        "n_supported_sides": 3,
+        "area_m2": 42.112,
+        "sides": [
+          {
+            "axis": 0,
+            "direction": -1,
+            "pos": -3.544,
+            "supported": true,
+            "face_length_m": 3.706,
+            "n_points": 6418
+          },
+          {
+            "axis": 0,
+            "direction": 1,
+            "pos": 2.671,
+            "supported": true,
+            "face_length_m": 4.631,
+            "n_points": 11140
+          },
+          {
+            "axis": 1,
+            "direction": -1,
+            "pos": -3.115,
+            "supported": true,
+            "face_length_m": 4.036,
+            "n_points": 5902
+          },
+          {
+            "axis": 1,
+            "direction": 1,
+            "pos": 3.662,
+            "supported": false,
+            "face_length_m": 0.0,
+            "n_points": 0
+          }
+        ]
+      },
+      "interval_budget": {
+        "systematic": 0.05,
+        "height_prior": 0.0857,
+        "scale_sem": 0.0,
+        "unsupported_sides": 1,
+        "chunk_spread": 0.0,
+        "coverage": 1.0,
+        "min_coverage": 0.6,
+        "widened": false,
+        "widening_factor": 1.25,
+        "effective_depth_scale_bias": 0.124,
+        "abs_floor_m": 0.0625
+      },
+      "doors": [],
+      "doors_dropped_off_wall": 0
+    },
+    {
+      "room_id": "kitchen",
+      "n_photos": 9,
+      "points": 105979,
+      "scale_applied": 0.9456,
+      "measured_camera_height_m": 1.481,
+      "exif_focal_px": 2616.9,
+      "mapanything_focal_px": [
+        330.5,
+        357.7,
+        402.3,
+        350.0,
+        317.4,
+        327.8,
+        352.1,
+        330.0,
+        342.0
+      ],
+      "depth_pro_scale": null,
+      "method": "camera_height_prior",
+      "warnings": [],
+      "fitted": {
+        "shape": "rectangle",
+        "n_supported_sides": 4,
+        "area_m2": 12.633,
+        "sides": [
+          {
+            "axis": 0,
+            "direction": -1,
+            "pos": -1.431,
+            "supported": true,
+            "face_length_m": 3.327,
+            "n_points": 2450
+          },
+          {
+            "axis": 0,
+            "direction": 1,
+            "pos": 1.226,
+            "supported": true,
+            "face_length_m": 4.597,
+            "n_points": 6480
+          },
+          {
+            "axis": 1,
+            "direction": -1,
+            "pos": -1.921,
+            "supported": true,
+            "face_length_m": 2.716,
+            "n_points": 3784
+          },
+          {
+            "axis": 1,
+            "direction": 1,
+            "pos": 2.832,
+            "supported": true,
+            "face_length_m": 1.011,
+            "n_points": 1584
+          }
+        ]
+      },
+      "interval_budget": {
+        "systematic": 0.05,
+        "height_prior": 0.0857,
+        "scale_sem": 0.0,
+        "unsupported_sides": 0,
+        "chunk_spread": 0.0,
+        "coverage": 1.0,
+        "min_coverage": 0.6,
+        "widened": false,
+        "widening_factor": 1.0,
+        "effective_depth_scale_bias": 0.0992,
+        "abs_floor_m": 0.05
+      },
+      "doors": [
+        {
+          "photo": "001_kitchen_2.jpg",
+          "score": 0.22,
+          "width_m": 0.987,
+          "height_m": 1.647,
+          "n_points": 51494
+        }
+      ],
+      "doors_dropped_off_wall": 0
+    }
+  ],
+  "stitch": {
+    "connector": "hall",
+    "n_rooms": 4,
+    "placements": [
+      {
+        "room_id": "hall",
+        "theta_deg": 0.0,
+        "tx": 0.0,
+        "ty": 0.0,
+        "attached_by": "connector",
+        "pushed_m": 0.0
+      },
+      {
+        "room_id": "bedroom_1",
+        "theta_deg": -270.0,
+        "tx": 1.774,
+        "ty": 2.816,
+        "attached_by": "wall",
+        "pushed_m": 3.4
+      },
+      {
+        "room_id": "bedroom_2",
+        "theta_deg": -180.0,
+        "tx": 3.704,
+        "ty": -6.286,
+        "attached_by": "wall",
+        "pushed_m": 5.8
+      },
+      {
+        "room_id": "kitchen",
+        "theta_deg": -180.0,
+        "tx": 4.329,
+        "ty": 0.358,
+        "attached_by": "wall",
+        "pushed_m": 2.668
+      }
+    ],
+    "adjacency": [
+      [
+        "hall",
+        "bedroom_1"
+      ],
+      [
+        "hall",
+        "bedroom_2"
+      ],
+      [
+        "hall",
+        "kitchen"
+      ]
+    ],
+    "footprint_area_m2": 89.928,
+    "overlap_m2": 0.0,
+    "warnings": [
+      "kitchen is attached wall to wall: no free door pair was available between it and hall"
+    ]
+  },
+  "excluded": [
+    "app_comparision"
+  ],
+  "repeat_rooms": [
+    "bedroom_2_repeat"
+  ],
+  "repeat_measurements": {
+    "bedroom_2_repeat": {
+      "walls_m": [
+        {
+          "value": 5.085,
+          "ci_low": 3.849,
+          "ci_high": 6.322
+        },
+        {
+          "value": 4.314,
+          "ci_low": 3.265,
+          "ci_high": 5.364
+        }
+      ],
+      "ceiling_m": {
+        "value": 2.7,
+        "ci_low": 2.2,
+        "ci_high": 3.2
+      },
+      "area_m2": 21.94
+    }
+  },
+  "openings_note": null,
+  "camera_height_m": 1.4,
+  "n_rooms": 5
+}

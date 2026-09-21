@@ -1,0 +1,10 @@
+{
+  "commit": "30e5d338cd4b06ce7946eb741effd17e18c8a067",
+  "commit_subject": "fix(photo): give MapAnything the EXIF focal instead of letting it guess",
+  "branch": "video-tier",
+  "tree_dirty": false,
+  "taken_at": "2026-09-21T05:52:31.179542+00:00",
+  "python": "3.11.15",
+  "platform": "macOS-27.0-arm64-arm-64bit",
+  "note": "Five-room photo capture on the camera originals with the EXIF focal fix."
+}
