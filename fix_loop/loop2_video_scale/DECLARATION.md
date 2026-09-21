@@ -129,3 +129,70 @@ errors stop being dominated by scale and the intervals start covering the truth.
   is random rather than systematic and a prior cannot fix it.
 * **Coverage does not improve** once bridging stops depending on scale. That
   would mean bridges were failing for a reason other than scale disagreement.
+
+---
+
+# Addendum: iteration 2, the geometry engine rather than the scale cue
+
+Appended after the first iteration was measured. Everything above is the
+original text, unchanged.
+
+## What the first iteration showed
+
+The fix was right in direction and far too small. Median wall error went from
+54.8% to 35.3% against a prediction of 8 to 20%, nothing reached the 3% gate,
+and the two captures of one bedroom ended up disagreeing more than before, which
+fired a falsifier declared in advance.
+
+The reason is in `POSTMORTEM.md`: a height prior only fixes scale when the
+fragment's floor plane is right, and a chunk covering a few seconds of a sweep
+often gets it wrong. Two bridged chunks of one room ended at 0.148 and 0.247 m
+per SfM unit with **both** set by the prior.
+
+## The evidence that redirects this
+
+The photo tier reconstructs the same rooms from nine stills using the same
+camera-height prior and the same single-room fitter, and differs only in what
+builds the geometry: MapAnything instead of COLMAP SfM.
+
+| room | photo tier, 9 stills | video tier, 50 s of clip | tape |
+|---|---|---|---|
+| bedroom_2 walls | 393.0, 366.8 cm (+1.1%, +1.0%) | 181.7, 124.3 cm (-53%, -66%) | 388.6, 363.2 |
+| bedroom_2_repeat walls | 400.4, 373.4 cm (+3.0%, +2.8%) | 303.9, 540.6 cm (-22%, +49%) | 388.6, 363.2 |
+| cross-capture agreement | 1.9%, 1.8% | 198%, 145% | - |
+
+Same scale cue, same room fitter, same tape, two orders of magnitude apart. The
+scale cue is no longer what limits the video tier. The geometry engine is.
+
+## The change
+
+A `--video-engine frames|sfm` switch, defaulting to `frames`. The frames engine
+decodes the clip, picks a spread of sharp frames across it, and runs the photo
+tier's room reconstruction on them. Only the video file is read, so tier
+isolation is unchanged. The SfM path stays selectable and is what a
+whole-property walk still needs.
+
+## Prediction
+
+| quantity | iteration 1 | predicted for iteration 2 |
+|---|---|---|
+| median absolute wall error | 35.3% | 3% to 12% |
+| worst absolute wall error | 65.8% | under 25% |
+| walls within the 3% gate | 0 of 8 | 1 to 4 of 8 |
+| bedroom_2 against its repeat | 198%, 145% | under 10% |
+| clips producing a plan | 6 of 6 | 6 of 6 |
+
+The per-room clips should land near the photo tier's numbers, because they
+become the photo tier with frames pulled from video instead of stills. The
+sample scan should not: it is a walk through several spaces, and a single
+reconstruction of it is one space by definition.
+
+## What would falsify it
+
+* **Per-room clips do not approach the photo tier's error.** Then the difference
+  is not the engine, and something about frames from video, motion blur, rolling
+  shutter, narrower baselines, is the real limit.
+* **The repeat pair still disagrees by more than 15%.** Then the instability is
+  in the capture rather than in the reconstruction, and no engine fixes it.
+* **The frames engine is worse than SfM on any per-room clip.** Then `sfm` stays
+  the default and this addendum records a rejected idea.
